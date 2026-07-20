@@ -1,0 +1,43 @@
+generated: '2026-07-19'
+method: searched
+source: openapi/genesys-platform-api-openapi-original.json
+docs: https://developer.genesys.cloud/authorization/platform-auth/
+authorization_server: https://login.mypurecloud.com
+well_known: well-known/genesys-oauth-authorization-server.json
+grant_types_supported:
+- authorization_code
+- client_credentials
+- refresh_token
+- urn:ietf:params:oauth:grant-type:saml2-bearer
+- implicit
+pkce: S256
+token_endpoint: https://login.mypurecloud.com/oauth/token
+authorization_endpoint: https://login.mypurecloud.com/oauth/authorize
+notes: >-
+  The OpenAPI declares only the implicit flow, but the published OAuth 2.0
+  authorization-server metadata at login.mypurecloud.com advertises
+  authorization_code (with PKCE S256), client_credentials, refresh_token, and
+  SAML2 bearer grants. Scope enforcement is opt-in per organization.
+summary:
+  types:
+  - apiKey
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - implicit
+schemes:
+- name: PureCloud OAuth
+  type: oauth2
+  flows:
+  - flow: implicit
+    authorizationUrl: https://login.mypurecloud.com/authorize
+    scopes: 1
+  sources:
+  - openapi/genesys-platform-api-openapi-original.json
+- name: Guest Chat JWT
+  type: apiKey
+  in: header
+  parameter: Authorization
+  sources:
+  - openapi/genesys-platform-api-openapi-original.json

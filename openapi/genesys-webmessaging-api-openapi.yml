@@ -1,0 +1,1640 @@
+swagger: '2.0'
+info:
+  description: With the PureCloud Platform API, you can control all aspects of your PureCloud environment. With the APIs you can access the system configuration, manage conversations and more.
+  version: v2
+  title: PureCloud Platform Agent Assistants WebMessaging API
+  termsOfService: https://help.genesys.cloud/articles/terms-and-conditions/
+  contact:
+    name: PureCloud Developer Evangelists
+    url: https://developer.genesys.cloud/
+    email: DeveloperEvangelists@genesys.com
+  license:
+    name: UNLICENSED
+    url: https://help.genesys.cloud/articles/terms-and-conditions/
+host: api.mypurecloud.com
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: WebMessaging
+  description: Web messaging
+  externalDocs:
+    description: Web Messaging Documentation
+    url: https://developer.genesys.cloud/commdigital/digital/webmessaging/webmessaging-apis
+paths:
+  /api/v2/webmessaging/deployments/{deploymentId}/pushdevices/{tokenId}:
+    post:
+      tags:
+      - WebMessaging
+      summary: Add a new device information
+      description: ''
+      operationId: postWebmessagingDeploymentPushdevice
+      produces:
+      - application/json
+      parameters:
+      - name: deploymentId
+        in: path
+        description: WebMessaging deployment id
+        required: true
+        type: string
+      - name: tokenId
+        in: path
+        description: Device token id or cookie id
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Request body
+        required: true
+        schema:
+          $ref: '#/definitions/PushDeviceInsertRequest'
+      responses:
+        '204':
+          description: Device created successfully
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.path.parameter: Wrong path parameter(s) passed in the URL path.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            required.fields.missing: Missing required field(s).
+            request.body.empty: Request Body is Empty.
+            field.value.invalid: Invalid values present in the field(s).
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            feature.toggle.disabled: Feature Toggle is not enabled for the organization.
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            deployment.not.found: No deployment found.
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+            device.already.registered: Device already registered
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            contacts.stitching.error: Error occured while stiching the contact.
+            device.registration.failure: Failed to register device.
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      x-purecloud-method-name: postWebmessagingDeploymentPushdevice
+    delete:
+      tags:
+      - WebMessaging
+      summary: Delete device information
+      description: ''
+      operationId: deleteWebmessagingDeploymentPushdevice
+      produces:
+      - application/json
+      parameters:
+      - name: deploymentId
+        in: path
+        description: WebMessaging deployment id
+        required: true
+        type: string
+      - name: tokenId
+        in: path
+        description: Device token id or cookie id
+        required: true
+        type: string
+      responses:
+        '204':
+          description: Device deleted successfully
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.path.parameter: Wrong path parameter(s) passed in the URL path.
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            feature.toggle.disabled: Feature Toggle is not enabled for the organization.
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            deployment.not.found: No deployment found.
+            not.found: The requested resource was not found.
+            device.not.found: No device found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            device.delete.failure: Failed to delete device.
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      x-purecloud-method-name: deleteWebmessagingDeploymentPushdevice
+    patch:
+      tags:
+      - WebMessaging
+      summary: Edit device information
+      description: ''
+      operationId: patchWebmessagingDeploymentPushdevice
+      produces:
+      - application/json
+      parameters:
+      - name: deploymentId
+        in: path
+        description: WebMessaging deployment id
+        required: true
+        type: string
+      - name: tokenId
+        in: path
+        description: Device token id or cookie id
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Request body
+        required: true
+        schema:
+          $ref: '#/definitions/PushDeviceUpdateRequest'
+      responses:
+        '204':
+          description: Device updated successfully
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.path.parameter: Wrong path parameter(s) passed in the URL path.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            request.body.empty: Request Body is Empty.
+            update.fields.missing: Missing field(s).
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            feature.toggle.disabled: Feature Toggle is not enabled for the organization.
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            deployment.not.found: No deployment found.
+            not.found: The requested resource was not found.
+            device.not.found: No device found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            device.update.failure: Failed to update device.
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      x-purecloud-method-name: patchWebmessagingDeploymentPushdevice
+  /api/v2/webmessaging/messages:
+    get:
+      tags:
+      - WebMessaging
+      summary: Get the messages for a web messaging session.
+      description: ''
+      operationId: getWebmessagingMessages
+      produces:
+      - application/json
+      parameters:
+      - name: pageSize
+        in: query
+        description: Page size
+        required: false
+        type: integer
+        default: 25
+        format: int32
+      - name: pageNumber
+        in: query
+        description: Page number
+        required: false
+        type: integer
+        default: 1
+        format: int32
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/WebMessagingMessageEntityList'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            parameters.missing: Parameters are missing
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            session.expired: The session has expired.
+            session.not.found: Session was not found.
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - Webmessaging JWT: []
+      x-purecloud-method-name: getWebmessagingMessages
+definitions:
+  WebMessagingButtonResponse:
+    type: object
+    required:
+    - originatingMessageId
+    - payload
+    - text
+    properties:
+      id:
+        type: string
+        description: An ID assigned to the button response (Deprecated).
+      type:
+        type: string
+        description: Describes the button that resulted in the Button Response.
+        enum:
+        - Button
+        - QuickReply
+        - DatePicker
+        - ListPicker
+        - Form
+      text:
+        type: string
+        description: The response text from the button click.
+      payload:
+        type: string
+        description: The response payload associated with the clicked button.
+      originatingMessageId:
+        type: string
+        description: Id of original structured message that this message responds to.
+    description: Button response object representing the click of a structured message button, such as a quick reply.
+  ConversationFormPage:
+    type: object
+    required:
+    - subtitle
+    - title
+    properties:
+      title:
+        type: string
+        description: Text to show in the title.
+      subtitle:
+        type: string
+        description: Text to show in the subtitle.
+      pageComponents:
+        type: array
+        description: Page components in this form page.
+        items:
+          $ref: '#/definitions/ConversationFormPageComponent'
+    description: Form page object.
+  WebMessagingRecipient:
+    type: object
+    properties:
+      firstName:
+        type: string
+        description: First name of the recipient.
+        readOnly: true
+      lastName:
+        type: string
+        description: Last name of the recipient.
+        readOnly: true
+      nickname:
+        type: string
+        description: Nickname or display name of the recipient.
+        readOnly: true
+      image:
+        type: string
+        description: URL of an image that represents the recipient.
+        readOnly: true
+      additionalIds:
+        type: array
+        description: List of recipient additional identifiers
+        readOnly: true
+        items:
+          $ref: '#/definitions/RecipientAdditionalIdentifier'
+    description: Information about the recipient the message is sent to or received from.
+  ContentCard:
+    type: object
+    required:
+    - actions
+    - title
+    properties:
+      title:
+        type: string
+        description: Text to show in the title.
+      description:
+        type: string
+        description: Text to show in the description.
+      image:
+        type: string
+        description: URL of an image.
+      video:
+        type: string
+        description: URL of a video.
+      defaultAction:
+        description: The default button action.
+        $ref: '#/definitions/ContentCardAction'
+      actions:
+        type: array
+        description: An array of action objects.
+        items:
+          $ref: '#/definitions/ContentCardAction'
+    description: Card content object.
+  WebMessagingContent:
+    type: object
+    properties:
+      contentType:
+        type: string
+        description: Type of this content element. If contentType = "Attachment" only one item is allowed.
+        readOnly: true
+        enum:
+        - Attachment
+        - QuickReply
+        - ButtonResponse
+        - GenericTemplate
+        - Card
+        - Carousel
+        - DatePicker
+        - ListPicker
+        - Form
+      attachment:
+        description: Attachment content.
+        readOnly: true
+        $ref: '#/definitions/WebMessagingAttachment'
+      quickReply:
+        description: Quick reply content.
+        $ref: '#/definitions/WebMessagingQuickReply'
+      buttonResponse:
+        description: Button response content.
+        $ref: '#/definitions/WebMessagingButtonResponse'
+      generic:
+        description: Generic content (Deprecated).
+        $ref: '#/definitions/WebMessagingGeneric'
+      card:
+        description: Card content
+        $ref: '#/definitions/ContentCard'
+      carousel:
+        description: Carousel content
+        $ref: '#/definitions/ContentCarousel'
+      datePicker:
+        description: DatePicker content
+        $ref: '#/definitions/ContentDatePicker'
+      listPicker:
+        description: ListPicker content
+        $ref: '#/definitions/ConversationContentListPicker'
+      form:
+        description: Form content
+        $ref: '#/definitions/ConversationContentForm'
+    description: Message content element.
+  ConversationContentLocation:
+    type: object
+    properties:
+      url:
+        type: string
+        description: URL of the Location.
+      address:
+        type: string
+        description: Location postal address.
+      text:
+        type: string
+        description: Location name.
+      latitude:
+        type: number
+        format: double
+        description: Latitude of the location.
+      longitude:
+        type: number
+        format: double
+        description: Longitude of the location.
+    description: Location object.
+  Reason:
+    type: object
+    required:
+    - message
+    properties:
+      code:
+        type: string
+        description: The reason code for the failed message receipt.
+        enum:
+        - MessageExpired
+        - RateLimited
+        - MessageNotAllowed
+        - GeneralError
+        - UnsupportedMessage
+        - UnknownMessage
+        - InvalidMessageStructure
+        - InvalidDestination
+        - ServerError
+        - MediaTypeNotAllowed
+        - InvalidMediaContentLength
+        - RecipientOptedOut
+        - DataFiltered
+      message:
+        type: string
+        description: Description of the reason for the failed message receipt.
+    description: Reasons for a failed message receipt.
+  ConversationContentInput:
+    type: object
+    required:
+    - isMultipleLine
+    - isRequired
+    properties:
+      id:
+        type: string
+        description: Unique identifier for the input
+      title:
+        type: string
+        description: The main text displayed for the input field(s).
+      subtitle:
+        type: string
+        description: Additional text providing more details about the input field(s).
+      placeholderText:
+        type: string
+        description: Placeholder text for input field(s).
+      isRequired:
+        type: boolean
+        description: Whether the input field(s) are required to be filled in.
+      isMultipleLine:
+        type: boolean
+        description: Whether the input should allow multiple lines of text.
+      keyboardType:
+        type: string
+        description: Type of keyboard to be shown.
+        enum:
+        - Default
+        - NumberPunctuation
+        - Number
+        - Phone
+        - Email
+        - Decimal
+        - Websearch
+        - URL
+      autoCompleteType:
+        type: string
+        description: A string value representing the keyboard and system information about the expected semantic meaning for the content that users enter.
+        enum:
+        - Prefix
+        - Name
+        - GivenName
+        - MiddleName
+        - FamilyName
+        - Suffix
+        - Nickname
+        - Title
+        - Organization
+        - Location
+        - StreetAddress
+        - Addressline1
+        - Addressline2
+        - City
+        - State
+        - Country
+        - PostalCode
+        - Username
+        - OneTimeCode
+        - Email
+        - Phone
+        - PaymentCardNumber
+        - PaymentCardExpiration
+        - PaymentCardExpirationMonth
+        - PaymentCardExpirationYear
+        - PaymentCardSecurityCode
+        - PaymentCardType
+        - PaymentCardName
+        - PaymentCardGivenName
+        - PaymentCardMiddleName
+        - PaymentCardFamilyName
+        - Birthdate
+        - BirthdateDay
+        - BirthdateMonth
+        - BirthdateYear
+        - DateTime
+        - FlightNumber
+        - Url
+    description: Single or multiline text input component.
+  RecipientAdditionalIdentifier:
+    type: object
+    required:
+    - type
+    - value
+    properties:
+      type:
+        type: string
+        description: Type of the Identifier
+        readOnly: true
+        enum:
+        - Deployment
+        - Subject
+        - Topic
+        - IngestionRule
+        - IngestionRuleVersion
+      value:
+        type: string
+        description: The Identifier value.
+        readOnly: true
+    description: Additional identifiers for describing messaging recipient.
+  ConversationContentListPickerSection:
+    type: object
+    properties:
+      title:
+        type: string
+        description: Required title for the section.
+      multipleSelection:
+        type: boolean
+        description: Whether multiple items can be selected in this section.
+      items:
+        type: array
+        description: List of items to choice from in the section
+        items:
+          $ref: '#/definitions/ConversationContentListPickerItem'
+    description: List Picker object for presenting a section of selectable items.
+  ConversationContentDatePicker:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Optional unique identifier to help map component replies to form messages where multiple DatePickers can be present.
+      title:
+        type: string
+        description: Text to show in the title.
+      subtitle:
+        type: string
+        description: Text to show in the description.
+      imageUrl:
+        type: string
+        description: URL of an image
+      dateMinimum:
+        type: string
+        format: date-time
+        description: 'The minimum Date Enabled in the datepicker calendar, format: ISO 8601.'
+      dateMaximum:
+        type: string
+        format: date-time
+        description: 'The maximum Date Enabled in the datepicker calendar, format: ISO 8601.'
+      location:
+        description: Location of the event.
+        $ref: '#/definitions/ConversationContentLocation'
+      availableTimes:
+        type: array
+        description: An array of available times objects.
+        items:
+          $ref: '#/definitions/ConversationContentDatePickerAvailableTime'
+      dateDisplayFormat:
+        type: string
+        description: The format the date should be presented to the end user.
+        enum:
+        - dayMonthYear
+        - monthDayYear
+        - yearMonthDay
+    description: DateTimePicker content object.
+  ContentCarousel:
+    type: object
+    required:
+    - cards
+    properties:
+      cards:
+        type: array
+        description: An array of card objects.
+        items:
+          $ref: '#/definitions/ContentCard'
+    description: Carousel content object.
+  WebMessagingEventCoBrowse:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Describes the type of Cobrowse event.
+        enum:
+        - Offering
+        - OfferingExpired
+        - OfferingAccepted
+        - OfferingRejected
+      sessionId:
+        type: string
+        description: The Cobrowse session ID.
+      sessionJoinToken:
+        type: string
+        description: The Cobrowse session join token.
+    description: A Cobrowse event.
+  ConversationContentDatePickerAvailableTime:
+    type: object
+    properties:
+      duration:
+        type: integer
+        format: int64
+        description: The duration of the scheduling event in seconds.
+      dateTime:
+        type: string
+        format: date-time
+        description: 'The date and time of the event being scheduled. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    description: A datetimepicker available time that a user can take.
+  ConversationContentListPickerItem:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Unique identifier for the list picker item
+      title:
+        type: string
+        description: The main text displayed for the item.
+      subtitle:
+        type: string
+        description: Additional text providing more details about the item.
+      imageUrl:
+        type: string
+        description: URL of an image to be displayed alongside the item.
+    description: Represents a selectable item in a list picker.
+  Detail:
+    type: object
+    properties:
+      errorCode:
+        type: string
+      fieldName:
+        type: string
+      entityId:
+        type: string
+      entityName:
+        type: string
+  ErrorBody:
+    type: object
+    properties:
+      message:
+        type: string
+      code:
+        type: string
+      status:
+        type: integer
+        format: int32
+      entityId:
+        type: string
+      entityName:
+        type: string
+      messageWithParams:
+        type: string
+      messageParams:
+        type: object
+        additionalProperties:
+          type: string
+      contextId:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/Detail'
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ErrorBody'
+      limit:
+        $ref: '#/definitions/Limit'
+  ConversationContentForm:
+    type: object
+    required:
+    - cannedResponseId
+    properties:
+      introduction:
+        description: The intro component, used to give an intro into what the form entails
+        $ref: '#/definitions/ConversationContentIntroduction'
+      formPages:
+        type: array
+        description: Form pages
+        items:
+          $ref: '#/definitions/ConversationFormPage'
+      receivedMessage:
+        description: The message prompt to fill out the form received.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+      replyMessage:
+        description: The reply message after the user has filled out the form received.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+      showSummary:
+        type: boolean
+        description: Show summary at end of form submission.
+      response:
+        type: array
+        description: Content of the payload included in the Form response.
+        items:
+          $ref: '#/definitions/ConversationFormResponseComponent'
+      originatingMessageId:
+        type: string
+        description: Reference to the ID of the original message.
+      cannedResponseId:
+        type: string
+        description: The id of the canned response which was used to create the form.
+    description: Form content object.
+  ConversationContentWheelPicker:
+    type: object
+    required:
+    - items
+    properties:
+      id:
+        type: string
+        description: Optional unique identifier to help map component replies to form messages where multiple Wheel Pickers can be present.
+      items:
+        type: array
+        description: The main text displayed for the item.
+        items:
+          $ref: '#/definitions/ConversationContentWheelPickerItem'
+    description: Wheel Picker object for representing single selection of selectable items.
+  ContentDatePickerAvailableTime:
+    type: object
+    properties:
+      duration:
+        type: integer
+        format: int64
+        description: The duration of the scheduling event in seconds.
+      dateTime:
+        type: string
+        format: date-time
+        description: 'The date and times of the event being scheduled. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    description: A datepicker available time that a user can take.
+  ConversationFormResponseContent:
+    type: object
+    properties:
+      contentType:
+        type: string
+        description: Type of this content element.
+        enum:
+        - ButtonResponse
+      buttonResponse:
+        description: Button response content.
+        $ref: '#/definitions/ConversationContentButtonResponse'
+    description: Message content element for form responses
+  WebMessagingGeneric:
+    type: object
+    properties:
+      title:
+        type: string
+        description: Text to show in the title.
+      description:
+        type: string
+        description: Text to show in the description.
+      image:
+        type: string
+        description: URL of an image.
+      actions:
+        description: Actions to be taken.
+        $ref: '#/definitions/ContentActions'
+      components:
+        type: array
+        description: An array of component objects.
+        items:
+          $ref: '#/definitions/ButtonComponent'
+    description: Generic content object. (Deprecated
+  PushDeviceUpdateRequest:
+    type: object
+    properties:
+      language:
+        type: string
+        description: The preferred language of the user (eg. en-us, de, fr)
+      deviceToken:
+        type: string
+        description: The device token generated by the network providers
+  ButtonComponent:
+    type: object
+    properties:
+      title:
+        type: string
+        description: Text to show inside the button.
+      actions:
+        description: The button actions (Deprecated).
+        $ref: '#/definitions/ContentActions'
+    description: Structured template button object.
+  ConversationContentButtonResponse:
+    type: object
+    required:
+    - payload
+    - text
+    properties:
+      originatingMessageId:
+        type: string
+        description: Reference to the ID of the original message (e.g., list picker) this button response is replying to.
+      type:
+        type: string
+        description: Describes the button that resulted in the Button Response.
+        enum:
+        - Button
+        - QuickReply
+        - DatePicker
+        - ListPicker
+        - Form
+      text:
+        type: string
+        description: The response text from the button click.
+      payload:
+        type: string
+        description: The response payload associated with the clicked button.
+    description: Button response object representing the click of a structured message button, such as a quick reply.
+  WebMessagingAttachment:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+        readOnly: true
+      mediaType:
+        type: string
+        description: The type of attachment this instance represents.
+        readOnly: true
+        enum:
+        - Image
+        - Video
+        - Audio
+        - File
+        - Link
+      url:
+        type: string
+        description: URL of the attachment.
+        readOnly: true
+      mime:
+        type: string
+        description: Attachment mime type (https://www.iana.org/assignments/media-types/media-types.xhtml).
+        readOnly: true
+      text:
+        type: string
+        description: Text associated with attachment such as an image caption.
+        readOnly: true
+      sha256:
+        type: string
+        description: Secure hash of the attachment content.
+        readOnly: true
+      filename:
+        type: string
+        description: Suggested file name for attachment.
+        readOnly: true
+      fileSize:
+        type: integer
+        format: int32
+        description: The file size associated with the file
+        readOnly: true
+    description: Attachment object.
+  ConversationContentIntroduction:
+    type: object
+    required:
+    - buttonText
+    - title
+    properties:
+      title:
+        type: string
+        description: Text to show in the title.
+      subtitle:
+        type: string
+        description: Text to show in the subtitle.
+      imageUrl:
+        type: string
+        description: URL of an image.
+      buttonText:
+        type: string
+        description: Text to show on the button.
+    description: Introduction content object.
+  ConversationContentListPicker:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Optional unique identifier to help map component replies to form messages where multiple ListPickers can be present.
+      sections:
+        type: array
+        description: An array of sections in the List Picker.
+        items:
+          $ref: '#/definitions/ConversationContentListPickerSection'
+      replyMessage:
+        description: The reply message after the user has selected the options from the List Picker.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+      receivedMessage:
+        description: The message prompt to select options in the List Picker sections.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+    description: List Picker object for presenting multiple sections of selectable items.
+  ConversationFormPageComponent:
+    type: object
+    properties:
+      formComponentType:
+        type: string
+        description: Type of this form component element
+        enum:
+        - ListPicker
+        - DatePicker
+        - WheelPicker
+        - Input
+      datePicker:
+        description: Date Picker content.
+        $ref: '#/definitions/ConversationContentDatePicker'
+      wheelPicker:
+        description: Wheel Picker content.
+        $ref: '#/definitions/ConversationContentWheelPicker'
+      listPicker:
+        description: List Picker content.
+        $ref: '#/definitions/ConversationContentListPicker'
+      input:
+        description: Input content.
+        $ref: '#/definitions/ConversationContentInput'
+    description: 'Form component element. Examples include: List Picker, Date Picker, Wheel Picker and Input text.'
+  WebMessagingMessageEntityList:
+    type: object
+    properties:
+      entities:
+        type: array
+        items:
+          $ref: '#/definitions/WebMessagingMessage'
+      pageSize:
+        type: integer
+        format: int32
+      pageNumber:
+        type: integer
+        format: int32
+      total:
+        type: integer
+        format: int64
+      pageCount:
+        type: integer
+        format: int32
+  WebMessagingEventPresence:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Describes the type of Presence event.
+        enum:
+        - Join
+        - Disconnect
+        - Clear
+        - SignIn
+        - SessionExpired
+    description: A Presence event.
+  ConversationContentWheelPickerItem:
+    type: object
+    required:
+    - id
+    - title
+    properties:
+      id:
+        type: string
+        description: Unique identifier for the wheel picker item
+      title:
+        type: string
+        description: The main text displayed for the item.
+      value:
+        type: string
+        description: The value of the item.
+    description: Represents a selectable item in a Wheel Picker
+  ContentDatePicker:
+    type: object
+    required:
+    - availableTimes
+    properties:
+      title:
+        type: string
+        description: Text to show in the title.
+      subtitle:
+        type: string
+        description: Text to show in the description.
+      imageUrl:
+        type: string
+        description: URL of an image
+      dateMinimum:
+        type: string
+        format: date-time
+        description: 'The minimum Date Enabled in the datepicker calendar. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+      dateMaximum:
+        type: string
+        format: date-time
+        description: 'The maximum Date Enabled in the datepicker calendar. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+      availableTimes:
+        type: array
+        description: An array of available times objects.
+        items:
+          $ref: '#/definitions/ContentDatePickerAvailableTime'
+    description: DatePicker content object.
+  Limit:
+    type: object
+    properties:
+      key:
+        type: string
+      namespace:
+        type: string
+        enum:
+        - web.deployments
+        - web.messaging
+        - agent.assistant
+        - agentic.virtual.agents
+        - analytics.agents
+        - analytics.alerting
+        - analytics.data.extraction
+        - analytics
+        - analytics.realtime
+        - analytics.reporting.settings
+        - anomaly.detection
+        - architect
+        - audiohook
+        - audiohook.monitor
+        - audit
+        - auth.api
+        - authorization
+        - automation.testing
+        - bots
+        - bots.voice
+        - business.rules
+        - callback
+        - case.management
+        - cobrowse
+        - content.management
+        - conversation
+        - copilot
+        - dataactions
+        - datatables
+        - directory
+        - dsar
+        - email
+        - employee.engagement
+        - event.orchestration
+        - external.contacts
+        - external.events.data.ingestion
+        - gamification
+        - gcv
+        - gdpr
+        - groups
+        - guides
+        - historical.adherence
+        - infrastructureascode
+        - integrations
+        - intent.miner
+        - internal.messaging
+        - journey
+        - knowledge
+        - language.understanding
+        - learning
+        - limit.registry
+        - marketplace
+        - mcp.analytics.aggregates
+        - mcp
+        - media.communications
+        - messaging
+        - micro.frontend
+        - multi.org
+        - notifications
+        - onboarding
+        - outbound
+        - platform.api
+        - predictive.routing
+        - presence
+        - quality
+        - recording
+        - response.management
+        - routing
+        - scim
+        - screen.monitoring
+        - search
+        - secondary.automation.testing
+        - skills
+        - social.media
+        - speech.and.text.analytics
+        - speech.integration
+        - supportability
+        - task.management
+        - telephony.configuration
+        - usage
+        - users
+        - users.rules
+        - voice.transcription
+        - webchat
+        - webhooks
+        - workforce.management.adherence
+        - workforce.management.agent.availability
+        - workforce.management.forecast
+        - workforce.management
+        - workforce.management.scheduling.preferences
+        - workforce.management.self.schedule
+        - workforce.management.shift.trading
+        - system
+      value:
+        type: integer
+        format: int64
+  ContentCardAction:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Describes the type of action.
+        enum:
+        - Link
+        - Postback
+      text:
+        type: string
+        description: The response text from the button click.
+      payload:
+        type: string
+        description: Text to be returned as the payload from a ButtonResponse when a button is clicked. The payload and text are a combination which will have to be unique across each card and carousel in order to determine which button was clicked in that card or carousel.
+      url:
+        type: string
+        description: A URL of a web page to direct the user to.
+    description: A card action that a user can take.
+  ContentActions:
+    type: object
+    properties:
+      url:
+        type: string
+        description: A URL of a web page to direct the user to.
+      urlTarget:
+        type: string
+        description: The target window in which to open the URL. If empty will open a blank page or tab.
+      textback:
+        type: string
+        description: Text to be returned as the payload from a ButtonResponse when a button is clicked. The textback and title are a combination which will have to be unique across each card and carousel in order to determine which button was clicked in that card or carousel.
+    description: User actions available on the content. All actions are optional and all actions are executed simultaneously.
+  ConversationContentReceivedReplyMessage:
+    type: object
+    properties:
+      header:
+        type: string
+        description: Text to show in the header.
+      title:
+        type: string
+        description: Text to show in the title.
+      subtitle:
+        type: string
+        description: Text to show in the subtitle.
+      buttonLabel:
+        type: string
+        description: Text to show on the button label.
+      imageUrl:
+        type: string
+        description: URL of an image.
+    description: ReceivedReplyMessage content object.
+  WebMessagingEventVideo:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Describes the type of Video event.
+        enum:
+        - Offering
+        - OfferingExpired
+        - OfferingAccepted
+        - OfferingRejected
+      offeringId:
+        type: string
+        description: The Video offering ID.
+      jwt:
+        type: string
+        description: The Video offering JWT token.
+    description: A Video event.
+  PushDeviceInsertRequest:
+    type: object
+    required:
+    - deviceToken
+    - deviceType
+    - language
+    - notificationProvider
+    properties:
+      deviceToken:
+        type: string
+        description: The device token generated by the network providers
+      notificationProvider:
+        type: string
+        description: The notification provider for the device (FCM / APNS)
+        enum:
+        - FCM
+        - APNS
+      language:
+        type: string
+        description: The preferred language of the user (eg. en-us, de, fr)
+      deviceType:
+        type: string
+        description: The type of the device (Android / IoS)
+        enum:
+        - android
+        - ios
+  WebMessagingMessage:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Unique ID of the message. This ID is generated by Messaging Platform. Message receipts will have the same ID as the message they reference.
+      channel:
+        description: Channel-specific information that describes the message and the message channel/provider.
+        $ref: '#/definitions/WebMessagingChannel'
+      type:
+        type: string
+        description: Message type.
+        enum:
+        - Text
+        - Structured
+        - Receipt
+        - Event
+      text:
+        type: string
+        description: Message text.
+      content:
+        type: array
+        description: List of content elements.
+        items:
+          $ref: '#/definitions/WebMessagingContent'
+      status:
+        type: string
+        description: Message receipt status, only used with type Receipt.
+        readOnly: true
+        enum:
+        - Sent
+        - Delivered
+        - Read
+        - Failed
+        - Published
+        - Removed
+      reasons:
+        type: array
+        description: List of reasons for a message receipt that indicates the message has failed. Only used with Failed status.
+        readOnly: true
+        items:
+          $ref: '#/definitions/Reason'
+      events:
+        type: array
+        description: List of event elements.
+        items:
+          $ref: '#/definitions/WebMessagingEvent'
+      direction:
+        type: string
+        description: The direction of the message.  Direction is always from the perspective of the Genesys Cloud platform.  An Inbound message is one sent from a guest to the Genesys Cloud Platform.  An Outbound message is one sent from the Genesys Cloud Platform to a guest.
+        enum:
+        - Inbound
+        - Outbound
+      originatingEntity:
+        type: string
+        description: Specifies if this message was sent by a human agent or bot. The platform may use this to apply appropriate provider policies.
+        enum:
+        - Human
+        - Bot
+      metadata:
+        type: object
+        description: Additional metadata about this message.
+        additionalProperties:
+          type: string
+    description: A web messaging message
+  ConversationFormResponseComponent:
+    type: object
+    required:
+    - component
+    - id
+    properties:
+      id:
+        type: string
+        description: The id of the component in the original message.
+      component:
+        description: The content object capturing component response from the original message.
+        $ref: '#/definitions/ConversationFormResponseContent'
+    description: A response component from a form
+  WebMessagingChannel:
+    type: object
+    properties:
+      from:
+        description: Information about the recipient the message is received from.
+        readOnly: true
+        $ref: '#/definitions/WebMessagingRecipient'
+      to:
+        description: Information about the recipient the message is sent to.
+        readOnly: true
+        $ref: '#/definitions/WebMessagingRecipient'
+      time:
+        type: string
+        format: date-time
+        description: 'When the message was processed by Genesys Cloud. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        readOnly: true
+      messageId:
+        type: string
+        description: Unique provider ID of the message.
+        readOnly: true
+    description: Channel-specific information that describes the message and the message channel/provider.
+  WebMessagingQuickReply:
+    type: object
+    required:
+    - payload
+    - text
+    properties:
+      text:
+        type: string
+        description: Text to show inside the quick reply. This is also used as the response text after clicking on the quick reply.
+      payload:
+        type: string
+        description: Content of the payload included in the quick reply response. Could be an ID identifying the quick reply response.
+      image:
+        type: string
+        description: URL of an image associated with the quick reply.
+      action:
+        type: string
+        description: Specifies the type of action that is triggered upon clicking the quick reply.
+        enum:
+        - Message
+    description: Quick reply object
+  WebMessagingEvent:
+    type: object
+    required:
+    - eventType
+    properties:
+      eventType:
+        type: string
+        description: Type of this event element
+        enum:
+        - CoBrowse
+        - Presence
+        - Video
+      coBrowse:
+        description: Cobrowse event.
+        $ref: '#/definitions/WebMessagingEventCoBrowse'
+      presence:
+        description: Presence event.
+        $ref: '#/definitions/WebMessagingEventPresence'
+      video:
+        description: Video event.
+        $ref: '#/definitions/WebMessagingEventVideo'
+    description: 'Message event element.  Examples include: system messages, typing indicators, cobrowse offerings.'
+securityDefinitions:
+  PureCloud OAuth:
+    type: oauth2
+    authorizationUrl: https://login.mypurecloud.com/authorize
+    flow: implicit
+    scopes:
+      all: All the scopes
+  Guest Chat JWT:
+    type: apiKey
+    name: Authorization
+    in: header
+externalDocs:
+  description: PureCloud API Documentation
+  url: https://developer.genesys.cloud/

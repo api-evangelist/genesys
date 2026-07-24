@@ -1,0 +1,3637 @@
+swagger: '2.0'
+info:
+  description: With the PureCloud Platform API, you can control all aspects of your PureCloud environment. With the APIs you can access the system configuration, manage conversations and more.
+  version: v2
+  title: PureCloud Platform Agent Assistants AI Studio API
+  termsOfService: https://help.genesys.cloud/articles/terms-and-conditions/
+  contact:
+    name: PureCloud Developer Evangelists
+    url: https://developer.genesys.cloud/
+    email: DeveloperEvangelists@genesys.com
+  license:
+    name: UNLICENSED
+    url: https://help.genesys.cloud/articles/terms-and-conditions/
+host: api.mypurecloud.com
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: AI Studio
+  description: Manage AI Studio configuration
+paths:
+  /api/v2/conversations/summaries/preview:
+    post:
+      tags:
+      - AI Studio
+      summary: Trigger summary preview event generation.
+      description: ''
+      operationId: postConversationsSummariesPreview
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/SummarySettingWithTranscript'
+      responses:
+        '204':
+          description: Operation was successful.
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            summary.setting.invalid.transcript: Transcripts are not valid.
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            summary.setting.invalid.language: Unsupported language.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: Request body did not pass validation.
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:summaryPreview:view
+      x-purecloud-method-name: postConversationsSummariesPreview
+  /api/v2/conversations/summaries/settings:
+    get:
+      tags:
+      - AI Studio
+      summary: Get all summary settings.
+      description: ''
+      operationId: getConversationsSummariesSettings
+      produces:
+      - application/json
+      parameters:
+      - name: pageNumber
+        in: query
+        description: Page number.
+        required: false
+        type: integer
+        default: 1
+        minimum: 1
+        format: int32
+      - name: pageSize
+        in: query
+        description: Page size. The maximum page size is 100.
+        required: false
+        type: integer
+        default: 25
+        maximum: 100
+        minimum: 1
+        format: int32
+      - name: name
+        in: query
+        description: Filter by partially matching name - case insensitive.
+        required: false
+        type: string
+      - name: sortOrder
+        in: query
+        description: Sort Order. Default value desc.
+        required: false
+        type: string
+        default: desc
+        enum:
+        - asc
+        - desc
+      - name: language
+        in: query
+        description: Filter by matching language - case insensitive.
+        required: false
+        type: string
+      - name: sortBy
+        in: query
+        description: Sort by. Default value dateModified.
+        required: false
+        type: string
+        default: dateModified
+        enum:
+        - dateModified
+        - name
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/SummarySettingEntityListing'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            summary.setting.invalid.language: Unsupported language.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+        - ai-studio:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:summaryConfig:view
+      x-purecloud-method-name: getConversationsSummariesSettings
+    post:
+      tags:
+      - AI Studio
+      summary: Create a summary setting.
+      description: ''
+      operationId: postConversationsSummariesSettings
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/SummarySetting'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/SummarySetting'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            summary.setting.name.not.unique: Summary setting name not unique.
+            summary.setting.too.many.settings: Maximum number of summary settings reached for organization.
+            summary.setting.invalid.custom.prompt: Custom prompt is invalid.
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            summary.setting.invalid.language: Unsupported language.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: Request body did not pass validation.
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:summaryConfig:add
+      x-purecloud-method-name: postConversationsSummariesSettings
+  /api/v2/conversations/summaries/settings/{summarySettingId}:
+    get:
+      tags:
+      - AI Studio
+      summary: Receive a summary setting.
+      description: ''
+      operationId: getConversationsSummariesSetting
+      produces:
+      - application/json
+      parameters:
+      - name: summarySettingId
+        in: path
+        description: Summary setting id
+        required: true
+        type: string
+        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/SummarySetting'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+            summary.setting.not.found: Summary setting was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+        - ai-studio:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:summaryConfig:view
+      x-purecloud-method-name: getConversationsSummariesSetting
+    put:
+      tags:
+      - AI Studio
+      summary: Update a summary setting.
+      description: ''
+      operationId: putConversationsSummariesSetting
+      produces:
+      - application/json
+      parameters:
+      - name: summarySettingId
+        in: path
+        description: Summary setting id
+        required: true
+        type: string
+        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/SummarySetting'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/SummarySetting'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            summary.setting.name.not.unique: Summary setting name not unique.
+            summary.setting.invalid.custom.prompt: Custom prompt is invalid.
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            summary.setting.invalid.language: Unsupported language.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: Request body did not pass validation.
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+            summary.setting.not.found: Summary setting was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:summaryConfig:edit
+      x-purecloud-method-name: putConversationsSummariesSetting
+    delete:
+      tags:
+      - AI Studio
+      summary: Delete a summary setting.
+      description: ''
+      operationId: deleteConversationsSummariesSetting
+      produces:
+      - application/json
+      parameters:
+      - name: summarySettingId
+        in: path
+        description: Summary setting id
+        required: true
+        type: string
+        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+      responses:
+        '204':
+          description: The summary setting was deleted successfully
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+            summary.setting.not.found: Summary setting was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:summaryConfig:delete
+      x-purecloud-method-name: deleteConversationsSummariesSetting
+  /api/v2/guides/{guideId}:
+    get:
+      tags:
+      - AI Studio
+      summary: Get guide.
+      description: ''
+      operationId: getGuide
+      produces:
+      - application/json
+      parameters:
+      - name: guideId
+        in: path
+        description: Guide ID
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Guide'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+        - ai-studio:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guide:view
+      x-purecloud-method-name: getGuide
+    patch:
+      tags:
+      - AI Studio
+      summary: Update a guide.
+      description: ''
+      operationId: patchGuide
+      produces:
+      - application/json
+      parameters:
+      - name: guideId
+        in: path
+        description: Guide ID
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateGuide'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Guide'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+            conflict: Guide with that name already exists.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guide:edit
+      x-purecloud-method-name: patchGuide
+  /api/v2/guides/{guideId}/jobs:
+    delete:
+      tags:
+      - AI Studio
+      summary: Start the deletion of a guide.
+      description: ''
+      operationId: deleteGuideJobs
+      produces:
+      - application/json
+      parameters:
+      - name: guideId
+        in: path
+        description: Guide ID
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GuideJob'
+        '202':
+          description: Delete guide job started.
+          schema:
+            $ref: '#/definitions/GuideJob'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guideJob:add
+      x-purecloud-method-name: deleteGuideJobs
+  /api/v2/guides/{guideId}/jobs/{jobId}:
+    get:
+      tags:
+      - AI Studio
+      summary: Get the specified guide deletion job.
+      description: ''
+      operationId: getGuideJob
+      produces:
+      - application/json
+      parameters:
+      - name: guideId
+        in: path
+        description: Guide ID
+        required: true
+        type: string
+      - name: jobId
+        in: path
+        description: jobId
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GuideJob'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+        - ai-studio:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guideJob:view
+      x-purecloud-method-name: getGuideJob
+  /api/v2/guides/{guideId}/sessions/{guideSessionId}/turns:
+    post:
+      tags:
+      - AI Studio
+      summary: Add a turn to a guide session.
+      description: Creates a new turn in the specified guide session with the provided request data. If the session ID doesn't exist, a new session will be created automatically.
+      operationId: postGuideSessionTurns
+      produces:
+      - application/json
+      parameters:
+      - name: guideId
+        in: path
+        description: Guide ID
+        required: true
+        type: string
+      - name: guideSessionId
+        in: path
+        description: Guide Session ID
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/GuideSessionTurnRequest'
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/GuideSessionTurnResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: Bad request
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guideSessionTurn:add
+      x-purecloud-method-name: postGuideSessionTurns
+  /api/v2/guides/{guideId}/versions/{versionId}:
+    get:
+      tags:
+      - AI Studio
+      summary: Get a guide version.
+      description: ''
+      operationId: getGuideVersion
+      produces:
+      - application/json
+      parameters:
+      - name: guideId
+        in: path
+        description: Guide ID
+        required: true
+        type: string
+      - name: versionId
+        in: path
+        description: Version ID
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GuideVersion'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+        - ai-studio:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guideVersion:view
+      x-purecloud-method-name: getGuideVersion
+    patch:
+      tags:
+      - AI Studio
+      summary: Update a guide version.
+      description: ''
+      operationId: patchGuideVersion
+      produces:
+      - application/json
+      parameters:
+      - name: guideId
+        in: path
+        description: Guide ID
+        required: true
+        type: string
+      - name: versionId
+        in: path
+        description: Version ID
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateGuideVersion'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GuideVersion'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guideVersion:edit
+      x-purecloud-method-name: patchGuideVersion
+  /api/v2/guides/{guideId}/versions/{versionId}/jobs:
+    post:
+      tags:
+      - AI Studio
+      summary: Start the publishing of a guide version.
+      description: ''
+      operationId: postGuideVersionJobs
+      produces:
+      - application/json
+      parameters:
+      - name: guideId
+        in: path
+        description: Guide ID
+        required: true
+        type: string
+      - name: versionId
+        in: path
+        description: Version ID
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/GuideVersionPublishJobRequest'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GuideVersionPublishJob'
+        '202':
+          description: Publish guide version job started.
+          schema:
+            $ref: '#/definitions/GuideVersionPublishJob'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guideVersionJob:add
+      x-purecloud-method-name: postGuideVersionJobs
+  /api/v2/guides/{guideId}/versions/{versionId}/jobs/{jobId}:
+    get:
+      tags:
+      - AI Studio
+      summary: Get the status of the publishing job for this guide version.
+      description: ''
+      operationId: getGuideVersionJob
+      produces:
+      - application/json
+      parameters:
+      - name: guideId
+        in: path
+        description: Guide ID
+        required: true
+        type: string
+      - name: versionId
+        in: path
+        description: Version ID
+        required: true
+        type: string
+      - name: jobId
+        in: path
+        description: jobId
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GuideVersionPublishJob'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+        - ai-studio:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guideVersionJob:view
+      x-purecloud-method-name: getGuideVersionJob
+  /api/v2/guides/{guideId}/versions:
+    post:
+      tags:
+      - AI Studio
+      summary: Create a guide version.
+      description: ''
+      operationId: postGuideVersions
+      produces:
+      - application/json
+      parameters:
+      - name: guideId
+        in: path
+        description: Guide ID
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: false
+        schema:
+          $ref: '#/definitions/CreateGuideVersion'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GuideVersion'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guideVersion:add
+      x-purecloud-method-name: postGuideVersions
+  /api/v2/guides/jobs:
+    post:
+      tags:
+      - AI Studio
+      summary: Start a guide content generation job.
+      description: ''
+      operationId: postGuidesJobs
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/GenerateGuideContentRequest'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GuideContentGenerationJob'
+        '202':
+          description: Guide content generation job started.
+          schema:
+            $ref: '#/definitions/GuideContentGenerationJob'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guideJob:add
+      x-purecloud-method-name: postGuidesJobs
+  /api/v2/guides/jobs/{jobId}:
+    get:
+      tags:
+      - AI Studio
+      summary: Get the status of the guide content generation job.
+      description: ''
+      operationId: getGuidesJob
+      produces:
+      - application/json
+      parameters:
+      - name: jobId
+        in: path
+        description: jobId
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GuideContentGenerationJob'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+        - ai-studio:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guideJob:view
+      x-purecloud-method-name: getGuidesJob
+  /api/v2/guides:
+    get:
+      tags:
+      - AI Studio
+      summary: Get all guides.
+      description: ''
+      operationId: getGuides
+      produces:
+      - application/json
+      parameters:
+      - name: name
+        in: query
+        description: Filter by matching name - case insensitive.
+        required: false
+        type: string
+      - name: nameContains
+        in: query
+        description: Filter by name contains - case insensitive.
+        required: false
+        type: string
+      - name: status
+        in: query
+        description: Filter by status.
+        required: false
+        type: string
+        enum:
+        - Published
+        - Draft
+      - name: sortBy
+        in: query
+        description: Sort by. Default value dateModified.
+        required: false
+        type: string
+        default: dateModified
+        enum:
+        - dateModified
+        - name
+        - status
+      - name: sortOrder
+        in: query
+        description: Sort Order. Default value desc.
+        required: false
+        type: string
+        default: desc
+        enum:
+        - asc
+        - desc
+      - name: pageNumber
+        in: query
+        description: Page number.
+        required: false
+        type: integer
+        default: 1
+        format: int32
+      - name: pageSize
+        in: query
+        description: Page size. The maximum page size is 100.
+        required: false
+        type: integer
+        default: 25
+        format: int32
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GuideEntityListing'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+        - ai-studio:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guide:view
+      x-purecloud-method-name: getGuides
+    post:
+      tags:
+      - AI Studio
+      summary: Create a guide.
+      description: ''
+      operationId: postGuides
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CreateGuide'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Guide'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guide:add
+      x-purecloud-method-name: postGuides
+  /api/v2/guides/uploads:
+    post:
+      tags:
+      - AI Studio
+      summary: Generate presigned URL for uploading a file content to generate guide
+      description: ''
+      operationId: postGuidesUploads
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: query
+        required: true
+        schema:
+          $ref: '#/definitions/UploadUrlRequest'
+      responses:
+        '200':
+          description: Pre-signed urls successfully created.
+          schema:
+            $ref: '#/definitions/UploadUrlResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - ai-studio
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - aiStudio:guide:upload
+      x-purecloud-method-name: postGuidesUploads
+definitions:
+  SummarySetting:
+    type: object
+    required:
+    - language
+    - name
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+        readOnly: true
+      name:
+        type: string
+        description: Name of the summary setting.
+      dateModified:
+        type: string
+        format: date-time
+        description: 'The date and time the setting was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        readOnly: true
+      interactionType:
+        type: string
+        description: The interaction type the setting can be used for
+        readOnly: true
+        enum:
+        - Live
+        - Email
+      language:
+        type: string
+        description: Language of the generated summary, e.g. en-US, it-IT.
+      summaryType:
+        type: string
+        description: Level of detail of the generated summary.
+        enum:
+        - Concise
+        - Detailed
+      format:
+        type: string
+        description: Format of the generated summary.
+        enum:
+        - TextBlock
+        - BulletPoints
+        - GroupedTextBlocks
+        - GroupedBulletPoints
+      maskPII:
+        description: Displaying PII in the generated summary.
+        $ref: '#/definitions/SummarySettingPII'
+      dateCreated:
+        type: string
+        format: date-time
+        description: 'The date and time the setting was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        readOnly: true
+      participantLabels:
+        description: How to refer to interaction participants in the generated summary.
+        $ref: '#/definitions/SummarySettingParticipantLabels'
+      predefinedInsights:
+        type: array
+        description: Set which insights to include in the generated summary by default.
+        items:
+          type: string
+          enum:
+          - ReasonForCall
+          - Resolution
+          - ActionItems
+      customEntities:
+        type: array
+        description: Custom entity definition.
+        items:
+          $ref: '#/definitions/SummarySettingCustomEntity'
+        maxItems: 10
+        minItems: 0
+      settingType:
+        type: string
+        description: Type of the summary setting.
+        enum:
+        - Basic
+        - Prompt
+      prompt:
+        type: string
+        description: Custom prompt of summary setting.
+      serviceType:
+        type: string
+        example: Native
+        description: Service type for summarization. Can be 'Native' for Genesys native summarization engine or 'External' for external service. If specified as 'External', integrationId must be provided.
+        enum:
+        - Native
+        - External
+      integrationId:
+        type: string
+        description: Integration ID for the external summarization service. Required when serviceType is External.
+      timeoutDuration:
+        type: integer
+        format: int32
+        example: 30
+        description: Timeout duration in seconds for the external summarization service request.
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  GuideSessionTurnResponseData:
+    type: object
+    properties:
+      text:
+        type: string
+        description: The text response content.
+  GuideContentGenerationJob:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+        readOnly: true
+      status:
+        type: string
+        description: The status of the job.
+        readOnly: true
+        enum:
+        - InProgress
+        - Succeeded
+        - Failed
+      errors:
+        type: array
+        description: The list of errors in case of job failure.
+        readOnly: true
+        items:
+          $ref: '#/definitions/ErrorBody'
+      guide:
+        $ref: '#/definitions/AddressableEntityRef'
+      guideContent:
+        $ref: '#/definitions/GeneratedGuideContent'
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  AddressableEntityRef:
+    type: object
+    properties:
+      id:
+        type: string
+      selfUri:
+        type: string
+        format: uri
+  GuideVersionPublish:
+    type: object
+    properties:
+      state:
+        type: string
+        description: The desired state of the guide version being published.
+        enum:
+        - TestReady
+        - ProductionReady
+  GenerateGuideContentRequest:
+    type: object
+    properties:
+      description:
+        type: string
+        example: Generate a guide to help a Customer return a product.
+        description: The description that you wish to use to generate the guide content from.
+      url:
+        type: string
+        example: https://fileupload.genesys.com/orgs/123/456.1001847777_1001848412_a33bc09383e53314a3be61ca.sasf?X-Amz-Algorithm=AWS4-HMAC-SHA256
+        description: The URL of the file you wish to use to generate the guide content from.
+    description: Request body for generating the content of a guide
+  GuideVersionResources:
+    type: object
+    properties:
+      dataActions:
+        type: array
+        description: The data actions associated with this version of the guide.
+        items:
+          $ref: '#/definitions/DataAction'
+  GuideSessionTurnInvocationResponse:
+    type: object
+    required:
+    - actionName
+    - group
+    properties:
+      id:
+        type: string
+        description: The action ID of the invocation data.
+      group:
+        type: string
+        description: The action group of the invocation data.
+      actionName:
+        type: string
+        description: The action name of the invocation data.
+      parameters:
+        type: array
+        description: The parameters of the invocation response.
+        items:
+          $ref: '#/definitions/GuideSessionTurnInvocationParameters'
+  GuideJob:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+        readOnly: true
+      status:
+        type: string
+        description: The status of the job.
+        readOnly: true
+        enum:
+        - InProgress
+        - Succeeded
+        - Failed
+      errors:
+        type: array
+        description: The list of errors in case of job failure.
+        readOnly: true
+        items:
+          $ref: '#/definitions/ErrorBody'
+      guide:
+        $ref: '#/definitions/AddressableEntityRef'
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  CreateGuideVersion:
+    type: object
+    required:
+    - instruction
+    properties:
+      instruction:
+        type: string
+        description: The instruction given to this version of the guide, for how it should behave when interacting with a User.
+      variables:
+        type: array
+        description: The variables associated with this version of the guide. Includes input variables (provided) and output variables (captured during execution).
+        items:
+          $ref: '#/definitions/Variable'
+      resources:
+        description: The resources associated with this version of the guide.
+        $ref: '#/definitions/GuideVersionResources'
+      knowledgeSettings:
+        description: The knowledge settings associated with this version of the guide.
+        $ref: '#/definitions/AuthoringKnowledgeSettings'
+  UpdateGuideVersion:
+    type: object
+    properties:
+      instruction:
+        type: string
+        description: The instruction given to this version of the guide, for how it should behave when interacting with a User.
+      variables:
+        type: array
+        description: The variables associated with this version of the guide. Includes input variables (provided) and output variables (captured during execution).
+        items:
+          $ref: '#/definitions/Variable'
+      resources:
+        description: The resources associated with this version of the guide.
+        $ref: '#/definitions/GuideVersionResources'
+      knowledgeSettings:
+        description: The knowledge settings associated with this version of the guide.
+        $ref: '#/definitions/AuthoringKnowledgeSettings'
+    description: Request body for updating a guide version
+  ErrorBody:
+    type: object
+    properties:
+      message:
+        type: string
+      code:
+        type: string
+      status:
+        type: integer
+        format: int32
+      entityId:
+        type: string
+      entityName:
+        type: string
+      messageWithParams:
+        type: string
+      messageParams:
+        type: object
+        additionalProperties:
+          type: string
+      contextId:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/Detail'
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ErrorBody'
+      limit:
+        $ref: '#/definitions/Limit'
+  UploadUrlResponse:
+    type: object
+    properties:
+      url:
+        type: string
+        description: Presigned URL to PUT the file to
+        readOnly: true
+      uploadKey:
+        type: string
+        description: Key that identifies the file in the storage including the file name
+        readOnly: true
+      headers:
+        type: object
+        description: Required headers when uploading a file through PUT request to the URL
+        readOnly: true
+        additionalProperties:
+          type: string
+  GuideVersion:
+    type: object
+    properties:
+      selfUri:
+        type: string
+        format: uri
+      guide:
+        description: The guide this version belongs to.
+        readOnly: true
+        $ref: '#/definitions/AddressableEntityRef'
+      version:
+        type: string
+        description: Guide version.
+        readOnly: true
+      instruction:
+        type: string
+        description: The instruction given to this version of the guide, for how it should behave when interacting with a User.
+        readOnly: true
+      state:
+        type: string
+        description: The current state of the guide version.
+        enum:
+        - Draft
+        - TestReady
+        - ProductionReady
+      dateCreated:
+        type: string
+        format: date-time
+        description: 'The date and time the guide version was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        readOnly: true
+      dateModified:
+        type: string
+        format: date-time
+        description: 'The date and time the guide version was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        readOnly: true
+      variables:
+        type: array
+        description: The variables associated with this version of the guide. Includes input variables (provided) and output variables (captured during execution).
+        readOnly: true
+        items:
+          $ref: '#/definitions/Variable'
+      resources:
+        description: The resources associated with this version of the guide.
+        $ref: '#/definitions/GuideVersionResources'
+      knowledgeSettings:
+        description: The knowledge settings associated with this version of the guide.
+        $ref: '#/definitions/AuthoringKnowledgeSettings'
+  AuthoringKnowledgeSettings:
+    type: object
+    properties:
+      knowledgeId:
+        type: string
+        description: The ID of the knowledge settings to use
+        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+      description:
+        type: string
+        description: Description of the knowledge settings
+        minLength: 0
+        maxLength: 300
+      knowledgeType:
+        type: string
+        description: The type of the knowledge settings (Standard or Enhanced)
+        enum:
+        - Standard
+        - Enhanced
+      inheritFromExternal:
+        type: boolean
+        description: Whether to inherit knowledge settings from externalIf disabled, query detection is always enabled on the guide.
+  GuideSessionTurnRequest:
+    type: object
+    required:
+    - inputEvent
+    - languageCode
+    - version
+    properties:
+      inputEvent:
+        description: The input event for this turn.
+        $ref: '#/definitions/GuideSessionInputEvent'
+      languageCode:
+        type: string
+        description: The language code for this turn.
+      version:
+        type: string
+        description: The version for this turn.
+      inputVariables:
+        type: array
+        description: The input variables for this turn.
+        items:
+          $ref: '#/definitions/GuideSessionVariable'
+      knowledgeSettings:
+        description: The knowledge settings for this turn.
+        $ref: '#/definitions/KnowledgeSettings'
+    description: Request for a guide session turn
+  GuideSessionTurnInvocationParameters:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the parameter.
+      type:
+        type: string
+        description: The type of the parameter.
+        enum:
+        - String
+        - Integer
+        - Number
+        - Boolean
+        - Date
+        - List
+      value:
+        type: string
+        description: The value of the parameter.
+  UpdateGuide:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the guide.
+    description: Request body for updating a guide
+  GuideSessionInputEvent:
+    type: object
+    required:
+    - mode
+    - type
+    properties:
+      type:
+        type: string
+        description: The type of input event.
+        enum:
+        - UserInput
+        - ReturnControl
+        - NoOp
+      text:
+        type: string
+        description: The text content of the input event.
+      mode:
+        type: string
+        description: The input mode for this event.
+        enum:
+        - Text
+      invocationId:
+        type: string
+        description: The invocation ID of the input event.
+        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+      invocations:
+        type: array
+        description: The invocation data of the input event.
+        items:
+          $ref: '#/definitions/GuideSessionTurnInvocationData'
+  Variable:
+    type: object
+    required:
+    - name
+    - scope
+    - type
+    properties:
+      name:
+        type: string
+        description: The name of the variable.
+      type:
+        type: string
+        description: The data type of the variable.
+        enum:
+        - String
+        - Integer
+        - Number
+        - Boolean
+        - Date
+        - List
+      scope:
+        type: string
+        description: The scope that determines the variable's usage context within Guides runtime.
+        enum:
+        - Input
+        - Output
+        - InputAndOutput
+        - GuideOnly
+      description:
+        type: string
+        description: The description of the variable used by Guides runtime for input/output handling.
+      validation:
+        description: The validation configuration for the variable. Optional - if not present, no validation is applied.
+        $ref: '#/definitions/VariableValidation'
+      listValues:
+        description: The values configuration for List variables. Only applicable when type is 'List'.
+        $ref: '#/definitions/ListValues'
+      listVariables:
+        type: array
+        description: The variables that the list result will be stored in. Only applicable when type is 'List'.
+        items:
+          $ref: '#/definitions/Variable'
+  SummarySettingEntityListing:
+    type: object
+    properties:
+      entities:
+        type: array
+        items:
+          $ref: '#/definitions/SummarySetting'
+      pageSize:
+        type: integer
+        format: int32
+      pageNumber:
+        type: integer
+        format: int32
+      total:
+        type: integer
+        format: int64
+      firstUri:
+        type: string
+        format: uri
+      nextUri:
+        type: string
+        format: uri
+      previousUri:
+        type: string
+        format: uri
+      lastUri:
+        type: string
+        format: uri
+      selfUri:
+        type: string
+        format: uri
+      pageCount:
+        type: integer
+        format: int32
+  SummarySettingPII:
+    type: object
+    required:
+    - all
+    properties:
+      all:
+        type: boolean
+        description: Toggle PII visibility in summary.
+  KnowledgeSettings:
+    type: object
+    properties:
+      knowledgeId:
+        type: string
+        description: The ID of the knowledge settings to use
+        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+      description:
+        type: string
+        description: Description of the knowledge settings
+        minLength: 0
+        maxLength: 300
+      knowledgeType:
+        type: string
+        description: The type of the knowledge settings (Standard or Enhanced)
+        enum:
+        - Standard
+        - Enhanced
+  DataAction:
+    type: object
+    required:
+    - id
+    - label
+    properties:
+      id:
+        type: string
+        description: The id of the data action.
+      label:
+        type: string
+        description: The label of the GC data action as referenced in the guide instruction.
+      description:
+        type: string
+        description: The optional description of the data action.
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  GuideSessionTurnResponse:
+    type: object
+    properties:
+      response:
+        description: The response content for this turn.
+        $ref: '#/definitions/GuideSessionTurnResponseData'
+      status:
+        type: string
+        description: The status of the turn.
+        enum:
+        - IN_PROGRESS
+        - COMPLETED
+        - ERROR
+      result:
+        type: string
+        description: The result of the turn.
+        enum:
+        - SUCCESSFUL_COLLECTION
+        - CONFIRMATION_REQUIRED
+        - ESCALATION_TRIGGERED
+        - CLIENT_ACTION_REQUIRED
+        - NO_MATCH
+      outputVariables:
+        type: array
+        description: The output variables for this turn.
+        items:
+          $ref: '#/definitions/GuideSessionVariable'
+      invocationId:
+        type: string
+        description: Invocation ID for this turn.
+        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+      invocations:
+        type: array
+        description: The invocations for this turn.
+        items:
+          $ref: '#/definitions/GuideSessionTurnInvocationResponse'
+    description: Response for a guide session turn
+  ListValues:
+    type: object
+    discriminator: type
+  SummarySettingCustomEntity:
+    type: object
+    properties:
+      label:
+        type: string
+        description: Label how the entity should be called.
+      description:
+        type: string
+        description: Describe the information the entity captures.
+  Limit:
+    type: object
+    properties:
+      key:
+        type: string
+      namespace:
+        type: string
+        enum:
+        - web.deployments
+        - web.messaging
+        - agent.assistant
+        - agentic.virtual.agents
+        - analytics.agents
+        - analytics.alerting
+        - analytics.data.extraction
+        - analytics
+        - analytics.realtime
+        - analytics.reporting.settings
+        - anomaly.detection
+        - architect
+        - audiohook
+        - audiohook.monitor
+        - audit
+        - auth.api
+        - authorization
+        - automation.testing
+        - bots
+        - bots.voice
+        - business.rules
+        - callback
+        - case.management
+        - cobrowse
+        - content.management
+        - conversation
+        - copilot
+        - dataactions
+        - datatables
+        - directory
+        - dsar
+        - email
+        - employee.engagement
+        - event.orchestration
+        - external.contacts
+        - external.events.data.ingestion
+        - gamification
+        - gcv
+        - gdpr
+        - groups
+        - guides
+        - historical.adherence
+        - infrastructureascode
+        - integrations
+        - intent.miner
+        - internal.messaging
+        - journey
+        - knowledge
+        - language.understanding
+        - learning
+        - limit.registry
+        - marketplace
+        - mcp.analytics.aggregates
+        - mcp
+        - media.communications
+        - messaging
+        - micro.frontend
+        - multi.org
+        - notifications
+        - onboarding
+        - outbound
+        - platform.api
+        - predictive.routing
+        - presence
+        - quality
+        - recording
+        - response.management
+        - routing
+        - scim
+        - screen.monitoring
+        - search
+        - secondary.automation.testing
+        - skills
+        - social.media
+        - speech.and.text.analytics
+        - speech.integration
+        - supportability
+        - task.management
+        - telephony.configuration
+        - usage
+        - users
+        - users.rules
+        - voice.transcription
+        - webchat
+        - webhooks
+        - workforce.management.adherence
+        - workforce.management.agent.availability
+        - workforce.management.forecast
+        - workforce.management
+        - workforce.management.scheduling.preferences
+        - workforce.management.self.schedule
+        - workforce.management.shift.trading
+        - system
+      value:
+        type: integer
+        format: int64
+  CreateGuide:
+    type: object
+    required:
+    - name
+    - source
+    properties:
+      name:
+        type: string
+        description: The name of the guide.
+      source:
+        type: string
+        description: Indicates how the guide content was generated.
+        enum:
+        - Manual
+        - Prompt
+        - Document
+        - Transcripts
+  GuideVersionPublishJobRequest:
+    type: object
+    required:
+    - guideVersion
+    properties:
+      guideVersion:
+        description: The attributes of the guide version to update as part of this publish job.
+        $ref: '#/definitions/GuideVersionPublish'
+    description: Request body for publishing a guide version
+  Guide:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+        readOnly: true
+      name:
+        type: string
+        description: The name of the guide.
+        readOnly: true
+      status:
+        type: string
+        description: The status of the guide.
+        readOnly: true
+        enum:
+        - Published
+        - Draft
+      source:
+        type: string
+        description: Indicates how the guide content was generated.
+        readOnly: true
+        enum:
+        - Manual
+        - Prompt
+        - Document
+        - Transcripts
+      dateCreated:
+        type: string
+        format: date-time
+        description: 'The date and time the guide was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        readOnly: true
+      dateModified:
+        type: string
+        format: date-time
+        description: 'The date and time the guide was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        readOnly: true
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+      latestSavedVersion:
+        description: The latest saved version of the guide.
+        readOnly: true
+        $ref: '#/definitions/GuideVersionRef'
+      latestProductionReadyVersion:
+        description: The latest production ready version of the guide.
+        readOnly: true
+        $ref: '#/definitions/GuideVersionRef'
+  GeneratedGuideContent:
+    type: object
+    properties:
+      instruction:
+        type: string
+        description: The generated instruction content, which can be used when creating a guide version.
+        readOnly: true
+      variables:
+        type: array
+        description: The generated variables content, which can be used when creating a guide version.
+        readOnly: true
+        items:
+          $ref: '#/definitions/Variable'
+      resources:
+        description: The generated resources content, which can be used when creating a guide version.
+        readOnly: true
+        $ref: '#/definitions/GuideVersionResources'
+  GuideVersionRef:
+    type: object
+    properties:
+      version:
+        type: string
+        description: The version number.
+        readOnly: true
+      selfUri:
+        type: string
+        format: uri
+        description: The selfUri of the version.
+        readOnly: true
+  SummarySettingParticipantLabels:
+    type: object
+    properties:
+      internal:
+        type: string
+        description: Specify how to refer the internal participant of the interaction.
+      external:
+        type: string
+        description: Specify how to refer the external participant of the interaction.
+  GuideSessionTurnInvocationData:
+    type: object
+    required:
+    - actionName
+    - group
+    - output
+    properties:
+      group:
+        type: string
+        description: The action group of the invocation data.
+      actionName:
+        type: string
+        description: The action name of the invocation data.
+      output:
+        type: string
+        description: The output of the invocation data.
+  UploadUrlRequest:
+    type: object
+    properties:
+      fileName:
+        type: string
+        description: 'Name of the file to upload. It must not start with a dot and not end with a forward slash. Whitespace and the following characters are not allowed: \{^}%`]">[~<#|'
+      contentMd5:
+        type: string
+        description: Content MD5 of the file to upload
+      signedUrlTimeoutSeconds:
+        type: integer
+        format: int32
+        description: The number of seconds the presigned URL is valid for (from 1 to 604800 seconds). If none provided, defaults to 600 seconds
+      contentType:
+        type: string
+        description: The content type of the file to upload. Allows all MIME types
+      serverSideEncryption:
+        type: string
+        enum:
+        - AES256
+  VariableValidation:
+    type: object
+  GuideSessionVariable:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the variable.
+      value:
+        type: string
+        description: The value of the variable.
+  SummarySettingWithTranscript:
+    type: object
+    required:
+    - summaryPreviewSessionId
+    - summarySetting
+    - transcript
+    properties:
+      transcript:
+        type: string
+        description: Example transcript to preview with the setting.
+      summaryPreviewSessionId:
+        type: string
+        description: Session identifier of the summary preview.
+        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+      summarySetting:
+        description: Summary setting to preview on the transcript.
+        $ref: '#/definitions/SummarySetting'
+  GuideVersionPublishJob:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+        readOnly: true
+      status:
+        type: string
+        description: The status of the job.
+        readOnly: true
+        enum:
+        - InProgress
+        - Succeeded
+        - Failed
+      errors:
+        type: array
+        description: The list of errors in case of job failure.
+        readOnly: true
+        items:
+          $ref: '#/definitions/ErrorBody'
+      guide:
+        $ref: '#/definitions/AddressableEntityRef'
+      guideVersion:
+        $ref: '#/definitions/GuideVersion'
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  GuideEntityListing:
+    type: object
+    properties:
+      entities:
+        type: array
+        items:
+          $ref: '#/definitions/Guide'
+      pageSize:
+        type: integer
+        format: int32
+      pageNumber:
+        type: integer
+        format: int32
+      total:
+        type: integer
+        format: int64
+      firstUri:
+        type: string
+        format: uri
+      nextUri:
+        type: string
+        format: uri
+      previousUri:
+        type: string
+        format: uri
+      lastUri:
+        type: string
+        format: uri
+      selfUri:
+        type: string
+        format: uri
+      pageCount:
+        type: integer
+        format: int32
+  Detail:
+    type: object
+    properties:
+      errorCode:
+        type: string
+      fieldName:
+        type: string
+      entityId:
+        type: string
+      entityName:
+        type: string
+securityDefinitions:
+  PureCloud OAuth:
+    type: oauth2
+    authorizationUrl: https://login.mypurecloud.com/authorize
+    flow: implicit
+    scopes:
+      all: All the scopes
+  Guest Chat JWT:
+    type: apiKey
+    name: Authorization
+    in: header
+externalDocs:
+  description: PureCloud API Documentation
+  url: https://developer.genesys.cloud/

@@ -1,0 +1,2327 @@
+swagger: '2.0'
+info:
+  description: With the PureCloud Platform API, you can control all aspects of your PureCloud environment. With the APIs you can access the system configuration, manage conversations and more.
+  version: v2
+  title: PureCloud Platform Agent Assistants Flows API
+  termsOfService: https://help.genesys.cloud/articles/terms-and-conditions/
+  contact:
+    name: PureCloud Developer Evangelists
+    url: https://developer.genesys.cloud/
+    email: DeveloperEvangelists@genesys.com
+  license:
+    name: UNLICENSED
+    url: https://help.genesys.cloud/articles/terms-and-conditions/
+host: api.mypurecloud.com
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Flows
+  description: IVR Flows
+  externalDocs:
+    description: Flow Aggregates Documentation
+    url: https://developer.genesys.cloud/analyticsdatamanagement/analytics/aggregate/flow-query
+paths:
+  /api/v2/analytics/flows/aggregates/jobs:
+    post:
+      tags:
+      - Flows
+      summary: Query for flow aggregates asynchronously
+      description: ''
+      operationId: postAnalyticsFlowsAggregatesJobs
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: query
+        required: true
+        schema:
+          $ref: '#/definitions/FlowAsyncAggregationQuery'
+      responses:
+        '202':
+          description: Accepted - Running query asynchronously
+          schema:
+            $ref: '#/definitions/AsyncQueryResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: You are not authorized to perform the requested action.
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - analytics
+        - analytics:readonly
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - analytics:flowAggregate:view
+      x-purecloud-method-name: postAnalyticsFlowsAggregatesJobs
+  /api/v2/analytics/flows/aggregates/jobs/{jobId}:
+    get:
+      tags:
+      - Flows
+      summary: Get status for async query for Flow aggregates
+      description: ''
+      operationId: getAnalyticsFlowsAggregatesJob
+      produces:
+      - application/json
+      parameters:
+      - name: jobId
+        in: path
+        description: jobId
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AsyncQueryStatus'
+        '202':
+          description: Accepted - Running query asynchronously
+          schema:
+            $ref: '#/definitions/AsyncQueryStatus'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: You are not authorized to perform the requested action.
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - analytics
+        - analytics:readonly
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - analytics:flowAggregate:view
+      x-purecloud-method-name: getAnalyticsFlowsAggregatesJob
+    delete:
+      tags:
+      - Flows
+      summary: Delete/cancel an async request for flow aggregates
+      description: ''
+      operationId: deleteAnalyticsFlowsAggregatesJob
+      produces:
+      - application/json
+      parameters:
+      - name: jobId
+        in: path
+        description: jobId
+        required: true
+        type: string
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - analytics
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - analytics:flowAggregate:view
+      x-purecloud-method-name: deleteAnalyticsFlowsAggregatesJob
+  /api/v2/analytics/flows/aggregates/jobs/{jobId}/results:
+    get:
+      tags:
+      - Flows
+      summary: Fetch a page of results for an async aggregates query
+      description: ''
+      operationId: getAnalyticsFlowsAggregatesJobResults
+      produces:
+      - application/json
+      parameters:
+      - name: jobId
+        in: path
+        description: jobId
+        required: true
+        type: string
+      - name: cursor
+        in: query
+        description: Cursor token to retrieve next page
+        required: false
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/FlowAsyncAggregateQueryResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: You are not authorized to perform the requested action.
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - analytics
+        - analytics:readonly
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - analytics:flowAggregate:view
+      x-purecloud-method-name: getAnalyticsFlowsAggregatesJobResults
+  /api/v2/analytics/flows/observations/query:
+    post:
+      tags:
+      - Flows
+      summary: Query for flow observations
+      description: ''
+      operationId: postAnalyticsFlowsObservationsQuery
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: query
+        required: true
+        schema:
+          $ref: '#/definitions/FlowObservationQuery'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/FlowObservationQueryResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - analytics
+        - analytics:readonly
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - analytics:flowObservation:view
+      x-purecloud-method-name: postAnalyticsFlowsObservationsQuery
+  /api/v2/analytics/flows/activity/query:
+    post:
+      tags:
+      - Flows
+      summary: Query for flow activity observations
+      description: ''
+      operationId: postAnalyticsFlowsActivityQuery
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: query
+        required: true
+        schema:
+          $ref: '#/definitions/FlowActivityQuery'
+      - name: pageSize
+        in: query
+        description: The desired page size
+        required: false
+        type: integer
+        format: int32
+      - name: pageNumber
+        in: query
+        description: The desired page number
+        required: false
+        type: integer
+        format: int32
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/FlowActivityResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - analytics
+        - analytics:readonly
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - analytics:flowObservation:view
+      x-purecloud-method-name: postAnalyticsFlowsActivityQuery
+  /api/v2/analytics/flows/aggregates/query:
+    post:
+      tags:
+      - Flows
+      summary: Query for flow aggregates
+      description: ''
+      operationId: postAnalyticsFlowsAggregatesQuery
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: query
+        required: true
+        schema:
+          $ref: '#/definitions/FlowAggregationQuery'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/FlowAggregateQueryResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: You are not authorized to query for flow aggregates.
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - analytics
+        - analytics:readonly
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - analytics:flowAggregate:view
+      x-purecloud-method-name: postAnalyticsFlowsAggregatesQuery
+definitions:
+  FlowActivityMetricValue:
+    type: object
+    properties:
+      metric:
+        type: string
+        description: Metric
+        enum:
+        - oFlow
+      qualifier:
+        type: string
+        description: Metric qualifier
+      entityIds:
+        type: array
+        description: Entity ids for matching entities if details were requested
+        uniqueItems: true
+        items:
+          type: string
+      count:
+        type: integer
+        format: int32
+        description: Metric count
+  FlowAggregateQueryClause:
+    type: object
+    required:
+    - predicates
+    - type
+    properties:
+      type:
+        type: string
+        description: Boolean operation to apply to the provided predicates
+        enum:
+        - and
+        - or
+      predicates:
+        type: array
+        description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
+        items:
+          $ref: '#/definitions/FlowAggregateQueryPredicate'
+  FlowObservationDataContainer:
+    type: object
+    properties:
+      group:
+        type: object
+        description: A mapping from dimension to value
+        additionalProperties:
+          type: string
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/ObservationMetricData'
+  AsyncQueryStatus:
+    type: object
+    properties:
+      state:
+        type: string
+        description: The current state of the asynchronous query
+        enum:
+        - QUEUED
+        - PENDING
+        - FAILED
+        - CANCELLED
+        - FULFILLED
+        - EXPIRED
+      errorMessage:
+        type: string
+        description: The error associated with the current query, if the state is FAILED
+      expirationDate:
+        type: string
+        format: date-time
+        description: 'The time at which results for this query will expire. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+      submissionDate:
+        type: string
+        format: date-time
+        description: 'The time at which the query was submitted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+      completionDate:
+        type: string
+        format: date-time
+        description: 'The time at which the query completed. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+  FlowActivityEntityData:
+    type: object
+    required:
+    - activityDate
+    properties:
+      activityDate:
+        type: string
+        format: date-time
+        description: 'The time at which the activity was observed. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+      metric:
+        type: string
+        description: Activity metric
+        enum:
+        - oFlow
+      activeRouting:
+        type: string
+        description: Active routing method
+        enum:
+        - Bullseye
+        - Conditional
+        - Direct
+        - Last
+        - Manual
+        - Predictive
+        - Preferred
+        - Standard
+        - Vip
+      addressFrom:
+        type: string
+        description: The address that initiated an action
+      addressTo:
+        type: string
+        description: The address receiving an action
+      ani:
+        type: string
+        description: Automatic Number Identification (caller's number)
+      conversationId:
+        type: string
+        description: Unique identifier for the conversation
+      convertedFrom:
+        type: string
+        description: Session media type that was converted from in case of a media type conversion
+      convertedTo:
+        type: string
+        description: Session media type that was converted to in case of a media type conversion
+      direction:
+        type: string
+        description: The direction of the communication
+        enum:
+        - inbound
+        - outbound
+      dnis:
+        type: string
+        description: Dialed number identification service (number dialed by the calling party)
+      flowId:
+        type: string
+        description: The unique identifier of this flow
+      flowType:
+        type: string
+        description: The type of this flow
+        enum:
+        - BOT
+        - COMMONMODULE
+        - DIGITALBOT
+        - EMAILSEND
+        - INBOUNDCALL
+        - INBOUNDCHAT
+        - INBOUNDEMAIL
+        - INBOUNDSHORTMESSAGE
+        - INQUEUECALL
+        - INQUEUEEMAIL
+        - INQUEUESHORTMESSAGE
+        - OUTBOUNDCALL
+        - SECURECALL
+        - SPEECH
+        - SURVEYINVITE
+        - VOICE
+        - VOICEMAIL
+        - VOICESURVEY
+        - WORKFLOW
+        - WORKITEM
+      mediaType:
+        type: string
+        description: The session media type
+        enum:
+        - callback
+        - chat
+        - cobrowse
+        - email
+        - internalmessage
+        - message
+        - screenmonitoring
+        - screenshare
+        - unknown
+        - video
+        - voice
+      participantName:
+        type: string
+        description: A human readable name identifying the participant
+      queueId:
+        type: string
+        description: Queue identifier
+      requestedLanguageId:
+        type: string
+        description: Unique identifier for the language requested for an interaction
+      requestedRoutingSkillIds:
+        type: array
+        description: Unique identifier(s) for skill(s) requested for an interaction
+        items:
+          type: string
+      requestedRoutings:
+        type: array
+        description: Routing type(s) for requested/attempted routing methods.
+        items:
+          type: string
+          enum:
+          - Bullseye
+          - Conditional
+          - Direct
+          - Last
+          - Manual
+          - Predictive
+          - Preferred
+          - Standard
+          - Vip
+      routingPriority:
+        type: integer
+        format: int64
+        description: Routing priority for the current interaction
+      sessionId:
+        type: string
+        description: The unique identifier of this session
+      teamId:
+        type: string
+        description: The team ID the user is a member of
+      usedRouting:
+        type: string
+        description: Complete routing method
+        enum:
+        - Bullseye
+        - Conditional
+        - Direct
+        - Last
+        - Manual
+        - Predictive
+        - Preferred
+        - Standard
+        - Vip
+      userId:
+        type: string
+        description: Unique identifier for the user
+      scoredAgents:
+        type: array
+        description: Scored agents
+        items:
+          $ref: '#/definitions/FlowActivityScoredAgent'
+  FlowActivityQueryMetric:
+    type: object
+    required:
+    - metric
+    properties:
+      metric:
+        type: string
+        description: The requested metric
+        enum:
+        - oFlow
+      details:
+        type: boolean
+        description: Flag for including observation details for this metric in the response
+  FlowAggregateQueryFilter:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Boolean operation to apply to the provided predicates and clauses
+        enum:
+        - and
+        - or
+      clauses:
+        type: array
+        description: Boolean 'and/or' logic with up to two-levels of nesting
+        items:
+          $ref: '#/definitions/FlowAggregateQueryClause'
+      predicates:
+        type: array
+        description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
+        items:
+          $ref: '#/definitions/FlowAggregateQueryPredicate'
+  FlowAggregationView:
+    type: object
+    required:
+    - function
+    - name
+    - target
+    properties:
+      target:
+        type: string
+        description: Target metric name
+        enum:
+        - nFlow
+        - nFlowMilestone
+        - nFlowOutcome
+        - nFlowOutcomeFailed
+        - oFlowMilestone
+        - tFlow
+        - tFlowDisconnect
+        - tFlowExit
+        - tFlowOutcome
+      name:
+        type: string
+        description: A unique name for this view. Must be distinct from other views and built-in metric names.
+      function:
+        type: string
+        description: Type of view you wish to create
+        enum:
+        - rangeBound
+      range:
+        description: Range of numbers for slicing up data
+        $ref: '#/definitions/AggregationRange'
+  AnalyticsScoredAgent:
+    type: object
+    properties:
+      agentScore:
+        type: integer
+        format: int32
+        description: Assigned agent score for this conversation (0 - 100, higher being better)
+      scoredAgentId:
+        type: string
+        description: Unique identifier for the agent that was scored for this conversation
+  StatisticalResponse:
+    type: object
+    properties:
+      interval:
+        type: string
+      metrics:
+        type: array
+        items:
+          $ref: '#/definitions/AggregateMetricData'
+      views:
+        type: array
+        items:
+          $ref: '#/definitions/AggregateViewData'
+  AggregateViewData:
+    type: object
+    properties:
+      name:
+        type: string
+      stats:
+        $ref: '#/definitions/StatisticalSummary'
+  FlowObservationQueryClause:
+    type: object
+    required:
+    - predicates
+    - type
+    properties:
+      type:
+        type: string
+        description: Boolean operation to apply to the provided predicates
+        enum:
+        - and
+        - or
+      predicates:
+        type: array
+        description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
+        items:
+          $ref: '#/definitions/FlowObservationQueryPredicate'
+  FlowActivityScoredAgent:
+    type: object
+    properties:
+      agentScore:
+        type: integer
+        format: int32
+        description: Assigned agent score for this conversation (0 - 100, higher being better)
+      scoredAgentId:
+        type: string
+        description: Unique identifier for the agent that was scored for this conversation
+  FlowAggregateDataContainer:
+    type: object
+    properties:
+      group:
+        type: object
+        description: A mapping from dimension to value
+        additionalProperties:
+          type: string
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/StatisticalResponse'
+  ErrorBody:
+    type: object
+    properties:
+      message:
+        type: string
+      code:
+        type: string
+      status:
+        type: integer
+        format: int32
+      entityId:
+        type: string
+      entityName:
+        type: string
+      messageWithParams:
+        type: string
+      messageParams:
+        type: object
+        additionalProperties:
+          type: string
+      contextId:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/Detail'
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ErrorBody'
+      limit:
+        $ref: '#/definitions/Limit'
+  ObservationMetricData:
+    type: object
+    properties:
+      metric:
+        type: string
+      qualifier:
+        type: string
+      stats:
+        $ref: '#/definitions/StatisticalSummary'
+      truncated:
+        type: boolean
+        description: Flag for a truncated list of observations. If truncated, the first half of the list of observations will contain the oldest observations and the second half the newest observations.
+      observations:
+        type: array
+        description: List of observations sorted by timestamp in ascending order. This list may be truncated.
+        items:
+          $ref: '#/definitions/ObservationValue'
+  FlowActivityQueryPredicate:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Optional type, can usually be inferred
+        enum:
+        - dimension
+        - property
+        - metric
+      dimension:
+        type: string
+        description: Left hand side for dimension predicates
+        enum:
+        - activeRouting
+        - addressFrom
+        - addressTo
+        - agentScore
+        - ani
+        - conversationId
+        - convertedFrom
+        - convertedTo
+        - direction
+        - dnis
+        - flowId
+        - flowType
+        - mediaType
+        - participantName
+        - queueId
+        - requestedLanguageId
+        - requestedRouting
+        - requestedRoutingSkillId
+        - routingPriority
+        - scoredAgentId
+        - sessionId
+        - teamId
+        - usedRouting
+        - userId
+        x-genesys-entity-type:
+          value: DIMENSION_TYPE
+      operator:
+        type: string
+        description: Optional operator, default is matches
+        enum:
+        - matches
+        - exists
+        - notExists
+      value:
+        type: string
+        description: Right hand side for dimension predicates
+        x-genesys-entity-type:
+          value: DIMENSION_SELECTOR
+  FlowActivityData:
+    type: object
+    properties:
+      group:
+        type: object
+        description: A mapping from grouping dimension to value
+        additionalProperties:
+          type: string
+      data:
+        type: array
+        description: Data for metrics
+        items:
+          $ref: '#/definitions/FlowActivityMetricValue'
+      truncated:
+        type: boolean
+        description: Flag for a truncated list of entities. If truncated, the first half of the list of entities will contain the oldest entities and the second half the newest entities.
+      entities:
+        type: array
+        description: Details for active entities
+        items:
+          $ref: '#/definitions/FlowActivityEntityData'
+  AggregateMetricData:
+    type: object
+    properties:
+      metric:
+        type: string
+      qualifier:
+        type: string
+      stats:
+        $ref: '#/definitions/StatisticalSummary'
+  StatisticalSummary:
+    type: object
+    properties:
+      max:
+        type: number
+      min:
+        type: number
+      count:
+        type: integer
+        format: int64
+      countNegative:
+        type: integer
+        format: int64
+      countPositive:
+        type: integer
+        format: int64
+      sum:
+        type: number
+      current:
+        type: number
+      ratio:
+        type: number
+      numerator:
+        type: number
+      denominator:
+        type: number
+      target:
+        type: number
+      p95:
+        type: integer
+        format: int64
+      p99:
+        type: integer
+        format: int64
+      calculatedMetricValue:
+        type: integer
+        format: int64
+  NumericRange:
+    type: object
+    properties:
+      gt:
+        type: number
+        description: Greater than
+      gte:
+        type: number
+        description: Greater than or equal to
+      lt:
+        type: number
+        description: Less than
+      lte:
+        type: number
+        description: Less than or equal to
+  FlowAggregationQuery:
+    type: object
+    required:
+    - interval
+    - metrics
+    properties:
+      interval:
+        type: string
+        format: interval
+        description: 'Behaves like one clause in a SQL WHERE. Specifies the date and time range of data being queried. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        x-genesys-entity-type:
+          value: INTERVAL
+      granularity:
+        type: string
+        description: 'Granularity aggregates metrics into subpartitions within the time interval specified. The default granularity is the same duration as the interval. Periods are represented as an ISO-8601 string. For example: P1D or P1DT12H'
+      timeZone:
+        type: string
+        description: 'Time zone context used to calculate response intervals (this allows resolving DST changes). The interval offset is used even when timeZone is specified. Default is UTC. Time zones are represented as a string of the zone name as found in the IANA time zone database. For example: UTC, Etc/UTC, or Europe/London'
+      groupBy:
+        type: array
+        description: Behaves like a SQL GROUPBY. Allows for multiple levels of grouping as a list of dimensions. Partitions resulting aggregate computations into distinct named subgroups rather than across the entire result set as if it were one group.
+        items:
+          type: string
+          enum:
+          - activeRouting
+          - activeSkillId
+          - addressFrom
+          - addressTo
+          - agentAssistantId
+          - agentBullseyeRing
+          - agentOwned
+          - agentRank
+          - agentScore
+          - ani
+          - assignerId
+          - authenticated
+          - conversationId
+          - conversationInitiator
+          - convertedFrom
+          - convertedTo
+          - customerParticipation
+          - deliveryStatus
+          - destinationAddress
+          - direction
+          - disconnectType
+          - divisionId
+          - dnis
+          - edgeId
+          - eligibleAgentCount
+          - endingLanguage
+          - entryReason
+          - entryType
+          - errorCode
+          - exitReason
+          - extendedDeliveryStatus
+          - externalContactId
+          - externalMediaCount
+          - externalOrganizationId
+          - externalTag
+          - firstQueue
+          - flaggedReason
+          - flowId
+          - flowInType
+          - flowMilestoneId
+          - flowName
+          - flowOutType
+          - flowOutcome
+          - flowOutcomeId
+          - flowOutcomeValue
+          - flowSubType
+          - flowType
+          - flowVersion
+          - groupId
+          - interactionType
+          - journeyActionId
+          - journeyActionMapId
+          - journeyActionMapVersion
+          - journeyCustomerId
+          - journeyCustomerIdType
+          - journeyCustomerSessionId
+          - journeyCustomerSessionIdType
+          - knowledgeBaseId
+          - mediaCount
+          - mediaType
+          - messageType
+          - originatingDirection
+          - outboundCampaignId
+          - outboundContactId
+          - outboundContactListId
+          - participantName
+          - peerId
+          - proposedAgentId
+          - provider
+          - purpose
+          - queueId
+          - recognitionFailureReason
+          - remote
+          - removedSkillId
+          - requestedLanguageId
+          - requestedRouting
+          - requestedRoutingSkillId
+          - roomId
+          - routingPriority
+          - routingRing
+          - routingRule
+          - routingRuleType
+          - scoredAgentId
+          - selectedAgentId
+          - selectedAgentRank
+          - selfServed
+          - sessionDnis
+          - sessionId
+          - skillExpressionId
+          - startingLanguage
+          - stationId
+          - teamId
+          - transferTargetAddress
+          - transferTargetName
+          - transferType
+          - usedRouting
+          - userId
+          - videoPresent
+          - waitingInteractionCount
+          - wrapUpCode
+      filter:
+        description: Behaves like a SQL WHERE clause. This is ANDed with the interval parameter. Expresses boolean logical predicates as well as dimensional filters
+        $ref: '#/definitions/FlowAggregateQueryFilter'
+      metrics:
+        type: array
+        description: Behaves like a SQL SELECT clause. Only named metrics will be retrieved.
+        items:
+          type: string
+          enum:
+          - nFlow
+          - nFlowMilestone
+          - nFlowOutcome
+          - nFlowOutcomeFailed
+          - oFlowMilestone
+          - tFlow
+          - tFlowDisconnect
+          - tFlowExit
+          - tFlowOutcome
+      flattenMultivaluedDimensions:
+        type: boolean
+        description: Flattens any multivalued dimensions used in response groups (e.g. ['a','b','c']->'a,b,c')
+      views:
+        type: array
+        description: Custom derived metric views
+        items:
+          $ref: '#/definitions/FlowAggregationView'
+      alternateTimeDimension:
+        type: string
+        description: Dimension to use as the alternative timestamp for data in the aggregate.  Choosing "eventTime" uses the actual time of the data event.
+        enum:
+        - eventTime
+  ObservationValue:
+    type: object
+    required:
+    - observationDate
+    properties:
+      observationDate:
+        type: string
+        format: date-time
+        description: 'The time at which the observation occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+      conversationId:
+        type: string
+        description: Unique identifier for the conversation
+      sessionId:
+        type: string
+        description: The unique identifier of this session
+      requestedRoutingSkillIds:
+        type: array
+        description: Unique identifier for a skill requested for an interaction
+        uniqueItems: true
+        items:
+          type: string
+      requestedLanguageId:
+        type: string
+        description: Unique identifier for the language requested for an interaction
+      routingPriority:
+        type: integer
+        format: int64
+        description: Routing priority for the current interaction
+      participantName:
+        type: string
+        description: A human readable name identifying the participant
+      userId:
+        type: string
+        description: Unique identifier for the user
+      direction:
+        type: string
+        description: The direction of the communication
+        enum:
+        - inbound
+        - outbound
+      convertedFrom:
+        type: string
+        description: Session media type that was converted from in case of a media type conversion
+      convertedTo:
+        type: string
+        description: Session media type that was converted to in case of a media type conversion
+      addressFrom:
+        type: string
+        description: The address that initiated an action
+      addressTo:
+        type: string
+        description: The address receiving an action
+      ani:
+        type: string
+        description: Automatic Number Identification (caller's number)
+      dnis:
+        type: string
+        description: Dialed number identification service (number dialed by the calling party)
+      teamId:
+        type: string
+        description: The team id the user is a member of
+      requestedRoutings:
+        type: array
+        description: All routing types for requested/attempted routing methods
+        uniqueItems: true
+        items:
+          type: string
+          enum:
+          - Bullseye
+          - Conditional
+          - Direct
+          - Last
+          - Manual
+          - Predictive
+          - Preferred
+          - Standard
+          - Vip
+      usedRouting:
+        type: string
+        description: Complete routing method
+        enum:
+        - Bullseye
+        - Conditional
+        - Direct
+        - Last
+        - Manual
+        - Predictive
+        - Preferred
+        - Standard
+        - Vip
+      scoredAgents:
+        type: array
+        items:
+          $ref: '#/definitions/AnalyticsScoredAgent'
+  FlowActivityResponse:
+    type: object
+    properties:
+      results:
+        type: array
+        description: Query results
+        items:
+          $ref: '#/definitions/FlowActivityData'
+      entityIdDimension:
+        type: string
+        description: Dimension that is used as an entityId
+        enum:
+        - activeRouting
+        - addressFrom
+        - addressTo
+        - agentScore
+        - ani
+        - conversationId
+        - convertedFrom
+        - convertedTo
+        - direction
+        - dnis
+        - flowId
+        - flowType
+        - mediaType
+        - participantName
+        - queueId
+        - requestedLanguageId
+        - requestedRouting
+        - requestedRoutingSkillId
+        - routingPriority
+        - scoredAgentId
+        - sessionId
+        - teamId
+        - usedRouting
+        - userId
+  FlowAsyncAggregationQuery:
+    type: object
+    required:
+    - interval
+    - metrics
+    properties:
+      interval:
+        type: string
+        format: interval
+        description: 'Behaves like one clause in a SQL WHERE. Specifies the date and time range of data being queried. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+      granularity:
+        type: string
+        description: 'Granularity aggregates metrics into subpartitions within the time interval specified. The default granularity is the same duration as the interval. Periods are represented as an ISO-8601 string. For example: P1D or P1DT12H'
+      timeZone:
+        type: string
+        description: 'Time zone context used to calculate response intervals (this allows resolving DST changes). The interval offset is used even when timeZone is specified. Default is UTC. Time zones are represented as a string of the zone name as found in the IANA time zone database. For example: UTC, Etc/UTC, or Europe/London'
+      groupBy:
+        type: array
+        description: Behaves like a SQL GROUPBY. Allows for multiple levels of grouping as a list of dimensions. Partitions resulting aggregate computations into distinct named subgroups rather than across the entire result set as if it were one group.
+        items:
+          type: string
+          enum:
+          - activeRouting
+          - activeSkillId
+          - addressFrom
+          - addressTo
+          - agentAssistantId
+          - agentBullseyeRing
+          - agentOwned
+          - agentRank
+          - agentScore
+          - ani
+          - assignerId
+          - authenticated
+          - conversationId
+          - conversationInitiator
+          - convertedFrom
+          - convertedTo
+          - customerParticipation
+          - deliveryStatus
+          - destinationAddress
+          - direction
+          - disconnectType
+          - divisionId
+          - dnis
+          - edgeId
+          - eligibleAgentCount
+          - endingLanguage
+          - entryReason
+          - entryType
+          - errorCode
+          - exitReason
+          - extendedDeliveryStatus
+          - externalContactId
+          - externalMediaCount
+          - externalOrganizationId
+          - externalTag
+          - firstQueue
+          - flaggedReason
+          - flowId
+          - flowInType
+          - flowMilestoneId
+          - flowName
+          - flowOutType
+          - flowOutcome
+          - flowOutcomeId
+          - flowOutcomeValue
+          - flowSubType
+          - flowType
+          - flowVersion
+          - groupId
+          - interactionType
+          - journeyActionId
+          - journeyActionMapId
+          - journeyActionMapVersion
+          - journeyCustomerId
+          - journeyCustomerIdType
+          - journeyCustomerSessionId
+          - journeyCustomerSessionIdType
+          - knowledgeBaseId
+          - mediaCount
+          - mediaType
+          - messageType
+          - originatingDirection
+          - outboundCampaignId
+          - outboundContactId
+          - outboundContactListId
+          - participantName
+          - peerId
+          - proposedAgentId
+          - provider
+          - purpose
+          - queueId
+          - recognitionFailureReason
+          - remote
+          - removedSkillId
+          - requestedLanguageId
+          - requestedRouting
+          - requestedRoutingSkillId
+          - roomId
+          - routingPriority
+          - routingRing
+          - routingRule
+          - routingRuleType
+          - scoredAgentId
+          - selectedAgentId
+          - selectedAgentRank
+          - selfServed
+          - sessionDnis
+          - sessionId
+          - skillExpressionId
+          - startingLanguage
+          - stationId
+          - teamId
+          - transferTargetAddress
+          - transferTargetName
+          - transferType
+          - usedRouting
+          - userId
+          - videoPresent
+          - waitingInteractionCount
+          - wrapUpCode
+      filter:
+        description: Behaves like a SQL WHERE clause. This is ANDed with the interval parameter. Expresses boolean logical predicates as well as dimensional filters
+        $ref: '#/definitions/FlowAggregateQueryFilter'
+      metrics:
+        type: array
+        description: Behaves like a SQL SELECT clause. Only named metrics will be retrieved.
+        items:
+          type: string
+          enum:
+          - nFlow
+          - nFlowMilestone
+          - nFlowOutcome
+          - nFlowOutcomeFailed
+          - oFlowMilestone
+          - tFlow
+          - tFlowDisconnect
+          - tFlowExit
+          - tFlowOutcome
+      flattenMultivaluedDimensions:
+        type: boolean
+        description: Flattens any multivalued dimensions used in response groups (e.g. ['a','b','c']->'a,b,c')
+      views:
+        type: array
+        description: Custom derived metric views
+        items:
+          $ref: '#/definitions/FlowAggregationView'
+      alternateTimeDimension:
+        type: string
+        description: Dimension to use as the alternative timestamp for data in the aggregate.  Choosing "eventTime" uses the actual time of the data event.
+        enum:
+        - eventTime
+      pageSize:
+        type: integer
+        format: int32
+        description: The number of results per page
+  Limit:
+    type: object
+    properties:
+      key:
+        type: string
+      namespace:
+        type: string
+        enum:
+        - web.deployments
+        - web.messaging
+        - agent.assistant
+        - agentic.virtual.agents
+        - analytics.agents
+        - analytics.alerting
+        - analytics.data.extraction
+        - analytics
+        - analytics.realtime
+        - analytics.reporting.settings
+        - anomaly.detection
+        - architect
+        - audiohook
+        - audiohook.monitor
+        - audit
+        - auth.api
+        - authorization
+        - automation.testing
+        - bots
+        - bots.voice
+        - business.rules
+        - callback
+        - case.management
+        - cobrowse
+        - content.management
+        - conversation
+        - copilot
+        - dataactions
+        - datatables
+        - directory
+        - dsar
+        - email
+        - employee.engagement
+        - event.orchestration
+        - external.contacts
+        - external.events.data.ingestion
+        - gamification
+        - gcv
+        - gdpr
+        - groups
+        - guides
+        - historical.adherence
+        - infrastructureascode
+        - integrations
+        - intent.miner
+        - internal.messaging
+        - journey
+        - knowledge
+        - language.understanding
+        - learning
+        - limit.registry
+        - marketplace
+        - mcp.analytics.aggregates
+        - mcp
+        - media.communications
+        - messaging
+        - micro.frontend
+        - multi.org
+        - notifications
+        - onboarding
+        - outbound
+        - platform.api
+        - predictive.routing
+        - presence
+        - quality
+        - recording
+        - response.management
+        - routing
+        - scim
+        - screen.monitoring
+        - search
+        - secondary.automation.testing
+        - skills
+        - social.media
+        - speech.and.text.analytics
+        - speech.integration
+        - supportability
+        - task.management
+        - telephony.configuration
+        - usage
+        - users
+        - users.rules
+        - voice.transcription
+        - webchat
+        - webhooks
+        - workforce.management.adherence
+        - workforce.management.agent.availability
+        - workforce.management.forecast
+        - workforce.management
+        - workforce.management.scheduling.preferences
+        - workforce.management.self.schedule
+        - workforce.management.shift.trading
+        - system
+      value:
+        type: integer
+        format: int64
+  FlowActivityQuery:
+    type: object
+    required:
+    - groupBy
+    - metrics
+    properties:
+      metrics:
+        type: array
+        description: List of requested metrics
+        items:
+          $ref: '#/definitions/FlowActivityQueryMetric'
+      groupBy:
+        type: array
+        description: Dimension(s) to group by
+        uniqueItems: true
+        items:
+          type: string
+          enum:
+          - activeRouting
+          - addressFrom
+          - addressTo
+          - agentScore
+          - ani
+          - conversationId
+          - convertedFrom
+          - convertedTo
+          - direction
+          - dnis
+          - flowId
+          - flowType
+          - mediaType
+          - participantName
+          - queueId
+          - requestedLanguageId
+          - requestedRouting
+          - requestedRoutingSkillId
+          - routingPriority
+          - scoredAgentId
+          - sessionId
+          - teamId
+          - usedRouting
+          - userId
+      filter:
+        description: Filter to return a subset of observations. Expresses boolean logical predicates as well as dimensional filters
+        $ref: '#/definitions/FlowActivityQueryFilter'
+      order:
+        type: string
+        description: Sort the result set in ascending/descending order. Default is ascending
+        enum:
+        - asc
+        - desc
+        - unordered
+  FlowActivityQueryClause:
+    type: object
+    required:
+    - predicates
+    - type
+    properties:
+      type:
+        type: string
+        description: Boolean operation to apply to the provided predicates
+        enum:
+        - and
+        - or
+      predicates:
+        type: array
+        description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
+        items:
+          $ref: '#/definitions/FlowActivityQueryPredicate'
+  FlowAggregateQueryResponse:
+    type: object
+    properties:
+      results:
+        type: array
+        items:
+          $ref: '#/definitions/FlowAggregateDataContainer'
+  FlowObservationQueryPredicate:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Optional type, can usually be inferred
+        enum:
+        - dimension
+        - property
+        - metric
+      dimension:
+        type: string
+        description: Left hand side for dimension predicates
+        enum:
+        - flowId
+        - mediaType
+        x-genesys-entity-type:
+          value: DIMENSION_TYPE
+      operator:
+        type: string
+        description: Optional operator, default is matches
+        enum:
+        - matches
+        - exists
+        - notExists
+      value:
+        type: string
+        description: Right hand side for dimension predicates
+        x-genesys-entity-type:
+          value: DIMENSION_SELECTOR
+      range:
+        description: Right hand side for dimension predicates
+        $ref: '#/definitions/NumericRange'
+  AsyncQueryResponse:
+    type: object
+    properties:
+      jobId:
+        type: string
+        description: Unique identifier for the async query execution. Can be used to check the status of the query and retrieve results.
+  FlowActivityQueryFilter:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Boolean operation to apply to the provided predicates and clauses
+        enum:
+        - and
+        - or
+      clauses:
+        type: array
+        description: Boolean 'and/or' logic with up to two-levels of nesting
+        items:
+          $ref: '#/definitions/FlowActivityQueryClause'
+      predicates:
+        type: array
+        description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
+        items:
+          $ref: '#/definitions/FlowActivityQueryPredicate'
+  FlowObservationQueryResponse:
+    type: object
+    properties:
+      results:
+        type: array
+        items:
+          $ref: '#/definitions/FlowObservationDataContainer'
+  FlowAggregateQueryPredicate:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Optional type, can usually be inferred
+        enum:
+        - dimension
+        - property
+        - metric
+      dimension:
+        type: string
+        description: Left hand side for dimension predicates
+        enum:
+        - activeRouting
+        - activeSkillId
+        - addressFrom
+        - addressTo
+        - agentAssistantId
+        - agentBullseyeRing
+        - agentOwned
+        - agentRank
+        - agentScore
+        - ani
+        - assignerId
+        - authenticated
+        - canonicalExternalContactId
+        - conversationId
+        - conversationInitiator
+        - convertedFrom
+        - convertedTo
+        - customerParticipation
+        - deliveryStatus
+        - destinationAddress
+        - direction
+        - disconnectType
+        - divisionId
+        - dnis
+        - edgeId
+        - eligibleAgentCount
+        - endingLanguage
+        - entryReason
+        - entryType
+        - errorCode
+        - exitReason
+        - extendedDeliveryStatus
+        - externalContactId
+        - externalMediaCount
+        - externalOrganizationId
+        - externalTag
+        - firstQueue
+        - flaggedReason
+        - flowId
+        - flowInType
+        - flowMilestoneId
+        - flowName
+        - flowOutType
+        - flowOutcome
+        - flowOutcomeId
+        - flowOutcomeValue
+        - flowSubType
+        - flowType
+        - flowVersion
+        - groupId
+        - interactionType
+        - journeyActionId
+        - journeyActionMapId
+        - journeyActionMapVersion
+        - journeyCustomerId
+        - journeyCustomerIdType
+        - journeyCustomerSessionId
+        - journeyCustomerSessionIdType
+        - knowledgeBaseId
+        - mediaCount
+        - mediaType
+        - messageType
+        - originatingDirection
+        - outboundCampaignId
+        - outboundContactId
+        - outboundContactListId
+        - participantName
+        - peerId
+        - proposedAgentId
+        - provider
+        - purpose
+        - queueId
+        - recognitionFailureReason
+        - remote
+        - removedSkillId
+        - requestedLanguageId
+        - requestedRouting
+        - requestedRoutingSkillId
+        - roomId
+        - routingPriority
+        - routingRing
+        - routingRule
+        - routingRuleType
+        - scoredAgentId
+        - selectedAgentId
+        - selectedAgentRank
+        - selfServed
+        - sessionDnis
+        - sessionId
+        - skillExpressionId
+        - startingLanguage
+        - stationId
+        - teamId
+        - transferTargetAddress
+        - transferTargetName
+        - transferType
+        - usedRouting
+        - userId
+        - videoPresent
+        - waitingInteractionCount
+        - wrapUpCode
+        x-genesys-entity-type:
+          value: DIMENSION_TYPE
+      operator:
+        type: string
+        description: Optional operator, default is matches
+        enum:
+        - matches
+        - exists
+        - notExists
+      value:
+        type: string
+        description: Right hand side for dimension predicates
+        x-genesys-entity-type:
+          value: DIMENSION_SELECTOR
+      range:
+        description: Right hand side for dimension predicates
+        $ref: '#/definitions/NumericRange'
+  AggregationRange:
+    type: object
+    properties:
+      gte:
+        type: number
+        description: Greater than or equal to
+      lt:
+        type: number
+        description: Less than
+  FlowObservationQuery:
+    type: object
+    required:
+    - filter
+    - metrics
+    properties:
+      filter:
+        description: Filter to return a subset of observations. Expresses boolean logical predicates as well as dimensional filters
+        $ref: '#/definitions/FlowObservationQueryFilter'
+      metrics:
+        type: array
+        description: Behaves like a SQL SELECT clause. Only named metrics will be retrieved.
+        items:
+          type: string
+          enum:
+          - oFlow
+      detailMetrics:
+        type: array
+        description: Metrics for which to include additional detailed observations
+        items:
+          type: string
+          enum:
+          - oFlow
+  FlowAsyncAggregateQueryResponse:
+    type: object
+    properties:
+      results:
+        type: array
+        items:
+          $ref: '#/definitions/FlowAggregateDataContainer'
+      cursor:
+        type: string
+        description: Cursor token to retrieve next page
+  FlowObservationQueryFilter:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Boolean operation to apply to the provided predicates and clauses
+        enum:
+        - and
+        - or
+      clauses:
+        type: array
+        description: Boolean 'and/or' logic with up to two-levels of nesting
+        items:
+          $ref: '#/definitions/FlowObservationQueryClause'
+      predicates:
+        type: array
+        description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
+        items:
+          $ref: '#/definitions/FlowObservationQueryPredicate'
+  Detail:
+    type: object
+    properties:
+      errorCode:
+        type: string
+      fieldName:
+        type: string
+      entityId:
+        type: string
+      entityName:
+        type: string
+securityDefinitions:
+  PureCloud OAuth:
+    type: oauth2
+    authorizationUrl: https://login.mypurecloud.com/authorize
+    flow: implicit
+    scopes:
+      all: All the scopes
+  Guest Chat JWT:
+    type: apiKey
+    name: Authorization
+    in: header
+externalDocs:
+  description: PureCloud API Documentation
+  url: https://developer.genesys.cloud/

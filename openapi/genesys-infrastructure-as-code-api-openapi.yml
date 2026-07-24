@@ -1,0 +1,1306 @@
+swagger: '2.0'
+info:
+  description: With the PureCloud Platform API, you can control all aspects of your PureCloud environment. With the APIs you can access the system configuration, manage conversations and more.
+  version: v2
+  title: PureCloud Platform Agent Assistants Infrastructure as Code API
+  termsOfService: https://help.genesys.cloud/articles/terms-and-conditions/
+  contact:
+    name: PureCloud Developer Evangelists
+    url: https://developer.genesys.cloud/
+    email: DeveloperEvangelists@genesys.com
+  license:
+    name: UNLICENSED
+    url: https://help.genesys.cloud/articles/terms-and-conditions/
+host: api.mypurecloud.com
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Infrastructure as Code
+  description: Accelerated infrastructure configuration via reusable modules
+  externalDocs:
+    description: Infrastructure as Code Documentation
+    url: https://developer.genesys.cloud/devapps/api-explorer
+paths:
+  /api/v2/infrastructureascode/accelerators/{acceleratorId}:
+    get:
+      tags:
+      - Infrastructure as Code
+      summary: Get information about an accelerator
+      description: Get the complete metadata specification for an accelerator, including requirements and parameters.
+      operationId: getInfrastructureascodeAccelerator
+      produces:
+      - application/json
+      parameters:
+      - name: acceleratorId
+        in: path
+        description: Accelerator ID
+        required: true
+        type: string
+      - name: preferredLanguage
+        in: query
+        description: Preferred Language
+        required: false
+        type: string
+        default: en-US
+        enum:
+        - ar
+        - cs
+        - da
+        - de
+        - en-US
+        - es
+        - fi
+        - fr
+        - it
+        - iw
+        - ko
+        - ja
+        - nl
+        - 'no'
+        - pl
+        - pt-BR
+        - pt-PT
+        - sv
+        - th
+        - tr
+        - zh-CN
+        - zh-TW
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AcceleratorSpecification'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - infrastructureascode
+        - infrastructureascode:readonly
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - infrastructureascode:accelerator:view
+      x-purecloud-method-name: getInfrastructureascodeAccelerator
+  /api/v2/infrastructureascode/accelerators:
+    get:
+      tags:
+      - Infrastructure as Code
+      summary: Get a list of available accelerators
+      description: Search for accelerators that can be run.
+      operationId: getInfrastructureascodeAccelerators
+      produces:
+      - application/json
+      parameters:
+      - name: pageSize
+        in: query
+        description: The total page size requested
+        required: false
+        type: integer
+        default: 25
+        format: int32
+      - name: pageNumber
+        in: query
+        description: The page number requested
+        required: false
+        type: integer
+        default: 1
+        format: int32
+      - name: sortBy
+        in: query
+        description: variable name requested to sort by
+        required: false
+        type: string
+      - name: sortOrder
+        in: query
+        description: Sort order
+        required: false
+        type: string
+        default: asc
+        enum:
+        - asc
+        - desc
+      - name: name
+        in: query
+        description: Filter by name
+        required: false
+        type: string
+      - name: description
+        in: query
+        description: Filter by description
+        required: false
+        type: string
+      - name: origin
+        in: query
+        description: Filter by origin
+        required: false
+        type: string
+        enum:
+        - community
+        - partner
+        - genesys
+      - name: type
+        in: query
+        description: Filter by type
+        required: false
+        type: string
+        enum:
+        - module
+        - accelerator
+        - blueprint
+      - name: classification
+        in: query
+        description: Filter by classification
+        required: false
+        type: string
+      - name: tags
+        in: query
+        description: Filter by tags
+        required: false
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AcceleratorList'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - infrastructureascode
+        - infrastructureascode:readonly
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - infrastructureascode:accelerator:view
+      x-purecloud-method-name: getInfrastructureascodeAccelerators
+  /api/v2/infrastructureascode/jobs/{jobId}:
+    get:
+      tags:
+      - Infrastructure as Code
+      summary: Get job status and results
+      description: Get the execution status of a submitted job, optionally including results and error details.
+      operationId: getInfrastructureascodeJob
+      produces:
+      - application/json
+      parameters:
+      - name: jobId
+        in: path
+        description: Job ID
+        required: true
+        type: string
+      - name: details
+        in: query
+        description: Include details of execution, including job results or error information
+        required: false
+        type: boolean
+        default: false
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/InfrastructureascodeJob'
+        '202':
+          description: Job in progress.
+          schema:
+            $ref: '#/definitions/InfrastructureascodeJob'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - infrastructureascode
+        - infrastructureascode:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - infrastructureascode:job:view
+      x-purecloud-method-name: getInfrastructureascodeJob
+  /api/v2/infrastructureascode/jobs:
+    get:
+      tags:
+      - Infrastructure as Code
+      summary: Get job history
+      description: Get a history of submitted jobs, optionally including error messages.
+      operationId: getInfrastructureascodeJobs
+      produces:
+      - application/json
+      parameters:
+      - name: maxResults
+        in: query
+        description: Number of jobs to show
+        required: false
+        type: integer
+        default: 1
+        format: int32
+      - name: includeErrors
+        in: query
+        description: Include error messages
+        required: false
+        type: boolean
+        default: false
+      - name: sortBy
+        in: query
+        description: Sort by
+        required: false
+        type: string
+        default: dateSubmitted
+        enum:
+        - id
+        - dateSubmitted
+        - submittedBy
+        - acceleratorId
+        - status
+      - name: sortOrder
+        in: query
+        description: Sort order
+        required: false
+        type: string
+        default: desc
+        enum:
+        - asc
+        - desc
+      - name: acceleratorId
+        in: query
+        description: Find only jobs associated with this accelerator
+        required: false
+        type: string
+      - name: submittedBy
+        in: query
+        description: Find only jobs submitted by this user
+        required: false
+        type: string
+      - name: status
+        in: query
+        description: Find only jobs in this state
+        required: false
+        type: string
+        enum:
+        - Created
+        - Queued
+        - Running
+        - Complete
+        - Failed
+        - Incomplete
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/InfrastructureascodeJob'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - infrastructureascode
+        - infrastructureascode:readonly
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - infrastructureascode:job:view
+      x-purecloud-method-name: getInfrastructureascodeJobs
+    post:
+      tags:
+      - Infrastructure as Code
+      summary: Create a Job
+      description: Create and submit a job for remote execution or see job planning results.
+      operationId: postInfrastructureascodeJobs
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/AcceleratorInput'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/InfrastructureascodeJob'
+        '202':
+          description: Job submitted for execution.
+          schema:
+            $ref: '#/definitions/InfrastructureascodeJob'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - infrastructureascode
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - infrastructureascode:job:add
+      x-purecloud-method-name: postInfrastructureascodeJobs
+definitions:
+  Limit:
+    type: object
+    properties:
+      key:
+        type: string
+      namespace:
+        type: string
+        enum:
+        - web.deployments
+        - web.messaging
+        - agent.assistant
+        - agentic.virtual.agents
+        - analytics.agents
+        - analytics.alerting
+        - analytics.data.extraction
+        - analytics
+        - analytics.realtime
+        - analytics.reporting.settings
+        - anomaly.detection
+        - architect
+        - audiohook
+        - audiohook.monitor
+        - audit
+        - auth.api
+        - authorization
+        - automation.testing
+        - bots
+        - bots.voice
+        - business.rules
+        - callback
+        - case.management
+        - cobrowse
+        - content.management
+        - conversation
+        - copilot
+        - dataactions
+        - datatables
+        - directory
+        - dsar
+        - email
+        - employee.engagement
+        - event.orchestration
+        - external.contacts
+        - external.events.data.ingestion
+        - gamification
+        - gcv
+        - gdpr
+        - groups
+        - guides
+        - historical.adherence
+        - infrastructureascode
+        - integrations
+        - intent.miner
+        - internal.messaging
+        - journey
+        - knowledge
+        - language.understanding
+        - learning
+        - limit.registry
+        - marketplace
+        - mcp.analytics.aggregates
+        - mcp
+        - media.communications
+        - messaging
+        - micro.frontend
+        - multi.org
+        - notifications
+        - onboarding
+        - outbound
+        - platform.api
+        - predictive.routing
+        - presence
+        - quality
+        - recording
+        - response.management
+        - routing
+        - scim
+        - screen.monitoring
+        - search
+        - secondary.automation.testing
+        - skills
+        - social.media
+        - speech.and.text.analytics
+        - speech.integration
+        - supportability
+        - task.management
+        - telephony.configuration
+        - usage
+        - users
+        - users.rules
+        - voice.transcription
+        - webchat
+        - webhooks
+        - workforce.management.adherence
+        - workforce.management.agent.availability
+        - workforce.management.forecast
+        - workforce.management
+        - workforce.management.scheduling.preferences
+        - workforce.management.self.schedule
+        - workforce.management.shift.trading
+        - system
+      value:
+        type: integer
+        format: int64
+  AcceleratorInput:
+    type: object
+    required:
+    - acceleratorId
+    properties:
+      dryRun:
+        type: boolean
+        description: Set this true to test the job without making any changes. Defaults to false.
+      acceleratorId:
+        type: string
+        description: Accelerator ID
+      parameters:
+        type: array
+        description: Parameters required for this accelerator
+        items:
+          $ref: '#/definitions/AcceleratorParameter'
+    description: Identity of a CX infrastructure as code accelerator to be run and its inputs
+  ErrorBody:
+    type: object
+    properties:
+      message:
+        type: string
+      code:
+        type: string
+      status:
+        type: integer
+        format: int32
+      entityId:
+        type: string
+      entityName:
+        type: string
+      messageWithParams:
+        type: string
+      messageParams:
+        type: object
+        additionalProperties:
+          type: string
+      contextId:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/Detail'
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ErrorBody'
+      limit:
+        $ref: '#/definitions/Limit'
+  ErrorInfo:
+    type: object
+    properties:
+      message:
+        type: string
+      code:
+        type: string
+  AcceleratorSpecification:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+        readOnly: true
+      name:
+        type: string
+        description: name of this accelerator
+        readOnly: true
+      description:
+        type: string
+        description: a description of the general purpose of this accelerator
+        readOnly: true
+      origin:
+        type: string
+        description: where the accelerator originated
+        readOnly: true
+        enum:
+        - Community
+        - Partner
+        - Genesys
+      type:
+        type: string
+        description: type of the artifact
+        readOnly: true
+        enum:
+        - Module
+        - Accelerator
+        - Blueprint
+      classification:
+        type: string
+        description: architectural classification into which the accelerator belongs
+        readOnly: true
+      tags:
+        type: array
+        description: tags
+        readOnly: true
+        items:
+          type: string
+      permissions:
+        type: array
+        description: Genesys Cloud permissions required to install the accelerator
+        readOnly: true
+        items:
+          type: string
+      products:
+        type: array
+        description: Genesys Cloud products required to install the accelerator
+        readOnly: true
+        items:
+          type: string
+      documentation:
+        type: array
+        description: additional documentation about the artifact
+        readOnly: true
+        items:
+          $ref: '#/definitions/MetadataDocumentation'
+      presentation:
+        type: array
+        description: presentation of data fields to be gathered for the accelerator
+        readOnly: true
+        items:
+          $ref: '#/definitions/MetadataPresentation'
+      results:
+        description: resources created or modified as a result of running the accelerator
+        readOnly: true
+        $ref: '#/definitions/MetadataResults'
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+    description: Metadata for a CX infrastructure as code accelerator
+  InfrastructureascodeJob:
+    type: object
+    required:
+    - dryRun
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+        readOnly: true
+      dryRun:
+        type: boolean
+        description: Whether or not the job was a dry run
+      acceleratorId:
+        type: string
+        description: Accelerator associated with the job
+        readOnly: true
+      dateSubmitted:
+        type: string
+        format: date-time
+        description: 'Date and time on which job was submitted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        readOnly: true
+      submittedBy:
+        description: User who submitted the job
+        readOnly: true
+        $ref: '#/definitions/UserReference'
+      status:
+        type: string
+        description: Job status
+        readOnly: true
+        enum:
+        - Created
+        - Queued
+        - Running
+        - Complete
+        - InternalError
+        - Incomplete
+        - Failed
+        - RollbackFailed
+        - RollbackComplete
+      errorInfo:
+        description: Information about errors, if any
+        readOnly: true
+        $ref: '#/definitions/ErrorInfo'
+      results:
+        type: string
+        description: The output results of the terraform job
+        readOnly: true
+      rollbackResults:
+        type: string
+        description: The results of rolling back the job if there were errors.  Not returned if job was successful.
+        readOnly: true
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+    description: Information about a CX infrastructure as code job
+  AcceleratorList:
+    type: object
+    properties:
+      entities:
+        type: array
+        items:
+          $ref: '#/definitions/AcceleratorMetadata'
+      pageSize:
+        type: integer
+        format: int32
+      pageNumber:
+        type: integer
+        format: int32
+      total:
+        type: integer
+        format: int64
+      firstUri:
+        type: string
+        format: uri
+      nextUri:
+        type: string
+        format: uri
+      previousUri:
+        type: string
+        format: uri
+      lastUri:
+        type: string
+        format: uri
+      selfUri:
+        type: string
+        format: uri
+      pageCount:
+        type: integer
+        format: int32
+  UserReference:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  MetadataSchema:
+    type: object
+    properties:
+      title:
+        type: string
+        description: title for the data gathering page
+        readOnly: true
+      description:
+        type: string
+        description: description of the data being gathered on this page
+        readOnly: true
+      type:
+        type: string
+        description: type of data being gathered
+        readOnly: true
+      properties:
+        type: array
+        description: list of properties for which input is to be gathered, bother required and optional
+        readOnly: true
+        items:
+          type: object
+          additionalProperties:
+            $ref: '#/definitions/MetadataProperty'
+      required:
+        type: array
+        description: list of required properties
+        readOnly: true
+        items:
+          type: string
+    description: A description of the contents of a data gathering interface for an accelerator
+  AcceleratorParameter:
+    type: object
+    required:
+    - name
+    - value
+    properties:
+      name:
+        type: string
+        description: Parameter Name
+      value:
+        type: string
+        description: Parameter Value
+    description: Input parameter for a CX infrastructure as code accelerator
+  MetadataProperty:
+    type: object
+    properties:
+      type:
+        type: string
+        description: the data type of the input property
+        readOnly: true
+      displayname:
+        type: string
+        description: user-friendly name of the input property
+        readOnly: true
+      description:
+        type: string
+        description: brief description of the input property
+        readOnly: true
+      sensitive:
+        type: string
+        description: whether the property's value should be hidden from display
+        readOnly: true
+      help:
+        type: string
+        description: optional URL with addition information about the input property
+        readOnly: true
+      default:
+        type: string
+        description: optional default value of the input property
+        readOnly: true
+      enum:
+        type: array
+        description: set of possible values if the input property is an enumeration
+        readOnly: true
+        items:
+          type: string
+    description: Data property required as input for installing an accelerator
+  AcceleratorMetadata:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+        readOnly: true
+      name:
+        type: string
+        description: name of this accelerator
+        readOnly: true
+      description:
+        type: string
+        description: a description of the general purpose of this accelerator
+        readOnly: true
+      origin:
+        type: string
+        description: where the accelerator originated
+        readOnly: true
+        enum:
+        - Community
+        - Partner
+        - Genesys
+      type:
+        type: string
+        description: type of the artifact
+        readOnly: true
+        enum:
+        - Module
+        - Accelerator
+        - Blueprint
+      classification:
+        type: string
+        description: architectural classification into which the accelerator belongs
+        readOnly: true
+      tags:
+        type: array
+        description: tags
+        readOnly: true
+        items:
+          type: string
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+    description: Metadata for a CX infrastructure as code accelerator
+  MetadataPresentation:
+    type: object
+    properties:
+      title:
+        type: string
+        description: title for a set of data to be gathered
+        readOnly: true
+      schema:
+        description: description of the contents of the data gathering interface
+        readOnly: true
+        $ref: '#/definitions/MetadataSchema'
+    description: A representation of data fields to be gathered for installing the accelerator
+  MetadataDocumentation:
+    type: object
+    properties:
+      description:
+        type: string
+        description: description of the documentation
+        readOnly: true
+      location:
+        type: string
+        description: location where the documentation can be accessed
+        readOnly: true
+    description: Additional documentation about an artifact
+  MetadataResultEntity:
+    type: object
+    properties:
+      type:
+        type: string
+        description: object type of the modified resource
+        readOnly: true
+      description:
+        type: string
+        description: description of the modified resource
+        readOnly: true
+      visibility:
+        type: string
+        description: whether the modified resource is visible or hidden
+        readOnly: true
+        enum:
+        - Visible
+        - Hidden
+    description: A Genesys Cloud resource created or modified as a result of running an accelerator
+  MetadataResults:
+    type: object
+    properties:
+      entities:
+        type: array
+        description: list of resources
+        readOnly: true
+        items:
+          $ref: '#/definitions/MetadataResultEntity'
+    description: List of resources created or modified as a result of running an accelerator
+  Detail:
+    type: object
+    properties:
+      errorCode:
+        type: string
+      fieldName:
+        type: string
+      entityId:
+        type: string
+      entityName:
+        type: string
+securityDefinitions:
+  PureCloud OAuth:
+    type: oauth2
+    authorizationUrl: https://login.mypurecloud.com/authorize
+    flow: implicit
+    scopes:
+      all: All the scopes
+  Guest Chat JWT:
+    type: apiKey
+    name: Authorization
+    in: header
+externalDocs:
+  description: PureCloud API Documentation
+  url: https://developer.genesys.cloud/

@@ -1,0 +1,2593 @@
+swagger: '2.0'
+info:
+  description: With the PureCloud Platform API, you can control all aspects of your PureCloud environment. With the APIs you can access the system configuration, manage conversations and more.
+  version: v2
+  title: PureCloud Platform Agent Assistants Textbots API
+  termsOfService: https://help.genesys.cloud/articles/terms-and-conditions/
+  contact:
+    name: PureCloud Developer Evangelists
+    url: https://developer.genesys.cloud/
+    email: DeveloperEvangelists@genesys.com
+  license:
+    name: UNLICENSED
+    url: https://help.genesys.cloud/articles/terms-and-conditions/
+host: api.mypurecloud.com
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Textbots
+  description: Chatbot Interactions
+paths:
+  /api/v2/textbots/botflows/sessions/{sessionId}/turns:
+    post:
+      tags:
+      - Textbots
+      summary: Issue a bot flow turn event
+      description: Send a turn event to an executing bot flow and produce the next action to take.
+      operationId: postTextbotsBotflowsSessionTurns
+      produces:
+      - application/json
+      parameters:
+      - name: sessionId
+        in: path
+        description: The bot flow session ID, typically obtained from 'POST /api/v2/textbots/botflows/sessions'
+        required: true
+        type: string
+      - in: body
+        name: turnRequest
+        required: true
+        schema:
+          $ref: '#/definitions/TextBotFlowTurnRequest'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TextBotFlowTurnResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            session.already.closed: The bot session is closed
+            mismatched.turn.id: The turn provided is not expected
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            too.many.queued.user.input.events: Too many queued user input events have been submitted
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            unexpected.input.event: An unexpected input event has been submitted
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            flow.blocked: Flow ID %s has been temporarily blocked.
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - textbots
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - textbots:botFlowSession:execute
+      x-purecloud-method-name: postTextbotsBotflowsSessionTurns
+  /api/v2/textbots/botflows/sessions:
+    post:
+      tags:
+      - Textbots
+      summary: Create an execution instance of a bot flow definition.
+      description: The launch is asynchronous; use the returned instance ID to post turns to it using 'POST /api/v2/textbots/botflows/sessions/{sessionId}/turns'.
+      operationId: postTextbotsBotflowsSessions
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: launchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/TextBotFlowLaunchRequest'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TextBotFlowLaunchResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            flow.version.not.published: The flow version is not published
+            invalid.input.variables: One or more of your input variables are invalid
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            flow.blocked: Flow ID %s has been temporarily blocked.
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - textbots
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - textbots:botFlowSession:execute
+      x-purecloud-method-name: postTextbotsBotflowsSessions
+  /api/v2/textbots/bots/execute:
+    post:
+      tags:
+      - Textbots
+      summary: Send an intent to a bot to start a dialog/interact with it via text
+      description: This will either start a bot with the given id or relay a communication to an existing bot session.
+      operationId: postTextbotsBotsExecute
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: postTextRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PostTextRequest'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/PostTextResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bots.invalid.bot.product: The bot product type is unrecognized
+            bots.invalid.bot.argument: An argument passed on to the bot was declared invalid by the bot service
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            bots.bot.general.provider.failure: A general provider failure was detected
+            bots.syntax.error: There was an error parsing user data
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            bots.bot.circuit.open: The bot service is non responsive and we're in a back-off state until the service is restored.
+            bots.invalid.bot.vendor: The bot vendor type is unrecognized
+            constraint.validation: '%s'
+            bots.bot.doesnt.exist: This occurs if the service doesn't recognize the bot that the integration code specifies
+            bots.bot.session.closed: The bot session is already closed and cannot be reused
+            bots.unsupported.integration.type: The integration type is unsupported or not recognized
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            bots.unsupported.language: The language code is unsupported or not recognized
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            bots.invalid.bot.session.outcome: The bot outcome is not recognized
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            bots.access.denied: User doesn't have access to bot
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bots.internal.server.error: The operation failed in an unexpected way.
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+            bots.server.too.busy: The operation failed because the service is too busy
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - textbots
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - textbots:session:execute
+      x-purecloud-method-name: postTextbotsBotsExecute
+  /api/v2/textbots/bots/search:
+    get:
+      tags:
+      - Textbots
+      summary: Find bots using the currently configured friendly name or ID.
+      description: The name does allow case-insensitive partial string matches or by IDs (up to 50), but not both at the same time. Optionally you can limit the scope of the search by providing one or more bot types.  You can specify the maximum results to return, up to a limit of 100
+      operationId: getTextbotsBotsSearch
+      produces:
+      - application/json
+      parameters:
+      - name: botType
+        in: query
+        description: Bot types
+        required: false
+        type: array
+        items:
+          type: string
+          enum:
+          - GenesysBotConnector
+          - GenesysDialogEngine
+          - AmazonLex
+          - GoogleDialogFlowES
+          - GoogleDialogFlowCX
+          - NuanceDlg
+          - GenesysBotFlow
+          - GenesysDigitalBotFlow
+          - GenesysVoiceSurveyFlow
+          - GenesysDigitalBotConnector
+        collectionFormat: multi
+      - name: botName
+        in: query
+        description: Bot name
+        required: false
+        type: string
+      - name: botId
+        in: query
+        description: Bot IDs. Maximum of 50
+        required: false
+        type: array
+        items:
+          type: string
+        collectionFormat: multi
+      - name: virtualAgentEnabled
+        in: query
+        description: Include or exclude virtual agent flows, only applies to GenesysBotFlows or GenesysDigitalBotFlows
+        required: false
+        type: boolean
+      - name: pageSize
+        in: query
+        description: The maximum results to return. Maximum of 100
+        required: false
+        type: integer
+        default: 25
+        format: int32
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BotSearchResponseEntityListing'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: An invalid value was specified for a query parameter on the request
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - integrations
+        - integrations:readonly
+      x-inin-requires-permissions:
+        type: ANY
+        permissions:
+        - integrations:integration:view
+      x-purecloud-method-name: getTextbotsBotsSearch
+definitions:
+  TextBotOutputPrompts:
+    type: object
+    required:
+    - outputLanguage
+    properties:
+      outputLanguage:
+        type: string
+        description: The ISO code of the output language for this prompt item.
+      textPrompts:
+        description: Text output prompts, if any.
+        $ref: '#/definitions/TextBotModeOutputPrompts'
+    description: Prompt information related to a bot flow turn.
+  AmazonLexRequest:
+    type: object
+    properties:
+      requestAttributes:
+        type: object
+        description: AttributeName/AttributeValue pairs of User Defined Request Attributes to be sent to the amazon bot See - https://docs.aws.amazon.com/lex/latest/dg/context-mgmt.html#context-mgmt-request-attribs
+        additionalProperties:
+          type: string
+      sessionAttributes:
+        type: object
+        description: AttributeName/AttributeValue pairs of Session Attributes to be sent to the amazon bot. See - https://docs.aws.amazon.com/lex/latest/dg/context-mgmt.html#context-mgmt-session-attribs
+        additionalProperties:
+          type: string
+  TextBotFlow:
+    type: object
+    required:
+    - id
+    properties:
+      id:
+        type: string
+        description: The Bot Flow ID.
+    description: Description of the Bot Flow.
+  TextBotTurnReference:
+    type: object
+    required:
+    - id
+    properties:
+      id:
+        type: string
+        description: The id of the turn.
+    description: A reference to a bot flow turn.
+  ConversationContentRequiredContactField:
+    type: object
+    required:
+    - contactField
+    properties:
+      contactField:
+        type: string
+        description: The name of the contact field
+        enum:
+        - Address
+        - Name
+        - Phone
+        - Email
+    description: Contact fields a merchant requires to complete a payment request.
+  TextBotUserInputEvent:
+    type: object
+    required:
+    - alternatives
+    - mode
+    properties:
+      mode:
+        type: string
+        description: The input mode.
+        enum:
+        - Text
+      alternatives:
+        type: array
+        description: The input alternatives.
+        items:
+          $ref: '#/definitions/TextBotUserInputAlternative'
+    description: Settings for an input event to the bot flow indicating user input is available.
+  TextBotFlowLaunchResponse:
+    type: object
+    required:
+    - id
+    properties:
+      id:
+        type: string
+        description: The session ID of the bot flow, used to send to subsequent turn requests
+    description: Information related to a successful launch of a bot flow. The ID will be used in subsequent turn requests of the bot flow.
+  ConversationContentDatePickerAvailableTime:
+    type: object
+    properties:
+      duration:
+        type: integer
+        format: int64
+        description: The duration of the scheduling event in seconds.
+      dateTime:
+        type: string
+        format: date-time
+        description: 'The date and time of the event being scheduled. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    description: A datetimepicker available time that a user can take.
+  ConversationContentQuickReplyV2:
+    type: object
+    required:
+    - actions
+    - title
+    properties:
+      title:
+        type: string
+        description: Text to show as the title of the quick reply.
+      actions:
+        type: array
+        description: An array of quick reply objects.
+        items:
+          $ref: '#/definitions/ConversationContentQuickReply'
+    description: Quick reply object V2.
+  ConversationContentCardAction:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Describes the type of action.
+        enum:
+        - Link
+        - Postback
+        - Unknown
+      text:
+        type: string
+        description: The response text from the button click.
+      payload:
+        type: string
+        description: Text to be returned as the payload from a ButtonResponse when a button is clicked. The payload and text are a combination which will have to be unique across each card and carousel in order to determine which button was clicked in that card or carousel.
+      url:
+        type: string
+        description: A URL of a web page to direct the user to.
+    description: A card action that a user can take.
+  ConversationContentButtonResponse:
+    type: object
+    required:
+    - payload
+    - text
+    properties:
+      originatingMessageId:
+        type: string
+        description: Reference to the ID of the original message (e.g., list picker) this button response is replying to.
+      type:
+        type: string
+        description: Describes the button that resulted in the Button Response.
+        enum:
+        - Button
+        - QuickReply
+        - DatePicker
+        - ListPicker
+        - Form
+      text:
+        type: string
+        description: The response text from the button click.
+      payload:
+        type: string
+        description: The response payload associated with the clicked button.
+    description: Button response object representing the click of a structured message button, such as a quick reply.
+  ConversationContentCarousel:
+    type: object
+    required:
+    - cards
+    properties:
+      cards:
+        type: array
+        description: An array of card objects.
+        items:
+          $ref: '#/definitions/ConversationContentCard'
+    description: Carousel content object.
+  ConversationContentStory:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Type of ephemeral story attachment.
+        enum:
+        - Mention
+        - Reply
+      url:
+        type: string
+        description: URL to the ephemeral story.
+      replyToId:
+        type: string
+        description: ID of the ephemeral story being replied to.
+    description: An ephemeral story.
+  ConversationNotificationTemplateBody:
+    type: object
+    required:
+    - parameters
+    properties:
+      text:
+        type: string
+        description: Body text. For WhatsApp, ignored.
+      parameters:
+        type: array
+        description: Template parameters for placeholders in template.
+        items:
+          $ref: '#/definitions/ConversationNotificationTemplateParameter'
+    description: Template body object.
+  ConversationContentIntroduction:
+    type: object
+    required:
+    - buttonText
+    - title
+    properties:
+      title:
+        type: string
+        description: Text to show in the title.
+      subtitle:
+        type: string
+        description: Text to show in the subtitle.
+      imageUrl:
+        type: string
+        description: URL of an image.
+      buttonText:
+        type: string
+        description: Text to show on the button.
+    description: Introduction content object.
+  ConversationNotificationTemplateFooter:
+    type: object
+    properties:
+      text:
+        type: string
+        description: Footer text. For WhatsApp, ignored.
+    description: Template footer object.
+  TextBotFlowMilestone:
+    type: object
+    required:
+    - dateReached
+    - id
+    - sequence
+    properties:
+      id:
+        type: string
+        description: The Milestone's ID.
+      dateReached:
+        type: string
+        format: date-time
+        description: 'The timestamp of when the milestone was reached. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+      sequence:
+        type: integer
+        format: int64
+        description: The sequence number of the milestone.
+  ConversationContentNotificationTemplate:
+    type: object
+    required:
+    - body
+    properties:
+      id:
+        type: string
+        description: The identifier of the message template in 'your-namespace@your-template-id/name' format. For External vendor (e.g WhatsApp), 'your-namespace@your-template-name'. For GenesysCloud canned response message template use 'cannedresponse' as your-namespace and use response ID as your-template-id (e.g. response ID=1234 then 'cannedresponse@1234')
+      language:
+        type: string
+        description: Template language.
+      header:
+        description: The template header.
+        $ref: '#/definitions/ConversationNotificationTemplateHeader'
+      body:
+        description: The template body.
+        $ref: '#/definitions/ConversationNotificationTemplateBody'
+      buttons:
+        type: array
+        description: Template buttons
+        items:
+          $ref: '#/definitions/ConversationNotificationTemplateButton'
+      footer:
+        description: The template footer.
+        $ref: '#/definitions/ConversationNotificationTemplateFooter'
+    description: Template notification object.
+  ConversationContentPaymentRequest:
+    type: object
+    required:
+    - countryCode
+    - currencyCode
+    - orderTotal
+    - paymentPlatform
+    properties:
+      paymentPlatform:
+        type: string
+        description: The payment platform being used (e.g. Apple Pay)
+        readOnly: true
+        enum:
+        - ApplePay
+      countryCode:
+        type: string
+        description: The merchant's two-letter ISO 3166 country code.
+      currencyCode:
+        type: string
+        description: The three-letter ISO 4217 currency code for the payment.
+      orderTotal:
+        type: number
+        format: double
+        description: The total price of the order.
+      lineItems:
+        type: array
+        description: The items that make up the order.
+        items:
+          $ref: '#/definitions/ConversationContentLineItem'
+      shippingOptions:
+        type: array
+        description: The available shipping options.
+        items:
+          $ref: '#/definitions/ConversationContentLineItem'
+      requiredContactFields:
+        type: array
+        description: Contact fields required to complete the order.
+        items:
+          $ref: '#/definitions/ConversationContentRequiredContactField'
+      receivedMessage:
+        description: The message prompt to complete a payment transaction.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+      replyMessage:
+        description: The reply message after the user has completed the payment transaction.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+    description: Payment Request object used to request payment from a customer.
+  TextBotFlowOutcome:
+    type: object
+    properties:
+      outcomeId:
+        type: string
+        description: The Flow Outcome ID.
+      outcomeValue:
+        type: string
+        description: The value of the FlowOutcome.
+        enum:
+        - SUCCESS
+        - FAILURE
+      dateStart:
+        type: string
+        format: date-time
+        description: 'The timestamp for when the Flow Outcome began. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+      dateEnd:
+        type: string
+        format: date-time
+        description: 'The timestamp for when the Flow Outcome finished. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+      milestones:
+        type: array
+        description: The Flow Milestones for the Flow Outcome.
+        items:
+          $ref: '#/definitions/TextBotFlowMilestone'
+    description: Flow Outcome data related to a bot flow which is exiting gracefully.
+  ConversationContentPaymentResponse:
+    type: object
+    required:
+    - originatingMessageId
+    - paymentStatus
+    properties:
+      originatingMessageId:
+        type: string
+        description: Reference to the ID of the original payment request message this response is for.
+      paymentStatus:
+        type: string
+        description: The status of the payment transaction.
+        enum:
+        - Completed
+        - Failed
+      failureReason:
+        type: string
+        description: The reason the payment request failed.
+    description: Payment response object representing the status of a payment transaction.
+  ConversationNotificationTemplateButton:
+    type: object
+    required:
+    - index
+    - type
+    properties:
+      type:
+        type: string
+        description: Specifies the type of the button.
+        enum:
+        - QuickReply
+        - PhoneNumber
+        - Url
+      text:
+        type: string
+        description: Button text message.
+      index:
+        type: integer
+        format: int64
+        description: index of the button in the list.
+      phoneNumber:
+        type: string
+        description: Button phone number.
+      url:
+        type: string
+        description: Button URL link.
+      payload:
+        type: string
+        description: Content of the payload to be included in the quick reply response when the button is pressed.
+      parameters:
+        type: array
+        description: Template parameters for placeholders in the button.
+        items:
+          $ref: '#/definitions/ConversationNotificationTemplateParameter'
+    description: Template button object
+  TextBotFlowLocation:
+    type: object
+    required:
+    - actionName
+    - actionNumber
+    - sequenceName
+    properties:
+      actionName:
+        type: string
+        description: The name of the action that was active when the event of interest happened.
+      actionNumber:
+        type: integer
+        format: int32
+        description: The number of the action that was active when the event of interest happened.
+      sequenceName:
+        type: string
+        description: The name of the state or task which was active when the event of interest happened.
+    description: Describes a flow location.
+  ConversationFormResponseComponent:
+    type: object
+    required:
+    - component
+    - id
+    properties:
+      id:
+        type: string
+        description: The id of the component in the original message.
+      component:
+        description: The content object capturing component response from the original message.
+        $ref: '#/definitions/ConversationFormResponseContent'
+    description: A response component from a form
+  ConversationContentInteractiveApplication:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the message app.
+      url:
+        type: string
+        description: Contains the data that is sent to the message app.
+      receivedMessage:
+        description: The message displayed in the received message bubble.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+      replyMessage:
+        description: The message displayed in the reply message bubble.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+    description: InteractiveApplication content object.
+  ConversationFormPage:
+    type: object
+    required:
+    - subtitle
+    - title
+    properties:
+      title:
+        type: string
+        description: Text to show in the title.
+      subtitle:
+        type: string
+        description: Text to show in the subtitle.
+      pageComponents:
+        type: array
+        description: Page components in this form page.
+        items:
+          $ref: '#/definitions/ConversationFormPageComponent'
+    description: Form page object.
+  BotSearchResponse:
+    type: object
+    required:
+    - botType
+    - id
+    - name
+    properties:
+      id:
+        type: string
+        description: The id of the bot
+      name:
+        type: string
+        description: The name of the bot
+      botType:
+        type: string
+        description: The provider of the bot
+        enum:
+        - GenesysBotConnector
+        - GenesysDialogEngine
+        - AmazonLex
+        - GoogleDialogFlowES
+        - GoogleDialogFlowCX
+        - NuanceDlg
+        - GenesysBotFlow
+        - GenesysDigitalBotFlow
+        - GenesysVoiceSurveyFlow
+        - GenesysDigitalBotConnector
+      description:
+        type: string
+        description: The description of the bot
+      virtualAgentEnabled:
+        type: boolean
+        description: Whether the bot is a virtual agent or not
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  TextBotInputOutputData:
+    type: object
+    required:
+    - variables
+    properties:
+      variables:
+        type: object
+        description: The input/output variables using the format as appropriate for the variable data type in the flow definition.
+        additionalProperties:
+          type: object
+    description: Input/Output data related to a bot flow which is exiting gracefully.
+  ConversationContentDatePicker:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Optional unique identifier to help map component replies to form messages where multiple DatePickers can be present.
+      title:
+        type: string
+        description: Text to show in the title.
+      subtitle:
+        type: string
+        description: Text to show in the description.
+      imageUrl:
+        type: string
+        description: URL of an image
+      dateMinimum:
+        type: string
+        format: date-time
+        description: 'The minimum Date Enabled in the datepicker calendar, format: ISO 8601.'
+      dateMaximum:
+        type: string
+        format: date-time
+        description: 'The maximum Date Enabled in the datepicker calendar, format: ISO 8601.'
+      location:
+        description: Location of the event.
+        $ref: '#/definitions/ConversationContentLocation'
+      availableTimes:
+        type: array
+        description: An array of available times objects.
+        items:
+          $ref: '#/definitions/ConversationContentDatePickerAvailableTime'
+      dateDisplayFormat:
+        type: string
+        description: The format the date should be presented to the end user.
+        enum:
+        - dayMonthYear
+        - monthDayYear
+        - yearMonthDay
+    description: DateTimePicker content object.
+  ConversationContentText:
+    type: object
+    required:
+    - body
+    properties:
+      type:
+        type: string
+        description: Type of text content (Deprecated).
+        enum:
+        - Text
+      body:
+        type: string
+        description: Text to be shown for this content element.
+    description: Message content element containing text only.
+  ConversationContentWheelPicker:
+    type: object
+    required:
+    - items
+    properties:
+      id:
+        type: string
+        description: Optional unique identifier to help map component replies to form messages where multiple Wheel Pickers can be present.
+      items:
+        type: array
+        description: The main text displayed for the item.
+        items:
+          $ref: '#/definitions/ConversationContentWheelPickerItem'
+    description: Wheel Picker object for representing single selection of selectable items.
+  ConversationContentNotificationResponse:
+    type: object
+    required:
+    - notificationStatus
+    - originatingMessageId
+    properties:
+      originatingMessageId:
+        type: string
+        description: Reference to the ID of the original outbound notification message this response is for (e.g. the Apple requestIdentifier).
+      referenceId:
+        type: string
+        description: The business context reference associated with the notification (e.g. order ID, case ID). May be empty if the provider does not return it.
+      notificationStatus:
+        type: string
+        description: The status of the notification response.
+        enum:
+        - Accepted
+        - Declined
+      notificationText:
+        type: string
+        description: The localized display text of the user's response (e.g. "Yes").
+    description: Inbound response to a notification, such as an Apple Invitations acceptance.
+  TextBotModeConstraints:
+    type: object
+    properties:
+      text:
+        description: Mode constraints that apply to text scenarios.
+        $ref: '#/definitions/TextBotTextModeConstraints'
+    description: Mode constraints to observe when operating on a bot flow.
+  TextBotsRichMediaInputEvent:
+    type: object
+    properties:
+      inputs:
+        type: array
+        description: The Rich Media content inputs.
+        items:
+          $ref: '#/definitions/ConversationMessageContent'
+      messages:
+        type: array
+        description: The Rich Media message events.
+        items:
+          $ref: '#/definitions/ConversationMessageEvent'
+    description: RichMedia Input to the bot.
+  TextBotFlowTurnRequest:
+    type: object
+    required:
+    - inputEventType
+    properties:
+      previousTurn:
+        description: The reference to a previous turn if appropriate, used to avoid race conditions.
+        $ref: '#/definitions/TextBotTurnReference'
+      inputEventType:
+        type: string
+        description: Indicates the type of input event being requested. If appropriate, fill out the matching user input object details on this request.
+        enum:
+        - NoOp
+        - UserInput
+        - RichMediaInput
+        - Error
+        - NoMatch
+        - NoInput
+        - UserDisconnect
+        - ClientSessionExpired
+      inputEventUserInput:
+        description: The data for the input event of this turn if it is a user input event. Only one inputEvent may be set.
+        $ref: '#/definitions/TextBotUserInputEvent'
+      inputEventRichMedia:
+        description: The data for the Rich Media input event of this turn if it is a Rich Media input event. Only one inputEvent may be set. Only ButtonResponse, PaymentResponse, Form, Presence are supported.
+        $ref: '#/definitions/TextBotsRichMediaInputEvent'
+      inputEventError:
+        description: The data for the input event of this turn if it is an error event. Only one inputEvent may be set.
+        $ref: '#/definitions/TextBotErrorInputEvent'
+    description: Settings for a turn request to a bot flow.
+  TextBotFlowTurnResponse:
+    type: object
+    required:
+    - id
+    - nextActionType
+    properties:
+      id:
+        type: string
+        description: The ID of the bot flow turn. If additional turns are needed, supply this ID as the previous turn in your next turn request.
+      previousTurn:
+        description: The reference to a previous turn, if applicable.
+        $ref: '#/definitions/TextBotTurnReference'
+      prompts:
+        description: The output prompts for this turn.
+        $ref: '#/definitions/TextBotOutputPrompts'
+      nextActionType:
+        type: string
+        description: Indicates the suggested next action. If appropriate, the matching output event object includes additional information.
+        enum:
+        - NoOp
+        - Disconnect
+        - WaitForInput
+        - Exit
+      nextActionDisconnect:
+        description: The next action directive for this turn if it is a Disconnect type.
+        $ref: '#/definitions/TextBotDisconnectAction'
+      nextActionWaitForInput:
+        description: The next action directive for this turn if it is a WaitForInput type.
+        $ref: '#/definitions/TextBotWaitForInputAction'
+      nextActionExit:
+        description: The next action directive for this turn if it is an Exit type.
+        $ref: '#/definitions/TextBotExitAction'
+    description: Information related to a success bot flow turn request.
+  ConversationEventVideo:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Describes the type of Video event.
+        enum:
+        - Offering
+        - OfferingExpired
+        - OfferingAccepted
+        - OfferingRejected
+      offeringId:
+        type: string
+        description: The Video offering ID.
+      jwt:
+        type: string
+        description: The Video offering JWT token.
+    description: A Video event.
+  Format:
+    type: object
+    properties:
+      flags:
+        type: array
+        description: 'The Set of prompt segment format flags i.e. each entry is a part of describing the overall format. E.g. "format": { "flags": [StringPlayChars] }'
+        uniqueItems: true
+        items:
+          type: string
+          enum:
+          - BoolPlayYesNo
+          - CurrencyAsMinorUnits
+          - CurrencyMajorUnitsOnly
+          - CurrencyMinorUnitsOnly
+          - CurrencyPlayDigits
+          - DateLongYear
+          - DateShortYear
+          - DateShortMonthAndDay
+          - DateDayOfWeekOnly
+          - DateDayOnly
+          - DateMonthOnly
+          - DateShortYearOnly
+          - DateLongYearOnly
+          - TimeTwentyFourHours
+          - TimeTwelveHours
+          - TimePartDays
+          - TimePartHours
+          - TimePartMinutes
+          - TimePartSeconds
+          - StringPlayChars
+          - NumberPlayDigits
+          - NumberOrdinal
+          - LanguageCaseArticle
+          - LanguageCaseAccusative
+          - LanguageCaseDative
+          - LanguageCaseGenitive
+          - LanguageCaseNominative
+          - LanguageQuantityPlural
+          - LanguageQuantitySingular
+          - LanguageGenderCommon
+          - LanguageGenderFeminine
+          - LanguageGenderMasculine
+          - LanguageGenderNeuter
+          - CaseArticle
+          - CaseAccusative
+          - CaseDative
+          - CaseGenitive
+          - CaseNominative
+          - QuantityPlural
+          - QuantitySingular
+          - GenderCommon
+          - GenderFeminine
+          - GenderMasculine
+          - GenderNeuter
+  ConversationContentWheelPickerItem:
+    type: object
+    required:
+    - id
+    - title
+    properties:
+      id:
+        type: string
+        description: Unique identifier for the wheel picker item
+      title:
+        type: string
+        description: The main text displayed for the item.
+      value:
+        type: string
+        description: The value of the item.
+    description: Represents a selectable item in a Wheel Picker
+  NuanceMixDlgSettings:
+    type: object
+    properties:
+      channelId:
+        type: string
+        description: The Nuance channel ID to use when launching the Nuance bot, which must one of the code names of the bot's registered input channels.
+      inputParameters:
+        type: object
+        description: Name/value pairs of input variables to be sent to the Nuance bot. The values must be in the appropriate format for the variable's type (see https://docs.mix.nuance.com/dialog-grpc/v1/#simple-variable-types for help)
+        additionalProperties:
+          type: object
+  ConversationMessageEvent:
+    type: object
+    required:
+    - eventType
+    properties:
+      eventType:
+        type: string
+        description: Type of this event element
+        enum:
+        - CoBrowse
+        - Typing
+        - Presence
+        - Video
+        - Unknown
+      coBrowse:
+        description: CoBrowse event.
+        $ref: '#/definitions/ConversationEventCoBrowse'
+      typing:
+        description: Typing event.
+        $ref: '#/definitions/ConversationEventTyping'
+      presence:
+        description: Presence event.
+        $ref: '#/definitions/ConversationEventPresence'
+      video:
+        description: Video event.
+        $ref: '#/definitions/ConversationEventVideo'
+    description: 'Message event element.  Examples include: system messages, typing indicators, cobrowse offerings.'
+  ConversationEventTyping:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Describes the type of Typing event.
+        enum:
+        - 'On'
+      duration:
+        type: integer
+        format: int64
+        description: The duration of the Typing event in milliseconds.
+    description: A Typing event.
+  TextBotWaitForInputAction:
+    type: object
+    required:
+    - modeConstraints
+    properties:
+      modeConstraints:
+        description: The mode constraints for the user input.
+        $ref: '#/definitions/TextBotModeConstraints'
+    description: Settings for a next-action of waiting for additional user input and sending the data as an input action to the bot flow.
+  ConversationPushProviderIntegration:
+    type: object
+    required:
+    - id
+    - provider
+    properties:
+      id:
+        type: string
+        description: Genesys Cloud Integration ID
+      provider:
+        type: string
+        description: Type of the integration
+        enum:
+        - FCM
+        - APNS
+    description: A Push provider integration.
+  GenesysBotConnector:
+    type: object
+    properties:
+      queryParameters:
+        type: object
+        description: User defined name/value parameters passed to the BotConnector bot.
+        additionalProperties:
+          type: string
+  Detail:
+    type: object
+    properties:
+      errorCode:
+        type: string
+      fieldName:
+        type: string
+      entityId:
+        type: string
+      entityName:
+        type: string
+  BotSearchResponseEntityListing:
+    type: object
+    properties:
+      entities:
+        type: array
+        items:
+          $ref: '#/definitions/BotSearchResponse'
+  TextBotChannel:
+    type: object
+    required:
+    - inputModes
+    - name
+    - outputModes
+    - userAgent
+    properties:
+      name:
+        type: string
+        description: The name of the channel.
+        enum:
+        - Chat
+        - Call
+        - Messaging
+      inputModes:
+        type: array
+        description: The input modes for the channel.
+        uniqueItems: true
+        items:
+          type: string
+          enum:
+          - Text
+      outputModes:
+        type: array
+        description: The output modes for the channel.
+        uniqueItems: true
+        items:
+          type: string
+          enum:
+          - Text
+      userAgent:
+        description: Information about the end user agent calling the bot flow.
+        $ref: '#/definitions/TextBotUserAgent'
+    description: Channel information relevant to a bot flow.
+  ConversationContentLocation:
+    type: object
+    properties:
+      url:
+        type: string
+        description: URL of the Location.
+      address:
+        type: string
+        description: Location postal address.
+      text:
+        type: string
+        description: Location name.
+      latitude:
+        type: number
+        format: double
+        description: Latitude of the location.
+      longitude:
+        type: number
+        format: double
+        description: Longitude of the location.
+    description: Location object.
+  ConversationContentInput:
+    type: object
+    required:
+    - isMultipleLine
+    - isRequired
+    properties:
+      id:
+        type: string
+        description: Unique identifier for the input
+      title:
+        type: string
+        description: The main text displayed for the input field(s).
+      subtitle:
+        type: string
+        description: Additional text providing more details about the input field(s).
+      placeholderText:
+        type: string
+        description: Placeholder text for input field(s).
+      isRequired:
+        type: boolean
+        description: Whether the input field(s) are required to be filled in.
+      isMultipleLine:
+        type: boolean
+        description: Whether the input should allow multiple lines of text.
+      keyboardType:
+        type: string
+        description: Type of keyboard to be shown.
+        enum:
+        - Default
+        - NumberPunctuation
+        - Number
+        - Phone
+        - Email
+        - Decimal
+        - Websearch
+        - URL
+      autoCompleteType:
+        type: string
+        description: A string value representing the keyboard and system information about the expected semantic meaning for the content that users enter.
+        enum:
+        - Prefix
+        - Name
+        - GivenName
+        - MiddleName
+        - FamilyName
+        - Suffix
+        - Nickname
+        - Title
+        - Organization
+        - Location
+        - StreetAddress
+        - Addressline1
+        - Addressline2
+        - City
+        - State
+        - Country
+        - PostalCode
+        - Username
+        - OneTimeCode
+        - Email
+        - Phone
+        - PaymentCardNumber
+        - PaymentCardExpiration
+        - PaymentCardExpirationMonth
+        - PaymentCardExpirationYear
+        - PaymentCardSecurityCode
+        - PaymentCardType
+        - PaymentCardName
+        - PaymentCardGivenName
+        - PaymentCardMiddleName
+        - PaymentCardFamilyName
+        - Birthdate
+        - BirthdateDay
+        - BirthdateMonth
+        - BirthdateYear
+        - DateTime
+        - FlightNumber
+        - Url
+    description: Single or multiline text input component.
+  ConversationEventPresence:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Describes the type of Presence event.
+        enum:
+        - Join
+        - Disconnect
+        - Clear
+        - SignIn
+        - SessionExpired
+        - Authenticate
+        - AuthenticateFailure
+        - AuthenticateCancel
+      receivedMessage:
+        description: A sign in prompt message for when the authenticate event is received.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+      replyMessage:
+        description: A reply message on authentication success.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+    description: A Presence event.
+  ConversationContentLineItem:
+    type: object
+    required:
+    - name
+    - price
+    properties:
+      name:
+        type: string
+        description: The display name for the item.
+      price:
+        type: number
+        format: double
+        description: The price of the item.
+      description:
+        type: string
+        description: Additional details about the item (e.g. the length of time to deliver for shipping options).
+      identifier:
+        type: string
+        description: A client defined value used to identify the item.
+    description: Item included in an order.
+  ConversationFormResponseContent:
+    type: object
+    properties:
+      contentType:
+        type: string
+        description: Type of this content element.
+        enum:
+        - ButtonResponse
+      buttonResponse:
+        description: Button response content.
+        $ref: '#/definitions/ConversationContentButtonResponse'
+    description: Message content element for form responses
+  TextBotErrorInputEvent:
+    type: object
+    required:
+    - code
+    - message
+    properties:
+      code:
+        type: string
+        description: The error code.
+      message:
+        type: string
+        description: The error message.
+    description: Settings for an input event to the bot flow indicating an error has occurred.
+  ConversationContentListPicker:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Optional unique identifier to help map component replies to form messages where multiple ListPickers can be present.
+      sections:
+        type: array
+        description: An array of sections in the List Picker.
+        items:
+          $ref: '#/definitions/ConversationContentListPickerSection'
+      replyMessage:
+        description: The reply message after the user has selected the options from the List Picker.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+      receivedMessage:
+        description: The message prompt to select options in the List Picker sections.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+    description: List Picker object for presenting multiple sections of selectable items.
+  PostTextRequest:
+    type: object
+    required:
+    - botId
+    - botSessionId
+    - integrationId
+    - postTextMessage
+    properties:
+      botId:
+        type: string
+        description: ID of the bot to send the text to.
+      botAlias:
+        type: string
+        description: Alias/Version of the bot
+      integrationId:
+        type: string
+        description: the integration service id for the bot's credentials
+      botSessionId:
+        type: string
+        description: GUID for this bot's session
+      postTextMessage:
+        description: Message to send to the bot
+        $ref: '#/definitions/PostTextMessage'
+      languageCode:
+        type: string
+        description: The language code the bot will run under
+      botSessionTimeoutMinutes:
+        type: integer
+        format: int32
+        description: Override timeout for the bot session. This should be greater than 10 minutes.
+      botChannels:
+        type: array
+        description: The channels this bot is utilizing
+        items:
+          type: string
+          enum:
+          - Call
+          - Callback
+          - Messaging
+          - Webchat
+      botCorrelationId:
+        type: string
+        description: Id for tracking the activity - this will be returned in the response
+      messagingPlatformType:
+        type: string
+        description: If the channels list contains a 'Messaging' item and the messaging platform is known, include it here to get accurate analytics
+        enum:
+        - Phone
+        - SMS
+        - GenesysWebWidget
+        - FacebookMessenger
+        - WeChat
+        - Whatsapp
+        - AppleBusinessChat
+        - Apple
+        - Telegram
+        - Slack
+        - Signal
+        - Line
+        - Discord
+        - TwitterDirectMessage
+        - Open
+        - Instagram
+        - Other
+        - Unknown
+      amazonLexRequest:
+        description: Provider specific settings, if any
+        $ref: '#/definitions/AmazonLexRequest'
+      googleDialogflow:
+        description: Provider specific settings, if any
+        $ref: '#/definitions/GoogleDialogflowCustomSettings'
+      genesysBotConnector:
+        description: Provider specific settings, if any
+        $ref: '#/definitions/GenesysBotConnector'
+      nuanceMixDlg:
+        description: Provider specific settings, if any
+        $ref: '#/definitions/NuanceMixDlgSettings'
+  TextBotFlowLaunchRequest:
+    type: object
+    required:
+    - channel
+    - externalSessionId
+    - flow
+    properties:
+      flow:
+        description: Specifies which Bot Flow to launch.
+        $ref: '#/definitions/TextBotFlow'
+      externalSessionId:
+        type: string
+        description: The ID of the external session that is associated with the bot flow.
+      conversationId:
+        type: string
+        description: A conversation ID to associate with the bot flow, if available.
+      inputData:
+        description: Input values to the flow. Valid values are defined by the flow's input JSON schema.
+        $ref: '#/definitions/TextBotInputOutputData'
+      channel:
+        description: Channel information relevant to the bot flow.
+        $ref: '#/definitions/TextBotChannel'
+      language:
+        type: string
+        description: The language that the bot will use in the session. Validated against list of supported languages and if the value is omitted or is invalid, the default language will be used.
+    description: Settings for launching an instance of a bot flow.
+  GoogleDialogflowCustomSettings:
+    type: object
+    properties:
+      environment:
+        type: string
+        description: If set this environment will be used to initiate the dialogflow bot, otherwise the default configuration will be used.  See https://cloud.google.com/dialogflow/docs/agents-versions
+      eventName:
+        type: string
+        description: If set this eventName will be used to initiate the dialogflow bot rather than language processing on the input text.  See https://cloud.google.com/dialogflow/es/docs/events-overview
+      webhookQueryParameters:
+        type: object
+        description: Parameters passed to the fulfillment webhook of the bot (if any).
+        additionalProperties:
+          type: string
+      eventInputParameters:
+        type: object
+        description: Parameters passed to the event input of the bot.
+        additionalProperties:
+          type: string
+  ConversationContentReceivedReplyMessage:
+    type: object
+    properties:
+      header:
+        type: string
+        description: Text to show in the header.
+      title:
+        type: string
+        description: Text to show in the title.
+      subtitle:
+        type: string
+        description: Text to show in the subtitle.
+      buttonLabel:
+        type: string
+        description: Text to show on the button label.
+      imageUrl:
+        type: string
+        description: URL of an image.
+    description: ReceivedReplyMessage content object.
+  Limit:
+    type: object
+    properties:
+      key:
+        type: string
+      namespace:
+        type: string
+        enum:
+        - web.deployments
+        - web.messaging
+        - agent.assistant
+        - agentic.virtual.agents
+        - analytics.agents
+        - analytics.alerting
+        - analytics.data.extraction
+        - analytics
+        - analytics.realtime
+        - analytics.reporting.settings
+        - anomaly.detection
+        - architect
+        - audiohook
+        - audiohook.monitor
+        - audit
+        - auth.api
+        - authorization
+        - automation.testing
+        - bots
+        - bots.voice
+        - business.rules
+        - callback
+        - case.management
+        - cobrowse
+        - content.management
+        - conversation
+        - copilot
+        - dataactions
+        - datatables
+        - directory
+        - dsar
+        - email
+        - employee.engagement
+        - event.orchestration
+        - external.contacts
+        - external.events.data.ingestion
+        - gamification
+        - gcv
+        - gdpr
+        - groups
+        - guides
+        - historical.adherence
+        - infrastructureascode
+        - integrations
+        - intent.miner
+        - internal.messaging
+        - journey
+        - knowledge
+        - language.understanding
+        - learning
+        - limit.registry
+        - marketplace
+        - mcp.analytics.aggregates
+        - mcp
+        - media.communications
+        - messaging
+        - micro.frontend
+        - multi.org
+        - notifications
+        - onboarding
+        - outbound
+        - platform.api
+        - predictive.routing
+        - presence
+        - quality
+        - recording
+        - response.management
+        - routing
+        - scim
+        - screen.monitoring
+        - search
+        - secondary.automation.testing
+        - skills
+        - social.media
+        - speech.and.text.analytics
+        - speech.integration
+        - supportability
+        - task.management
+        - telephony.configuration
+        - usage
+        - users
+        - users.rules
+        - voice.transcription
+        - webchat
+        - webhooks
+        - workforce.management.adherence
+        - workforce.management.agent.availability
+        - workforce.management.forecast
+        - workforce.management
+        - workforce.management.scheduling.preferences
+        - workforce.management.self.schedule
+        - workforce.management.shift.trading
+        - system
+      value:
+        type: integer
+        format: int64
+  ConversationContentQuickReply:
+    type: object
+    required:
+    - payload
+    - text
+    properties:
+      text:
+        type: string
+        description: Text to show inside the quick reply. This is also used as the response text after clicking on the quick reply.
+      payload:
+        type: string
+        description: Content of the payload included in the quick reply response. Could be an ID identifying the quick reply response.
+      image:
+        type: string
+        description: URL of an image associated with the quick reply.
+      action:
+        type: string
+        description: Specifies the type of action that is triggered upon clicking the quick reply.
+        enum:
+        - Message
+      summaryText:
+        type: string
+        description: Summary of what the quick reply relates to.
+    description: Quick reply object.
+  TextBotUserAgent:
+    type: object
+    required:
+    - name
+    properties:
+      name:
+        type: string
+        description: The name of the user agent.
+        enum:
+        - Phone
+        - SMS
+        - GenesysWebWidget
+        - FacebookMessenger
+        - WeChat
+        - Whatsapp
+        - AppleBusinessChat
+        - Apple
+        - Telegram
+        - Slack
+        - Signal
+        - Line
+        - Discord
+        - TwitterDirectMessage
+        - Open
+        - Instagram
+        - Other
+        - Unknown
+    description: Information about the caller executing a bot flow.
+  TextBotTranscript:
+    type: object
+    required:
+    - text
+    properties:
+      text:
+        type: string
+        description: The text of the transcript item.
+      confidence:
+        type: number
+        format: float
+        description: The confidence factor, expressed as a decimal between 0.0 and 1.0, of the transcript item.
+    description: Data for a single bot flow transcript.
+  TextBotModeOutputPrompts:
+    type: object
+    required:
+    - segments
+    properties:
+      segments:
+        type: array
+        description: The list of prompt segments.
+        items:
+          $ref: '#/definitions/TextBotPromptSegment'
+    description: Prompt information related to a bot flow turn.
+  ConversationContentAttachment:
+    type: object
+    required:
+    - mediaType
+    properties:
+      id:
+        type: string
+        description: Provider specific ID for attachment.
+      mediaType:
+        type: string
+        description: The type of attachment this instance represents.
+        enum:
+        - Image
+        - Video
+        - Audio
+        - File
+        - Link
+      url:
+        type: string
+        description: URL of the attachment.
+      mime:
+        type: string
+        description: Attachment mime type (https://www.iana.org/assignments/media-types/media-types.xhtml).
+      text:
+        type: string
+        description: Text associated with attachment such as an image caption.
+      sha256:
+        type: string
+        description: Secure hash of the attachment content.
+      filename:
+        type: string
+        description: Suggested file name for attachment.
+      contentSizeBytes:
+        type: integer
+        format: int64
+        description: Size in bytes of the attachment content.
+    description: Attachment object.
+  ConversationNotificationTemplateParameter:
+    type: object
+    required:
+    - text
+    properties:
+      name:
+        type: string
+        description: Parameter name.
+      text:
+        type: string
+        description: Parameter text value.
+    description: Template parameters for placeholders in template.
+  TextBotDisconnectAction:
+    type: object
+    required:
+    - reason
+    properties:
+      reason:
+        type: string
+        description: The reason for the disconnect.
+        enum:
+        - TriggeredByUser
+        - TriggeredByFlow
+        - SessionExpired
+        - Error
+        - RecognitionFailure
+      reasonExtendedInfo:
+        type: string
+        description: Extended information related to the reason, if available.
+      flowLocation:
+        description: Describes where in the Bot Flow the user was when the disconnect occurred.
+        $ref: '#/definitions/TextBotFlowLocation'
+      flowOutcomes:
+        type: array
+        description: The list of Flow Outcomes for the bot flow and their details.
+        items:
+          $ref: '#/definitions/TextBotFlowOutcome'
+    description: Settings for a next-action of disconnecting, including the reason code for the disconnect.
+  ConversationEventCoBrowse:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Describes the type of CoBrowse event.
+        enum:
+        - Offering
+        - OfferingExpired
+        - OfferingAccepted
+        - OfferingRejected
+      sessionId:
+        type: string
+        description: The CoBrowse session ID.
+      sessionJoinToken:
+        type: string
+        description: The CoBrowse session join token.
+    description: A CoBrowse event.
+  ConversationPushFailedMessageReferences:
+    type: object
+    required:
+    - id
+    properties:
+      id:
+        type: string
+        description: Unique ID of the message.
+    description: References of failed messages requiring a push.
+  ConversationContentListPickerSection:
+    type: object
+    properties:
+      title:
+        type: string
+        description: Required title for the section.
+      multipleSelection:
+        type: boolean
+        description: Whether multiple items can be selected in this section.
+      items:
+        type: array
+        description: List of items to choice from in the section
+        items:
+          $ref: '#/definitions/ConversationContentListPickerItem'
+    description: List Picker object for presenting a section of selectable items.
+  ConversationPushNotificationMessageLabel:
+    type: object
+    required:
+    - body
+    - title
+    properties:
+      title:
+        type: string
+        description: Title to use in the push for each language configured in the deploymentId
+      body:
+        type: string
+        description: Body to use in the push for each language configured in the deploymentId
+    description: A Push notification message label.
+  ConversationContentCard:
+    type: object
+    required:
+    - actions
+    - title
+    properties:
+      title:
+        type: string
+        description: Text to show in the title.
+      description:
+        type: string
+        description: Text to show in the description.
+      image:
+        type: string
+        description: URL of an image.
+      video:
+        type: string
+        description: URL of a video.
+      defaultAction:
+        description: The default button action.
+        $ref: '#/definitions/ConversationContentCardAction'
+      actions:
+        type: array
+        description: An array of action objects.
+        items:
+          $ref: '#/definitions/ConversationContentCardAction'
+    description: Card content object.
+  ConversationNotificationTemplateHeader:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Template header type.
+        enum:
+        - Text
+        - Media
+      text:
+        type: string
+        description: Header text. For WhatsApp, ignored.
+      media:
+        description: Media template header image.
+        $ref: '#/definitions/ConversationContentAttachment'
+      parameters:
+        type: array
+        description: Template parameters for placeholders in template.
+        items:
+          $ref: '#/definitions/ConversationNotificationTemplateParameter'
+    description: Template header object.
+  ConversationContentReaction:
+    type: object
+    required:
+    - count
+    properties:
+      reactionType:
+        type: string
+        description: Type of reaction.
+        enum:
+        - None
+        - Like
+        - Love
+        - Wow
+        - Haha
+        - Sad
+        - Angry
+        - Thankful
+        - Pride
+        - Care
+        - Share
+        - Comment
+        - View
+        - Rating
+      count:
+        type: integer
+        format: int32
+        description: Number of users that reacted this way to the message.
+    description: User reaction to public message.
+  TextBotExitAction:
+    type: object
+    required:
+    - reason
+    properties:
+      reason:
+        type: string
+        description: The reason for the exit.
+        enum:
+        - TriggeredByUser
+        - AgentRequestedByUser
+        - TriggeredByFlow
+        - Error
+        - RecognitionFailure
+      reasonExtendedInfo:
+        type: string
+        description: Extended information related to the reason, if available.
+      activeIntent:
+        type: string
+        description: The active intent at the time of the exit.
+      flowLocation:
+        description: Describes where in the Bot Flow the user was when the exit occurred.
+        $ref: '#/definitions/TextBotFlowLocation'
+      outputData:
+        description: The output data for the bot flow.
+        $ref: '#/definitions/TextBotInputOutputData'
+      flowOutcomes:
+        type: array
+        description: The list of Flow Outcomes for the bot flow and their details.
+        items:
+          $ref: '#/definitions/TextBotFlowOutcome'
+    description: Settings for a next-action of exiting the bot flow. Any output variables are available in the details.
+  ConversationContentListPickerItem:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Unique identifier for the list picker item
+      title:
+        type: string
+        description: The main text displayed for the item.
+      subtitle:
+        type: string
+        description: Additional text providing more details about the item.
+      imageUrl:
+        type: string
+        description: URL of an image to be displayed alongside the item.
+    description: Represents a selectable item in a list picker.
+  ConversationContentForm:
+    type: object
+    required:
+    - cannedResponseId
+    properties:
+      introduction:
+        description: The intro component, used to give an intro into what the form entails
+        $ref: '#/definitions/ConversationContentIntroduction'
+      formPages:
+        type: array
+        description: Form pages
+        items:
+          $ref: '#/definitions/ConversationFormPage'
+      receivedMessage:
+        description: The message prompt to fill out the form received.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+      replyMessage:
+        description: The reply message after the user has filled out the form received.
+        $ref: '#/definitions/ConversationContentReceivedReplyMessage'
+      showSummary:
+        type: boolean
+        description: Show summary at end of form submission.
+      response:
+        type: array
+        description: Content of the payload included in the Form response.
+        items:
+          $ref: '#/definitions/ConversationFormResponseComponent'
+      originatingMessageId:
+        type: string
+        description: Reference to the ID of the original message.
+      cannedResponseId:
+        type: string
+        description: The id of the canned response which was used to create the form.
+    description: Form content object.
+  ErrorBody:
+    type: object
+    properties:
+      message:
+        type: string
+      code:
+        type: string
+      status:
+        type: integer
+        format: int32
+      entityId:
+        type: string
+      entityName:
+        type: string
+      messageWithParams:
+        type: string
+      messageParams:
+        type: object
+        additionalProperties:
+          type: string
+      contextId:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/Detail'
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ErrorBody'
+      limit:
+        $ref: '#/definitions/Limit'
+  ConversationContentPush:
+    type: object
+    required:
+    - deviceToken
+    - deviceTokenId
+    - deviceType
+    - expiration
+    - failedMessages
+    - notificationMessage
+    - pushProviderIntegration
+    properties:
+      deviceType:
+        type: string
+        description: The device type used to send the push notification
+        enum:
+        - Android
+        - IOS
+      deviceTokenId:
+        type: string
+        description: Unique Id of the device token
+      deviceToken:
+        type: string
+        description: device token from the notification provider
+      failedMessages:
+        type: array
+        description: MessageIds failed to be sent which trigger the push event
+        items:
+          $ref: '#/definitions/ConversationPushFailedMessageReferences'
+      notificationMessage:
+        description: Title and body localized according to deployment
+        $ref: '#/definitions/ConversationPushNotificationMessageLabel'
+      pushProviderIntegration:
+        description: Push provider integrations details configured on the deployment
+        $ref: '#/definitions/ConversationPushProviderIntegration'
+      expiration:
+        type: integer
+        format: int64
+        description: The time to live of the pushed message
+    description: A Push object
+  TextBotPromptSegment:
+    type: object
+    required:
+    - text
+    - type
+    properties:
+      text:
+        type: string
+        description: The text of this prompt segment.
+      type:
+        type: string
+        description: The segment type which describes any semantics about the 'text' and also indicates which other field might include additional relevant info.
+        enum:
+        - Text
+        - RichMedia
+        - MessageEvent
+      format:
+        description: Additional details describing the segment’s contents, which the client should honour where possible.
+        $ref: '#/definitions/Format'
+      content:
+        type: array
+        description: Details to display Rich Media content. This is only populated when the segment 'type' is 'Rich Media'.
+        items:
+          $ref: '#/definitions/ConversationMessageContent'
+    description: Data for a single bot flow prompt segment.
+  ConversationMessageContent:
+    type: object
+    required:
+    - contentType
+    properties:
+      contentType:
+        type: string
+        description: Type of this content element.
+        enum:
+        - Reactions
+        - Attachment
+        - Location
+        - QuickReply
+        - Notification
+        - ButtonResponse
+        - Story
+        - Mention
+        - Card
+        - Carousel
+        - Text
+        - QuickReplyV2
+        - DatePicker
+        - InteractiveApplication
+        - ListPicker
+        - PaymentRequest
+        - PaymentResponse
+        - Push
+        - Form
+        - RoadsideAssistance
+        - RichLink
+        - NotificationResponse
+        - Unknown
+      location:
+        description: Location content.
+        $ref: '#/definitions/ConversationContentLocation'
+      attachment:
+        description: Attachment content.
+        $ref: '#/definitions/ConversationContentAttachment'
+      quickReply:
+        description: Quick reply content.
+        $ref: '#/definitions/ConversationContentQuickReply'
+      buttonResponse:
+        description: Button response content.
+        $ref: '#/definitions/ConversationContentButtonResponse'
+      template:
+        description: Template notification content.
+        $ref: '#/definitions/ConversationContentNotificationTemplate'
+      story:
+        description: Ephemeral story content.
+        $ref: '#/definitions/ConversationContentStory'
+      card:
+        description: Card content
+        $ref: '#/definitions/ConversationContentCard'
+      carousel:
+        description: Carousel content
+        $ref: '#/definitions/ConversationContentCarousel'
+      text:
+        description: Text content.
+        $ref: '#/definitions/ConversationContentText'
+      quickReplyV2:
+        description: Quick reply V2 content.
+        $ref: '#/definitions/ConversationContentQuickReplyV2'
+      reactions:
+        type: array
+        description: A set of reactions to a message.
+        items:
+          $ref: '#/definitions/ConversationContentReaction'
+      datePicker:
+        description: Date picker content.
+        $ref: '#/definitions/ConversationContentDatePicker'
+      interactiveApplication:
+        description: InteractiveApplication content.
+        $ref: '#/definitions/ConversationContentInteractiveApplication'
+      listPicker:
+        description: List picker content.
+        $ref: '#/definitions/ConversationContentListPicker'
+      paymentRequest:
+        description: Payment request content.
+        $ref: '#/definitions/ConversationContentPaymentRequest'
+      paymentResponse:
+        description: Payment response content.
+        $ref: '#/definitions/ConversationContentPaymentResponse'
+      push:
+        description: Push content.
+        $ref: '#/definitions/ConversationContentPush'
+      form:
+        description: Form content.
+        $ref: '#/definitions/ConversationContentForm'
+      notificationResponse:
+        description: Notification response content, e.g. an Apple Invitation acceptance.
+        $ref: '#/definitions/ConversationContentNotificationResponse'
+    description: Message content element. If contentType = "Attachment" only one item is allowed.
+  ConversationFormPageComponent:
+    type: object
+    properties:
+      formComponentType:
+        type: string
+        description: Type of this form component element
+        enum:
+        - ListPicker
+        - DatePicker
+        - WheelPicker
+        - Input
+      datePicker:
+        description: Date Picker content.
+        $ref: '#/definitions/ConversationContentDatePicker'
+      wheelPicker:
+        description: Wheel Picker content.
+        $ref: '#/definitions/ConversationContentWheelPicker'
+      listPicker:
+        description: List Picker content.
+        $ref: '#/definitions/ConversationContentListPicker'
+      input:
+        description: Input content.
+        $ref: '#/definitions/ConversationContentInput'
+    description: 'Form component element. Examples include: List Picker, Date Picker, Wheel Picker and Input text.'
+  PostTextResponse:
+    type: object
+    required:
+    - botState
+    properties:
+      botState:
+        type: string
+        description: The state of the bot after completion of the request
+        enum:
+        - Complete
+        - Failed
+        - MoreData
+      replyMessages:
+        type: array
+        description: The list of messages to respond with, if any
+        items:
+          $ref: '#/definitions/PostTextMessage'
+      intentName:
+        type: string
+        description: The name of the intent the bot is either processing or has processed, this will be blank if no intent could be detected.
+      slots:
+        type: object
+        description: Data parameters detected and filled by the bot.
+        additionalProperties:
+          type: string
+      botCorrelationId:
+        type: string
+        description: The optional ID specified in the request
+      amazonLex:
+        type: object
+        description: Raw data response from AWS (if called)
+        additionalProperties:
+          type: object
+      googleDialogFlow:
+        type: object
+        description: Raw data response from Google Dialogflow (if called)
+        additionalProperties:
+          type: object
+      genesysDialogEngine:
+        type: object
+        description: Raw data response from Genesys' Dialogengine (if called)
+        additionalProperties:
+          type: object
+      genesysBotConnector:
+        type: object
+        description: Raw data response from Genesys' BotConnector (if called)
+        additionalProperties:
+          type: object
+      nuanceMixDlg:
+        type: object
+        description: Raw data response from Nuance Mix Dlg (if called)
+        additionalProperties:
+          type: object
+  TextBotTextModeConstraints:
+    type: object
+    required:
+    - languagePreferences
+    properties:
+      languagePreferences:
+        type: array
+        description: The list of language preferences by their ISO language code.
+        items:
+          type: string
+      noInputTimeoutMilliseconds:
+        type: integer
+        format: int32
+        description: "The amount of time, in milliseconds, before the client should send the 'NoInput' event\n to trigger the \"no input\" bot response and handling on digital channels.\n Note: This optional field will only be returned for 'Digital Bot Flow' turns."
+    description: Mode constraints to observe when operating on a bot flow.
+  PostTextMessage:
+    type: object
+    required:
+    - type
+    properties:
+      type:
+        type: string
+        description: Message type
+        enum:
+        - Text
+        - Structured
+        - Receipt
+        - Event
+        - Message
+        - Unknown
+      text:
+        type: string
+        description: Message text. If type is structured, used as fallback for clients that do not support particular structured content
+      content:
+        type: array
+        description: A list of content elements in message
+        items:
+          $ref: '#/definitions/ConversationMessageContent'
+  TextBotUserInputAlternative:
+    type: object
+    required:
+    - transcript
+    properties:
+      transcript:
+        description: The user input transcript.
+        $ref: '#/definitions/TextBotTranscript'
+    description: User input data used in a bot flow turn.
+securityDefinitions:
+  PureCloud OAuth:
+    type: oauth2
+    authorizationUrl: https://login.mypurecloud.com/authorize
+    flow: implicit
+    scopes:
+      all: All the scopes
+  Guest Chat JWT:
+    type: apiKey
+    name: Authorization
+    in: header
+externalDocs:
+  description: PureCloud API Documentation
+  url: https://developer.genesys.cloud/

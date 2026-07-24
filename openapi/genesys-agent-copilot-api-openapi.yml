@@ -1,0 +1,855 @@
+swagger: '2.0'
+info:
+  description: With the PureCloud Platform API, you can control all aspects of your PureCloud environment. With the APIs you can access the system configuration, manage conversations and more.
+  version: v2
+  title: PureCloud Platform Agent Assistants Agent Copilot API
+  termsOfService: https://help.genesys.cloud/articles/terms-and-conditions/
+  contact:
+    name: PureCloud Developer Evangelists
+    url: https://developer.genesys.cloud/
+    email: DeveloperEvangelists@genesys.com
+  license:
+    name: UNLICENSED
+    url: https://help.genesys.cloud/articles/terms-and-conditions/
+host: api.mypurecloud.com
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+tags:
+- name: Agent Copilot
+  description: Manage agent copilot configuration.
+paths:
+  /api/v2/assistants/{assistantId}/copilot:
+    get:
+      tags:
+      - Agent Copilot
+      summary: Get copilot configuration of an assistant.
+      description: ''
+      operationId: getAssistantCopilot
+      produces:
+      - application/json
+      parameters:
+      - name: assistantId
+        in: path
+        description: Assistant ID
+        required: true
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Copilot'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - assistants
+        - assistants:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - assistants:copilot:view
+      x-purecloud-method-name: getAssistantCopilot
+    put:
+      tags:
+      - Agent Copilot
+      summary: Update agent copilot configuration
+      description: ''
+      operationId: putAssistantCopilot
+      produces:
+      - application/json
+      parameters:
+      - name: assistantId
+        in: path
+        description: Assistant ID
+        required: true
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/Copilot'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Copilot'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            client.failed.request: The client did not produce a request with valid end of stream signaling. This can be caused by poor network connection and/or client behavior.
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - assistants
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - assistants:copilot:edit
+      x-purecloud-method-name: putAssistantCopilot
+  /api/v2/assistants/copilot/featuresupport:
+    get:
+      tags:
+      - Agent Copilot
+      summary: Get information about the support of features for all the languages or only for a certain language.
+      description: ''
+      operationId: getAssistantsCopilotFeaturesupport
+      produces:
+      - application/json
+      parameters:
+      - name: language
+        in: query
+        description: Which language are the features supported for
+        required: false
+        type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/LanguageSupportResponse'
+        '400':
+          description: The request could not be understood by the server due to malformed syntax.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            bad.request: The request could not be understood by the server due to malformed syntax.
+            response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+            invalid.date: 'Dates must be specified as ISO-8601 strings. For example: yyyy-MM-ddTHH:mm:ss.SSSZ'
+            invalid.query.param.value: 'Value [%s] is not valid for parameter [%s]. Allowable values are: %s'
+            invalid.property: Value [%s] is not a valid property for object [%s]
+            constraint.validation: '%s'
+            invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+        '401':
+          description: No authentication bearer token specified in authorization header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.required: No authentication bearer token specified in authorization header.
+            ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
+            bad.credentials: Invalid login credentials.
+        '403':
+          description: You are not authorized to perform the requested action.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
+            app.not.authorized.for.scope: App not authorized to use scope %s
+            missing.permissions: 'Unable to perform the requested action. You are missing the following permission(s): %s'
+            not.authorized: You are not authorized to perform the requested action.
+            missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
+            authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
+            missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+        '404':
+          description: The requested resource was not found.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            not.found: The requested resource was not found.
+        '408':
+          description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+        '409':
+          description: The request conflicts with the current state of the target resource.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.conflict: The request conflicts with the current state of the target resource.
+        '413':
+          description: 'The request is over the size limit. Maximum bytes: %s'
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+        '415':
+          description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+        '429':
+          description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
+            too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+        '500':
+          description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+        '503':
+          description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+        '504':
+          description: The request timed out.
+          schema:
+            $ref: '#/definitions/ErrorBody'
+          x-inin-error-codes:
+            authentication.request.timeout: Authentication request timeout.
+            request.timeout: The request timed out.
+      security:
+      - PureCloud OAuth:
+        - assistants
+        - assistants:readonly
+      x-inin-requires-permissions:
+        type: ALL
+        permissions:
+        - assistants:copilot:view
+      x-purecloud-method-name: getAssistantsCopilotFeaturesupport
+definitions:
+  CopilotFallbackAction:
+    type: object
+    required:
+    - actionType
+    properties:
+      actionType:
+        type: string
+        description: Type of action.
+        enum:
+        - KnowledgeArticle
+        - CannedResponse
+        - Script
+        - KnowledgeSearch
+        - ThirdPartyAction
+      attributes:
+        type: object
+        description: Action specific attributes, if any. Maximum 100 of string key-value pair allowed.
+        additionalProperties:
+          type: string
+  RuleEngineConfig:
+    type: object
+    required:
+    - rules
+    properties:
+      rules:
+        type: array
+        description: List of rules to evaluate by the engine.
+        items:
+          $ref: '#/definitions/RuleConfig'
+      fallback:
+        description: Fallback configuration.
+        $ref: '#/definitions/Fallback'
+  LanguageSupportInfoRecord:
+    type: object
+    properties:
+      language:
+        type: string
+        description: Language of the copilot, e.g. 'en-US'.
+        readOnly: true
+      featureSupport:
+        type: array
+        description: Information about the support of features.
+        readOnly: true
+        items:
+          $ref: '#/definitions/FeatureSupport'
+  CopilotNluDomainVersion:
+    type: object
+    required:
+    - id
+    properties:
+      id:
+        type: string
+        description: Id of the NLU v3 domain version.
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  Fallback:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        description: Fallback actions are enabled.
+      actions:
+        type: array
+        description: Fallback actions.
+        items:
+          $ref: '#/definitions/CopilotFallbackAction'
+  AutoSearchConfig:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Auto search configuration type.
+        enum:
+        - ArticlesOnly
+        - ArticlesWithAnswerHighlights
+        - AnswerGeneration
+  KnowledgeAnswerConfig:
+    type: object
+    required:
+    - enabled
+    properties:
+      enabled:
+        type: boolean
+        description: Knowledge answer is enabled.
+  CopilotCondition:
+    type: object
+    required:
+    - conditionType
+    - conditionValues
+    properties:
+      conditionType:
+        type: string
+        description: Type of condition.
+        enum:
+        - Intent
+        - ConversationStart
+        - ConversationTransfer
+        - ConversationEnd
+      conditionValues:
+        type: array
+        description: Condition values.
+        items:
+          type: string
+  ErrorBody:
+    type: object
+    properties:
+      message:
+        type: string
+      code:
+        type: string
+      status:
+        type: integer
+        format: int32
+      entityId:
+        type: string
+      entityName:
+        type: string
+      messageWithParams:
+        type: string
+      messageParams:
+        type: object
+        additionalProperties:
+          type: string
+      contextId:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/Detail'
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ErrorBody'
+      limit:
+        $ref: '#/definitions/Limit'
+  WrapupCodePredictionConfig:
+    type: object
+    required:
+    - enabled
+    properties:
+      enabled:
+        type: boolean
+        description: Copilot generated wrapup code prediction is enabled.
+  NluConfig:
+    type: object
+    required:
+    - domain
+    - intentConfidenceThreshold
+    properties:
+      domain:
+        description: NLU domain.
+        $ref: '#/definitions/CopilotNluDomain'
+      intentConfidenceThreshold:
+        type: number
+        format: float
+        description: Minimum confidence value of accepting NLU intents, must be greater than 0 and less than 1.
+  CopilotNluDomain:
+    type: object
+    required:
+    - id
+    - useLatestVersion
+    properties:
+      id:
+        type: string
+        description: Id of the NLU domain.
+      useLatestVersion:
+        type: boolean
+        description: Use the latest version of the NLU domain. If false, version is required.
+      version:
+        description: NLU domain version.
+        $ref: '#/definitions/CopilotNluDomainVersion'
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  Copilot:
+    type: object
+    required:
+    - defaultLanguage
+    - liveOnQueue
+    properties:
+      enabled:
+        type: boolean
+        description: Copilot is enabled.
+        readOnly: true
+      liveOnQueue:
+        type: boolean
+        description: Copilot is live on selected queue.
+      defaultLanguage:
+        type: string
+        description: Copilot default language, e.g. [en-US, es-US, es-ES]. Once set, it can not be modified.
+      knowledgeAnswerConfig:
+        description: 'Deprecated: Please use AutoSearchConfig and ManualSearchConfig fields instead.'
+        $ref: '#/definitions/KnowledgeAnswerConfig'
+      summaryGenerationConfig:
+        description: Copilot generated summary configuration.
+        $ref: '#/definitions/SummaryGenerationConfig'
+      wrapupCodePredictionConfig:
+        description: Copilot generated wrapup code prediction configuration.
+        $ref: '#/definitions/WrapupCodePredictionConfig'
+      answerGenerationConfig:
+        description: 'Deprecated: Please use AutoSearchConfig and ManualSearchConfig fields instead.'
+        $ref: '#/definitions/AnswerGenerationConfig'
+      nluEngineType:
+        type: string
+        description: Language understanding engine type.
+        enum:
+        - NluV3
+      nluConfig:
+        description: NLU configuration.
+        $ref: '#/definitions/NluConfig'
+      ruleEngineConfig:
+        description: Rule engine configuration.
+        $ref: '#/definitions/RuleEngineConfig'
+      autoSearchConfig:
+        description: Auto search configuration.
+        $ref: '#/definitions/AutoSearchConfig'
+      manualSearchConfig:
+        description: Manual Search configuration.
+        $ref: '#/definitions/ManualSearchConfig'
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  LanguageSupportResponse:
+    type: object
+    properties:
+      languages:
+        type: array
+        description: List of feature support information by language.
+        readOnly: true
+        items:
+          $ref: '#/definitions/LanguageSupportInfoRecord'
+  CopilotAction:
+    type: object
+    required:
+    - actionType
+    properties:
+      actionType:
+        type: string
+        description: Type of action.
+        enum:
+        - KnowledgeArticle
+        - CannedResponse
+        - Script
+        - Checklist
+        - ThirdPartyAction
+      attributes:
+        type: object
+        description: Action specific attributes, if any. Maximum 100 of string key-value pair allowed.
+        additionalProperties:
+          type: string
+  FeatureSupport:
+    type: object
+    properties:
+      feature:
+        type: string
+        description: Feature name.
+        readOnly: true
+      supportLevel:
+        type: string
+        description: Level of support for a feature.
+        readOnly: true
+        enum:
+        - Supported
+        - NotSupported
+      details:
+        type: string
+        description: Additional information for the support of a feature.
+        readOnly: true
+  SummarySettingEntity:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The globally unique identifier for the object.
+        readOnly: true
+      selfUri:
+        type: string
+        format: uri
+        description: The URI for this object
+        readOnly: true
+  AnswerGenerationConfig:
+    type: object
+    required:
+    - enabled
+    properties:
+      enabled:
+        type: boolean
+        description: Answer generation is enabled.
+  Limit:
+    type: object
+    properties:
+      key:
+        type: string
+      namespace:
+        type: string
+        enum:
+        - web.deployments
+        - web.messaging
+        - agent.assistant
+        - agentic.virtual.agents
+        - analytics.agents
+        - analytics.alerting
+        - analytics.data.extraction
+        - analytics
+        - analytics.realtime
+        - analytics.reporting.settings
+        - anomaly.detection
+        - architect
+        - audiohook
+        - audiohook.monitor
+        - audit
+        - auth.api
+        - authorization
+        - automation.testing
+        - bots
+        - bots.voice
+        - business.rules
+        - callback
+        - case.management
+        - cobrowse
+        - content.management
+        - conversation
+        - copilot
+        - dataactions
+        - datatables
+        - directory
+        - dsar
+        - email
+        - employee.engagement
+        - event.orchestration
+        - external.contacts
+        - external.events.data.ingestion
+        - gamification
+        - gcv
+        - gdpr
+        - groups
+        - guides
+        - historical.adherence
+        - infrastructureascode
+        - integrations
+        - intent.miner
+        - internal.messaging
+        - journey
+        - knowledge
+        - language.understanding
+        - learning
+        - limit.registry
+        - marketplace
+        - mcp.analytics.aggregates
+        - mcp
+        - media.communications
+        - messaging
+        - micro.frontend
+        - multi.org
+        - notifications
+        - onboarding
+        - outbound
+        - platform.api
+        - predictive.routing
+        - presence
+        - quality
+        - recording
+        - response.management
+        - routing
+        - scim
+        - screen.monitoring
+        - search
+        - secondary.automation.testing
+        - skills
+        - social.media
+        - speech.and.text.analytics
+        - speech.integration
+        - supportability
+        - task.management
+        - telephony.configuration
+        - usage
+        - users
+        - users.rules
+        - voice.transcription
+        - webchat
+        - webhooks
+        - workforce.management.adherence
+        - workforce.management.agent.availability
+        - workforce.management.forecast
+        - workforce.management
+        - workforce.management.scheduling.preferences
+        - workforce.management.self.schedule
+        - workforce.management.shift.trading
+        - system
+      value:
+        type: integer
+        format: int64
+  SummaryGenerationConfig:
+    type: object
+    required:
+    - enabled
+    properties:
+      enabled:
+        type: boolean
+        description: Copilot generated summary is enabled.
+      summarySetting:
+        description: Configured summary setting object.
+        $ref: '#/definitions/SummarySettingEntity'
+  RuleConfig:
+    type: object
+    required:
+    - enabled
+    - rule
+    properties:
+      id:
+        type: string
+        description: Rule ID.
+      enabled:
+        type: boolean
+        description: Rule enabled.
+      rule:
+        description: Rule configuration.
+        $ref: '#/definitions/CopilotRule'
+  ManualSearchConfig:
+    type: object
+    properties:
+      articlesWithAnswerHighlights:
+        type: boolean
+        description: Articles with answer highlights.
+      answerGeneration:
+        type: boolean
+        description: Answer generation.
+  CopilotRule:
+    type: object
+    required:
+    - actions
+    - conditions
+    properties:
+      conditions:
+        type: array
+        description: 'List of conditions to execute actions, must have at least 1 element and maximum 100 elements. Operator in case of multiple conditions: ''OR''.'
+        items:
+          $ref: '#/definitions/CopilotCondition'
+      actions:
+        type: array
+        description: List of actions to execute, must have at least 1 element and maximum 100 elements.
+        items:
+          $ref: '#/definitions/CopilotAction'
+  Detail:
+    type: object
+    properties:
+      errorCode:
+        type: string
+      fieldName:
+        type: string
+      entityId:
+        type: string
+      entityName:
+        type: string
+securityDefinitions:
+  PureCloud OAuth:
+    type: oauth2
+    authorizationUrl: https://login.mypurecloud.com/authorize
+    flow: implicit
+    scopes:
+      all: All the scopes
+  Guest Chat JWT:
+    type: apiKey
+    name: Authorization
+    in: header
+externalDocs:
+  description: PureCloud API Documentation
+  url: https://developer.genesys.cloud/

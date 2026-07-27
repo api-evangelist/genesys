@@ -1,0 +1,38 @@
+generated: '2026-07-19'
+method: searched
+source: https://developer.genesys.cloud/devapps/cli/
+name: Genesys Cloud CLI (gc)
+repo: https://github.com/MyPureCloud/platform-client-sdk-cli
+docs: https://developer.genesys.cloud/api/rest/command-line-interface/
+description: >-
+  Standalone Go-based command-line interface for the Genesys Cloud Platform API,
+  auto-generated from the same OpenAPI definition as the SDKs. Every public API
+  resource is addressable as a `gc <resource> <verb>` command.
+binary: gc
+install:
+- method: homebrew
+  command: brew install mypurecloud/homebrew-tap/gc
+- method: linux-script
+  command: curl -s https://sdk-cdn.mypurecloud.com/external/go-cli/linux/dl/install.sh | sudo bash
+- method: go
+  command: go install github.com/mypurecloud/platform-client-sdk-cli/build/gc@latest
+auth:
+  grants: [client_credentials, implicit, pkce]
+  profile_command: gc profiles new
+command_families:
+- users
+- conversations
+- routing
+- analytics
+- telephony
+- architect
+- outbound
+- authorization
+- integrations
+key_flows:
+- name: List users
+  command: gc users list --autopaginate
+- name: Create a profile
+  command: gc profiles new
+- name: Run any operation
+  command: gc <resource> <verb> [flags]

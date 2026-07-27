@@ -1,0 +1,50 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/genesys-platform-api-openapi-original.json
+format: genesys-error-envelope
+envelope:
+  fields: [status, code, message, messageParams, contextId, details, errors]
+  content_type: application/json
+notes: >-
+  Derived from the HTTP status responses declared uniformly across the 3,180
+  Platform API operations. Genesys returns a structured JSON error body (not
+  RFC 9457 problem+json) carrying a machine-readable `code`, human `message`,
+  and a `contextId` for support correlation.
+problems:
+- status: 400
+  title: Bad Request
+  remediation: Validate request payload and parameters against the OpenAPI schema.
+- status: 401
+  title: Unauthorized
+  remediation: Provide a valid OAuth 2 Bearer token.
+- status: 403
+  title: Forbidden
+  remediation: Ensure the OAuth client/user has the required permissions and scopes.
+- status: 404
+  title: Not Found
+  remediation: Verify the resource id and region host.
+- status: 408
+  title: Request Timeout
+- status: 409
+  title: Conflict
+  remediation: Resolve the version/state conflict and retry.
+- status: 410
+  title: Gone
+  remediation: The resource or endpoint has been removed; consult the changelog.
+- status: 413
+  title: Payload Too Large
+- status: 415
+  title: Unsupported Media Type
+- status: 422
+  title: Unprocessable Entity
+- status: 429
+  title: Too Many Requests
+  remediation: Honor the Retry-After header; reduce request rate per token/org.
+- status: 500
+  title: Internal Server Error
+- status: 501
+  title: Not Implemented
+- status: 503
+  title: Service Unavailable
+- status: 504
+  title: Gateway Timeout

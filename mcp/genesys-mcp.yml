@@ -1,0 +1,29 @@
+generated: '2026-07-19'
+method: searched
+status: community
+source: https://github.com/MakingChatbots/genesys-cloud-mcp-server
+notes: >-
+  Genesys does not (as of this writing) publish an official first-party hosted
+  MCP server; it publishes a "What is Model Context Protocol" explainer only.
+  A well-maintained community MCP server for the Genesys Cloud Platform API
+  exists (MakingChatbots/genesys-cloud-mcp-server), exposing contact-center
+  analytics and conversation tools. Listed here as the discoverable MCP surface;
+  candidate tools below map to real Platform API operations.
+server:
+  name: genesys-cloud-mcp-server
+  transport: stdio
+  repo: https://github.com/MakingChatbots/genesys-cloud-mcp-server
+  official: false
+tools:
+- name: search_queues
+  description: Search for routing queues by name (wildcards supported)
+  source_operation: openapi/genesys-platform-api-openapi-original.json#getRoutingQueues
+- name: query_conversation_details
+  description: Query conversation detail records
+  source_operation: openapi/genesys-platform-api-openapi-original.json#postAnalyticsConversationsDetailsQuery
+- name: query_conversation_aggregates
+  description: Query aggregated conversation metrics
+  source_operation: openapi/genesys-platform-api-openapi-original.json#postAnalyticsConversationsAggregatesQuery
+- name: get_conversation
+  description: Retrieve a single conversation
+  source_operation: openapi/genesys-platform-api-openapi-original.json#getConversation

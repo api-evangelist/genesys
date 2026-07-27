@@ -1,0 +1,51 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/genesys-platform-api-openapi-original.json
+notes: >-
+  Core entity graph for the Genesys Cloud Platform API, derived from the top
+  service domains (tags) and their id-reference relationships across the
+  4,801 schema definitions. Representative, not exhaustive.
+entities:
+- name: Organization
+  domain: Organization
+- name: User
+  domain: Users
+  relationships:
+  - {type: belongs_to, target: Division, via: division}
+  - {type: has_many, target: RoutingQueue, via: queues}
+- name: Division
+  domain: Authorization
+- name: Conversation
+  domain: Conversations
+  relationships:
+  - {type: has_many, target: Participant, via: participants}
+  - {type: belongs_to, target: RoutingQueue, via: queueId}
+- name: Participant
+  domain: Conversations
+  relationships:
+  - {type: belongs_to, target: User, via: userId}
+- name: RoutingQueue
+  domain: Routing
+  relationships:
+  - {type: has_many, target: User, via: members}
+  - {type: belongs_to, target: Division, via: division}
+- name: Flow
+  domain: Architect
+- name: OutboundCampaign
+  domain: Outbound
+  relationships:
+  - {type: belongs_to, target: ContactList, via: contactList}
+- name: ContactList
+  domain: Outbound
+- name: Knowledgebase
+  domain: Knowledge
+- name: AnalyticsQuery
+  domain: Analytics
+  relationships:
+  - {type: belongs_to, target: Conversation, via: conversationId}
+- name: Edge
+  domain: Telephony Providers Edge
+- name: WorkforceManagementUnit
+  domain: Workforce Management
+  relationships:
+  - {type: has_many, target: User, via: agents}

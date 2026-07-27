@@ -1,0 +1,38 @@
+generated: '2026-07-19'
+method: searched
+source: live probe of /.well-known/ across Genesys hosts
+notes: >-
+  Probed api.mypurecloud.com, login.mypurecloud.com, developer.genesys.cloud,
+  and www.genesys.com. Only login.mypurecloud.com serves real .well-known
+  documents; developer.genesys.cloud returns its SPA HTML shell (200) for every
+  path, which is not a real well-known document and is recorded as such.
+hosts:
+- host: https://login.mypurecloud.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: genesys-security.txt
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: genesys-oauth-authorization-server.json
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://api.mypurecloud.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+- host: https://www.genesys.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+- host: https://developer.genesys.cloud
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    note: SPA HTML shell, not a real security.txt

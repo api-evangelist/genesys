@@ -1,0 +1,37 @@
+generated: '2026-07-19'
+method: searched
+spec_type: Webhooks
+source: https://developer.genesys.cloud/notificationsalerts/notifications/
+notes: >-
+  Genesys Cloud exposes an event surface through the Notifications API — clients
+  open a websocket channel and subscribe to topics that stream real-time events
+  (conversation state, presence, routing, analytics, workforce management, etc.).
+  Events can also be delivered to AWS EventBridge via the Genesys Cloud
+  EventBridge integration. There is no published AsyncAPI document; the event
+  surface is captured here as a webhook/streaming catalog.
+transport:
+  primary: websocket (Notifications API channels)
+  eventbridge: AWS EventBridge integration
+operations:
+- name: getNotificationsChannels
+  description: List notification channels
+  source_operation: openapi/genesys-platform-api-openapi-original.json#getNotificationsChannels
+- name: postNotificationsChannels
+  description: Create a notification channel (websocket)
+  source_operation: openapi/genesys-platform-api-openapi-original.json#postNotificationsChannels
+- name: postNotificationsChannelSubscriptions
+  description: Add topic subscriptions to a channel
+  source_operation: openapi/genesys-platform-api-openapi-original.json#postNotificationsChannelSubscriptions
+- name: putNotificationsChannelSubscriptions
+  description: Replace the topic subscriptions on a channel
+  source_operation: openapi/genesys-platform-api-openapi-original.json#putNotificationsChannelSubscriptions
+topic_families:
+- conversations (v2.conversations.*)
+- users presence and routing status (v2.users.*)
+- routing queues (v2.routing.queues.*)
+- analytics (v2.analytics.*)
+- workforce management (v2.workforcemanagement.*)
+docs:
+  notifications: https://developer.genesys.cloud/notificationsalerts/notifications/
+  available_topics: https://developer.genesys.cloud/notificationsalerts/notifications/available-topics
+  eventbridge: https://developer.genesys.cloud/notificationsalerts/notifications/event-bridge

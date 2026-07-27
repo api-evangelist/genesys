@@ -1,0 +1,35 @@
+generated: '2026-07-19'
+method: searched
+source: https://developer.genesys.cloud/platform/api/
+notes: Cross-cutting request/response semantics for the Genesys Cloud Platform API, from the developer center and the OpenAPI.
+authentication:
+  style: OAuth 2 Bearer token
+  docs: https://developer.genesys.cloud/authorization/platform-auth/
+  cross_ref: authentication/genesys-authentication.yml
+idempotency:
+  supported: false
+  notes: The Platform API does not document a general-purpose idempotency-key header.
+pagination:
+  style: page-number
+  params: [pageNumber, pageSize]
+  response_fields: [entities, pageSize, pageNumber, total, pageCount, firstUri, selfUri, nextUri, previousUri, lastUri]
+  cursor_variant:
+    notes: High-volume analytics and some entity-search endpoints support cursor paging via a `cursor` field.
+versioning:
+  scheme: uri-path
+  current: v2
+  cross_ref: lifecycle/genesys-lifecycle.yml
+request_tracing:
+  correlation_header: ININ-Correlation-Id
+  notes: Every response returns an ININ-Correlation-Id header for support/trace correlation.
+rate_limiting:
+  status_code: 429
+  retry_after_header: Retry-After
+  docs: https://developer.genesys.cloud/platform/api/rate-limits
+  notes: Requests are rate limited per OAuth token / organization; 429 responses include Retry-After.
+error_envelope:
+  fields: [status, code, message, messageParams, contextId, details, errors]
+  cross_ref: errors/genesys-problem-types.yml
+events:
+  surface: Notifications (websocket channels) + AWS EventBridge integration
+  cross_ref: asyncapi/genesys-notifications-webhooks.yml

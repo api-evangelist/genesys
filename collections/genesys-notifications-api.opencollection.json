@@ -1,0 +1,180 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Notifications API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Notifications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get available notification topics.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/notifications/availabletopics",
+            "params": [
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              },
+              {
+                "name": "includePreview",
+                "value": "",
+                "type": "query",
+                "description": "Whether or not to include Preview topics"
+              }
+            ]
+          },
+          "docs": "Get available notification topics."
+        },
+        {
+          "info": {
+            "name": "The list of existing channels",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/notifications/channels",
+            "params": [
+              {
+                "name": "includechannels",
+                "value": "",
+                "type": "query",
+                "description": "Show user's channels for this specific token or across all tokens for this user and app.  Channel Ids for other access tokens will not be shown, but will be presented to show their existence."
+              }
+            ]
+          },
+          "docs": "The list of existing channels"
+        },
+        {
+          "info": {
+            "name": "Create a new channel",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/notifications/channels"
+          },
+          "docs": "There is a limit of 20 channels per user/app combination. Creating a 21st channel will remove the channel with oldest last used date. Channels without an active connection will be removed first."
+        },
+        {
+          "info": {
+            "name": "Verify a channel still exists and is valid",
+            "type": "http"
+          },
+          "http": {
+            "method": "HEAD",
+            "url": "{{baseUrl}}/api/v2/notifications/channels/:channelId",
+            "params": [
+              {
+                "name": "channelId",
+                "value": "",
+                "type": "path",
+                "description": "Channel ID"
+              }
+            ]
+          },
+          "docs": "Returns a 200 OK if channel exists, and a 404 Not Found if it doesn't"
+        },
+        {
+          "info": {
+            "name": "The list of all subscriptions for this channel",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/notifications/channels/:channelId/subscriptions",
+            "params": [
+              {
+                "name": "channelId",
+                "value": "",
+                "type": "path",
+                "description": "Channel ID"
+              }
+            ]
+          },
+          "docs": "The list of all subscriptions for this channel"
+        },
+        {
+          "info": {
+            "name": "Add a list of subscriptions to the existing list of subscriptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/notifications/channels/:channelId/subscriptions",
+            "params": [
+              {
+                "name": "channelId",
+                "value": "",
+                "type": "path",
+                "description": "Channel ID"
+              },
+              {
+                "name": "ignoreErrors",
+                "value": "",
+                "type": "query",
+                "description": "Optionally prevent throwing of errors for failed permissions checks."
+              }
+            ]
+          },
+          "docs": "Add a list of subscriptions to the existing list of subscriptions"
+        },
+        {
+          "info": {
+            "name": "Replace the current list of subscriptions with a new list.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/notifications/channels/:channelId/subscriptions",
+            "params": [
+              {
+                "name": "channelId",
+                "value": "",
+                "type": "path",
+                "description": "Channel ID"
+              },
+              {
+                "name": "ignoreErrors",
+                "value": "",
+                "type": "query",
+                "description": "Optionally prevent throwing of errors for failed permissions checks."
+              }
+            ]
+          },
+          "docs": "Replace the current list of subscriptions with a new list."
+        },
+        {
+          "info": {
+            "name": "Remove all subscriptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/notifications/channels/:channelId/subscriptions",
+            "params": [
+              {
+                "name": "channelId",
+                "value": "",
+                "type": "path",
+                "description": "Channel ID"
+              }
+            ]
+          },
+          "docs": "Remove all subscriptions"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

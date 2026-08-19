@@ -1,0 +1,973 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Learning API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Learning",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Score learning assessment for preview",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/assessments/scoring"
+          },
+          "docs": "Score learning assessment for preview"
+        },
+        {
+          "info": {
+            "name": "Retrieve aggregated assignment data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/aggregates/query"
+          },
+          "docs": "Retrieve aggregated assignment data"
+        },
+        {
+          "info": {
+            "name": "Get Learning Assignment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/:assignmentId",
+            "params": [
+              {
+                "name": "assignmentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of Learning Assignment"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Fields to expand in response"
+              }
+            ]
+          },
+          "docs": "Permission not required if you are the assigned user of the learning assignment"
+        },
+        {
+          "info": {
+            "name": "Update Learning Assignment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/:assignmentId",
+            "params": [
+              {
+                "name": "assignmentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of Learning Assignment"
+              }
+            ]
+          },
+          "docs": "Update Learning Assignment"
+        },
+        {
+          "info": {
+            "name": "Delete a learning assignment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/:assignmentId",
+            "params": [
+              {
+                "name": "assignmentId",
+                "value": "",
+                "type": "path",
+                "description": "The Learning Assignment ID"
+              }
+            ]
+          },
+          "docs": "Delete a learning assignment"
+        },
+        {
+          "info": {
+            "name": "List of Learning module Assignments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/assignments",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the ID of the learning module. Fetch assignments for learning module ID"
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the range of dueDates to be queried. Milliseconds will be truncated. A maximum of 1 year can be specified in the range. End date is not inclusive. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss"
+              },
+              {
+                "name": "completionInterval",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the range of completion dates to be used for filtering. A maximum of 1 year can be specified in the range. End date is not inclusive. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss"
+              },
+              {
+                "name": "overdue",
+                "value": "",
+                "type": "query",
+                "description": "Specifies if only the non-overdue (overdue is \"False\") or overdue (overdue is \"True\") assignments are returned. If overdue is \"Any\" or if the overdue parameter is not supplied, all assignments are returned"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pass",
+                "value": "",
+                "type": "query",
+                "description": "Specifies if only the failed (pass is \"False\") or passed (pass is \"True\") assignments (completed with assessment)are returned. If pass is \"Any\" or if the pass parameter is not supplied, all assignments are returned"
+              },
+              {
+                "name": "minPercentageScore",
+                "value": "",
+                "type": "query",
+                "description": "The minimum assessment score for an assignment (completed with assessment) to be included in the results (inclusive)"
+              },
+              {
+                "name": "maxPercentageScore",
+                "value": "",
+                "type": "query",
+                "description": "The maximum assessment score for an assignment (completed with assessment) to be included in the results (inclusive)"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Specifies result set sort order; if not specified, default sort order is descending (Desc)"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Specifies which field to sort the results by, default sort is by recommendedCompletionDate"
+              },
+              {
+                "name": "userId",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the list of user IDs to be queried, up to 100 user IDs."
+              },
+              {
+                "name": "types",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the module types to filter by. Informational, AssessedContent and Assessment are deprecated"
+              },
+              {
+                "name": "states",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the assignment states to filter by"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the expand option for returning additional information"
+              }
+            ]
+          },
+          "docs": "Either moduleId or user value is required"
+        },
+        {
+          "info": {
+            "name": "Create Learning Assignment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/assignments"
+          },
+          "docs": "Create Learning Assignment"
+        },
+        {
+          "info": {
+            "name": "Reschedule Learning Assignment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/:assignmentId/reschedule",
+            "params": [
+              {
+                "name": "assignmentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of Learning Assignment"
+              }
+            ]
+          },
+          "docs": "Reschedule Learning Assignment"
+        },
+        {
+          "info": {
+            "name": "List of Learning Assignments assigned to current user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/me",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the ID of the learning module. Fetch assignments for learning module ID"
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the range of dueDates to be queried. Milliseconds will be truncated. A maximum of 1 year can be specified in the range. End date is not inclusive. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss"
+              },
+              {
+                "name": "completionInterval",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the range of completion dates to be used for filtering. A maximum of 1 year can be specified in the range. End date is not inclusive. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss"
+              },
+              {
+                "name": "overdue",
+                "value": "",
+                "type": "query",
+                "description": "Specifies if only the non-overdue (overdue is \"False\") or overdue (overdue is \"True\") assignments are returned. If overdue is \"Any\" or if the overdue parameter is not supplied, all assignments are returned"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pass",
+                "value": "",
+                "type": "query",
+                "description": "Specifies if only the failed (pass is \"False\") or passed (pass is \"True\") assignments (completed with assessment)are returned. If pass is \"Any\" or if the pass parameter is not supplied, all assignments are returned"
+              },
+              {
+                "name": "minPercentageScore",
+                "value": "",
+                "type": "query",
+                "description": "The minimum assessment score for an assignment (completed with assessment) to be included in the results (inclusive)"
+              },
+              {
+                "name": "maxPercentageScore",
+                "value": "",
+                "type": "query",
+                "description": "The maximum assessment score for an assignment (completed with assessment) to be included in the results (inclusive)"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Specifies result set sort order; if not specified, default sort order is descending (Desc)"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Specifies which field to sort the results by, default sort is by recommendedCompletionDate"
+              },
+              {
+                "name": "types",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the module types to filter by. Informational, AssessedContent and Assessment are deprecated"
+              },
+              {
+                "name": "states",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the assignment states to filter by"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the expand option for returning additional information"
+              }
+            ]
+          },
+          "docs": "List of Learning Assignments assigned to current user"
+        },
+        {
+          "info": {
+            "name": "Reset Learning Assignment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/:assignmentId/reset",
+            "params": [
+              {
+                "name": "assignmentId",
+                "value": "",
+                "type": "path",
+                "description": "The Learning Assignment ID"
+              }
+            ]
+          },
+          "docs": "This will reset the state of the assignment to 'Assigned' and remove the version of Learning module associated with the assignment"
+        },
+        {
+          "info": {
+            "name": "Reassign Learning Assignment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/:assignmentId/reassign",
+            "params": [
+              {
+                "name": "assignmentId",
+                "value": "",
+                "type": "path",
+                "description": "The Learning Assignment ID"
+              }
+            ]
+          },
+          "docs": "This will reassign the state of the assignment to 'Assigned' and update the assignment to the latest version of the module"
+        },
+        {
+          "info": {
+            "name": "Add multiple learning assignments",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/bulkadd"
+          },
+          "docs": "Add multiple learning assignments"
+        },
+        {
+          "info": {
+            "name": "Remove multiple Learning Assignments",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/bulkremove"
+          },
+          "docs": "Remove multiple Learning Assignments"
+        },
+        {
+          "info": {
+            "name": "Get Learning Assignment Step",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/:assignmentId/steps/:stepId",
+            "params": [
+              {
+                "name": "assignmentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of Learning Assignment"
+              },
+              {
+                "name": "stepId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of Learning Assignment Step"
+              },
+              {
+                "name": "shareableContentObjectId",
+                "value": "",
+                "type": "query",
+                "description": "The ID of SCO to load"
+              },
+              {
+                "name": "defaultShareableContentObject",
+                "value": "",
+                "type": "query",
+                "description": "The default SCO to retrieve"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Fields to expand in response"
+              }
+            ]
+          },
+          "docs": "Permission not required if you are the assigned user of the learning assignment"
+        },
+        {
+          "info": {
+            "name": "Update Learning Assignment Step",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/learning/assignments/:assignmentId/steps/:stepId",
+            "params": [
+              {
+                "name": "assignmentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of Learning Assignment"
+              },
+              {
+                "name": "stepId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of Learning Assignment Step"
+              }
+            ]
+          },
+          "docs": "Permission not required if you are the assigned user of the learning assignment"
+        },
+        {
+          "info": {
+            "name": "Get users for learning module rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/rules/query",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              }
+            ]
+          },
+          "docs": "This will get the users who matches the given rule."
+        },
+        {
+          "info": {
+            "name": "Get a learning module",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Fields to expand in response(case insensitive)"
+              }
+            ]
+          },
+          "docs": "Get a learning module"
+        },
+        {
+          "info": {
+            "name": "Update a learning module",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              }
+            ]
+          },
+          "docs": "This will update the name, description, completion time in days and inform steps for a learning module"
+        },
+        {
+          "info": {
+            "name": "Delete a learning module",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              }
+            ]
+          },
+          "docs": "This will delete a learning module if it is unpublished or it will delete a published and archived learning module"
+        },
+        {
+          "info": {
+            "name": "Get a learning module preview",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId/preview",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              }
+            ]
+          },
+          "docs": "Get a learning module preview"
+        },
+        {
+          "info": {
+            "name": "Update a learning module preview",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId/preview",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              }
+            ]
+          },
+          "docs": "This will update a learning module preview"
+        },
+        {
+          "info": {
+            "name": "Get a specific Learning Module job status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId/jobs/:jobId",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              },
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module job"
+              }
+            ]
+          },
+          "docs": "Get a specific Learning Module job status"
+        },
+        {
+          "info": {
+            "name": "Get specific version of a published module",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId/versions/:versionId",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              },
+              {
+                "name": "versionId",
+                "value": "",
+                "type": "path",
+                "description": "The version of learning module"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Fields to expand in response(case insensitive)"
+              }
+            ]
+          },
+          "docs": "Get specific version of a published module"
+        },
+        {
+          "info": {
+            "name": "Get a specific Learning Module cover art using ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/modules/coverart/:coverArtId",
+            "params": [
+              {
+                "name": "coverArtId",
+                "value": "",
+                "type": "path",
+                "description": "Key identifier for the cover art"
+              }
+            ]
+          },
+          "docs": "Get a specific Learning Module cover art using ID"
+        },
+        {
+          "info": {
+            "name": "Get all learning modules of an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/modules",
+            "params": [
+              {
+                "name": "types",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the module types. Informational, AssessedContent and Assessment are deprecated"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Sort order"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Sort by"
+              },
+              {
+                "name": "searchTerm",
+                "value": "",
+                "type": "query",
+                "description": "Search Term (searchable by name)"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Fields to expand in response(case insensitive)"
+              },
+              {
+                "name": "statuses",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the module statuses to filter by"
+              },
+              {
+                "name": "externalIds",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the module external IDs to filter by. Only one ID is allowed"
+              }
+            ]
+          },
+          "docs": "Get all learning modules of an organization"
+        },
+        {
+          "info": {
+            "name": "Create a new learning module",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/modules"
+          },
+          "docs": "This will create a new unpublished learning module with the specified fields."
+        },
+        {
+          "info": {
+            "name": "Publish a Learning module",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId/publish",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              }
+            ]
+          },
+          "docs": "Publish a Learning module"
+        },
+        {
+          "info": {
+            "name": "Starts a specified operation on learning module",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId/jobs",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              }
+            ]
+          },
+          "docs": "This will initiate operation specified in the request body for a learning module"
+        },
+        {
+          "info": {
+            "name": "Get all learning modules of an organization including assignments for a specific user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/modules/assignments",
+            "params": [
+              {
+                "name": "userIds",
+                "value": "",
+                "type": "query",
+                "description": "The IDs of the users to include"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "searchTerm",
+                "value": "",
+                "type": "query",
+                "description": "Search Term (searches by name and description)"
+              },
+              {
+                "name": "overdue",
+                "value": "",
+                "type": "query",
+                "description": "Specifies if only modules with overdue/not overdue (overdue is \"True\" or \"False\") assignments are returned. If overdue is \"Any\" or omitted, both are returned and can including modules that are unassigned."
+              },
+              {
+                "name": "assignmentStates",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the assignment states to return."
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Fields to expand in response(case insensitive)"
+              }
+            ]
+          },
+          "docs": "Get all learning modules of an organization including assignments for a specific user"
+        },
+        {
+          "info": {
+            "name": "Update an external assignment for a specific user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId/users/:userId/assignments",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "Key identifier for the module"
+              },
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "Key identifier for the user"
+              }
+            ]
+          },
+          "docs": "Update an external assignment for a specific user"
+        },
+        {
+          "info": {
+            "name": "Get a learning module rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId/rule",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              }
+            ]
+          },
+          "docs": "Get a learning module rule"
+        },
+        {
+          "info": {
+            "name": "Update a learning module rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/learning/modules/:moduleId/rule",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the learning module"
+              },
+              {
+                "name": "assign",
+                "value": "",
+                "type": "query",
+                "description": "Whether to assign the module to users or not"
+              }
+            ]
+          },
+          "docs": "This will update a learning module rule with the specified fields."
+        },
+        {
+          "info": {
+            "name": "Start job to retrieve slots where a learning activity can be scheduled.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/scheduleslots/jobs"
+          },
+          "docs": "Start job to retrieve slots where a learning activity can be scheduled."
+        },
+        {
+          "info": {
+            "name": "Retrieve the status of the job for the slots where a learning activity can be scheduled.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/scheduleslots/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the job"
+              }
+            ]
+          },
+          "docs": "Retrieve the status of the job for the slots where a learning activity can be scheduled."
+        },
+        {
+          "info": {
+            "name": "Get list of possible slots where a learning activity can be scheduled.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/scheduleslots/query"
+          },
+          "docs": "Get list of possible slots where a learning activity can be scheduled."
+        },
+        {
+          "info": {
+            "name": "Get Learning SCORM Result",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/learning/scorm/:scormId",
+            "params": [
+              {
+                "name": "scormId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the SCORM package"
+              }
+            ]
+          },
+          "docs": "Get Learning SCORM Result"
+        },
+        {
+          "info": {
+            "name": "Create a SCORM package upload request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/learning/scorm"
+          },
+          "docs": "Create a SCORM package upload request"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

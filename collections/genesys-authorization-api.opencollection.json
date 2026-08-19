@@ -1,0 +1,1455 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Authorization API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authorization",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve the home division for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/home"
+          },
+          "docs": "Will not include object counts."
+        },
+        {
+          "info": {
+            "name": "Returns the maximum allowed number of divisions.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/limit"
+          },
+          "docs": "Returns the maximum allowed number of divisions."
+        },
+        {
+          "info": {
+            "name": "Returns an authorization division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              },
+              {
+                "name": "objectCount",
+                "value": "",
+                "type": "query",
+                "description": "Get count of objects in this division, grouped by type"
+              }
+            ]
+          },
+          "docs": "Returns an authorization division."
+        },
+        {
+          "info": {
+            "name": "Update a division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              }
+            ]
+          },
+          "docs": "Update a division."
+        },
+        {
+          "info": {
+            "name": "Delete a division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "DEPRECATED -  Force delete this division. Warning: This option may cause any remaining objects in this division to be inaccessible."
+              }
+            ]
+          },
+          "docs": "Delete a division."
+        },
+        {
+          "info": {
+            "name": "Recreate a previously deleted division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId/restore",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              }
+            ]
+          },
+          "docs": "Recreate a previously deleted division."
+        },
+        {
+          "info": {
+            "name": "Get a list of soft deleted divisions for the org",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/deleted",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              }
+            ]
+          },
+          "docs": "Get a list of soft deleted divisions for the org"
+        },
+        {
+          "info": {
+            "name": "Retrieve a list of all divisions defined for the organization with cursor",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/query",
+            "params": [
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the start of the set of entities that has been returned."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the end of the set of entities that has been returned."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size (max 200, default 25)"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Optionally request specific divisions by their IDs"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Optionally request specific divisions by division name"
+              }
+            ]
+          },
+          "docs": "Use \"after\" and \"before\" param to fetch next/previous page}"
+        },
+        {
+          "info": {
+            "name": "Retrieve a list of all divisions defined for the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The total page size requested"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "The page number requested"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "variable name requested to sort by"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "variable name requested by expand list"
+              },
+              {
+                "name": "nextPage",
+                "value": "",
+                "type": "query",
+                "description": "next page token"
+              },
+              {
+                "name": "previousPage",
+                "value": "",
+                "type": "query",
+                "description": "Previous page token"
+              },
+              {
+                "name": "objectCount",
+                "value": "",
+                "type": "query",
+                "description": "Include the count of objects contained in the division"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Optionally request specific divisions by their IDs"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Search term to filter by division name"
+              }
+            ]
+          },
+          "docs": "Request specific divisions by id using a query param \"id\", e.g. \n?id=5f777167-63be-4c24-ad41-374155d9e28b&id=72e9fb25-c484-488d-9312-7acba82435b3"
+        },
+        {
+          "info": {
+            "name": "Create a division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions"
+          },
+          "docs": "Create a division."
+        },
+        {
+          "info": {
+            "name": "Get a page of access policies for a given policy target",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/targets/:targetName",
+            "params": [
+              {
+                "name": "targetName",
+                "value": "",
+                "type": "path",
+                "description": "The domain:entity:action resource target to which policies are applied"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the end of the set of entities that has been returned."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Number of entities to return. Maximum of 200."
+              }
+            ]
+          },
+          "docs": "Get a page of access policies for a given policy target"
+        },
+        {
+          "info": {
+            "name": "Add an access control policy for a specified resource target and subject",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/targets/:targetName",
+            "params": [
+              {
+                "name": "targetName",
+                "value": "",
+                "type": "path",
+                "description": "The domain:entity:action target to which the policy will be applied"
+              },
+              {
+                "name": "skipLockoutCheck",
+                "value": "",
+                "type": "query",
+                "description": "Skip lockout check; if true, policy will not be evaluated against current context for lockout risk"
+              }
+            ]
+          },
+          "docs": "Add an access control policy for a specified resource target and subject"
+        },
+        {
+          "info": {
+            "name": "Add an access control policy for a specified resource target and subject, overwriting any existing policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/targets/:targetName",
+            "params": [
+              {
+                "name": "targetName",
+                "value": "",
+                "type": "path",
+                "description": "The domain:entity:action target to which the policy will be applied"
+              },
+              {
+                "name": "skipLockoutCheck",
+                "value": "",
+                "type": "query",
+                "description": "Skip lockout check; if true, policy will not be evaluated against current context for lockout risk"
+              }
+            ]
+          },
+          "docs": "Add an access control policy for a specified resource target and subject, overwriting any existing policy"
+        },
+        {
+          "info": {
+            "name": "Validate the conditions and attributes of an access control policy for a specified resource target",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/targets/:targetName/validate",
+            "params": [
+              {
+                "name": "targetName",
+                "value": "",
+                "type": "path",
+                "description": "The domain:entity:action target to which the policy will be applied"
+              }
+            ]
+          },
+          "docs": "Validate the conditions and attributes of an access control policy for a specified resource target"
+        },
+        {
+          "info": {
+            "name": "Get a page of access policies for an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/policies",
+            "params": [
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the end of the set of entities that has been returned."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Number of entities to return. Maximum of 200."
+              }
+            ]
+          },
+          "docs": "Get a page of access policies for an organization"
+        },
+        {
+          "info": {
+            "name": "Get a page of access policies for a given subject",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/subject/:subjectId",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subject to which policies are applied"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the end of the set of entities that has been returned."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Number of entities to return. Maximum of 200."
+              }
+            ]
+          },
+          "docs": "Get a page of access policies for a given subject"
+        },
+        {
+          "info": {
+            "name": "Get an access control policy for a specified resource target and subject",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/targets/:targetName/subject/:subjectId",
+            "params": [
+              {
+                "name": "targetName",
+                "value": "",
+                "type": "path",
+                "description": "The domain:entity:action resource target to which the policy is applied"
+              },
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subject to which the policy is applied"
+              }
+            ]
+          },
+          "docs": "Get an access control policy for a specified resource target and subject"
+        },
+        {
+          "info": {
+            "name": "Delete an access control policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/targets/:targetName/subject/:subjectId",
+            "params": [
+              {
+                "name": "targetName",
+                "value": "",
+                "type": "path",
+                "description": "The domain:entity:action target to which the policy is applied"
+              },
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the subject to which the policy is applied"
+              }
+            ]
+          },
+          "docs": "Delete an access control policy"
+        },
+        {
+          "info": {
+            "name": "Get an access control policy with the specified policy ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/:policyId",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the policy to retrieve"
+              }
+            ]
+          },
+          "docs": "Get an access control policy with the specified policy ID"
+        },
+        {
+          "info": {
+            "name": "Update an access control policy with a given ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/:policyId",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the policy to update"
+              },
+              {
+                "name": "skipLockoutCheck",
+                "value": "",
+                "type": "query",
+                "description": "Skip lockout check; if true, policy will not be evaluated against current context for lockout risk"
+              }
+            ]
+          },
+          "docs": "Update an access control policy with a given ID"
+        },
+        {
+          "info": {
+            "name": "Get the list of attributes used to evaluate an access control policy with the specified policy ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/:policyId/attributes",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the policy to retrieve attributes"
+              }
+            ]
+          },
+          "docs": "Get the list of attributes used to evaluate an access control policy with the specified policy ID"
+        },
+        {
+          "info": {
+            "name": "Simulate a request and evaluate the specified policy ID against the provided values",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/:policyId/simulate",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the policy to test the simulated data against"
+              }
+            ]
+          },
+          "docs": "Simulate a request and evaluate the specified policy ID against the provided values"
+        },
+        {
+          "info": {
+            "name": "Get a map of policy targets to valid attributes for those targets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/policies/targets"
+          },
+          "docs": "Get a map of policy targets to valid attributes for those targets"
+        },
+        {
+          "info": {
+            "name": "Returns which divisions the current user has the given permission in.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisionspermitted/me",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Search term to filter by division name"
+              },
+              {
+                "name": "permission",
+                "value": "",
+                "type": "query",
+                "description": "The permission string, including the object to access, e.g. routing:queue:view"
+              }
+            ]
+          },
+          "docs": "This route is deprecated, use authorization/divisionspermitted/paged/me instead."
+        },
+        {
+          "info": {
+            "name": "Returns which divisions the current user has the given permission in.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisionspermitted/paged/me",
+            "params": [
+              {
+                "name": "permission",
+                "value": "",
+                "type": "query",
+                "description": "The permission string, including the object to access, e.g. routing:queue:view"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              }
+            ]
+          },
+          "docs": "Returns which divisions the current user has the given permission in."
+        },
+        {
+          "info": {
+            "name": "Returns which divisions the specified user has the given permission in.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisionspermitted/paged/:subjectId",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "permission",
+                "value": "",
+                "type": "query",
+                "description": "The permission string, including the object to access, e.g. routing:queue:view"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              }
+            ]
+          },
+          "docs": "This route is deprecated, use authorization/divisionspermitted/paged/me instead."
+        },
+        {
+          "info": {
+            "name": "Get all permissions.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/permissions",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "queryType",
+                "value": "",
+                "type": "query",
+                "description": "Query filter type"
+              },
+              {
+                "name": "query",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of permissions or domains to query"
+              }
+            ]
+          },
+          "docs": "Retrieve a list of all permission defined in the system."
+        },
+        {
+          "info": {
+            "name": "Get the list of enabled products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/products"
+          },
+          "docs": "Gets the list of enabled products. Some example product names are: collaborateFree, collaboratePro, communicate, and engage."
+        },
+        {
+          "info": {
+            "name": "Assign a list of objects to a division",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId/objects/:objectType",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              },
+              {
+                "name": "objectType",
+                "value": "",
+                "type": "path",
+                "description": "The type of the objects. Must be one of the valid object types"
+              }
+            ]
+          },
+          "docs": "Set the division of a specified list of objects. The objects must all be of the same type, one of: \nCAMPAIGN, MANAGEMENTUNIT, FLOW, QUEUE, DATATABLES or USER. \nThe body of the request is a list of object IDs, which are expected to be \nGUIDs, e.g. [\"206ce31f-61ec-40ed-a8b1-be6f06303998\",\"250a754e-f5e4-4f51-800f-a92f09d3bf8c\"]"
+        },
+        {
+          "info": {
+            "name": "Returns a listing of roles and permissions for the currently authenticated user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/me",
+            "params": [
+              {
+                "name": "includeDuplicates",
+                "value": "",
+                "type": "query",
+                "description": "Include multiple entries with the same role and division but different subjects"
+              }
+            ]
+          },
+          "docs": "Returns a listing of roles and permissions for the currently authenticated user."
+        },
+        {
+          "info": {
+            "name": "Returns a listing of roles and permissions for a user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "includeDuplicates",
+                "value": "",
+                "type": "query",
+                "description": "Include multiple entries with the same role and division but different subjects"
+              }
+            ]
+          },
+          "docs": "Returns a listing of roles and permissions for a user."
+        },
+        {
+          "info": {
+            "name": "Make a grant of a role in a division",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId/divisions/:divisionId/roles/:roleId",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "the id of the division to which to make the grant"
+              },
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "the id of the role to grant"
+              },
+              {
+                "name": "subjectType",
+                "value": "",
+                "type": "query",
+                "description": "what the type of the subject is: PC_GROUP, PC_USER or PC_OAUTH_CLIENT (note: for cross-org authorization, please use the Organization Authorization endpoints)"
+              }
+            ]
+          },
+          "docs": "Make a grant of a role in a division"
+        },
+        {
+          "info": {
+            "name": "Delete a grant of a role in a division",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId/divisions/:divisionId/roles/:roleId",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "the id of the division of the grant"
+              },
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "the id of the role of the grant"
+              }
+            ]
+          },
+          "docs": "Delete a grant of a role in a division"
+        },
+        {
+          "info": {
+            "name": "Bulk-grant roles and divisions to a subject.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId/bulkadd",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "subjectType",
+                "value": "",
+                "type": "query",
+                "description": "what the type of the subject is (PC_GROUP, PC_USER or PC_OAUTH_CLIENT)"
+              }
+            ]
+          },
+          "docs": "Bulk-grant roles and divisions to a subject."
+        },
+        {
+          "info": {
+            "name": "Replace subject's roles and divisions with the exact list supplied in the request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId/bulkreplace",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "subjectType",
+                "value": "",
+                "type": "query",
+                "description": "what the type of the subject is (PC_GROUP, PC_USER or PC_OAUTH_CLIENT)"
+              }
+            ]
+          },
+          "docs": "This operation will not remove grants that are inherited from group membership. It will only set the grants directly applied to the subject."
+        },
+        {
+          "info": {
+            "name": "Bulk-remove grants from a subject.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId/bulkremove",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              }
+            ]
+          },
+          "docs": "Bulk-remove grants from a subject."
+        },
+        {
+          "info": {
+            "name": "Get a list of the users in a specified role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:roleId/users",
+            "params": [
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "Role ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              }
+            ]
+          },
+          "docs": "Get an array of the UUIDs of the users in the specified role."
+        },
+        {
+          "info": {
+            "name": "Sets the users for the role",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:roleId/users/add",
+            "params": [
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "Role ID"
+              }
+            ]
+          },
+          "docs": "Sets the users for the role"
+        },
+        {
+          "info": {
+            "name": "Removes the users from the role",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:roleId/users/remove",
+            "params": [
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "Role ID"
+              }
+            ]
+          },
+          "docs": "Removes the users from the role"
+        },
+        {
+          "info": {
+            "name": "Gets all grants for a given division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId/grants",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              }
+            ]
+          },
+          "docs": "Returns all grants assigned to a given division. Maximum page size is 500."
+        },
+        {
+          "info": {
+            "name": "Get authorization settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/settings"
+          },
+          "docs": "Get authorization settings"
+        },
+        {
+          "info": {
+            "name": "Change authorization settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/authorization/settings"
+          },
+          "docs": "Change authorization settings"
+        },
+        {
+          "info": {
+            "name": "Get authorization role settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/settings"
+          },
+          "docs": "Get authorization role settings"
+        },
+        {
+          "info": {
+            "name": "Change authorization role settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/settings"
+          },
+          "docs": "Change role settings"
+        },
+        {
+          "info": {
+            "name": "Get a single organization role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:roleId",
+            "params": [
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "Role ID"
+              },
+              {
+                "name": "userCount",
+                "value": "",
+                "type": "query",
+                "description": "Fetch the count of users who have this role granted in at least one division. Setting this value or defaulting to 'true' can lead to slower load times or timeouts for role queries with large member counts."
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand. \"unusedPermissions\" returns the permissions not used for the role"
+              }
+            ]
+          },
+          "docs": "Get the organization role specified by its ID."
+        },
+        {
+          "info": {
+            "name": "Bulk-grant subjects and divisions with an organization role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:roleId",
+            "params": [
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "Role ID"
+              },
+              {
+                "name": "subjectType",
+                "value": "",
+                "type": "query",
+                "description": "what the type of the subjects are (PC_GROUP, PC_USER or PC_OAUTH_CLIENT)"
+              }
+            ]
+          },
+          "docs": "Bulk-grant subjects and divisions with an organization role."
+        },
+        {
+          "info": {
+            "name": "Update an organization role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:roleId",
+            "params": [
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "Role ID"
+              }
+            ]
+          },
+          "docs": "Update"
+        },
+        {
+          "info": {
+            "name": "Patch Organization Role for needsUpdate Field",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:roleId",
+            "params": [
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "Role ID"
+              }
+            ]
+          },
+          "docs": "Patch Organization Role for needsUpdate Field"
+        },
+        {
+          "info": {
+            "name": "Delete an organization role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:roleId",
+            "params": [
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "Role ID"
+              }
+            ]
+          },
+          "docs": "Delete an organization role."
+        },
+        {
+          "info": {
+            "name": "Retrieve a list of all roles defined for the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/roles",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The total page size requested"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "The page number requested"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "variable name requested to sort by"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "variable name requested by expand list"
+              },
+              {
+                "name": "nextPage",
+                "value": "",
+                "type": "query",
+                "description": "next page token"
+              },
+              {
+                "name": "previousPage",
+                "value": "",
+                "type": "query",
+                "description": "Previous page token"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "permission",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "defaultRoleId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "userCount",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "id"
+              }
+            ]
+          },
+          "docs": "Retrieve a list of all roles defined for the organization"
+        },
+        {
+          "info": {
+            "name": "Create an organization role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/roles"
+          },
+          "docs": "Create an organization role."
+        },
+        {
+          "info": {
+            "name": "Restores all default roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/default",
+            "params": [
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "Restore default roles"
+              }
+            ]
+          },
+          "docs": "This endpoint serves several purposes. 1. It provides the org with default roles. This is important for default roles that will be added after go-live (they can retroactively add the new default-role). Note: When not using a query param of force=true, it only adds the default roles not configured for the org; it does not overwrite roles. 2. Using the query param force=true, you can restore all default roles. Note: This does not have an effect on custom roles."
+        },
+        {
+          "info": {
+            "name": "Restore specified default roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/default"
+          },
+          "docs": "Restore specified default roles"
+        },
+        {
+          "info": {
+            "name": "Get an org role to default role comparison",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:leftRoleId/comparedefault/:rightRoleId",
+            "params": [
+              {
+                "name": "leftRoleId",
+                "value": "",
+                "type": "path",
+                "description": "Left Role ID"
+              },
+              {
+                "name": "rightRoleId",
+                "value": "",
+                "type": "path",
+                "description": "Right Role id"
+              }
+            ]
+          },
+          "docs": "Compares any organization role to a default role id and show differences"
+        },
+        {
+          "info": {
+            "name": "Get an unsaved org role to default role comparison",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:leftRoleId/comparedefault/:rightRoleId",
+            "params": [
+              {
+                "name": "leftRoleId",
+                "value": "",
+                "type": "path",
+                "description": "Left Role ID"
+              },
+              {
+                "name": "rightRoleId",
+                "value": "",
+                "type": "path",
+                "description": "Right Role id"
+              }
+            ]
+          },
+          "docs": "Allows users to compare their existing roles in an unsaved state to its default role"
+        },
+        {
+          "info": {
+            "name": "Get the subjects' granted divisions in the specified role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/roles/:roleId/subjectgrants",
+            "params": [
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "Role ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The total page size requested"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "The page number requested"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "variable name requested to sort by"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "variable name requested by expand list"
+              },
+              {
+                "name": "nextPage",
+                "value": "",
+                "type": "query",
+                "description": "next page token"
+              },
+              {
+                "name": "previousPage",
+                "value": "",
+                "type": "query",
+                "description": "Previous page token"
+              }
+            ]
+          },
+          "docs": "Includes the divisions for which the subject has a grant."
+        },
+        {
+          "info": {
+            "name": "Get the count of roles granted to a list of subjects",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/rolecounts",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "id"
+              }
+            ]
+          },
+          "docs": "Get the count of roles granted to a list of subjects"
+        },
+        {
+          "info": {
+            "name": "Returns a listing of roles and permissions for a user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:subjectId/roles",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Returns a listing of roles and permissions for a user."
+        },
+        {
+          "info": {
+            "name": "Sets the user's roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:subjectId/roles",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Sets the user's roles"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

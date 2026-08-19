@@ -1,0 +1,412 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Response Management API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Response Management",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get response libraries.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/libraries/bulk"
+          },
+          "docs": "Get response libraries."
+        },
+        {
+          "info": {
+            "name": "Query libraries using criteria. Users can set DivisionId parameter as '*' to fetch libraries that aren't associated with any divisions.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/libraries/query",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              }
+            ]
+          },
+          "docs": "Query libraries using criteria. Users can set DivisionId parameter as '*' to fetch libraries that aren't associated with any divisions."
+        },
+        {
+          "info": {
+            "name": "Gets a list of existing response libraries.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/libraries",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "messagingTemplateFilter",
+                "value": "",
+                "type": "query",
+                "description": "Returns a list of libraries that contain responses with at least one messaging template defined for a specific message channel"
+              },
+              {
+                "name": "libraryPrefix",
+                "value": "",
+                "type": "query",
+                "description": "Returns a list of libraries that contain the prefix provided"
+              }
+            ]
+          },
+          "docs": "Gets a list of existing response libraries."
+        },
+        {
+          "info": {
+            "name": "Create a response library.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/libraries"
+          },
+          "docs": "Create a response library."
+        },
+        {
+          "info": {
+            "name": "Get details about an existing response library.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/libraries/:libraryId",
+            "params": [
+              {
+                "name": "libraryId",
+                "value": "",
+                "type": "path",
+                "description": "Library ID"
+              }
+            ]
+          },
+          "docs": "Get details about an existing response library."
+        },
+        {
+          "info": {
+            "name": "Update an existing response library.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/libraries/:libraryId",
+            "params": [
+              {
+                "name": "libraryId",
+                "value": "",
+                "type": "path",
+                "description": "Library ID"
+              }
+            ]
+          },
+          "docs": "Fields that can be updated: name. The most recent version is required for updates."
+        },
+        {
+          "info": {
+            "name": "Delete an existing response library.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/libraries/:libraryId",
+            "params": [
+              {
+                "name": "libraryId",
+                "value": "",
+                "type": "path",
+                "description": "Library ID"
+              }
+            ]
+          },
+          "docs": "This will remove any responses associated with the library."
+        },
+        {
+          "info": {
+            "name": "Query responses",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responses/query"
+          },
+          "docs": "Query responses"
+        },
+        {
+          "info": {
+            "name": "Get details about an existing response.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responses/:responseId",
+            "params": [
+              {
+                "name": "responseId",
+                "value": "",
+                "type": "path",
+                "description": "Response ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Expand instructions for the return value."
+              }
+            ]
+          },
+          "docs": "Get details about an existing response."
+        },
+        {
+          "info": {
+            "name": "Update an existing response.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responses/:responseId",
+            "params": [
+              {
+                "name": "responseId",
+                "value": "",
+                "type": "path",
+                "description": "Response ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Expand instructions for the return value."
+              }
+            ]
+          },
+          "docs": "Fields that can be updated: name, libraries, and texts. The most recent version is required for updates."
+        },
+        {
+          "info": {
+            "name": "Delete an existing response.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responses/:responseId",
+            "params": [
+              {
+                "name": "responseId",
+                "value": "",
+                "type": "path",
+                "description": "Response ID"
+              }
+            ]
+          },
+          "docs": "This will remove the response from any libraries associated with it."
+        },
+        {
+          "info": {
+            "name": "Gets a list of existing responses.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responses",
+            "params": [
+              {
+                "name": "libraryId",
+                "value": "",
+                "type": "query",
+                "description": "Library ID"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Expand instructions for the return value."
+              }
+            ]
+          },
+          "docs": "Gets a list of existing responses."
+        },
+        {
+          "info": {
+            "name": "Create a response.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responses",
+            "params": [
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Expand instructions for the return value."
+              }
+            ]
+          },
+          "docs": "Create a response."
+        },
+        {
+          "info": {
+            "name": "Get response asset information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responseassets/:responseAssetId",
+            "params": [
+              {
+                "name": "responseAssetId",
+                "value": "",
+                "type": "path",
+                "description": "Asset Id"
+              }
+            ]
+          },
+          "docs": "Get response asset information"
+        },
+        {
+          "info": {
+            "name": "Update response asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responseassets/:responseAssetId",
+            "params": [
+              {
+                "name": "responseAssetId",
+                "value": "",
+                "type": "path",
+                "description": "Asset Id"
+              }
+            ]
+          },
+          "docs": "Update response asset"
+        },
+        {
+          "info": {
+            "name": "Delete response asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responseassets/:responseAssetId",
+            "params": [
+              {
+                "name": "responseAssetId",
+                "value": "",
+                "type": "path",
+                "description": "Asset Id"
+              }
+            ]
+          },
+          "docs": "Delete response asset"
+        },
+        {
+          "info": {
+            "name": "Get response asset upload status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responseassets/status/:statusId",
+            "params": [
+              {
+                "name": "statusId",
+                "value": "",
+                "type": "path",
+                "description": "Status Id"
+              }
+            ]
+          },
+          "docs": "Get response asset upload status"
+        },
+        {
+          "info": {
+            "name": "Get response assets.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responseassets/bulk"
+          },
+          "docs": "Get response assets."
+        },
+        {
+          "info": {
+            "name": "Creates pre-signed url for uploading response asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responseassets/uploads"
+          },
+          "docs": "Creates pre-signed url for uploading response asset"
+        },
+        {
+          "info": {
+            "name": "Search response assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/responsemanagement/responseassets/search",
+            "params": [
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              }
+            ]
+          },
+          "docs": "Search response assets"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

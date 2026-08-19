@@ -1,0 +1,149 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Log Capture API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Log Capture",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Gets status of async download execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/diagnostics/logcapture/browser/entries/download/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "Job ID"
+              }
+            ]
+          },
+          "docs": "Gets status of async download execution"
+        },
+        {
+          "info": {
+            "name": "Creates an async download execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/diagnostics/logcapture/browser/entries/download/jobs"
+          },
+          "docs": "Creates an async download execution"
+        },
+        {
+          "info": {
+            "name": "Query collected log entries. It returns a limited amount of records, to get all records use download endpoint.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/diagnostics/logcapture/browser/entries/query",
+            "params": [
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the end of the set of entities that has been returned."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Number of entities to return. Maximum of 200."
+              }
+            ]
+          },
+          "docs": "Query collected log entries. It returns a limited amount of records, to get all records use download endpoint."
+        },
+        {
+          "info": {
+            "name": "Get all log capture enabled users for an org",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/diagnostics/logcapture/browser/users",
+            "params": [
+              {
+                "name": "includeExpired",
+                "value": "",
+                "type": "query",
+                "description": "Include expired users with log captures still available for search or download"
+              }
+            ]
+          },
+          "docs": "Get all log capture enabled users for an org"
+        },
+        {
+          "info": {
+            "name": "Get log capture configuration for the user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/diagnostics/logcapture/browser/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The id of the user to get browser log capture configuration"
+              }
+            ]
+          },
+          "docs": "Get log capture configuration for the user"
+        },
+        {
+          "info": {
+            "name": "Enable log capture for a user or update expiration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/diagnostics/logcapture/browser/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The id of the user to enable browser log capture"
+              }
+            ]
+          },
+          "docs": "Enable log capture for a user or update expiration"
+        },
+        {
+          "info": {
+            "name": "Disable browser log capture for the user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/diagnostics/logcapture/browser/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The id of the user to disable browser log capture"
+              }
+            ]
+          },
+          "docs": "Disable browser log capture for the user"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

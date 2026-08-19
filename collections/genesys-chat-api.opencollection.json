@@ -1,0 +1,744 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Chat API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Chat",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Chat Settings.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/settings"
+          },
+          "docs": "Get Chat Settings."
+        },
+        {
+          "info": {
+            "name": "Update Chat Settings.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/chats/settings"
+          },
+          "docs": "Update Chat Settings."
+        },
+        {
+          "info": {
+            "name": "Patch Chat Settings.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/chats/settings"
+          },
+          "docs": "Patch Chat Settings."
+        },
+        {
+          "info": {
+            "name": "Get messages by id(s) from a room",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/messages/:messageIds",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomJid"
+              },
+              {
+                "name": "messageIds",
+                "value": "",
+                "type": "path",
+                "description": "messageIds, comma separated"
+              }
+            ]
+          },
+          "docs": "Get messages by id(s) from a room"
+        },
+        {
+          "info": {
+            "name": "Get messages by id(s) from a 1on1",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/users/:userId/messages/:messageIds",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              },
+              {
+                "name": "messageIds",
+                "value": "",
+                "type": "path",
+                "description": "messageIds, comma separated"
+              }
+            ]
+          },
+          "docs": "Get messages by id(s) from a 1on1"
+        },
+        {
+          "info": {
+            "name": "Get a message",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/messages/:messageId",
+            "params": [
+              {
+                "name": "messageId",
+                "value": "",
+                "type": "path",
+                "description": "messageId"
+              }
+            ]
+          },
+          "docs": "Get a message"
+        },
+        {
+          "info": {
+            "name": "Update reactions to a message",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/chats/messages/:messageId/reactions",
+            "params": [
+              {
+                "name": "messageId",
+                "value": "",
+                "type": "path",
+                "description": "messageId"
+              }
+            ]
+          },
+          "docs": "Update reactions to a message"
+        },
+        {
+          "info": {
+            "name": "Get a room's message history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/messages",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomJid"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of messages to retrieve"
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "The cutoff date for messages to retrieve"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The beginning date for messages to retrieve"
+              },
+              {
+                "name": "excludeMetadata",
+                "value": "",
+                "type": "query",
+                "description": "Whether to exclude metadata for messages"
+              }
+            ]
+          },
+          "docs": "Get a room's message history"
+        },
+        {
+          "info": {
+            "name": "Send a message to a room",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/messages",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomId"
+              }
+            ]
+          },
+          "docs": "Send a message to a room"
+        },
+        {
+          "info": {
+            "name": "Edit a message in a room",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/messages/:messageId",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomId"
+              },
+              {
+                "name": "messageId",
+                "value": "",
+                "type": "path",
+                "description": "messageId"
+              }
+            ]
+          },
+          "docs": "Edit a message in a room"
+        },
+        {
+          "info": {
+            "name": "Delete a message in a room",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/messages/:messageId",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomId"
+              },
+              {
+                "name": "messageId",
+                "value": "",
+                "type": "path",
+                "description": "messageId"
+              }
+            ]
+          },
+          "docs": "Delete a message in a room"
+        },
+        {
+          "info": {
+            "name": "Get information for a 1on1",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              }
+            ]
+          },
+          "docs": "Get information for a 1on1"
+        },
+        {
+          "info": {
+            "name": "Get 1on1 History between a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/users/:userId/messages",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of messages to retrieve"
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "The cutoff date for messages to retrieve"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The beginning date for messages to retrieve"
+              },
+              {
+                "name": "excludeMetadata",
+                "value": "",
+                "type": "query",
+                "description": "Whether to exclude metadata for messages"
+              }
+            ]
+          },
+          "docs": "Get 1on1 History between a user"
+        },
+        {
+          "info": {
+            "name": "Send a message to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/chats/users/:userId/messages",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              }
+            ]
+          },
+          "docs": "Send a message to a user"
+        },
+        {
+          "info": {
+            "name": "Edit a message to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/chats/users/:userId/messages/:messageId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              },
+              {
+                "name": "messageId",
+                "value": "",
+                "type": "path",
+                "description": "messageId"
+              }
+            ]
+          },
+          "docs": "Edit a message to a user"
+        },
+        {
+          "info": {
+            "name": "Delete a message to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/chats/users/:userId/messages/:messageId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              },
+              {
+                "name": "messageId",
+                "value": "",
+                "type": "path",
+                "description": "messageId"
+              }
+            ]
+          },
+          "docs": "Delete a message to a user"
+        },
+        {
+          "info": {
+            "name": "Add pinned messages for a 1on1, up to a maximum of 5 pinned messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/chats/users/:userId/messages/pins",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              }
+            ]
+          },
+          "docs": "Add pinned messages for a 1on1, up to a maximum of 5 pinned messages"
+        },
+        {
+          "info": {
+            "name": "Remove a pinned message from a 1on1",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/chats/users/:userId/messages/pins/:pinnedMessageId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              },
+              {
+                "name": "pinnedMessageId",
+                "value": "",
+                "type": "path",
+                "description": "pinnedMessageId"
+              }
+            ]
+          },
+          "docs": "Remove a pinned message from a 1on1"
+        },
+        {
+          "info": {
+            "name": "Get a room participant",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/participants/:participantJid",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomJid"
+              },
+              {
+                "name": "participantJid",
+                "value": "",
+                "type": "path",
+                "description": "participantJid"
+              }
+            ]
+          },
+          "docs": "Get a room participant"
+        },
+        {
+          "info": {
+            "name": "Join a room",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/participants/:userId",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomJid"
+              },
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              }
+            ]
+          },
+          "docs": "Join a room"
+        },
+        {
+          "info": {
+            "name": "Remove a user from a room.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/participants/:userId",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomJid"
+              },
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              }
+            ]
+          },
+          "docs": "Remove a user from a room."
+        },
+        {
+          "info": {
+            "name": "Get room participants in a room",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/participants",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomJid"
+              },
+              {
+                "name": "notify",
+                "value": "",
+                "type": "query",
+                "description": "Whether to get users to notify"
+              }
+            ]
+          },
+          "docs": "Get room participants in a room"
+        },
+        {
+          "info": {
+            "name": "Get a room",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomJid"
+              }
+            ]
+          },
+          "docs": "Get a room"
+        },
+        {
+          "info": {
+            "name": "Set properties for a room",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomJid"
+              }
+            ]
+          },
+          "docs": "Set properties for a room"
+        },
+        {
+          "info": {
+            "name": "Create an adhoc room",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/chats/rooms"
+          },
+          "docs": "Create an adhoc room"
+        },
+        {
+          "info": {
+            "name": "Add pinned messages for a room, up to a maximum of 5 pinned messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/messages/pins",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomJid"
+              }
+            ]
+          },
+          "docs": "Add pinned messages for a room, up to a maximum of 5 pinned messages"
+        },
+        {
+          "info": {
+            "name": "Remove a pinned message from a room",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/chats/rooms/:roomJid/messages/pins/:pinnedMessageId",
+            "params": [
+              {
+                "name": "roomJid",
+                "value": "",
+                "type": "path",
+                "description": "roomJid"
+              },
+              {
+                "name": "pinnedMessageId",
+                "value": "",
+                "type": "path",
+                "description": "pinnedMessageId"
+              }
+            ]
+          },
+          "docs": "Remove a pinned message from a room"
+        },
+        {
+          "info": {
+            "name": "Get history by thread",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/threads/:threadId/messages",
+            "params": [
+              {
+                "name": "threadId",
+                "value": "",
+                "type": "path",
+                "description": "threadId"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of messages to retrieve"
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "The cutoff date for messages to retrieve"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The beginning date for messages to retrieve"
+              },
+              {
+                "name": "excludeMetadata",
+                "value": "",
+                "type": "query",
+                "description": "Whether to exclude metadata for messages"
+              }
+            ]
+          },
+          "docs": "Get history by thread"
+        },
+        {
+          "info": {
+            "name": "Get a user's chat settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/users/me/settings"
+          },
+          "docs": "Get a user's chat settings"
+        },
+        {
+          "info": {
+            "name": "Create a user's chat settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/chats/users/me/settings"
+          },
+          "docs": "Create a user's chat settings"
+        },
+        {
+          "info": {
+            "name": "Update a user's chat settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/chats/users/me/settings"
+          },
+          "docs": "Update a user's chat settings"
+        },
+        {
+          "info": {
+            "name": "Delete a user's chat settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/chats/users/me/settings"
+          },
+          "docs": "Delete a user's chat settings"
+        },
+        {
+          "info": {
+            "name": "Get a user's chat settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/chats/users/:userId/settings",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get a user's chat settings"
+        },
+        {
+          "info": {
+            "name": "Update a user's chat settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/chats/users/:userId/settings",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Update a user's chat settings"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

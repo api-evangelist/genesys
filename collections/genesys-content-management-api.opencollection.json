@@ -1,0 +1,994 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Content Management API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Content Management",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Download a document.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/documents/:documentId/content",
+            "params": [
+              {
+                "name": "documentId",
+                "value": "",
+                "type": "path",
+                "description": "Document ID"
+              },
+              {
+                "name": "disposition",
+                "value": "",
+                "type": "query",
+                "description": "Request how the content will be downloaded: a file attachment or inline. Default is attachment."
+              },
+              {
+                "name": "contentType",
+                "value": "",
+                "type": "query",
+                "description": "The requested format for the specified document. If supported, the document will be returned in that format. Example contentType=audio/wav"
+              }
+            ]
+          },
+          "docs": "Download a document."
+        },
+        {
+          "info": {
+            "name": "Replace the contents of a document.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/documents/:documentId/content",
+            "params": [
+              {
+                "name": "documentId",
+                "value": "",
+                "type": "path",
+                "description": "Document ID"
+              },
+              {
+                "name": "override",
+                "value": "",
+                "type": "query",
+                "description": "Override any lock on the document"
+              }
+            ]
+          },
+          "docs": "Replace the contents of a document."
+        },
+        {
+          "info": {
+            "name": "Get a document.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/documents/:documentId",
+            "params": [
+              {
+                "name": "documentId",
+                "value": "",
+                "type": "path",
+                "description": "Document ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              }
+            ]
+          },
+          "docs": "Get a document."
+        },
+        {
+          "info": {
+            "name": "Update a document.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/documents/:documentId",
+            "params": [
+              {
+                "name": "documentId",
+                "value": "",
+                "type": "path",
+                "description": "Document ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Expand some document fields"
+              },
+              {
+                "name": "override",
+                "value": "",
+                "type": "query",
+                "description": "Override any lock on the document"
+              }
+            ]
+          },
+          "docs": "Update a document."
+        },
+        {
+          "info": {
+            "name": "Delete a document.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/documents/:documentId",
+            "params": [
+              {
+                "name": "documentId",
+                "value": "",
+                "type": "path",
+                "description": "Document ID"
+              },
+              {
+                "name": "override",
+                "value": "",
+                "type": "query",
+                "description": "Override any lock on the document"
+              }
+            ]
+          },
+          "docs": "Delete a document."
+        },
+        {
+          "info": {
+            "name": "Get a list of documents.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/documents",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Name"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "name or dateCreated"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "ascending or descending"
+              }
+            ]
+          },
+          "docs": "Get a list of documents."
+        },
+        {
+          "info": {
+            "name": "Add a document.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/documents",
+            "params": [
+              {
+                "name": "copySource",
+                "value": "",
+                "type": "query",
+                "description": "Copy a document within a workspace or to a new workspace. Provide a document ID as the copy source."
+              },
+              {
+                "name": "moveSource",
+                "value": "",
+                "type": "query",
+                "description": "Move a document to a new workspace. Provide a document ID as the move source."
+              },
+              {
+                "name": "override",
+                "value": "",
+                "type": "query",
+                "description": "Override any lock on the source document"
+              }
+            ]
+          },
+          "docs": "Add a document."
+        },
+        {
+          "info": {
+            "name": "Query content",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/query",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "name or dateCreated"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "ascending or descending"
+              },
+              {
+                "name": "queryPhrase",
+                "value": "",
+                "type": "query",
+                "description": "Phrase tokens are ANDed together over all searchable fields"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              }
+            ]
+          },
+          "docs": "Query content"
+        },
+        {
+          "info": {
+            "name": "Query content",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/query",
+            "params": [
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Expand some document fields"
+              }
+            ]
+          },
+          "docs": "Query content"
+        },
+        {
+          "info": {
+            "name": "Get a Security Profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/securityprofiles/:securityProfileId",
+            "params": [
+              {
+                "name": "securityProfileId",
+                "value": "",
+                "type": "path",
+                "description": "Security Profile Id"
+              }
+            ]
+          },
+          "docs": "Get a Security Profile"
+        },
+        {
+          "info": {
+            "name": "Get a List of Security Profiles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/securityprofiles"
+          },
+          "docs": "Get a List of Security Profiles"
+        },
+        {
+          "info": {
+            "name": "Retrieve details about an existing share.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/shares/:shareId",
+            "params": [
+              {
+                "name": "shareId",
+                "value": "",
+                "type": "path",
+                "description": "Share ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              }
+            ]
+          },
+          "docs": "Retrieve details about an existing share."
+        },
+        {
+          "info": {
+            "name": "Deletes an existing share.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/shares/:shareId",
+            "params": [
+              {
+                "name": "shareId",
+                "value": "",
+                "type": "path",
+                "description": "Share ID"
+              }
+            ]
+          },
+          "docs": "This revokes sharing rights specified in the share record"
+        },
+        {
+          "info": {
+            "name": "Get shared documents. Securely download a shared document.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/shared/:sharedId",
+            "params": [
+              {
+                "name": "sharedId",
+                "value": "",
+                "type": "path",
+                "description": "Shared ID"
+              },
+              {
+                "name": "disposition",
+                "value": "",
+                "type": "query",
+                "description": "Request how the share content will be downloaded: attached as a file or inline. Default is attachment."
+              },
+              {
+                "name": "contentType",
+                "value": "",
+                "type": "query",
+                "description": "The requested format for the specified document. If supported, the document will be returned in that format. Example contentType=audio/wav"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Expand some document fields"
+              }
+            ]
+          },
+          "docs": "This method requires the download sharing URI obtained in the get document response (downloadSharingUri). Documents may be shared between users in the same workspace. Documents may also be shared between any user by creating a content management share."
+        },
+        {
+          "info": {
+            "name": "Gets a list of shares.  You must specify at least one filter (e.g. entityId).",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/shares",
+            "params": [
+              {
+                "name": "entityId",
+                "value": "",
+                "type": "query",
+                "description": "Filters the shares returned to only the entity specified by the value of this parameter."
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              }
+            ]
+          },
+          "docs": "Failing to specify a filter will return 400."
+        },
+        {
+          "info": {
+            "name": "Creates a new share or updates an existing share if the entity has already been shared",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/shares"
+          },
+          "docs": "Creates a new share or updates an existing share if the entity has already been shared"
+        },
+        {
+          "info": {
+            "name": "Get a status.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/status/:statusId",
+            "params": [
+              {
+                "name": "statusId",
+                "value": "",
+                "type": "path",
+                "description": "Status ID"
+              }
+            ]
+          },
+          "docs": "Get a status."
+        },
+        {
+          "info": {
+            "name": "Cancel the command for this status",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/status/:statusId",
+            "params": [
+              {
+                "name": "statusId",
+                "value": "",
+                "type": "path",
+                "description": "Status ID"
+              }
+            ]
+          },
+          "docs": "Cancel the command for this status"
+        },
+        {
+          "info": {
+            "name": "Get a list of statuses for pending operations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/status",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              }
+            ]
+          },
+          "docs": "Get a list of statuses for pending operations"
+        },
+        {
+          "info": {
+            "name": "Get a workspace tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/tagvalues/:tagId",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "tagId",
+                "value": "",
+                "type": "path",
+                "description": "Tag ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              }
+            ]
+          },
+          "docs": "Get a workspace tag"
+        },
+        {
+          "info": {
+            "name": "Update a workspace tag. Will update all documents with the new tag value.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/tagvalues/:tagId",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "tagId",
+                "value": "",
+                "type": "path",
+                "description": "Tag ID"
+              }
+            ]
+          },
+          "docs": "Update a workspace tag. Will update all documents with the new tag value."
+        },
+        {
+          "info": {
+            "name": "Delete workspace tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/tagvalues/:tagId",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "tagId",
+                "value": "",
+                "type": "path",
+                "description": "Tag ID"
+              }
+            ]
+          },
+          "docs": "Delete a tag from a workspace. Will remove this tag from all documents."
+        },
+        {
+          "info": {
+            "name": "Perform a prefix query on tags in the workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/tagvalues/query",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              }
+            ]
+          },
+          "docs": "Perform a prefix query on tags in the workspace"
+        },
+        {
+          "info": {
+            "name": "Get a list of workspace tags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/tagvalues",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "value",
+                "value": "",
+                "type": "query",
+                "description": "filter the list of tags returned"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              }
+            ]
+          },
+          "docs": "Get a list of workspace tags"
+        },
+        {
+          "info": {
+            "name": "Create a workspace tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/tagvalues",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              }
+            ]
+          },
+          "docs": "Create a workspace tag"
+        },
+        {
+          "info": {
+            "name": "Get usage details.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/usage"
+          },
+          "docs": "Get usage details."
+        },
+        {
+          "info": {
+            "name": "Get a list of documents.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/documents",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "name or dateCreated"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "ascending or descending"
+              }
+            ]
+          },
+          "docs": "Get a list of documents."
+        },
+        {
+          "info": {
+            "name": "Get a workspace member",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/members/:memberId",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "memberId",
+                "value": "",
+                "type": "path",
+                "description": "Member ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              }
+            ]
+          },
+          "docs": "Get a workspace member"
+        },
+        {
+          "info": {
+            "name": "Add a member to a workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/members/:memberId",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "memberId",
+                "value": "",
+                "type": "path",
+                "description": "Member ID"
+              }
+            ]
+          },
+          "docs": "Add a member to a workspace"
+        },
+        {
+          "info": {
+            "name": "Delete a member from a workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/members/:memberId",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "memberId",
+                "value": "",
+                "type": "path",
+                "description": "Member ID"
+              }
+            ]
+          },
+          "docs": "Delete a member from a workspace"
+        },
+        {
+          "info": {
+            "name": "Get a list workspace members",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId/members",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              }
+            ]
+          },
+          "docs": "Get a list workspace members"
+        },
+        {
+          "info": {
+            "name": "Get a workspace.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              }
+            ]
+          },
+          "docs": "Get a workspace."
+        },
+        {
+          "info": {
+            "name": "Update a workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              }
+            ]
+          },
+          "docs": "Update a workspace"
+        },
+        {
+          "info": {
+            "name": "Delete a workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces/:workspaceId",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path",
+                "description": "Workspace ID"
+              },
+              {
+                "name": "moveChildrenToWorkspaceId",
+                "value": "",
+                "type": "query",
+                "description": "New location for objects in deleted workspace."
+              }
+            ]
+          },
+          "docs": "Delete a workspace"
+        },
+        {
+          "info": {
+            "name": "Get a list of workspaces.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "access",
+                "value": "",
+                "type": "query",
+                "description": "Requested access level."
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              }
+            ]
+          },
+          "docs": "Specifying 'content' access will return all workspaces the user has document access to, while 'admin' access will return all group workspaces the user has administrative rights to."
+        },
+        {
+          "info": {
+            "name": "Create a group workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/contentmanagement/workspaces"
+          },
+          "docs": "Create a group workspace"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

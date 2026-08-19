@@ -1,0 +1,90 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Geolocation API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Geolocation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a user's Geolocation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/geolocations/:clientId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "user Id"
+              },
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "client Id"
+              }
+            ]
+          },
+          "docs": "Get a user's Geolocation"
+        },
+        {
+          "info": {
+            "name": "Patch a user's Geolocation",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId/geolocations/:clientId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "user Id"
+              },
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "client Id"
+              }
+            ]
+          },
+          "docs": "The geolocation object can be patched one of three ways. Option 1: Set the 'primary' property to true. This will set the client as the user's primary geolocation source.  Option 2: Provide the 'latitude' and 'longitude' values.  This will enqueue an asynchronous update of the 'city', 'region', and 'country', generating a notification. A subsequent GET operation will include the new values for 'city', 'region' and 'country'.  Option 3:  Provide the 'city', 'region', 'country' values.  Option 1 ca"
+        },
+        {
+          "info": {
+            "name": "Get a organization's GeolocationSettings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/geolocations/settings"
+          },
+          "docs": "Get a organization's GeolocationSettings"
+        },
+        {
+          "info": {
+            "name": "Patch a organization's GeolocationSettings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/geolocations/settings"
+          },
+          "docs": "Patch a organization's GeolocationSettings"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

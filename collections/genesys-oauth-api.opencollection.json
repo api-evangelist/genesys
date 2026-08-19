@@ -1,0 +1,269 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants OAuth API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "OAuth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a client that is authorized by the resource owner",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/oauth/authorizations/:clientId",
+            "headers": [
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of client"
+              }
+            ]
+          },
+          "docs": "Get a client that is authorized by the resource owner"
+        },
+        {
+          "info": {
+            "name": "List clients that have been authorized, requested, or revoked by the resource owner",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/oauth/authorizations",
+            "headers": [
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "List clients that have been authorized, requested, or revoked by the resource owner"
+        },
+        {
+          "info": {
+            "name": "An OAuth scope",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/oauth/scopes/:scopeId",
+            "headers": [
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "scopeId",
+                "value": "",
+                "type": "path",
+                "description": "Scope ID"
+              }
+            ]
+          },
+          "docs": "An OAuth scope"
+        },
+        {
+          "info": {
+            "name": "The list of OAuth scopes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/oauth/scopes",
+            "headers": [
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "The list of OAuth scopes"
+        },
+        {
+          "info": {
+            "name": "Get OAuth Client",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/oauth/clients/:clientId",
+            "params": [
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "Client ID"
+              }
+            ]
+          },
+          "docs": "Get OAuth Client"
+        },
+        {
+          "info": {
+            "name": "Update OAuth Client",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/oauth/clients/:clientId",
+            "params": [
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "Client ID"
+              }
+            ]
+          },
+          "docs": "Update OAuth Client"
+        },
+        {
+          "info": {
+            "name": "Delete OAuth Client",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/oauth/clients/:clientId",
+            "params": [
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "Client ID"
+              }
+            ]
+          },
+          "docs": "Delete OAuth Client"
+        },
+        {
+          "info": {
+            "name": "Regenerate Client Secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/oauth/clients/:clientId/secret",
+            "params": [
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "Client ID"
+              }
+            ]
+          },
+          "docs": "This operation will set the client secret to a randomly generated cryptographically random value. All clients must be updated with the new secret. This operation should be used with caution."
+        },
+        {
+          "info": {
+            "name": "Query for OAuth client API usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/oauth/clients/:clientId/usage/query",
+            "params": [
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "Client ID"
+              }
+            ]
+          },
+          "docs": "After calling this method, you will then need to poll for the query results based on the returned execution Id"
+        },
+        {
+          "info": {
+            "name": "Get a summary of OAuth client API usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/oauth/clients/:clientId/usage/summary",
+            "params": [
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "Client ID"
+              },
+              {
+                "name": "days",
+                "value": "",
+                "type": "query",
+                "description": "Previous number of days to query"
+              }
+            ]
+          },
+          "docs": "After calling this method, you will then need to poll for the query results based on the returned execution Id"
+        },
+        {
+          "info": {
+            "name": "Get the results of a usage query",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/oauth/clients/:clientId/usage/query/results/:executionId",
+            "params": [
+              {
+                "name": "executionId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the query execution"
+              },
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "Client ID"
+              }
+            ]
+          },
+          "docs": "Get the results of a usage query"
+        },
+        {
+          "info": {
+            "name": "The list of OAuth clients",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/oauth/clients"
+          },
+          "docs": "The list of OAuth clients"
+        },
+        {
+          "info": {
+            "name": "Create OAuth client",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/oauth/clients"
+          },
+          "docs": "The OAuth Grant/Client is required in order to create an authentication token and gain access to PureCloud. \nThe preferred authorizedGrantTypes is 'CODE' which requires applications to send a client ID and client secret. This is typically a web server. \nIf the client is unable to secure the client secret then the 'TOKEN' grant type aka IMPLICIT should be used. This is would be for browser or mobile apps. \nIf a client is to be used outside of the context of a user then the 'CLIENT-CREDENTIALS' gr"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

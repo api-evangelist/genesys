@@ -1,0 +1,100 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Tokens API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tokens",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch information about the current token",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/tokens/me",
+            "params": [
+              {
+                "name": "preserveIdleTTL",
+                "value": "",
+                "type": "query",
+                "description": "preserveIdleTTL indicates whether the idle token timeout should be reset or preserved. If preserveIdleTTL is true, then TTL value is not reset. If unset or false, the value is reset."
+              }
+            ]
+          },
+          "docs": "Fetch information about the current token"
+        },
+        {
+          "info": {
+            "name": "Delete auth token used to make the request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/tokens/me"
+          },
+          "docs": "Delete auth token used to make the request."
+        },
+        {
+          "info": {
+            "name": "Verify user token",
+            "type": "http"
+          },
+          "http": {
+            "method": "HEAD",
+            "url": "{{baseUrl}}/api/v2/tokens/me"
+          },
+          "docs": "Verify user token"
+        },
+        {
+          "info": {
+            "name": "Delete all auth tokens for the specified user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/tokens/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Delete all auth tokens for the specified user."
+        },
+        {
+          "info": {
+            "name": "Get the current Idle Token Timeout Value",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/tokens/timeout"
+          },
+          "docs": "Get the current Idle Token Timeout Value"
+        },
+        {
+          "info": {
+            "name": "Update or Enable/Disable the Idle Token Timeout",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/tokens/timeout"
+          },
+          "docs": "Update or Enable/Disable the Idle Token Timeout"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

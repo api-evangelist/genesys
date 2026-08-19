@@ -1,0 +1,102 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Textbots API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Textbots",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Issue a bot flow turn event",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/textbots/botflows/sessions/:sessionId/turns",
+            "params": [
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "path",
+                "description": "The bot flow session ID, typically obtained from 'POST /api/v2/textbots/botflows/sessions'"
+              }
+            ]
+          },
+          "docs": "Send a turn event to an executing bot flow and produce the next action to take."
+        },
+        {
+          "info": {
+            "name": "Create an execution instance of a bot flow definition.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/textbots/botflows/sessions"
+          },
+          "docs": "The launch is asynchronous; use the returned instance ID to post turns to it using 'POST /api/v2/textbots/botflows/sessions/{sessionId}/turns'."
+        },
+        {
+          "info": {
+            "name": "Send an intent to a bot to start a dialog/interact with it via text",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/textbots/bots/execute"
+          },
+          "docs": "This will either start a bot with the given id or relay a communication to an existing bot session."
+        },
+        {
+          "info": {
+            "name": "Find bots using the currently configured friendly name or ID.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/textbots/bots/search",
+            "params": [
+              {
+                "name": "botType",
+                "value": "",
+                "type": "query",
+                "description": "Bot types"
+              },
+              {
+                "name": "botName",
+                "value": "",
+                "type": "query",
+                "description": "Bot name"
+              },
+              {
+                "name": "botId",
+                "value": "",
+                "type": "query",
+                "description": "Bot IDs. Maximum of 50"
+              },
+              {
+                "name": "virtualAgentEnabled",
+                "value": "",
+                "type": "query",
+                "description": "Include or exclude virtual agent flows, only applies to GenesysBotFlows or GenesysDigitalBotFlows"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The maximum results to return. Maximum of 100"
+              }
+            ]
+          },
+          "docs": "The name does allow case-insensitive partial string matches or by IDs (up to 50), but not both at the same time. Optionally you can limit the scope of the search by providing one or more bot types.  You can specify the maximum results to return, up to a limit of 100"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

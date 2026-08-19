@@ -1,0 +1,2030 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Journey API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Journey",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Query for journey aggregates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/analytics/journeys/aggregates/query"
+          },
+          "docs": "Query for journey aggregates"
+        },
+        {
+          "info": {
+            "name": "Query for journey aggregates asynchronously",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/analytics/journeys/aggregates/jobs"
+          },
+          "docs": "Query for journey aggregates asynchronously"
+        },
+        {
+          "info": {
+            "name": "Get status for async query for journey aggregates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/analytics/journeys/aggregates/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "jobId"
+              }
+            ]
+          },
+          "docs": "Get status for async query for journey aggregates"
+        },
+        {
+          "info": {
+            "name": "Delete/cancel an async request for journey aggregates",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/analytics/journeys/aggregates/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "jobId"
+              }
+            ]
+          },
+          "docs": "Delete/cancel an async request for journey aggregates"
+        },
+        {
+          "info": {
+            "name": "Fetch a page of results for an async aggregates query",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/analytics/journeys/aggregates/jobs/:jobId/results",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "jobId"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor token to retrieve next page"
+              }
+            ]
+          },
+          "docs": "Fetch a page of results for an async aggregates query"
+        },
+        {
+          "info": {
+            "name": "Retrieve segment assignments by external contact ID.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/externalcontacts/contacts/:contactId/journey/segments",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path",
+                "description": "ExternalContact ID"
+              },
+              {
+                "name": "includeMerged",
+                "value": "",
+                "type": "query",
+                "description": "Indicates whether to return segment assignments from all external contacts in the merge-set of the given one."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of entities to return. Default of 25, maximum of 500."
+              }
+            ]
+          },
+          "docs": "Retrieve segment assignments by external contact ID."
+        },
+        {
+          "info": {
+            "name": "Assign/Unassign up to 10 segments to/from an external contact or, if a segment is already assigned, update the expiry date of the segment assignment. Any unprocessed segment assignments are returned in the body for the client to retry, in the event of a partial success.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/externalcontacts/contacts/:contactId/journey/segments",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path",
+                "description": "ExternalContact ID"
+              }
+            ]
+          },
+          "docs": "Assign/Unassign up to 10 segments to/from an external contact or, if a segment is already assigned, update the expiry date of the segment assignment. Any unprocessed segment assignments are returned in the body for the client to retry, in the event of a partial success."
+        },
+        {
+          "info": {
+            "name": "Retrieve all sessions for a given external contact.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/externalcontacts/contacts/:contactId/journey/sessions",
+            "params": [
+              {
+                "name": "contactId",
+                "value": "",
+                "type": "path",
+                "description": "ExternalContact ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Number of entities to return. Maximum of 200."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the end of the set of entities that has been returned."
+              },
+              {
+                "name": "includeMerged",
+                "value": "",
+                "type": "query",
+                "description": "Indicates whether to return sessions from all external contacts in the merge-set of the given one."
+              }
+            ]
+          },
+          "docs": "Retrieve all sessions for a given external contact."
+        },
+        {
+          "info": {
+            "name": "Retrieve a single action map.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/actionmaps/:actionMapId",
+            "params": [
+              {
+                "name": "actionMapId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the action map."
+              }
+            ]
+          },
+          "docs": "Retrieve a single action map."
+        },
+        {
+          "info": {
+            "name": "Update single action map.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/journey/actionmaps/:actionMapId",
+            "params": [
+              {
+                "name": "actionMapId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the action map."
+              }
+            ]
+          },
+          "docs": "Update single action map."
+        },
+        {
+          "info": {
+            "name": "Delete single action map.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/journey/actionmaps/:actionMapId",
+            "params": [
+              {
+                "name": "actionMapId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the action map."
+              }
+            ]
+          },
+          "docs": "Delete single action map."
+        },
+        {
+          "info": {
+            "name": "Retrieve all action maps.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/actionmaps",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Field(s) to sort by. Prefix with '-' for descending (e.g. sortBy=displayName,-createdDate)."
+              },
+              {
+                "name": "filterField",
+                "value": "",
+                "type": "query",
+                "description": "Field to filter by (e.g. filterField=weight or filterField=action.actionTemplate.id). Requires 'filterField' to also be set."
+              },
+              {
+                "name": "filterValue",
+                "value": "",
+                "type": "query",
+                "description": "Value to filter by. Requires 'filterValue' to also be set."
+              },
+              {
+                "name": "actionMapIds",
+                "value": "",
+                "type": "query",
+                "description": "IDs of action maps to return. Use of this parameter is not compatible with pagination, filtering, sorting or querying. A maximum of 100 action maps are allowed per request."
+              },
+              {
+                "name": "queryFields",
+                "value": "",
+                "type": "query",
+                "description": "Action Map field(s) to query on. Requires 'queryValue' to also be set."
+              },
+              {
+                "name": "queryValue",
+                "value": "",
+                "type": "query",
+                "description": "Value to query on using fuzzy matching. Requires 'queryFields' to also be set."
+              }
+            ]
+          },
+          "docs": "Retrieve all action maps."
+        },
+        {
+          "info": {
+            "name": "Create an action map.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/actionmaps"
+          },
+          "docs": "Create an action map."
+        },
+        {
+          "info": {
+            "name": "Deprecated. Retrieve a single action target.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/actiontargets/:actionTargetId",
+            "params": [
+              {
+                "name": "actionTargetId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the action target."
+              }
+            ]
+          },
+          "docs": "ACD Chat v2.0 in Genesys Predictive Engagement is deprecated and being removed. See https://community.genesys.com/discussion/deprecation-acd-chat-v20-support-in-genesys-predictive-engagement"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Update a single action target.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/journey/actiontargets/:actionTargetId",
+            "params": [
+              {
+                "name": "actionTargetId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the action target."
+              }
+            ]
+          },
+          "docs": "ACD Chat v2.0 in Genesys Predictive Engagement is deprecated and being removed. See https://community.genesys.com/discussion/deprecation-acd-chat-v20-support-in-genesys-predictive-engagement"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Retrieve all action targets.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/actiontargets",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              }
+            ]
+          },
+          "docs": "ACD Chat v2.0 in Genesys Predictive Engagement is deprecated and being removed. See https://community.genesys.com/discussion/deprecation-acd-chat-v20-support-in-genesys-predictive-engagement"
+        },
+        {
+          "info": {
+            "name": "Retrieve a single action template.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/actiontemplates/:actionTemplateId",
+            "params": [
+              {
+                "name": "actionTemplateId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the action template."
+              }
+            ]
+          },
+          "docs": "Retrieve a single action template."
+        },
+        {
+          "info": {
+            "name": "Update a single action template.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/journey/actiontemplates/:actionTemplateId",
+            "params": [
+              {
+                "name": "actionTemplateId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the action template."
+              }
+            ]
+          },
+          "docs": "Update a single action template."
+        },
+        {
+          "info": {
+            "name": "Delete a single action template.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/journey/actiontemplates/:actionTemplateId",
+            "params": [
+              {
+                "name": "actionTemplateId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the action template."
+              },
+              {
+                "name": "hardDelete",
+                "value": "",
+                "type": "query",
+                "description": "Determines whether Action Template should be soft-deleted (have it's state set to deleted) or hard-deleted (permanently removed). Set to false (soft-delete) by default."
+              }
+            ]
+          },
+          "docs": "Delete a single action template."
+        },
+        {
+          "info": {
+            "name": "Retrieve all action templates.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/actiontemplates",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Field(s) to sort by. Prefix with '-' for descending (e.g. sortBy=name,-createdDate)."
+              },
+              {
+                "name": "mediaType",
+                "value": "",
+                "type": "query",
+                "description": "Media type"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Action template state."
+              },
+              {
+                "name": "queryFields",
+                "value": "",
+                "type": "query",
+                "description": "ActionTemplate field(s) to query on. Requires 'queryValue' to also be set."
+              },
+              {
+                "name": "queryValue",
+                "value": "",
+                "type": "query",
+                "description": "Value to query on using fuzzy matching. Requires 'queryFields' to also be set."
+              }
+            ]
+          },
+          "docs": "Retrieve all action templates."
+        },
+        {
+          "info": {
+            "name": "Create a single action template.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/actiontemplates"
+          },
+          "docs": "Create a single action template."
+        },
+        {
+          "info": {
+            "name": "Deprecated. Get status of job.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/actionmaps/estimates/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the job."
+              }
+            ]
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Get estimates from completed job.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/actionmaps/estimates/jobs/:jobId/results",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the job."
+              }
+            ]
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Query for estimates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/actionmaps/estimates/jobs"
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Retrieve all events for a given session.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/sessions/:sessionId/events",
+            "params": [
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "path",
+                "description": "System-generated UUID that represents the session the event is a part of."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Number of entities to return. Maximum of 200."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the end of the set of entities that has been returned."
+              },
+              {
+                "name": "eventType",
+                "value": "",
+                "type": "query",
+                "description": "A comma separated list of journey event types to include in the results."
+              }
+            ]
+          },
+          "docs": "Retrieve all events for a given session."
+        },
+        {
+          "info": {
+            "name": "Get a core type from which all schemas are built",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/schemas/coretypes/:coreTypeName",
+            "params": [
+              {
+                "name": "coreTypeName",
+                "value": "",
+                "type": "path",
+                "description": "Name of core type"
+              }
+            ]
+          },
+          "docs": "Get a core type from which all schemas are built"
+        },
+        {
+          "info": {
+            "name": "Get the list of core types enabled for a specific namespace.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/schemas/coretypes"
+          },
+          "docs": "Get the list of core types enabled for a specific namespace."
+        },
+        {
+          "info": {
+            "name": "Get an external events configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/configurations/:configId",
+            "params": [
+              {
+                "name": "configId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the external event configuration."
+              }
+            ]
+          },
+          "docs": "Get an external events configuration"
+        },
+        {
+          "info": {
+            "name": "Update an external events configuration.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/configurations/:configId",
+            "params": [
+              {
+                "name": "configId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the external event configuration."
+              }
+            ]
+          },
+          "docs": "Update an external events configuration."
+        },
+        {
+          "info": {
+            "name": "Delete an external events configuration.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/configurations/:configId",
+            "params": [
+              {
+                "name": "configId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the external event configuration."
+              }
+            ]
+          },
+          "docs": "Delete an external events configuration."
+        },
+        {
+          "info": {
+            "name": "Get all external event configurations.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/configurations",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              }
+            ]
+          },
+          "docs": "Get all external event configurations."
+        },
+        {
+          "info": {
+            "name": "Create an external events configuration.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/configurations"
+          },
+          "docs": "Create an external events configuration."
+        },
+        {
+          "info": {
+            "name": "Create external events",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/configurations/:configurationId/events",
+            "params": [
+              {
+                "name": "configurationId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the external event configuration."
+              }
+            ]
+          },
+          "docs": "Create external events"
+        },
+        {
+          "info": {
+            "name": "Get quantitative limits on schemas",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/schemas/limits"
+          },
+          "docs": "Get quantitative limits on schemas"
+        },
+        {
+          "info": {
+            "name": "Get a schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/schemas/:schemaId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "Schema ID"
+              }
+            ]
+          },
+          "docs": "Get a schema"
+        },
+        {
+          "info": {
+            "name": "Update a schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/schemas/:schemaId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "Schema ID"
+              }
+            ]
+          },
+          "docs": "Update a schema"
+        },
+        {
+          "info": {
+            "name": "Delete a schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/schemas/:schemaId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "Schema ID"
+              }
+            ]
+          },
+          "docs": "Delete a schema"
+        },
+        {
+          "info": {
+            "name": "Get all versions of a External Events schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/schemas/:schemaId/versions",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "Schema ID"
+              }
+            ]
+          },
+          "docs": "Get all versions of a External Events schema"
+        },
+        {
+          "info": {
+            "name": "Get a specific version of a schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/schemas/:schemaId/versions/:versionId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "Schema ID"
+              },
+              {
+                "name": "versionId",
+                "value": "",
+                "type": "path",
+                "description": "Schema version"
+              }
+            ]
+          },
+          "docs": "Get a specific version of a schema"
+        },
+        {
+          "info": {
+            "name": "Get a list of schemas.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/schemas"
+          },
+          "docs": "Get a list of schemas."
+        },
+        {
+          "info": {
+            "name": "Create a schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/externalevents/schemas"
+          },
+          "docs": "Create a schema"
+        },
+        {
+          "info": {
+            "name": "Query for flow paths.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/flows/paths/query"
+          },
+          "docs": "Query for flow paths."
+        },
+        {
+          "info": {
+            "name": "Deprecated. Retrieve a single outcome.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/outcomes/:outcomeId",
+            "params": [
+              {
+                "name": "outcomeId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the outcome."
+              }
+            ]
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Update an outcome.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/journey/outcomes/:outcomeId",
+            "params": [
+              {
+                "name": "outcomeId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the outcome."
+              }
+            ]
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Delete an outcome.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/journey/outcomes/:outcomeId",
+            "params": [
+              {
+                "name": "outcomeId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the outcome."
+              }
+            ]
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Retrieve all outcomes.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/outcomes",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Field(s) to sort by. The response can be sorted by any first level property on the Outcome response. Prefix with '-' for descending (e.g. sortBy=displayName,-createdDate)."
+              },
+              {
+                "name": "outcomeIds",
+                "value": "",
+                "type": "query",
+                "description": "IDs of outcomes to return. Use of this parameter is not compatible with pagination, sorting or querying. A maximum of 20 outcomes are allowed per request."
+              },
+              {
+                "name": "queryFields",
+                "value": "",
+                "type": "query",
+                "description": "Outcome field(s) to query on. Requires 'queryValue' to also be set."
+              },
+              {
+                "name": "queryValue",
+                "value": "",
+                "type": "query",
+                "description": "Value to query on using fuzzy matching. Requires 'queryFields' to also be set."
+              }
+            ]
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Create an outcome.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/outcomes"
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Retrieve latest outcome score associated with a session for all outcomes.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/sessions/:sessionId/outcomescores",
+            "params": [
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the session."
+              }
+            ]
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Retrieve a single outcome predictor.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/outcomes/predictors/:predictorId",
+            "params": [
+              {
+                "name": "predictorId",
+                "value": "",
+                "type": "path",
+                "description": "ID of predictor"
+              }
+            ]
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Delete an outcome predictor.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/journey/outcomes/predictors/:predictorId",
+            "params": [
+              {
+                "name": "predictorId",
+                "value": "",
+                "type": "path",
+                "description": "ID of predictor"
+              }
+            ]
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Retrieve all outcome predictors.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/outcomes/predictors"
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Deprecated. Create an outcome predictor.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/outcomes/predictors"
+          },
+          "docs": "Journey Outcomes is being removed. See https://help.genesys.cloud/announcements/genesys-cloud/deprecation-journey-outcomes/"
+        },
+        {
+          "info": {
+            "name": "Retrieve a single segment.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/segments/:segmentId",
+            "params": [
+              {
+                "name": "segmentId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the segment."
+              }
+            ]
+          },
+          "docs": "Retrieve a single segment."
+        },
+        {
+          "info": {
+            "name": "Update a segment.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/journey/segments/:segmentId",
+            "params": [
+              {
+                "name": "segmentId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the segment."
+              }
+            ]
+          },
+          "docs": "Update a segment."
+        },
+        {
+          "info": {
+            "name": "Delete a segment.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/journey/segments/:segmentId",
+            "params": [
+              {
+                "name": "segmentId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the segment."
+              }
+            ]
+          },
+          "docs": "Delete a segment."
+        },
+        {
+          "info": {
+            "name": "Retrieve all segments.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/segments",
+            "params": [
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Field(s) to sort by. The response can be sorted by any first level property on the Outcome response. Prefix with '-' for descending (e.g. sortBy=displayName,-createdDate)."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "isActive",
+                "value": "",
+                "type": "query",
+                "description": "Determines whether or not to show only active segments."
+              },
+              {
+                "name": "segmentIds",
+                "value": "",
+                "type": "query",
+                "description": "IDs of segments to return. Use of this parameter is not compatible with pagination, sorting or querying. A maximum of 100 segments are allowed per request."
+              },
+              {
+                "name": "queryFields",
+                "value": "",
+                "type": "query",
+                "description": "Segment field(s) to query on. Requires 'queryValue' to also be set."
+              },
+              {
+                "name": "queryValue",
+                "value": "",
+                "type": "query",
+                "description": "Value to query on using fuzzy matching. Requires 'queryFields' to also be set."
+              }
+            ]
+          },
+          "docs": "Retrieve all segments."
+        },
+        {
+          "info": {
+            "name": "Create a segment.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/segments"
+          },
+          "docs": "Create a segment."
+        },
+        {
+          "info": {
+            "name": "Retrieve a single session.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/sessions/:sessionId",
+            "params": [
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the session."
+              }
+            ]
+          },
+          "docs": "Retrieve a single session."
+        },
+        {
+          "info": {
+            "name": "Get a Journey View by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "viewId"
+              }
+            ]
+          },
+          "docs": "returns the latest version"
+        },
+        {
+          "info": {
+            "name": "Delete a Journey View by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "viewId"
+              }
+            ]
+          },
+          "docs": "deletes all versions"
+        },
+        {
+          "info": {
+            "name": "Get a Journey View by ID and version",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions/:versionId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "viewId"
+              },
+              {
+                "name": "versionId",
+                "value": "",
+                "type": "path",
+                "description": "versionId"
+              }
+            ]
+          },
+          "docs": "Get a Journey View by ID and version"
+        },
+        {
+          "info": {
+            "name": "Update a Journey View by ID and version",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions/:versionId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "viewId"
+              },
+              {
+                "name": "versionId",
+                "value": "",
+                "type": "path",
+                "description": "versionId"
+              }
+            ]
+          },
+          "docs": "does not create a new version"
+        },
+        {
+          "info": {
+            "name": "Update a Journey View by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "viewId"
+              }
+            ]
+          },
+          "docs": "creates a new version"
+        },
+        {
+          "info": {
+            "name": "Get a list of Journey Views",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "nameOrCreatedBy",
+                "value": "",
+                "type": "query",
+                "description": "Journey View Name or Created By"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Parameter to request additional data to return in Journey payload"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Parameter to request a list of Journey Views by id, separated by commas. Limit of 100 items."
+              }
+            ]
+          },
+          "docs": "Get a list of Journey Views"
+        },
+        {
+          "info": {
+            "name": "Create a new Journey View",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/views"
+          },
+          "docs": "Create a new Journey View"
+        },
+        {
+          "info": {
+            "name": "Get a Chart by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions/:journeyViewVersion/charts/:chartId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "viewId"
+              },
+              {
+                "name": "journeyViewVersion",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Version"
+              },
+              {
+                "name": "chartId",
+                "value": "",
+                "type": "path",
+                "description": "chartId"
+              }
+            ]
+          },
+          "docs": "returns the latest version"
+        },
+        {
+          "info": {
+            "name": "Get a Chart by ID and version",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions/:journeyViewVersion/charts/:chartId/versions/:chartVersion",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "viewId"
+              },
+              {
+                "name": "journeyViewVersion",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Version"
+              },
+              {
+                "name": "chartId",
+                "value": "",
+                "type": "path",
+                "description": "chartId"
+              },
+              {
+                "name": "chartVersion",
+                "value": "",
+                "type": "path",
+                "description": "chartVersion"
+              }
+            ]
+          },
+          "docs": "Get a Chart by ID and version"
+        },
+        {
+          "info": {
+            "name": "Get details about the data available for journey queries including oldest and newest event dates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/data/details"
+          },
+          "docs": "Get details about the data available for journey queries including oldest and newest event dates"
+        },
+        {
+          "info": {
+            "name": "Validate whether an encoding exist for a label/value combination.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/views/encodings/validate"
+          },
+          "docs": "True indicates a valid encoding"
+        },
+        {
+          "info": {
+            "name": "Get an Event Definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/eventdefinitions/:eventDefinitionId",
+            "params": [
+              {
+                "name": "eventDefinitionId",
+                "value": "",
+                "type": "path",
+                "description": "Event Definition ID"
+              }
+            ]
+          },
+          "docs": "Get an Event Definition"
+        },
+        {
+          "info": {
+            "name": "Update external event for journey views",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/journey/views/eventdefinitions/:eventDefinitionId",
+            "params": [
+              {
+                "name": "eventDefinitionId",
+                "value": "",
+                "type": "path",
+                "description": "Event Definition ID"
+              }
+            ]
+          },
+          "docs": "Update external event for journey views"
+        },
+        {
+          "info": {
+            "name": "Get a list of Event Definitions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/eventdefinitions"
+          },
+          "docs": "Get a list of Event Definitions"
+        },
+        {
+          "info": {
+            "name": "Activate external event for journey views",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/journey/views/eventdefinitions/:eventDefinitionId/activate",
+            "params": [
+              {
+                "name": "eventDefinitionId",
+                "value": "",
+                "type": "path",
+                "description": "Event Definition ID"
+              }
+            ]
+          },
+          "docs": "Activate external event for journey views"
+        },
+        {
+          "info": {
+            "name": "Get changes in external event definitions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/eventdefinitions/external/changes"
+          },
+          "docs": "Get changes in external event definitions"
+        },
+        {
+          "info": {
+            "name": "Get external events for journey views",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/eventdefinitions/external"
+          },
+          "docs": "Get external events for journey views"
+        },
+        {
+          "info": {
+            "name": "Get the latest job of a journey view version.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions/:journeyVersionId/jobs/latest",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Id"
+              },
+              {
+                "name": "journeyVersionId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Version"
+              }
+            ]
+          },
+          "docs": "Get the latest job of a journey view version."
+        },
+        {
+          "info": {
+            "name": "Get the job for a journey view version.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions/:journeyVersionId/jobs/:jobId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Id"
+              },
+              {
+                "name": "journeyVersionId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Version"
+              },
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "JobId"
+              }
+            ]
+          },
+          "docs": "Get the job for a journey view version."
+        },
+        {
+          "info": {
+            "name": "Update the job for a journey view version. Only the status can be changed and only to Cancelled",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions/:journeyVersionId/jobs/:jobId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Id"
+              },
+              {
+                "name": "journeyVersionId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Version"
+              },
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "JobId"
+              }
+            ]
+          },
+          "docs": "Update the job for a journey view version. Only the status can be changed and only to Cancelled"
+        },
+        {
+          "info": {
+            "name": "Get my jobs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/jobs/me",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "The number of the page to return"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Max number of entities to return"
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "An absolute timeframe for filtering the jobs, expressed as an ISO 8601 interval."
+              },
+              {
+                "name": "statuses",
+                "value": "",
+                "type": "query",
+                "description": "Job statuses to filter for"
+              }
+            ]
+          },
+          "docs": "Get my jobs"
+        },
+        {
+          "info": {
+            "name": "Get the jobs for an organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/jobs",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "The number of the page to return"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Max number of entities to return"
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "An absolute timeframe for filtering the jobs, expressed as an ISO 8601 interval."
+              },
+              {
+                "name": "statuses",
+                "value": "",
+                "type": "query",
+                "description": "Job statuses to filter for"
+              }
+            ]
+          },
+          "docs": "Get the jobs for an organization."
+        },
+        {
+          "info": {
+            "name": "Submit a job request for a journey view version.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions/:journeyVersionId/jobs",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Id"
+              },
+              {
+                "name": "journeyVersionId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Version"
+              }
+            ]
+          },
+          "docs": "Submit a job request for a journey view version."
+        },
+        {
+          "info": {
+            "name": "Get the chart result associated with a journey view job.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions/:journeyVersionId/jobs/:jobId/results/charts/:chartId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Id"
+              },
+              {
+                "name": "journeyVersionId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Version"
+              },
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "JobId"
+              },
+              {
+                "name": "chartId",
+                "value": "",
+                "type": "path",
+                "description": "ChartId"
+              }
+            ]
+          },
+          "docs": "Get the chart result associated with a journey view job."
+        },
+        {
+          "info": {
+            "name": "Get the result of a job for a journey view version.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/versions/:journeyViewVersion/jobs/:jobId/results",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "JourneyViewResult id"
+              },
+              {
+                "name": "journeyViewVersion",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Version"
+              },
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "Id of the executing job"
+              }
+            ]
+          },
+          "docs": "Get the result of a job for a journey view version."
+        },
+        {
+          "info": {
+            "name": "Get the journey schedules for an organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/schedules",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "The number of the page to return"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Max number of entities to return"
+              }
+            ]
+          },
+          "docs": "Get the journey schedules for an organization."
+        },
+        {
+          "info": {
+            "name": "Get the Schedule for a JourneyView",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/schedules",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Id"
+              }
+            ]
+          },
+          "docs": "Get the Schedule for a JourneyView"
+        },
+        {
+          "info": {
+            "name": "Add a new Schedule to a JourneyView",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/schedules",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Id"
+              }
+            ]
+          },
+          "docs": "Add a new Schedule to a JourneyView"
+        },
+        {
+          "info": {
+            "name": "Update the Schedule for a JourneyView",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/schedules",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Id"
+              }
+            ]
+          },
+          "docs": "Update the Schedule for a JourneyView"
+        },
+        {
+          "info": {
+            "name": "Delete the Schedule of a JourneyView",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/journey/views/:viewId/schedules",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Journey View Id"
+              }
+            ]
+          },
+          "docs": "Delete the Schedule of a JourneyView"
+        },
+        {
+          "info": {
+            "name": "Sends an action event, which is used for changing the state of actions that have been offered to the user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/deployments/:deploymentId/actionevent",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the deployment sending the beacon."
+              }
+            ]
+          },
+          "docs": "Sends an action event, which is used for changing the state of actions that have been offered to the user."
+        },
+        {
+          "info": {
+            "name": "Send a journey app event, used for tracking customer activity on an application.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/deployments/:deploymentId/appevents",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the deployment sending the app event."
+              }
+            ]
+          },
+          "docs": "Send a journey app event, used for tracking customer activity on an application."
+        },
+        {
+          "info": {
+            "name": "Send a ping.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/journey/deployments/:deploymentId/customers/:customerCookieId/ping",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the deployment sending the ping."
+              },
+              {
+                "name": "customerCookieId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the customer associated with the ping."
+              },
+              {
+                "name": "dl",
+                "value": "",
+                "type": "query",
+                "description": "Document Location: 1) Web Page URL if overridden or URL fragment identifier (window.location.hash). OR  2) Application screen name that the ping request was sent from in the app. e.g. 'home' or 'help. Pings without this parameter will not return actions."
+              },
+              {
+                "name": "dt",
+                "value": "",
+                "type": "query",
+                "description": "Document Title.  A human readable name for the page or screen"
+              },
+              {
+                "name": "appNamespace",
+                "value": "",
+                "type": "query",
+                "description": "Namespace of the application (e.g. com.genesys.bancodinero). Used for domain filtering in application sessions"
+              },
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "query",
+                "description": "UUID of the customer session. Use the same Session Id for all pings, AppEvents and ActionEvents in the session"
+              },
+              {
+                "name": "sinceLastBeaconMilliseconds",
+                "value": "",
+                "type": "query",
+                "description": "How long (milliseconds) since the last app event or beacon was sent. The response may return a pollInternvalMilliseconds to reduce the frequency of pings."
+              }
+            ]
+          },
+          "docs": "Send a ping."
+        },
+        {
+          "info": {
+            "name": "Send a journey web event, used for tracking customer activity on a website.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/journey/deployments/:deploymentId/webevents",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the deployment sending the web event."
+              }
+            ]
+          },
+          "docs": "Send a journey web event, used for tracking customer activity on a website."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

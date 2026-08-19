@@ -1,0 +1,2850 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Users API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns which divisions the current user has the given permission in.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisionspermitted/me",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Search term to filter by division name"
+              },
+              {
+                "name": "permission",
+                "value": "",
+                "type": "query",
+                "description": "The permission string, including the object to access, e.g. routing:queue:view"
+              }
+            ]
+          },
+          "docs": "This route is deprecated, use authorization/divisionspermitted/paged/me instead."
+        },
+        {
+          "info": {
+            "name": "Returns which divisions the current user has the given permission in.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisionspermitted/paged/me",
+            "params": [
+              {
+                "name": "permission",
+                "value": "",
+                "type": "query",
+                "description": "The permission string, including the object to access, e.g. routing:queue:view"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              }
+            ]
+          },
+          "docs": "Returns which divisions the current user has the given permission in."
+        },
+        {
+          "info": {
+            "name": "Returns which divisions the specified user has the given permission in.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisionspermitted/paged/:subjectId",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "permission",
+                "value": "",
+                "type": "query",
+                "description": "The permission string, including the object to access, e.g. routing:queue:view"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              }
+            ]
+          },
+          "docs": "This route is deprecated, use authorization/divisionspermitted/paged/me instead."
+        },
+        {
+          "info": {
+            "name": "Get a list of verifiers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/verifiers",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get a list of verifiers"
+        },
+        {
+          "info": {
+            "name": "Update a verifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/verifiers/:verifierId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "verifierId",
+                "value": "",
+                "type": "path",
+                "description": "Verifier ID"
+              }
+            ]
+          },
+          "docs": "Update a verifier"
+        },
+        {
+          "info": {
+            "name": "Delete a verifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/users/:userId/verifiers/:verifierId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "verifierId",
+                "value": "",
+                "type": "path",
+                "description": "Verifier ID"
+              }
+            ]
+          },
+          "docs": "Delete a verifier"
+        },
+        {
+          "info": {
+            "name": "Query for user aggregates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/analytics/users/aggregates/query"
+          },
+          "docs": "Query for user aggregates"
+        },
+        {
+          "info": {
+            "name": "Query for user aggregates asynchronously",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/analytics/users/aggregates/jobs"
+          },
+          "docs": "Query for user aggregates asynchronously"
+        },
+        {
+          "info": {
+            "name": "Get status for async query for user aggregates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/analytics/users/aggregates/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "jobId"
+              }
+            ]
+          },
+          "docs": "Get status for async query for user aggregates"
+        },
+        {
+          "info": {
+            "name": "Delete/cancel an async request for user aggregates",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/analytics/users/aggregates/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "jobId"
+              }
+            ]
+          },
+          "docs": "Delete/cancel an async request for user aggregates"
+        },
+        {
+          "info": {
+            "name": "Fetch a page of results for an async aggregates query",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/analytics/users/aggregates/jobs/:jobId/results",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "jobId"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor token to retrieve next page"
+              }
+            ]
+          },
+          "docs": "Fetch a page of results for an async aggregates query"
+        },
+        {
+          "info": {
+            "name": "Query for user details",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/analytics/users/details/query"
+          },
+          "docs": "Query for user details"
+        },
+        {
+          "info": {
+            "name": "Query for user observations",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/analytics/users/observations/query"
+          },
+          "docs": "Query for user observations"
+        },
+        {
+          "info": {
+            "name": "Query for user activity observations",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/analytics/users/activity/query",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The desired page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "The desired page number"
+              }
+            ]
+          },
+          "docs": "Query for user activity observations"
+        },
+        {
+          "info": {
+            "name": "Query for user details asynchronously",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/analytics/users/details/jobs"
+          },
+          "docs": "Query for user details asynchronously"
+        },
+        {
+          "info": {
+            "name": "Get status for async query for user details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/analytics/users/details/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "jobId"
+              }
+            ]
+          },
+          "docs": "Get status for async query for user details"
+        },
+        {
+          "info": {
+            "name": "Delete/cancel an async request",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/analytics/users/details/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "jobId"
+              }
+            ]
+          },
+          "docs": "Delete/cancel an async request"
+        },
+        {
+          "info": {
+            "name": "Fetch a page of results for an async query",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/analytics/users/details/jobs/:jobId/results",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "jobId"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Indicates where to resume query results (not required for first page)"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The desired maximum number of results"
+              }
+            ]
+          },
+          "docs": "Fetch a page of results for an async query"
+        },
+        {
+          "info": {
+            "name": "Lookup the datalake availability date and time",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/analytics/users/details/jobs/availability"
+          },
+          "docs": "Lookup the datalake availability date and time"
+        },
+        {
+          "info": {
+            "name": "Returns a listing of roles and permissions for the currently authenticated user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/me",
+            "params": [
+              {
+                "name": "includeDuplicates",
+                "value": "",
+                "type": "query",
+                "description": "Include multiple entries with the same role and division but different subjects"
+              }
+            ]
+          },
+          "docs": "Returns a listing of roles and permissions for the currently authenticated user."
+        },
+        {
+          "info": {
+            "name": "Returns a listing of roles and permissions for a user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "includeDuplicates",
+                "value": "",
+                "type": "query",
+                "description": "Include multiple entries with the same role and division but different subjects"
+              }
+            ]
+          },
+          "docs": "Returns a listing of roles and permissions for a user."
+        },
+        {
+          "info": {
+            "name": "Make a grant of a role in a division",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId/divisions/:divisionId/roles/:roleId",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "the id of the division to which to make the grant"
+              },
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "the id of the role to grant"
+              },
+              {
+                "name": "subjectType",
+                "value": "",
+                "type": "query",
+                "description": "what the type of the subject is: PC_GROUP, PC_USER or PC_OAUTH_CLIENT (note: for cross-org authorization, please use the Organization Authorization endpoints)"
+              }
+            ]
+          },
+          "docs": "Make a grant of a role in a division"
+        },
+        {
+          "info": {
+            "name": "Delete a grant of a role in a division",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId/divisions/:divisionId/roles/:roleId",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "the id of the division of the grant"
+              },
+              {
+                "name": "roleId",
+                "value": "",
+                "type": "path",
+                "description": "the id of the role of the grant"
+              }
+            ]
+          },
+          "docs": "Delete a grant of a role in a division"
+        },
+        {
+          "info": {
+            "name": "Bulk-grant roles and divisions to a subject.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId/bulkadd",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "subjectType",
+                "value": "",
+                "type": "query",
+                "description": "what the type of the subject is (PC_GROUP, PC_USER or PC_OAUTH_CLIENT)"
+              }
+            ]
+          },
+          "docs": "Bulk-grant roles and divisions to a subject."
+        },
+        {
+          "info": {
+            "name": "Replace subject's roles and divisions with the exact list supplied in the request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId/bulkreplace",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              },
+              {
+                "name": "subjectType",
+                "value": "",
+                "type": "query",
+                "description": "what the type of the subject is (PC_GROUP, PC_USER or PC_OAUTH_CLIENT)"
+              }
+            ]
+          },
+          "docs": "This operation will not remove grants that are inherited from group membership. It will only set the grants directly applied to the subject."
+        },
+        {
+          "info": {
+            "name": "Bulk-remove grants from a subject.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/subjects/:subjectId/bulkremove",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "Subject ID (user or group)"
+              }
+            ]
+          },
+          "docs": "Bulk-remove grants from a subject."
+        },
+        {
+          "info": {
+            "name": "Returns a listing of roles and permissions for a user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:subjectId/roles",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Returns a listing of roles and permissions for a user."
+        },
+        {
+          "info": {
+            "name": "Sets the user's roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:subjectId/roles",
+            "params": [
+              {
+                "name": "subjectId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Sets the user's roles"
+        },
+        {
+          "info": {
+            "name": "Get a user's CallForwarding",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/callforwarding",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get a user's CallForwarding"
+        },
+        {
+          "info": {
+            "name": "Update a user's CallForwarding",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/callforwarding",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Update a user's CallForwarding"
+        },
+        {
+          "info": {
+            "name": "Patch a user's CallForwarding",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId/callforwarding",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Patch a user's CallForwarding"
+        },
+        {
+          "info": {
+            "name": "Fetch field config for an entity type",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/fieldconfig",
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Field type"
+              }
+            ]
+          },
+          "docs": "Fetch field config for an entity type"
+        },
+        {
+          "info": {
+            "name": "Deprecated; will be revived with new contract",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/favorites",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Sort order"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              }
+            ]
+          },
+          "docs": "Deprecated; will be revived with new contract"
+        },
+        {
+          "info": {
+            "name": "Get adjacents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/adjacents",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              }
+            ]
+          },
+          "docs": "Get adjacents"
+        },
+        {
+          "info": {
+            "name": "Get superiors",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/superiors",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              }
+            ]
+          },
+          "docs": "Get superiors"
+        },
+        {
+          "info": {
+            "name": "Get direct reports",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/directreports",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              }
+            ]
+          },
+          "docs": "Get direct reports"
+        },
+        {
+          "info": {
+            "name": "Get user profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/profile",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "userId"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              },
+              {
+                "name": "integrationPresenceSource",
+                "value": "",
+                "type": "query",
+                "description": "Gets an integration presence for a user instead of their default."
+              }
+            ]
+          },
+          "docs": "This api has been deprecated. Use api/v2/users instead"
+        },
+        {
+          "info": {
+            "name": "Get a user profile listing",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/profiles/users",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "id"
+              },
+              {
+                "name": "jid",
+                "value": "",
+                "type": "query",
+                "description": "jid"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Ascending or descending sort order"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              },
+              {
+                "name": "integrationPresenceSource",
+                "value": "",
+                "type": "query",
+                "description": "Gets an integration presence for users instead of their defaults. This parameter will only be used when presence is provided as an \"expand\"."
+              }
+            ]
+          },
+          "docs": "This api is deprecated. User /api/v2/users"
+        },
+        {
+          "info": {
+            "name": "Get a user's Geolocation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/geolocations/:clientId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "user Id"
+              },
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "client Id"
+              }
+            ]
+          },
+          "docs": "Get a user's Geolocation"
+        },
+        {
+          "info": {
+            "name": "Patch a user's Geolocation",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId/geolocations/:clientId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "user Id"
+              },
+              {
+                "name": "clientId",
+                "value": "",
+                "type": "path",
+                "description": "client Id"
+              }
+            ]
+          },
+          "docs": "The geolocation object can be patched one of three ways. Option 1: Set the 'primary' property to true. This will set the client as the user's primary geolocation source.  Option 2: Provide the 'latitude' and 'longitude' values.  This will enqueue an asynchronous update of the 'city', 'region', and 'country', generating a notification. A subsequent GET operation will include the new values for 'city', 'region' and 'country'.  Option 3:  Provide the 'city', 'region', 'country' values.  Option 1 ca"
+        },
+        {
+          "info": {
+            "name": "Get a OutOfOffice",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/outofoffice",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get a OutOfOffice"
+        },
+        {
+          "info": {
+            "name": "Update an OutOfOffice",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/outofoffice",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Update an OutOfOffice"
+        },
+        {
+          "info": {
+            "name": "Get the user's Direct Routing Backup settings.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/routing/directroutingbackup/settings/me"
+          },
+          "docs": "Get the user's Direct Routing Backup settings."
+        },
+        {
+          "info": {
+            "name": "Update the user's Direct Routing Backup settings.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/routing/directroutingbackup/settings/me"
+          },
+          "docs": "Update the user's Direct Routing Backup settings."
+        },
+        {
+          "info": {
+            "name": "Delete the user's Direct Routing Backup settings and revert to the Direct Routing Queue default.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/routing/directroutingbackup/settings/me"
+          },
+          "docs": "Delete the user's Direct Routing Backup settings and revert to the Direct Routing Queue default."
+        },
+        {
+          "info": {
+            "name": "Get the user's Direct Routing Backup settings.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/routing/users/:userId/directroutingbackup/settings",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get the user's Direct Routing Backup settings."
+        },
+        {
+          "info": {
+            "name": "Update the user's Direct Routing Backup settings.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/routing/users/:userId/directroutingbackup/settings",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Update the user's Direct Routing Backup settings."
+        },
+        {
+          "info": {
+            "name": "Delete the user's Direct Routing Backup settings and revert to the Direct Routing Queue default.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/routing/users/:userId/directroutingbackup/settings",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Delete the user's Direct Routing Backup settings and revert to the Direct Routing Queue default."
+        },
+        {
+          "info": {
+            "name": "Get the user's max utilization settings.  If not configured, the organization-wide default is returned.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/routing/users/:userId/utilization",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get the user's max utilization settings.  If not configured, the organization-wide default is returned."
+        },
+        {
+          "info": {
+            "name": "Update the user's max utilization settings.  Include only those media types requiring custom configuration. Any omitted media types will be set to the organization's default values.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/routing/users/:userId/utilization",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Update the user's max utilization settings.  Include only those media types requiring custom configuration. Any omitted media types will be set to the organization's default values."
+        },
+        {
+          "info": {
+            "name": "Delete the user's max utilization settings and revert to the organization-wide default.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/routing/users/:userId/utilization",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Delete the user's max utilization settings and revert to the organization-wide default."
+        },
+        {
+          "info": {
+            "name": "Get chats for a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/chats/me",
+            "params": [
+              {
+                "name": "excludeClosed",
+                "value": "",
+                "type": "query",
+                "description": "Whether or not to exclude closed chats"
+              },
+              {
+                "name": "includePresence",
+                "value": "",
+                "type": "query",
+                "description": "Whether or not to include user presence"
+              },
+              {
+                "name": "includeRoomOwners",
+                "value": "",
+                "type": "query",
+                "description": "Whether or not to include room owners"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The key to start after"
+              }
+            ]
+          },
+          "docs": "Get chats for a user"
+        },
+        {
+          "info": {
+            "name": "Get the user associated with external identifier.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/externalid/:authorityName/:externalKey",
+            "params": [
+              {
+                "name": "authorityName",
+                "value": "",
+                "type": "path",
+                "description": "Authority Name"
+              },
+              {
+                "name": "externalKey",
+                "value": "",
+                "type": "path",
+                "description": "External Key"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              }
+            ]
+          },
+          "docs": "Authority name and external key are case sensitive."
+        },
+        {
+          "info": {
+            "name": "Get the external identifier of user for an authority.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/externalid/:authorityName",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "authorityName",
+                "value": "",
+                "type": "path",
+                "description": "Authority Name"
+              }
+            ]
+          },
+          "docs": "Authority name and external key are case sensitive."
+        },
+        {
+          "info": {
+            "name": "Get the external identifiers for a user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/externalid",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get the external identifiers for a user."
+        },
+        {
+          "info": {
+            "name": "Create mapping between external identifier and user. Limit 100 per entity.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users/:userId/externalid",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Authority Name and External key are case sensitive."
+        },
+        {
+          "info": {
+            "name": "Delete the external identifier for user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/users/:userId/externalid/:authorityName/:externalKey",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "authorityName",
+                "value": "",
+                "type": "path",
+                "description": "Authority Name"
+              },
+              {
+                "name": "externalKey",
+                "value": "",
+                "type": "path",
+                "description": "External Key"
+              }
+            ]
+          },
+          "docs": "Delete the external identifier for user."
+        },
+        {
+          "info": {
+            "name": "Change your password",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users/me/password"
+          },
+          "docs": "Change your password"
+        },
+        {
+          "info": {
+            "name": "Get current user details.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/me",
+            "params": [
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand."
+              },
+              {
+                "name": "integrationPresenceSource",
+                "value": "",
+                "type": "query",
+                "description": "Get your presence for a given integration. This parameter will only be used when presence is provided as an \"expand\"."
+              },
+              {
+                "name": "userCustomAttributeSchemaIds",
+                "value": "",
+                "type": "query",
+                "description": "Gets custom user attribute values for given schemas set for user. This parameter will only be used when customAttributes is provided as an \"expand\". The maximum number of schemaIds that can be requested is 100"
+              }
+            ]
+          },
+          "docs": "This request is not valid when using the Client Credentials OAuth grant."
+        },
+        {
+          "info": {
+            "name": "Change a users password",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users/:userId/password",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Change a users password"
+        },
+        {
+          "info": {
+            "name": "List profile skills for a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/profileskills",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "List profile skills for a user"
+        },
+        {
+          "info": {
+            "name": "Update profile skills for a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/profileskills",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Update profile skills for a user"
+        },
+        {
+          "info": {
+            "name": "Join or unjoin a queue for a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId/queues/:queueId",
+            "params": [
+              {
+                "name": "queueId",
+                "value": "",
+                "type": "path",
+                "description": "Queue ID"
+              },
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Join or unjoin a queue for a user"
+        },
+        {
+          "info": {
+            "name": "Get queues for user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/queues",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "joined",
+                "value": "",
+                "type": "query",
+                "description": "Is joined to the queue"
+              },
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "query",
+                "description": "Division ID(s)"
+              }
+            ]
+          },
+          "docs": "Get queues for user"
+        },
+        {
+          "info": {
+            "name": "Join or unjoin a set of queues for a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId/queues",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "query",
+                "description": "Division ID(s)"
+              }
+            ]
+          },
+          "docs": "Users can only be joined to queues where they have membership. Non-member user-queue pairs in the request will be disregarded. Note: This operation is processed asynchronously and the response data may not reflect the final state. Changes may take time to propagate. Query the GET endpoint after a delay to retrieve the current membership status."
+        },
+        {
+          "info": {
+            "name": "Get user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand. Note, expand parameters are resolved with a best effort approach and not guaranteed to be returned. If requested expand information is absolutely required, it's recommended to use specific API requests instead."
+              },
+              {
+                "name": "integrationPresenceSource",
+                "value": "",
+                "type": "query",
+                "description": "Gets an integration presence for a user instead of their default."
+              },
+              {
+                "name": "userCustomAttributeSchemaIds",
+                "value": "",
+                "type": "query",
+                "description": "Gets custom user attribute values for given schemas set for user. This parameter will only be used when customAttributes is provided as an \"expand\". The maximum number of schemaIds that can be requested is 100"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Search for a user with this state"
+              }
+            ]
+          },
+          "docs": "Get user."
+        },
+        {
+          "info": {
+            "name": "Update user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Update user"
+        },
+        {
+          "info": {
+            "name": "Delete user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Delete user"
+        },
+        {
+          "info": {
+            "name": "Send an activation email to the user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users/:userId/invite",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "Resend the invitation even if one is already outstanding"
+              }
+            ]
+          },
+          "docs": "Send an activation email to the user"
+        },
+        {
+          "info": {
+            "name": "Update an assigned routing language's proficiency",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routinglanguages/:languageId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "languageId",
+                "value": "",
+                "type": "path",
+                "description": "languageId"
+              }
+            ]
+          },
+          "docs": "Update an assigned routing language's proficiency"
+        },
+        {
+          "info": {
+            "name": "Remove a routing language from a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routinglanguages/:languageId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "languageId",
+                "value": "",
+                "type": "path",
+                "description": "languageId"
+              }
+            ]
+          },
+          "docs": "Remove a routing language from a user"
+        },
+        {
+          "info": {
+            "name": "List routing languages assigned to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routinglanguages",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Ascending or descending sort order"
+              }
+            ]
+          },
+          "docs": "List routing languages assigned to a user"
+        },
+        {
+          "info": {
+            "name": "Assign a routing language to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routinglanguages",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Assign a routing language to a user"
+        },
+        {
+          "info": {
+            "name": "Assign multiple routing languages to a user. Max 50 routing languages in request body",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routinglanguages/bulk",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Assign multiple routing languages to a user. Max 50 routing languages in request body"
+        },
+        {
+          "info": {
+            "name": "Update an assigned routing skill's proficiency",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routingskills/:skillId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "skillId",
+                "value": "",
+                "type": "path",
+                "description": "skillId"
+              }
+            ]
+          },
+          "docs": "Update an assigned routing skill's proficiency"
+        },
+        {
+          "info": {
+            "name": "Remove a routing skill from a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routingskills/:skillId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "skillId",
+                "value": "",
+                "type": "path",
+                "description": "skillId"
+              }
+            ]
+          },
+          "docs": "Remove a routing skill from a user"
+        },
+        {
+          "info": {
+            "name": "List routing skills assigned to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routingskills",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Ascending or descending sort order"
+              }
+            ]
+          },
+          "docs": "List routing skills assigned to a user"
+        },
+        {
+          "info": {
+            "name": "Assign a routing skill to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routingskills",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Assign a routing skill to a user"
+        },
+        {
+          "info": {
+            "name": "Assign multiple routing skills to a user, replacing any current assignments",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routingskills/bulk",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Assign multiple routing skills to a user, replacing any current assignments"
+        },
+        {
+          "info": {
+            "name": "Assign multiple routing skills to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routingskills/bulk",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Assign multiple routing skills to a user"
+        },
+        {
+          "info": {
+            "name": "Fetch the routing status of a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routingstatus",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Fetch the routing status of a user"
+        },
+        {
+          "info": {
+            "name": "Update the routing status of a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/routingstatus",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Update the routing status of a user"
+        },
+        {
+          "info": {
+            "name": "Get station information for self",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/stations/me"
+          },
+          "docs": "Get station information for self"
+        },
+        {
+          "info": {
+            "name": "Clear self associated station",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/users/stations/me/associatedstation"
+          },
+          "docs": "Clear self associated station"
+        },
+        {
+          "info": {
+            "name": "Set self associated station",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/stations/me/associatedstation/:stationId",
+            "params": [
+              {
+                "name": "stationId",
+                "value": "",
+                "type": "path",
+                "description": "stationId"
+              }
+            ]
+          },
+          "docs": "Set self associated station"
+        },
+        {
+          "info": {
+            "name": "Get skill groups for a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/skillgroups",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the next page"
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the previous page"
+              }
+            ]
+          },
+          "docs": "Get skill groups for a user"
+        },
+        {
+          "info": {
+            "name": "Get user state information.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/state",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get user state information."
+        },
+        {
+          "info": {
+            "name": "Update user state information.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/state",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Update user state information."
+        },
+        {
+          "info": {
+            "name": "Get station information for user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/station",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get station information for user"
+        },
+        {
+          "info": {
+            "name": "Clear associated station",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/users/:userId/station/associatedstation",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Clear associated station"
+        },
+        {
+          "info": {
+            "name": "Set associated station",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/station/associatedstation/:stationId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "stationId",
+                "value": "",
+                "type": "path",
+                "description": "stationId"
+              }
+            ]
+          },
+          "docs": "Set associated station"
+        },
+        {
+          "info": {
+            "name": "Set default station",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/station/defaultstation/:stationId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "stationId",
+                "value": "",
+                "type": "path",
+                "description": "stationId"
+              }
+            ]
+          },
+          "docs": "Set default station"
+        },
+        {
+          "info": {
+            "name": "Clear default station",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/users/:userId/station/defaultstation",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Clear default station"
+        },
+        {
+          "info": {
+            "name": "List the organizations that have authorized/trusted the user.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/trustors",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              }
+            ]
+          },
+          "docs": "List the organizations that have authorized/trusted the user."
+        },
+        {
+          "info": {
+            "name": "Update bulk acd autoanswer on users. Max 50 users can be updated at a time.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/bulk"
+          },
+          "docs": "Update bulk acd autoanswer on users. Max 50 users can be updated at a time."
+        },
+        {
+          "info": {
+            "name": "Get list of available users, paged by cursor token, No division filtering available so directory:user:view permission for all divisions is required",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/query",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor token to retrieve next page"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Ascending or descending sort order"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand. Note, expand parameters are resolved with a best effort approach and not guaranteed to be returned. If requested expand information is absolutely required, it's recommended to use specific API requests instead."
+              },
+              {
+                "name": "integrationPresenceSource",
+                "value": "",
+                "type": "query",
+                "description": "Gets an integration presence for users instead of their defaults. This parameter will only be used when presence is provided as an \"expand\". When using this parameter the maximum number of users that can be returned is 100."
+              },
+              {
+                "name": "userCustomAttributeSchemaIds",
+                "value": "",
+                "type": "query",
+                "description": "Gets custom user attribute values for given schemas set for user. This parameter will only be used when customAttributes is provided as an \"expand\". The maximum number of schemaIds that can be requested is 5"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Only list users of this state"
+              }
+            ]
+          },
+          "docs": "Get list of available users, paged by cursor token, No division filtering available so directory:user:view permission for all divisions is required"
+        },
+        {
+          "info": {
+            "name": "Get the list of available users.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "A list of user IDs to fetch by bulk"
+              },
+              {
+                "name": "jabberId",
+                "value": "",
+                "type": "query",
+                "description": "A list of jabberIds to fetch by bulk (cannot be used with the \"id\" parameter)"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Ascending or descending sort order"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand. Note, expand parameters are resolved with a best effort approach and not guaranteed to be returned. If requested expand information is absolutely required, it's recommended to use specific API requests instead."
+              },
+              {
+                "name": "integrationPresenceSource",
+                "value": "",
+                "type": "query",
+                "description": "Gets an integration presence for users instead of their defaults. This parameter will only be used when presence is provided as an \"expand\". When using this parameter the maximum number of users that can be returned is 100."
+              },
+              {
+                "name": "userCustomAttributeSchemaIds",
+                "value": "",
+                "type": "query",
+                "description": "Gets custom user attribute values for given schemas set for user. This parameter will only be used when customAttributes is provided as an \"expand\". The maximum number of schemaIds that can be requested is 5"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Only list users of this state"
+              }
+            ]
+          },
+          "docs": "Get the list of available users."
+        },
+        {
+          "info": {
+            "name": "Create user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users"
+          },
+          "docs": "If user creation is successful but the provided password is invalid or configuration fails, POST api/v2/users/{userId}/password can be used to re-attempt password configuration."
+        },
+        {
+          "info": {
+            "name": "Search users using the q64 value returned from a previous search",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/search",
+            "params": [
+              {
+                "name": "q64",
+                "value": "",
+                "type": "query",
+                "description": "q64"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "expand"
+              },
+              {
+                "name": "integrationPresenceSource",
+                "value": "",
+                "type": "query",
+                "description": "integrationPresenceSource"
+              }
+            ]
+          },
+          "docs": "Search users using the q64 value returned from a previous search"
+        },
+        {
+          "info": {
+            "name": "Search users",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users/search"
+          },
+          "docs": "Search users"
+        },
+        {
+          "info": {
+            "name": "Search users assigned to teams",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users/search/teams/assign"
+          },
+          "docs": "Search users assigned to teams"
+        },
+        {
+          "info": {
+            "name": "Get the core types from which all schemas are built.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/customattributes/schemas/coretypes/:coreTypeName",
+            "params": [
+              {
+                "name": "coreTypeName",
+                "value": "",
+                "type": "path",
+                "description": "Name of the core type"
+              }
+            ]
+          },
+          "docs": "Get the core types from which all schemas are built."
+        },
+        {
+          "info": {
+            "name": "Get the list of core types enabled for a specific namespace.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/customattributes/schemas/coretypes"
+          },
+          "docs": "Get the list of core types enabled for a specific namespace."
+        },
+        {
+          "info": {
+            "name": "Create or update a single custom attributes record. Updating replaces all data with the provided fields.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/:userId/customattributes",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "user ID"
+              }
+            ]
+          },
+          "docs": "Create or update a single custom attributes record. Updating replaces all data with the provided fields."
+        },
+        {
+          "info": {
+            "name": "Update a single custom attributes record by amending the data with only the provided fields.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId/customattributes",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "user ID"
+              }
+            ]
+          },
+          "docs": "Update a single custom attributes record by amending the data with only the provided fields."
+        },
+        {
+          "info": {
+            "name": "Get custom attributes by schema id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/customattributes/:schemaId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "user ID"
+              },
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "schemaId"
+              }
+            ]
+          },
+          "docs": "Get custom attributes by schema id"
+        },
+        {
+          "info": {
+            "name": "Delete a custom attributes record.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/users/:userId/customattributes/:schemaId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "user ID"
+              },
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "schemaId"
+              }
+            ]
+          },
+          "docs": "Delete a custom attributes record."
+        },
+        {
+          "info": {
+            "name": "Get multiple custom attributes records by schema ids",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/:userId/customattributes/bulk",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "user ID"
+              },
+              {
+                "name": "schemaIds",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get multiple custom attributes records by schema ids"
+        },
+        {
+          "info": {
+            "name": "Update multiple custom attributes records by amending the data with only the provided fields.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/users/:userId/customattributes/bulk",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "user ID"
+              }
+            ]
+          },
+          "docs": "Update multiple custom attributes records by amending the data with only the provided fields."
+        },
+        {
+          "info": {
+            "name": "Get quantitative limits on schemas",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/customattributes/schemas/limits"
+          },
+          "docs": "Get quantitative limits on schemas"
+        },
+        {
+          "info": {
+            "name": "Get a schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/customattributes/schemas/:schemaId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "Schema ID"
+              }
+            ]
+          },
+          "docs": "Get a schema"
+        },
+        {
+          "info": {
+            "name": "Update a schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/users/customattributes/schemas/:schemaId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "Schema ID"
+              }
+            ]
+          },
+          "docs": "Update a schema"
+        },
+        {
+          "info": {
+            "name": "Delete a schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/users/customattributes/schemas/:schemaId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "Schema ID"
+              }
+            ]
+          },
+          "docs": "Delete a schema"
+        },
+        {
+          "info": {
+            "name": "Get all versions of a user schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/customattributes/schemas/:schemaId/versions",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "Schema ID"
+              }
+            ]
+          },
+          "docs": "Get all versions of a user schema"
+        },
+        {
+          "info": {
+            "name": "Get a specific version of a schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/customattributes/schemas/:schemaId/versions/:versionId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "Schema ID"
+              },
+              {
+                "name": "versionId",
+                "value": "",
+                "type": "path",
+                "description": "Schema version"
+              }
+            ]
+          },
+          "docs": "Get a specific version of a schema"
+        },
+        {
+          "info": {
+            "name": "Get a list of schemas.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/customattributes/schemas"
+          },
+          "docs": "Get a list of schemas."
+        },
+        {
+          "info": {
+            "name": "Create a schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users/customattributes/schemas"
+          },
+          "docs": "Create a schema"
+        },
+        {
+          "info": {
+            "name": "Get list of Development Activities",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/development/activities",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the list of user IDs to be queried, up to 100 user IDs. It searches for any relationship for the userId."
+              },
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the ID of the learning module."
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the dateDue range to be queried. Milliseconds will be truncated. A maximum of 1 year can be specified in the range. End date is not inclusive. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss"
+              },
+              {
+                "name": "completionInterval",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the range of completion dates to be used for filtering. A maximum of 1 year can be specified in the range. End date is not inclusive. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss"
+              },
+              {
+                "name": "overdue",
+                "value": "",
+                "type": "query",
+                "description": "Specifies if non-overdue, overdue, or all activities are returned. If not specified, all activities are returned"
+              },
+              {
+                "name": "pass",
+                "value": "",
+                "type": "query",
+                "description": "Specifies if only the failed (pass is \"False\") or passed (pass is \"True\") activities are returned. If pass is \"Any\" or if the pass parameter is not supplied, all activities are returned"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Specifies result set sort order sorted by the date due; if not specified, default sort order is descending (Desc)"
+              },
+              {
+                "name": "types",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the activity types. Informational, AssessedContent and Assessment are deprecated"
+              },
+              {
+                "name": "statuses",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the activity statuses to filter by"
+              },
+              {
+                "name": "relationship",
+                "value": "",
+                "type": "query",
+                "description": "Specifies how the current user relation should be interpreted, and filters the activities returned to only the activities that have the specified relationship. If a value besides Attendee is specified, it will only return Coaching Appointments. If not specified, no filtering is applied."
+              }
+            ]
+          },
+          "docs": "Either moduleId or userId is required. Results are filtered based on the applicable permissions."
+        },
+        {
+          "info": {
+            "name": "Get list of Development Activities for current user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/development/activities/me",
+            "params": [
+              {
+                "name": "moduleId",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the ID of the learning module."
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the dateDue range to be queried. Milliseconds will be truncated. A maximum of 1 year can be specified in the range. End date is not inclusive. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss"
+              },
+              {
+                "name": "completionInterval",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the range of completion dates to be used for filtering. A maximum of 1 year can be specified in the range. End date is not inclusive. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss"
+              },
+              {
+                "name": "overdue",
+                "value": "",
+                "type": "query",
+                "description": "Specifies if non-overdue, overdue, or all activities are returned. If not specified, all activities are returned"
+              },
+              {
+                "name": "pass",
+                "value": "",
+                "type": "query",
+                "description": "Specifies if only the failed (pass is \"False\") or passed (pass is \"True\") activities are returned. If pass is \"Any\" or if the pass parameter is not supplied, all activities are returned"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Specifies result set sort order sorted by the date due; if not specified, default sort order is descending (Desc)"
+              },
+              {
+                "name": "types",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the activity types. Informational, AssessedContent and Assessment are deprecated"
+              },
+              {
+                "name": "statuses",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the activity statuses to filter by"
+              },
+              {
+                "name": "relationship",
+                "value": "",
+                "type": "query",
+                "description": "Specifies how the current user relation should be interpreted, and filters the activities returned to only the activities that have the specified relationship. If a value besides Attendee is specified, it will only return Coaching Appointments. If not specified, no filtering is applied."
+              }
+            ]
+          },
+          "docs": "Results are filtered based on the applicable permissions."
+        },
+        {
+          "info": {
+            "name": "Get a Development Activity",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/users/development/activities/:activityId",
+            "params": [
+              {
+                "name": "activityId",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the activity ID, maps to either assignment or appointment ID"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the activity type. Informational, AssessedContent and Assessment are deprecated"
+              }
+            ]
+          },
+          "docs": "Permission not required if you are the attendee, creator or facilitator of the coaching appointment or you are the assigned user of the learning assignment."
+        },
+        {
+          "info": {
+            "name": "Retrieve aggregated development activity data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/users/development/activities/aggregates/query"
+          },
+          "docs": "Results are filtered based on the applicable permissions."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

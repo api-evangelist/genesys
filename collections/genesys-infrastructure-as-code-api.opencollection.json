@@ -1,0 +1,207 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Infrastructure as Code API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Infrastructure as Code",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get information about an accelerator",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/infrastructureascode/accelerators/:acceleratorId",
+            "params": [
+              {
+                "name": "acceleratorId",
+                "value": "",
+                "type": "path",
+                "description": "Accelerator ID"
+              },
+              {
+                "name": "preferredLanguage",
+                "value": "",
+                "type": "query",
+                "description": "Preferred Language"
+              }
+            ]
+          },
+          "docs": "Get the complete metadata specification for an accelerator, including requirements and parameters."
+        },
+        {
+          "info": {
+            "name": "Get a list of available accelerators",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/infrastructureascode/accelerators",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The total page size requested"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "The page number requested"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "variable name requested to sort by"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Sort order"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter by name"
+              },
+              {
+                "name": "description",
+                "value": "",
+                "type": "query",
+                "description": "Filter by description"
+              },
+              {
+                "name": "origin",
+                "value": "",
+                "type": "query",
+                "description": "Filter by origin"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter by type"
+              },
+              {
+                "name": "classification",
+                "value": "",
+                "type": "query",
+                "description": "Filter by classification"
+              },
+              {
+                "name": "tags",
+                "value": "",
+                "type": "query",
+                "description": "Filter by tags"
+              }
+            ]
+          },
+          "docs": "Search for accelerators that can be run."
+        },
+        {
+          "info": {
+            "name": "Get job status and results",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/infrastructureascode/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path",
+                "description": "Job ID"
+              },
+              {
+                "name": "details",
+                "value": "",
+                "type": "query",
+                "description": "Include details of execution, including job results or error information"
+              }
+            ]
+          },
+          "docs": "Get the execution status of a submitted job, optionally including results and error details."
+        },
+        {
+          "info": {
+            "name": "Get job history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/infrastructureascode/jobs",
+            "params": [
+              {
+                "name": "maxResults",
+                "value": "",
+                "type": "query",
+                "description": "Number of jobs to show"
+              },
+              {
+                "name": "includeErrors",
+                "value": "",
+                "type": "query",
+                "description": "Include error messages"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "Sort by"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Sort order"
+              },
+              {
+                "name": "acceleratorId",
+                "value": "",
+                "type": "query",
+                "description": "Find only jobs associated with this accelerator"
+              },
+              {
+                "name": "submittedBy",
+                "value": "",
+                "type": "query",
+                "description": "Find only jobs submitted by this user"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Find only jobs in this state"
+              }
+            ]
+          },
+          "docs": "Get a history of submitted jobs, optionally including error messages."
+        },
+        {
+          "info": {
+            "name": "Create a Job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/infrastructureascode/jobs"
+          },
+          "docs": "Create and submit a job for remote execution or see job planning results."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

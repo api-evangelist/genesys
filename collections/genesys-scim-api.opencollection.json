@@ -1,0 +1,780 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants SCIM API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "SCIM",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a resource type",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/resourcetypes/:resourceType",
+            "params": [
+              {
+                "name": "resourceType",
+                "value": "",
+                "type": "path",
+                "description": "The type of resource. Returned with GET /api/v2/scim/resourcetypes."
+              }
+            ]
+          },
+          "docs": "Get a resource type"
+        },
+        {
+          "info": {
+            "name": "Get a list of resource types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/resourcetypes"
+          },
+          "docs": "Get a list of resource types"
+        },
+        {
+          "info": {
+            "name": "Get a SCIM schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/schemas/:schemaId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a schema. Returned with GET /api/v2/scim/schemas."
+              }
+            ]
+          },
+          "docs": "Get a SCIM schema"
+        },
+        {
+          "info": {
+            "name": "Get a list of SCIM schemas",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/schemas",
+            "params": [
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filtered results are invalid and return 403 Unauthorized."
+              }
+            ]
+          },
+          "docs": "Get a list of SCIM schemas"
+        },
+        {
+          "info": {
+            "name": "Get a list of groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/groups",
+            "params": [
+              {
+                "name": "startIndex",
+                "value": "",
+                "type": "query",
+                "description": "The 1-based index of the first query result."
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The requested number of items per page. A value of 0 returns \"totalResults\". A page size over 25 may exceed internal resource limits and return a 429 error. For a page size over 25, use the \"excludedAttributes\" or \"attributes\" query parameters to exclude or only include secondary lookup values such as \"externalId\",  \"roles\", \"urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:routingLanguages\", or \"urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:routingSkills\"."
+              },
+              {
+                "name": "attributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to include. Returns these attributes and the \"id\", \"active\", and \"meta\" attributes. Use \"attributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "excludedAttributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to exclude. Returns the default attributes minus \"excludedAttributes\". Always returns \"id\", \"active\", and \"meta\" attributes. Use \"excludedAttributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filters results. If nothing is specified, returns all groups. Examples of valid values: \"id eq 5f4bc742-a019-4e38-8e2a-d39d5bc0b0f3\", \"displayname eq Sales\"."
+              }
+            ]
+          },
+          "docs": "Get a list of groups"
+        },
+        {
+          "info": {
+            "name": "Get a group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/groups/:groupId",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a group. Returned with GET /api/v2/scim/groups."
+              },
+              {
+                "name": "attributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to include. Returns these attributes and the \"id\", \"active\", and \"meta\" attributes. Use \"attributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "excludedAttributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to exclude. Returns the default attributes minus \"excludedAttributes\". Always returns \"id\", \"active\", and \"meta\" attributes. Use \"excludedAttributes\" to avoid expensive secondary calls for the default attributes."
+              }
+            ]
+          },
+          "docs": "Get a group"
+        },
+        {
+          "info": {
+            "name": "Replace a group",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/scim/groups/:groupId",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a group. Returned with GET /api/v2/scim/groups."
+              }
+            ]
+          },
+          "docs": "Replace a group"
+        },
+        {
+          "info": {
+            "name": "Modify a group",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/scim/groups/:groupId",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a group. Returned with GET /api/v2/scim/groups."
+              }
+            ]
+          },
+          "docs": "Modify a group"
+        },
+        {
+          "info": {
+            "name": "Get a service provider's configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/serviceproviderconfig",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get a service provider's configuration"
+        },
+        {
+          "info": {
+            "name": "Get a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/users/:userId",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a user. Returned with GET /api/v2/scim/users."
+              },
+              {
+                "name": "attributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to include. Returns these attributes and the \"id\", \"userName\", \"active\", and \"meta\" attributes. Use \"attributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "excludedAttributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to exclude. Returns the default attributes minus \"excludedAttributes\". Always returns the \"id\", \"userName\", \"active\", and \"meta\" attributes. Use \"excludedAttributes\" to avoid expensive secondary calls for the default attributes."
+              }
+            ]
+          },
+          "docs": "Get a user"
+        },
+        {
+          "info": {
+            "name": "Replace a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/scim/users/:userId",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a user. Returned with GET /api/v2/scim/users."
+              }
+            ]
+          },
+          "docs": "Replace a user"
+        },
+        {
+          "info": {
+            "name": "Modify a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/scim/users/:userId",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a user. Returned with GET /api/v2/scim/users."
+              }
+            ]
+          },
+          "docs": "Modify a user"
+        },
+        {
+          "info": {
+            "name": "Delete a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/scim/users/:userId",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a user. Returned with GET /api/v2/scim/users."
+              }
+            ]
+          },
+          "docs": "Delete a user"
+        },
+        {
+          "info": {
+            "name": "Get a list of users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/users",
+            "params": [
+              {
+                "name": "startIndex",
+                "value": "",
+                "type": "query",
+                "description": "The 1-based index of the first query result."
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The requested number of items per page. A value of 0 returns \"totalResults\". A page size over 25 may exceed internal resource limits and return a 429 error. For a page size over 25, use the \"excludedAttributes\" or \"attributes\" query parameters to exclude or only include secondary lookup values such as \"externalId\",  \"roles\", \"urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:routingLanguages\", or \"urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:routingSkills\"."
+              },
+              {
+                "name": "attributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to include. Returns these attributes and the \"id\", \"userName\", \"active\", and \"meta\" attributes. Use \"attributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "excludedAttributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to exclude. Returns the default attributes minus \"excludedAttributes\". Always returns the \"id\", \"userName\", \"active\", and \"meta\" attributes. Use \"excludedAttributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filters results. If nothing is specified, returns all active users. Examples of valid values: \"id eq 857449b0-d9e7-4cd0-acbf-a6adfb9ef1e9\", \"userName eq search@sample.org\", \"manager eq 16e10e2f-1136-43fe-bb84-eac073168a49\", \"email eq search@sample.org\", \"division eq divisionName\", \"externalId eq 167844\", \"active eq false\", \"employeeNumber eq 9876543210\"."
+              }
+            ]
+          },
+          "docs": "To return all active users, do not use the filter parameter. To return inactive users, set the filter parameter to \"active eq false\". By default, returns SCIM attributes \"externalId\", \"enterprise-user:manager\", and \"roles\". To exclude these attributes, set the attributes parameter to \"id,active\" or the excludeAttributes parameter to \"externalId,roles,urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:division\"."
+        },
+        {
+          "info": {
+            "name": "Create a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/scim/users"
+          },
+          "docs": "Create a user"
+        },
+        {
+          "info": {
+            "name": "Get a resource type",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/v2/resourcetypes/:resourceType",
+            "params": [
+              {
+                "name": "resourceType",
+                "value": "",
+                "type": "path",
+                "description": "The type of resource. Returned with GET /api/v2/scim/v2/resourcetypes."
+              }
+            ]
+          },
+          "docs": "Get a resource type"
+        },
+        {
+          "info": {
+            "name": "Get a list of resource types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/v2/resourcetypes"
+          },
+          "docs": "Get a list of resource types"
+        },
+        {
+          "info": {
+            "name": "Get a SCIM schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/v2/schemas/:schemaId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a schema. Returned with GET /api/v2/scim/v2/schemas."
+              }
+            ]
+          },
+          "docs": "Get a SCIM schema"
+        },
+        {
+          "info": {
+            "name": "Get a list of SCIM schemas",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/v2/schemas",
+            "params": [
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filtered results are invalid and return 403 Unauthorized."
+              }
+            ]
+          },
+          "docs": "Get a list of SCIM schemas"
+        },
+        {
+          "info": {
+            "name": "Get a list of groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/v2/groups",
+            "params": [
+              {
+                "name": "startIndex",
+                "value": "",
+                "type": "query",
+                "description": "The 1-based index of the first query result."
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The requested number of items per page. A value of 0 returns \"totalResults\". A page size over 25 may exceed internal resource limits and return a 429 error. For a page size over 25, use the \"excludedAttributes\" or \"attributes\" query parameters to exclude or only include secondary lookup values such as \"externalId\",  \"roles\", \"urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:routingLanguages\", or \"urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:routingSkills\"."
+              },
+              {
+                "name": "attributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to include. Returns these attributes and the \"id\", \"active\", and \"meta\" attributes. Use \"attributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "excludedAttributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to exclude. Returns the default attributes minus \"excludedAttributes\". Always returns \"id\", \"active\", and \"meta\" attributes. Use \"excludedAttributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filters results. If nothing is specified, returns all groups. Examples of valid values: \"id eq 5f4bc742-a019-4e38-8e2a-d39d5bc0b0f3\", \"displayname eq Sales\"."
+              }
+            ]
+          },
+          "docs": "Get a list of groups"
+        },
+        {
+          "info": {
+            "name": "Get a group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/v2/groups/:groupId",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a group. Returned with GET /api/v2/scim/v2/groups."
+              },
+              {
+                "name": "attributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to include. Returns these attributes and the \"id\", \"active\", and \"meta\" attributes. Use \"attributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "excludedAttributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to exclude. Returns the default attributes minus \"excludedAttributes\". Always returns \"id\", \"active\", and \"meta\" attributes. Use \"excludedAttributes\" to avoid expensive secondary calls for the default attributes."
+              }
+            ]
+          },
+          "docs": "Get a group"
+        },
+        {
+          "info": {
+            "name": "Replace a group",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/scim/v2/groups/:groupId",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a group. Returned with GET /api/v2/scim/v2/groups."
+              }
+            ]
+          },
+          "docs": "Replace a group"
+        },
+        {
+          "info": {
+            "name": "Modify a group",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/scim/v2/groups/:groupId",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a group. Returned with GET /api/v2/scim/v2/groups."
+              }
+            ]
+          },
+          "docs": "Modify a group"
+        },
+        {
+          "info": {
+            "name": "Get a service provider's configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/v2/serviceproviderconfig",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get a service provider's configuration"
+        },
+        {
+          "info": {
+            "name": "Get a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/v2/users/:userId",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a user. Returned with GET /api/v2/scim/v2/users."
+              },
+              {
+                "name": "attributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to include. Returns these attributes and the \"id\", \"userName\", \"active\", and \"meta\" attributes. Use \"attributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "excludedAttributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to exclude. Returns the default attributes minus \"excludedAttributes\". Always returns the \"id\", \"userName\", \"active\", and \"meta\" attributes. Use \"excludedAttributes\" to avoid expensive secondary calls for the default attributes."
+              }
+            ]
+          },
+          "docs": "Get a user"
+        },
+        {
+          "info": {
+            "name": "Replace a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/scim/v2/users/:userId",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a user. Returned with GET /api/v2/scim/v2/users."
+              }
+            ]
+          },
+          "docs": "Replace a user"
+        },
+        {
+          "info": {
+            "name": "Modify a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v2/scim/v2/users/:userId",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a user. Returned with GET /api/v2/scim/v2/users."
+              }
+            ]
+          },
+          "docs": "Modify a user"
+        },
+        {
+          "info": {
+            "name": "Delete a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/scim/v2/users/:userId",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a user. Returned with GET /api/v2/scim/v2/users."
+              }
+            ]
+          },
+          "docs": "Delete a user"
+        },
+        {
+          "info": {
+            "name": "Get a list of users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/scim/v2/users",
+            "params": [
+              {
+                "name": "startIndex",
+                "value": "",
+                "type": "query",
+                "description": "The 1-based index of the first query result."
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The requested number of items per page. A value of 0 returns \"totalResults\". A page size over 25 may exceed internal resource limits and return a 429 error. For a page size over 25, use the \"excludedAttributes\" or \"attributes\" query parameters to exclude or only include secondary lookup values such as \"externalId\",  \"roles\", \"urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:routingLanguages\", or \"urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:routingSkills\"."
+              },
+              {
+                "name": "attributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to include. Returns these attributes and the \"id\", \"userName\", \"active\", and \"meta\" attributes. Use \"attributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "excludedAttributes",
+                "value": "",
+                "type": "query",
+                "description": "Indicates which attributes to exclude. Returns the default attributes minus \"excludedAttributes\". Always returns the \"id\", \"userName\", \"active\", and \"meta\" attributes. Use \"excludedAttributes\" to avoid expensive secondary calls for the default attributes."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Filters results. If nothing is specified, returns all active users. Examples of valid values: \"id eq 857449b0-d9e7-4cd0-acbf-a6adfb9ef1e9\", \"userName eq search@sample.org\", \"manager eq 16e10e2f-1136-43fe-bb84-eac073168a49\", \"email eq search@sample.org\", \"division eq divisionName\", \"externalId eq 167844\", \"active eq false\", \"employeeNumber eq 9876543210\"."
+              }
+            ]
+          },
+          "docs": "To return all active users, do not use the filter parameter. To return inactive users, set the filter parameter to \"active eq false\". By default, returns SCIM attributes \"externalId\", \"enterprise-user:manager\", and \"roles\". To exclude these attributes, set the attributes parameter to \"id,active\" or the excludeAttributes parameter to \"externalId,roles,urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:division\"."
+        },
+        {
+          "info": {
+            "name": "Create a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/scim/v2/users"
+          },
+          "docs": "Create a user"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,358 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Groups API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Groups",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch field config for an entity type",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/fieldconfig",
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Field type"
+              }
+            ]
+          },
+          "docs": "Fetch field config for an entity type"
+        },
+        {
+          "info": {
+            "name": "Get all individuals associated with the group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/groups/:groupId/individuals",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group ID"
+              }
+            ]
+          },
+          "docs": "Get all individuals associated with the group"
+        },
+        {
+          "info": {
+            "name": "Get group members, includes individuals, owners, and dynamically included people",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/groups/:groupId/members",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Ascending or descending sort order"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              }
+            ]
+          },
+          "docs": "Get group members, includes individuals, owners, and dynamically included people"
+        },
+        {
+          "info": {
+            "name": "Add members",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/groups/:groupId/members",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group ID"
+              }
+            ]
+          },
+          "docs": "Add members"
+        },
+        {
+          "info": {
+            "name": "Remove members",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/groups/:groupId/members",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group ID"
+              },
+              {
+                "name": "ids",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated list of userIds to remove. A maximum of 50 members are allowed per request."
+              }
+            ]
+          },
+          "docs": "Remove members"
+        },
+        {
+          "info": {
+            "name": "Get group profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/groups/:groupId/profile",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "groupId"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated fields to return.  Allowable values can be found by querying /api/v2/fieldconfig?type=group and using the key for the elements returned by the fieldList"
+              }
+            ]
+          },
+          "docs": "This api is deprecated. Use /api/v2/groups instead"
+        },
+        {
+          "info": {
+            "name": "Get group profile listing",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/profiles/groups",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "id"
+              },
+              {
+                "name": "jabberId",
+                "value": "",
+                "type": "query",
+                "description": "A list of jabberIds to fetch by bulk (cannot be used with the \"id\" parameter)"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Ascending or descending sort order"
+              }
+            ]
+          },
+          "docs": "This api is deprecated. Use /api/v2/groups instead."
+        },
+        {
+          "info": {
+            "name": "Get group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/groups/:groupId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group ID"
+              }
+            ]
+          },
+          "docs": "Get group"
+        },
+        {
+          "info": {
+            "name": "Update group",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/groups/:groupId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group ID"
+              }
+            ]
+          },
+          "docs": "Update group"
+        },
+        {
+          "info": {
+            "name": "Delete group",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/groups/:groupId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path",
+                "description": "Group ID"
+              }
+            ]
+          },
+          "docs": "Delete group"
+        },
+        {
+          "info": {
+            "name": "Get a group list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/groups",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "id"
+              },
+              {
+                "name": "jabberId",
+                "value": "",
+                "type": "query",
+                "description": "A list of jabberIds to fetch by bulk (cannot be used with the \"id\" parameter)"
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Ascending or descending sort order"
+              }
+            ]
+          },
+          "docs": "Get a group list"
+        },
+        {
+          "info": {
+            "name": "Create a group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/groups"
+          },
+          "docs": "Create a group"
+        },
+        {
+          "info": {
+            "name": "Search groups using the q64 value returned from a previous search",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/groups/search",
+            "params": [
+              {
+                "name": "q64",
+                "value": "",
+                "type": "query",
+                "description": "q64"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "expand"
+              }
+            ]
+          },
+          "docs": "Search groups using the q64 value returned from a previous search"
+        },
+        {
+          "info": {
+            "name": "Search groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/groups/search"
+          },
+          "docs": "Search groups"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

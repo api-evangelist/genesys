@@ -1,0 +1,299 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Objects API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Objects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve the home division for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/home"
+          },
+          "docs": "Will not include object counts."
+        },
+        {
+          "info": {
+            "name": "Returns the maximum allowed number of divisions.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/limit"
+          },
+          "docs": "Returns the maximum allowed number of divisions."
+        },
+        {
+          "info": {
+            "name": "Returns an authorization division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              },
+              {
+                "name": "objectCount",
+                "value": "",
+                "type": "query",
+                "description": "Get count of objects in this division, grouped by type"
+              }
+            ]
+          },
+          "docs": "Returns an authorization division."
+        },
+        {
+          "info": {
+            "name": "Update a division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              }
+            ]
+          },
+          "docs": "Update a division."
+        },
+        {
+          "info": {
+            "name": "Delete a division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "DEPRECATED -  Force delete this division. Warning: This option may cause any remaining objects in this division to be inaccessible."
+              }
+            ]
+          },
+          "docs": "Delete a division."
+        },
+        {
+          "info": {
+            "name": "Recreate a previously deleted division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId/restore",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              }
+            ]
+          },
+          "docs": "Recreate a previously deleted division."
+        },
+        {
+          "info": {
+            "name": "Get a list of soft deleted divisions for the org",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/deleted",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              }
+            ]
+          },
+          "docs": "Get a list of soft deleted divisions for the org"
+        },
+        {
+          "info": {
+            "name": "Retrieve a list of all divisions defined for the organization with cursor",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/query",
+            "params": [
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the start of the set of entities that has been returned."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The cursor that points to the end of the set of entities that has been returned."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Page size (max 200, default 25)"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Optionally request specific divisions by their IDs"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Optionally request specific divisions by division name"
+              }
+            ]
+          },
+          "docs": "Use \"after\" and \"before\" param to fetch next/previous page}"
+        },
+        {
+          "info": {
+            "name": "Retrieve a list of all divisions defined for the organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions",
+            "params": [
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The total page size requested"
+              },
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query",
+                "description": "The page number requested"
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "variable name requested to sort by"
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "variable name requested by expand list"
+              },
+              {
+                "name": "nextPage",
+                "value": "",
+                "type": "query",
+                "description": "next page token"
+              },
+              {
+                "name": "previousPage",
+                "value": "",
+                "type": "query",
+                "description": "Previous page token"
+              },
+              {
+                "name": "objectCount",
+                "value": "",
+                "type": "query",
+                "description": "Include the count of objects contained in the division"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Optionally request specific divisions by their IDs"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Search term to filter by division name"
+              }
+            ]
+          },
+          "docs": "Request specific divisions by id using a query param \"id\", e.g. \n?id=5f777167-63be-4c24-ad41-374155d9e28b&id=72e9fb25-c484-488d-9312-7acba82435b3"
+        },
+        {
+          "info": {
+            "name": "Create a division.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions"
+          },
+          "docs": "Create a division."
+        },
+        {
+          "info": {
+            "name": "Assign a list of objects to a division",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/authorization/divisions/:divisionId/objects/:objectType",
+            "params": [
+              {
+                "name": "divisionId",
+                "value": "",
+                "type": "path",
+                "description": "Division ID"
+              },
+              {
+                "name": "objectType",
+                "value": "",
+                "type": "path",
+                "description": "The type of the objects. Must be one of the valid object types"
+              }
+            ]
+          },
+          "docs": "Set the division of a specified list of objects. The objects must all be of the same type, one of: \nCAMPAIGN, MANAGEMENTUNIT, FLOW, QUEUE, DATATABLES or USER. \nThe body of the request is a list of object IDs, which are expected to be \nGUIDs, e.g. [\"206ce31f-61ec-40ed-a8b1-be6f06303998\",\"250a754e-f5e4-4f51-800f-a92f09d3bf8c\"]"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

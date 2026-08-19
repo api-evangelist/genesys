@@ -1,0 +1,68 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Billing API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Billing",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a report of the billable license usages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/billing/reports/billableusage",
+            "params": [
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "The period start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z"
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "The period end date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z"
+              }
+            ]
+          },
+          "docs": "Report is of the billable usages (e.g. licenses and devices utilized) for a given period. If response's status is InProgress, wait a few seconds, then try the same request again."
+        },
+        {
+          "info": {
+            "name": "Get the billing overview for an organization that is managed by a partner.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/billing/trusteebillingoverview/:trustorOrgId",
+            "params": [
+              {
+                "name": "billingPeriodIndex",
+                "value": "",
+                "type": "query",
+                "description": "0 for active period (overview data may change until period closes). 1 for prior completed billing period. 2 for two billing cycles prior, and so on."
+              },
+              {
+                "name": "trustorOrgId",
+                "value": "",
+                "type": "path",
+                "description": "The organization ID of the trustor (customer) organization."
+              }
+            ]
+          },
+          "docs": "Tax Disclaimer: Prices returned by this API do not include applicable taxes. It is the responsibility of the customer to pay all taxes that are appropriate in their jurisdiction. See the PureCloud API Documentation in the Developer Center for more information about this API: https://developer.mypurecloud.com/api/rest/v2/"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

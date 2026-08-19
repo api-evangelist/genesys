@@ -1,0 +1,151 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PureCloud Platform Agent Assistants Audit API",
+    "version": "v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Audit",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Often a single action results in multiple audits. The endpoint retrieves all audits created by the same action as the given audit id.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/audits/query/realtime/related",
+            "params": [
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              }
+            ]
+          },
+          "docs": "Often a single action results in multiple audits. The endpoint retrieves all audits created by the same action as the given audit id."
+        },
+        {
+          "info": {
+            "name": "Get results of audit query",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/audits/query/:transactionId/results",
+            "params": [
+              {
+                "name": "transactionId",
+                "value": "",
+                "type": "path",
+                "description": "Transaction ID"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Indicates where to resume query results (not required for first page)"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Indicates maximum number of results in response. Default page size is 25 results. The maximum page size is 500."
+              },
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              },
+              {
+                "name": "allowRedirect",
+                "value": "",
+                "type": "query",
+                "description": "Result sets with large amounts of data will respond with a download url"
+              }
+            ]
+          },
+          "docs": "Get results of audit query"
+        },
+        {
+          "info": {
+            "name": "Create audit query execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/audits/query"
+          },
+          "docs": "Use /api/v2/audits/query/servicemapping endpoint for a list of valid values"
+        },
+        {
+          "info": {
+            "name": "Get status of audit query execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/audits/query/:transactionId",
+            "params": [
+              {
+                "name": "transactionId",
+                "value": "",
+                "type": "path",
+                "description": "Transaction ID"
+              }
+            ]
+          },
+          "docs": "Get status of audit query execution"
+        },
+        {
+          "info": {
+            "name": "This endpoint will only retrieve 14 days worth of audits for certain services. Please use /query to get a full list and older audits.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v2/audits/query/realtime",
+            "params": [
+              {
+                "name": "expand",
+                "value": "",
+                "type": "query",
+                "description": "Which fields, if any, to expand"
+              }
+            ]
+          },
+          "docs": "Use /api/v2/audits/query/realtime/servicemapping endpoint for a list of valid values"
+        },
+        {
+          "info": {
+            "name": "Get service mapping information used in audits.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/audits/query/servicemapping"
+          },
+          "docs": "Get service mapping information used in audits."
+        },
+        {
+          "info": {
+            "name": "Get service mapping information used in realtime audits.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v2/audits/query/realtime/servicemapping"
+          },
+          "docs": "Get service mapping information used in realtime audits."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

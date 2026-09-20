@@ -1,0 +1,204 @@
+slug: genesys
+provider: Genesys
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Telecommunications
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 18
+edges:
+- tag: Learning
+  spec_file: genesys-learning-api-openapi.yml
+  capability_id: BC-300.40
+  capability_id_l1: BC-300
+  capability_name: Learning & Development Management
+  confidence: 0.92
+  evidence: '"Create Learning Assignment", "List of Learning module Assignments", "Score learning assessment
+    for preview", schema "AssignedLearningModule"'
+  reason: Operations assign, reschedule, reassign and score learning modules and assessments for users
+    — agent training administration, which is plainly Learning & Development Management within the employee
+    lifecycle.
+- tag: General Data Protection Regulation
+  spec_file: genesys-general-data-protection-regulation-api-openapi.yml
+  capability_id: BC-130.50
+  capability_id_l1: BC-130
+  capability_name: Privacy & Data Protection Management
+  confidence: 0.9
+  evidence: POST /api/v2/gdpr/requests  "Submit a new GDPR request"; GET /api/v2/gdpr/subjects  "Get GDPR
+    subjects"; schema GDPRRequest
+  reason: Operations submit and track GDPR data-subject requests and identify data subjects — directly
+    privacy and data protection compliance (data subject rights).
+- tag: Authorization
+  spec_file: genesys-authorization-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: '"Add an access control policy for a specified resource target and subject"; schemas AuthzGrantRole,
+    AuthzSubject, AuthzGrantPolicy, Division'
+  reason: Divisions, roles, subjects, grants and access-control policies are identity and access management
+    for the platform tenant.
+- tag: Employee Engagement
+  spec_file: genesys-employee-engagement-api-openapi.yml
+  capability_id: BC-300.60
+  capability_id_l1: BC-300
+  capability_name: Employee Experience Management
+  confidence: 0.85
+  evidence: POST /api/v2/employeeengagement/recognitions  Creates a recognition; GET /api/v2/employeeengagement/celebrations  Get
+    all celebrations
+  reason: Recognitions and celebrations for staff are engagement/workplace-experience programmes, squarely
+    Employee Experience Management.
+- tag: External Contacts
+  spec_file: genesys-external-contacts-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.85
+  evidence: POST /api/v2/externalcontacts/bulk/contacts/update  Bulk update contacts; postExternalcontactsBulkContactsEnrich  Bulk
+    Enrich Contacts; ExternalOrganization
+  reason: CRUD, bulk maintenance, enrichment and unresolved-ancestor resolution of external contacts and
+    organisations is customer master-data/identity management.
+- tag: Identity Provider
+  spec_file: genesys-identity-provider-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: PUT /api/v2/identityproviders/generic  "Update/Create Generic SAML Identity Provider"; schemas
+    ADFS, Okta, SAMLProvider, PingIdentity
+  reason: Operations configure SAML/SSO identity providers (ADFS, Okta, G Suite, PingIdentity) for the
+    organisation — identity federation, i.e. Identity & Access Management. Some ambiguity with tenant
+    identity federation framing.
+- tag: OAuth
+  spec_file: genesys-oauth-api-openapi.yml
+  capability_id: BC-4270.40
+  capability_id_l1: BC-4270
+  capability_name: Developer Identity & Credential Management
+  confidence: 0.78
+  evidence: '"Get OAuth Client", "Regenerate Client Secret", "The list of OAuth scopes", schema "OAuthClientRequest"'
+  reason: Issues and manages OAuth client credentials, secrets, scopes and authorisations used by integrations
+    against the public API — developer identity and credential stewardship. Some overlap with API consumption
+    governance given the client usage-query operations.
+- tag: Agent Assistants
+  spec_file: genesys-agent-assistants-api-openapi.yml
+  capability_id: BC-430.30
+  capability_id_l1: BC-430
+  capability_name: Contact Centre Operations Management
+  confidence: 0.75
+  evidence: POST /api/v2/assistants/agentchecklists Create an agent checklist; PUT /api/v2/assistants/{assistantId}/queues/{queueId}
+    Create a queue assistant association
+  reason: Agent checklists and association of assistants to contact-centre queues and users — operational
+    configuration of contact-centre agent assistance, i.e. contact centre operations rather than a distinct
+    customer-facing capability.
+- tag: Conversations
+  spec_file: genesys-conversations-api-openapi.yml
+  capability_id: BC-430.10
+  capability_id_l1: BC-430
+  capability_name: Customer Inquiry Management
+  confidence: 0.75
+  evidence: POST /api/v2/analytics/conversations/details/query  Query for conversation details; CreateCallbackCommand,
+    ConversationEventTyping, MessagingSetting
+  reason: 'This is the contact-centre interaction surface: customer conversations across voice, email
+    and messaging plus callbacks and conversation analytics — inbound customer contact handling. Some
+    ambiguity between inquiry handling and contact-centre operations, hence 0.75.'
+- tag: Routing
+  spec_file: genesys-routing-api-openapi.yml
+  capability_id: BC-430.30
+  capability_id_l1: BC-430
+  capability_name: Contact Centre Operations Management
+  confidence: 0.75
+  evidence: GET /api/v2/routing/queues/{queueId}/estimatedwaittime "Get Estimated Wait Time"; "Get available
+    media types"; "Query for queue observations"; schemas SkillGroupRoutingCondition, UserRoutingSkillPost
+  reason: ACD queue, skill, language and media-type routing configuration with queue observation analytics
+    — core contact centre operations. Note this is interaction routing, not telecom network routing.
+- tag: Textbots
+  spec_file: genesys-textbots-api-openapi.yml
+  capability_id: BC-430.40
+  capability_id_l1: BC-430
+  capability_name: Self-Service Management
+  confidence: 0.75
+  evidence: '"Send an intent to a bot to start a dialog/interact with it via text", "Create an execution
+    instance of a bot flow definition."'
+  reason: Text bot flows and bot dialog execution are automated self-service conversational channels,
+    matching Self-Service Management (chatbots).
+- tag: Workforce Management
+  spec_file: genesys-workforce-management-api-openapi.yml
+  capability_id: BC-430.30
+  capability_id_l1: BC-430
+  capability_name: Contact Centre Operations Management
+  confidence: 0.75
+  evidence: '''Starts importing the uploaded short term forecast''; schemas WfmAgentHistoricalAdherenceResponse,
+    WorkPlanPatternRequest, EstimateAvailablePartialDayTimeOffResponse'
+  reason: Contact-centre workforce management — forecasting, scheduling, work plans, adherence and time
+    off for agents in management/business units. The frame places workforce management explicitly under
+    contact centre operations management.
+- tag: Language Understanding
+  spec_file: genesys-language-understanding-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.72
+  evidence: '"Create an NLU Domain", schemas "IntentDefinition", "NluDomainVersion", "NluQualityReportSummaryMetric",
+    "MinerExecuteRequest"'
+  reason: Operations manage natural-language-understanding domains, intents, entities, training feedback
+    and quality/confusion-matrix reports — i.e. the lifecycle and quality management of ML models, which
+    maps to Artificial Intelligence Management. No customer-service or telecom capability is exercised;
+    this is model authoring, not conversation handling.
+- tag: Objects
+  spec_file: genesys-objects-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: '"Returns an authorization division.", "Assign a list of objects to a division", schema "AuthzDivision"'
+  reason: Despite the generic tag, the operations manage authorization divisions and assign objects to
+    them — the access-scoping construct of the platform's permission model, i.e. Identity & Access Management.
+- tag: Agent UI
+  spec_file: genesys-agent-ui-api-openapi.yml
+  capability_id: BC-430.30
+  capability_id_l1: BC-430
+  capability_name: Contact Centre Operations Management
+  confidence: 0.7
+  evidence: GET /api/v2/users/agentui/agents/autoanswer/{agentId}/settings — "Get agent auto answer settings"
+  reason: Operations configure auto-answer behaviour for contact-centre agents' interaction handling,
+    i.e. running the contact centre agent desktop, which sits under Contact Centre Operations Management.
+    Thin surface (4 ops on a settings object), so moderate confidence.
+- tag: Coaching
+  spec_file: genesys-coaching-api-openapi.yml
+  capability_id: BC-300.40
+  capability_id_l1: BC-300
+  capability_name: Learning & Development Management
+  confidence: 0.7
+  evidence: PATCH /api/v2/coaching/appointments/{appointmentId}/status  Update the status of a coaching
+    appointment; CreateCoachingAppointmentRequest, CoachingAnnotation
+  reason: Scheduling, annotating and tracking coaching appointments for staff (with WFM schedule references)
+    is employee capability building/development, so Learning & Development is the closest fit; some ambiguity
+    with performance (Talent) management keeps confidence moderate.
+- tag: SCIM
+  spec_file: genesys-scim-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: GET /api/v2/scim/users/{userId} "Get a user"; PUT /api/v2/scim/groups/{groupId} "Replace a
+    group"; schemas ScimV2CreateUser, ScimServiceProviderConfigAuthenticationScheme
+  reason: SCIM user and group provisioning endpoints implement identity lifecycle synchronisation from
+    an external identity provider — identity and access management. Could alternatively be framed as tenant
+    identity federation; IAM is the more general honest fit.
+- tag: WebChat
+  spec_file: genesys-webchat-api-openapi.yml
+  capability_id: BC-430.10
+  capability_id_l1: BC-430
+  capability_name: Customer Inquiry Management
+  confidence: 0.7
+  evidence: POST /api/v2/webchat/guest/conversations 'Create an ACD chat conversation from an external
+    customer.'
+  reason: Creates and manages guest chat conversations routed to ACD agents — inbound customer contact
+    capture and routing, i.e. customer inquiry management. Some of the surface is deployment configuration,
+    hence not higher.

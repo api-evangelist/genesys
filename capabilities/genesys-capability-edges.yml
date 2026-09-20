@@ -11,7 +11,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 18
+edge_count: 23
 edges:
 - tag: Learning
   spec_file: genesys-learning-api-openapi.yml
@@ -96,6 +96,18 @@ edges:
   reason: Agent checklists and association of assistants to contact-centre queues and users — operational
     configuration of contact-centre agent assistance, i.e. contact centre operations rather than a distinct
     customer-facing capability.
+- tag: Case Management
+  spec_file: genesys-case-management-api-openapi.yml
+  capability_id: BC-430
+  capability_id_l1: BC-430
+  capability_name: Customer Service Management
+  confidence: 0.75
+  evidence: GET /api/v2/casemanagement/cases/{caseId}/associations  Get a list of Case associations for
+    the Case.; POST /api/v2/casemanagement/cases/associations/query  Query for Case associations by interaction.
+  reason: Cases linked to customer interactions/conversations, with case plans, stages, steps and intake
+    settings — this is customer-service case handling in a contact centre. Left at L1 because the evidence
+    does not clearly separate inquiry handling from complaint/issue resolution.
+  recovered_from: sweep-20260828T235257Z-edges.json
 - tag: Conversations
   spec_file: genesys-conversations-api-openapi.yml
   capability_id: BC-430.10
@@ -180,6 +192,41 @@ edges:
   reason: Scheduling, annotating and tracking coaching appointments for staff (with WFM schedule references)
     is employee capability building/development, so Learning & Development is the closest fit; some ambiguity
     with performance (Talent) management keeps confidence moderate.
+- tag: Gamification
+  spec_file: genesys-gamification-api-openapi.yml
+  capability_id: BC-300.20
+  capability_id_l1: BC-300
+  capability_name: Talent Management
+  confidence: 0.7
+  evidence: '"Write External Metric Data", "Create External Metric Definition" under /api/v2/employeeperformance/externalmetrics,
+    "Leaderboard of the requesting user''s division or performance profile"'
+  reason: Operations define and score employee performance metrics, objectives, performance profiles,
+    leaderboards and contests for agents — employee performance management. Mapped to Talent Management
+    (performance); some ambiguity versus employee experience/engagement.
+  recovered_from: sweep-20260828T235257Z-edges.json
+- tag: Knowledge
+  spec_file: genesys-knowledge-api-openapi.yml
+  capability_id: BC-430.40
+  capability_id_l1: BC-430
+  capability_name: Self-Service Management
+  confidence: 0.7
+  evidence: POST /api/v2/knowledge/knowledgebases  'Create new knowledge base'; GET /api/v2/knowledge/knowledgebases/{knowledgeBaseId}/unanswered/groups  'Get
+    knowledge base unanswered groups'
+  reason: Knowledge bases, categories, documents and guest search for a contact-centre/self-service context
+    match Self-Service Management (FAQ, knowledge base, chatbots). Some overlap with generic Knowledge
+    Management (BC-830) keeps confidence moderate.
+  recovered_from: sweep-20260828T235257Z-edges.json
+- tag: Notifications
+  spec_file: genesys-notifications-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.7
+  evidence: GET /api/v2/notifications/availabletopics  'Get available notification topics.'; POST /api/v2/notifications/channels/{channelId}/subscriptions  'Add
+    a list of subscriptions to the existing list of subscriptions'
+  reason: Platform event notification channels and topic subscriptions exposed to integrators — outbound
+    event subscription management on the developer platform. Not end-customer messaging.
+  recovered_from: sweep-20260828T235257Z-edges.json
 - tag: SCIM
   spec_file: genesys-scim-api-openapi.yml
   capability_id: BC-620.20
@@ -191,6 +238,17 @@ edges:
   reason: SCIM user and group provisioning endpoints implement identity lifecycle synchronisation from
     an external identity provider — identity and access management. Could alternatively be framed as tenant
     identity federation; IAM is the more general honest fit.
+- tag: Usage
+  spec_file: genesys-usage-api-openapi.yml
+  capability_id: BC-4270.50
+  capability_id_l1: BC-4270
+  capability_name: API Consumption Governance
+  confidence: 0.7
+  evidence: '"Query for OAuth client API usage", "Query your organization''s public api usage", schema
+    ClientPublicApiUsageQueryRequest'
+  reason: Surface reports and analyses API consumption per OAuth client and per organisation, matching
+    API consumption governance (usage analytics/quota visibility) for a platform's public API.
+  recovered_from: sweep-20260828T235257Z-edges.json
 - tag: WebChat
   spec_file: genesys-webchat-api-openapi.yml
   capability_id: BC-430.10

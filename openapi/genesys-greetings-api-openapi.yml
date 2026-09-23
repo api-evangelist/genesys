@@ -1,8 +1,8 @@
-swagger: '2.0'
+openapi: 3.2.0
 info:
   description: With the PureCloud Platform API, you can control all aspects of your PureCloud environment. With the APIs you can access the system configuration, manage conversations and more.
   version: v2
-  title: PureCloud Platform Agent Assistants Greetings API
+  title: PureCloud Platform Greetings API
   termsOfService: https://help.genesys.cloud/articles/terms-and-conditions/
   contact:
     name: PureCloud Developer Evangelists
@@ -11,13 +11,8 @@ info:
   license:
     name: UNLICENSED
     url: https://help.genesys.cloud/articles/terms-and-conditions/
-host: api.mypurecloud.com
-schemes:
-- https
-consumes:
-- application/json
-produces:
-- application/json
+servers:
+- url: https://api.mypurecloud.com
 tags:
 - name: Greetings
   description: ''
@@ -32,37 +27,37 @@ paths:
       summary: Get media playback URI for this greeting
       description: API should migrate to use GET api/v2/greetings/{greetingId}/downloads
       operationId: getGreetingMedia
-      produces:
-      - application/json
       parameters:
       - name: greetingId
         in: path
         description: Greeting ID
         required: true
-        type: string
+        schema:
+          type: string
       - name: formatId
         in: query
         description: The desired media format.
         required: false
-        type: string
-        default: WAV
-        enum:
-        - WAV
-        - WEBM
-        - WAV_ULAW
-        - OGG_VORBIS
-        - OGG_OPUS
-        - MP3
-        - NONE
+        schema:
+          type: string
+          enum:
+          - WAV
+          - WEBM
+          - WAV_ULAW
+          - OGG_VORBIS
+          - OGG_OPUS
+          - MP3
+          - NONE
+          default: WAV
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/GreetingMediaInfo'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingMediaInfo'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -71,18 +66,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -91,62 +90,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -159,41 +180,43 @@ paths:
       summary: Download a user greeting recording
       description: ''
       operationId: getGreetingUsersDownloads
-      produces:
-      - application/json
       parameters:
       - name: greetingId
         in: path
         description: Greeting ID
         required: true
-        type: string
+        schema:
+          type: string
       - name: formatId
         in: query
         description: The desired media format.
         required: false
-        type: string
-        default: WAV
-        enum:
-        - WAV
-        - WEBM
-        - WAV_ULAW
-        - OGG_VORBIS
-        - OGG_OPUS
-        - MP3
-        - NONE
+        schema:
+          type: string
+          enum:
+          - WAV
+          - WEBM
+          - WAV_ULAW
+          - OGG_VORBIS
+          - OGG_OPUS
+          - MP3
+          - NONE
+          default: WAV
       responses:
         '200':
           description: Operation was successful
-          schema:
-            $ref: '#/definitions/GreetingMediaInfo'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingMediaInfo'
         '202':
           description: Recording is queued for transcoding
-          schema:
-            $ref: '#/definitions/GreetingMediaInfo'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingMediaInfo'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.a.user: This request requires a user context. Client credentials cannot be used for requests to this resource.
             bad.request: The request could not be understood by the server due to malformed syntax.
@@ -203,18 +226,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             greeting.not.authorized: You are not authorized to access the greeting.
@@ -224,62 +251,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -296,41 +345,43 @@ paths:
       summary: Download a group greeting recording
       description: ''
       operationId: getGreetingGroupsDownloads
-      produces:
-      - application/json
       parameters:
       - name: greetingId
         in: path
         description: Greeting ID
         required: true
-        type: string
+        schema:
+          type: string
       - name: formatId
         in: query
         description: The desired media format.
         required: false
-        type: string
-        default: WAV
-        enum:
-        - WAV
-        - WEBM
-        - WAV_ULAW
-        - OGG_VORBIS
-        - OGG_OPUS
-        - MP3
-        - NONE
+        schema:
+          type: string
+          enum:
+          - WAV
+          - WEBM
+          - WAV_ULAW
+          - OGG_VORBIS
+          - OGG_OPUS
+          - MP3
+          - NONE
+          default: WAV
       responses:
         '200':
           description: Operation was successful
-          schema:
-            $ref: '#/definitions/GreetingMediaInfo'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingMediaInfo'
         '202':
           description: Recording is queued for transcoding
-          schema:
-            $ref: '#/definitions/GreetingMediaInfo'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingMediaInfo'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.a.user: This request requires a user context. Client credentials cannot be used for requests to this resource.
             bad.request: The request could not be understood by the server due to malformed syntax.
@@ -340,18 +391,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             greeting.not.authorized: You are not authorized to access the greeting.
@@ -361,62 +416,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -433,41 +510,43 @@ paths:
       summary: Download a organization greeting recording
       description: ''
       operationId: getGreetingDownloads
-      produces:
-      - application/json
       parameters:
       - name: greetingId
         in: path
         description: Greeting ID
         required: true
-        type: string
+        schema:
+          type: string
       - name: formatId
         in: query
         description: The desired media format.
         required: false
-        type: string
-        default: WAV
-        enum:
-        - WAV
-        - WEBM
-        - WAV_ULAW
-        - OGG_VORBIS
-        - OGG_OPUS
-        - MP3
-        - NONE
+        schema:
+          type: string
+          enum:
+          - WAV
+          - WEBM
+          - WAV_ULAW
+          - OGG_VORBIS
+          - OGG_OPUS
+          - MP3
+          - NONE
+          default: WAV
       responses:
         '200':
           description: Operation was successful
-          schema:
-            $ref: '#/definitions/GreetingMediaInfo'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingMediaInfo'
         '202':
           description: Recording is queued for transcoding
-          schema:
-            $ref: '#/definitions/GreetingMediaInfo'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingMediaInfo'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.a.user: This request requires a user context. Client credentials cannot be used for requests to this resource.
             bad.request: The request could not be understood by the server due to malformed syntax.
@@ -477,18 +556,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             greeting.not.authorized: You are not authorized to access the greeting.
@@ -498,62 +581,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -570,23 +675,22 @@ paths:
       summary: Get a Greeting with the given GreetingId
       description: ''
       operationId: getGreeting
-      produces:
-      - application/json
       parameters:
       - name: greetingId
         in: path
         description: Greeting ID
         required: true
-        type: string
+        schema:
+          type: string
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/Greeting'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Greeting'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -595,18 +699,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -615,62 +723,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -682,29 +812,22 @@ paths:
       summary: Updates the Greeting with the given GreetingId
       description: ''
       operationId: putGreeting
-      produces:
-      - application/json
       parameters:
       - name: greetingId
         in: path
         description: Greeting ID
         required: true
-        type: string
-      - in: body
-        name: body
-        description: The updated Greeting
-        required: true
         schema:
-          $ref: '#/definitions/Greeting'
+          type: string
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/Greeting'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Greeting'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -714,18 +837,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -734,102 +861,132 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
       x-purecloud-method-name: putGreeting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Greeting'
+        description: The updated Greeting
+        required: true
     delete:
       tags:
       - Greetings
       summary: Deletes a Greeting with the given GreetingId
       description: ''
       operationId: deleteGreeting
-      produces:
-      - application/json
       parameters:
       - name: greetingId
         in: path
         description: Greeting ID
         required: true
-        type: string
+        schema:
+          type: string
       responses:
         default:
           description: successful operation
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -838,62 +995,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -905,23 +1084,22 @@ paths:
       summary: Grabs the list of Default Greetings given a Group's ID
       description: ''
       operationId: getGroupGreetingsDefaults
-      produces:
-      - application/json
       parameters:
       - name: groupId
         in: path
         description: Group ID
         required: true
-        type: string
+        schema:
+          type: string
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/DefaultGreetingList'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultGreetingList'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -930,18 +1108,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -950,62 +1132,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -1017,29 +1221,22 @@ paths:
       summary: Updates the DefaultGreetingList of the specified Group
       description: ''
       operationId: putGroupGreetingsDefaults
-      produces:
-      - application/json
       parameters:
       - name: groupId
         in: path
         description: Group ID
         required: true
-        type: string
-      - in: body
-        name: body
-        description: The updated defaultGreetingList
-        required: true
         schema:
-          $ref: '#/definitions/DefaultGreetingList'
+          type: string
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/DefaultGreetingList'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultGreetingList'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -1049,18 +1246,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -1069,66 +1270,95 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
       x-purecloud-method-name: putGroupGreetingsDefaults
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DefaultGreetingList'
+        description: The updated defaultGreetingList
+        required: true
   /api/v2/groups/{groupId}/greetings:
     get:
       tags:
@@ -1136,37 +1366,38 @@ paths:
       summary: Get a list of the Group's Greetings
       description: ''
       operationId: getGroupGreetings
-      produces:
-      - application/json
       parameters:
       - name: groupId
         in: path
         description: Group ID
         required: true
-        type: string
+        schema:
+          type: string
       - name: pageSize
         in: query
         description: Page size
         required: false
-        type: integer
-        default: 25
-        format: int32
+        schema:
+          type: integer
+          format: int32
+          default: 25
       - name: pageNumber
         in: query
         description: Page number
         required: false
-        type: integer
-        default: 1
-        format: int32
+        schema:
+          type: integer
+          format: int32
+          default: 1
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/GreetingListing'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingListing'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -1175,18 +1406,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -1195,62 +1430,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -1262,29 +1519,22 @@ paths:
       summary: Creates a Greeting for a Group
       description: ''
       operationId: postGroupGreetings
-      produces:
-      - application/json
       parameters:
       - name: groupId
         in: path
         description: Group ID
         required: true
-        type: string
-      - in: body
-        name: body
-        description: The Greeting to create
-        required: true
         schema:
-          $ref: '#/definitions/Greeting'
+          type: string
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/Greeting'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Greeting'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -1294,18 +1544,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -1314,66 +1568,95 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
       x-purecloud-method-name: postGroupGreetings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Greeting'
+        description: The Greeting to create
+        required: true
   /api/v2/greetings/defaults:
     get:
       tags:
@@ -1381,18 +1664,15 @@ paths:
       summary: Get an Organization's DefaultGreetingList
       description: ''
       operationId: getGreetingsDefaults
-      produces:
-      - application/json
-      parameters: []
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/DefaultGreetingList'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultGreetingList'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -1401,18 +1681,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -1421,62 +1705,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -1488,24 +1794,15 @@ paths:
       summary: Update an Organization's DefaultGreetingList
       description: ''
       operationId: putGreetingsDefaults
-      produces:
-      - application/json
-      parameters:
-      - in: body
-        name: body
-        description: The updated defaultGreetingList
-        required: true
-        schema:
-          $ref: '#/definitions/DefaultGreetingList'
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/DefaultGreetingList'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultGreetingList'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -1515,18 +1812,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -1535,66 +1836,95 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
       x-purecloud-method-name: putGreetingsDefaults
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DefaultGreetingList'
+        description: The updated defaultGreetingList
+        required: true
   /api/v2/greetings:
     get:
       tags:
@@ -1602,32 +1932,32 @@ paths:
       summary: Gets an Organization's Greetings
       description: ''
       operationId: getGreetings
-      produces:
-      - application/json
       parameters:
       - name: pageSize
         in: query
         description: Page size
         required: false
-        type: integer
-        default: 25
-        format: int32
+        schema:
+          type: integer
+          format: int32
+          default: 25
       - name: pageNumber
         in: query
         description: Page number
         required: false
-        type: integer
-        default: 1
-        format: int32
+        schema:
+          type: integer
+          format: int32
+          default: 1
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/DomainEntityListing'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainEntityListing'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -1636,18 +1966,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -1656,62 +1990,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -1723,24 +2079,15 @@ paths:
       summary: Create a Greeting for an Organization
       description: ''
       operationId: postGreetings
-      produces:
-      - application/json
-      parameters:
-      - in: body
-        name: body
-        description: The Greeting to create
-        required: true
-        schema:
-          $ref: '#/definitions/Greeting'
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/Greeting'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Greeting'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -1750,18 +2097,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -1770,66 +2121,95 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
       x-purecloud-method-name: postGreetings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Greeting'
+        description: The Greeting to create
+        required: true
   /api/v2/users/{userId}/greetings/defaults:
     get:
       tags:
@@ -1837,23 +2217,22 @@ paths:
       summary: Grabs the list of Default Greetings given a User's ID
       description: ''
       operationId: getUserGreetingsDefaults
-      produces:
-      - application/json
       parameters:
       - name: userId
         in: path
         description: User ID
         required: true
-        type: string
+        schema:
+          type: string
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/DefaultGreetingList'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultGreetingList'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -1862,18 +2241,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -1882,62 +2265,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -1949,29 +2354,22 @@ paths:
       summary: Updates the DefaultGreetingList of the specified User
       description: ''
       operationId: putUserGreetingsDefaults
-      produces:
-      - application/json
       parameters:
       - name: userId
         in: path
         description: User ID
         required: true
-        type: string
-      - in: body
-        name: body
-        description: The updated defaultGreetingList
-        required: true
         schema:
-          $ref: '#/definitions/DefaultGreetingList'
+          type: string
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/DefaultGreetingList'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultGreetingList'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -1981,18 +2379,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -2001,66 +2403,95 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
       x-purecloud-method-name: putUserGreetingsDefaults
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DefaultGreetingList'
+        description: The updated defaultGreetingList
+        required: true
   /api/v2/users/{userId}/greetings:
     get:
       tags:
@@ -2068,37 +2499,38 @@ paths:
       summary: Get a list of the User's Greetings
       description: ''
       operationId: getUserGreetings
-      produces:
-      - application/json
       parameters:
       - name: userId
         in: path
         description: User ID
         required: true
-        type: string
+        schema:
+          type: string
       - name: pageSize
         in: query
         description: Page size
         required: false
-        type: integer
-        default: 25
-        format: int32
+        schema:
+          type: integer
+          format: int32
+          default: 25
       - name: pageNumber
         in: query
         description: Page number
         required: false
-        type: integer
-        default: 1
-        format: int32
+        schema:
+          type: integer
+          format: int32
+          default: 1
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/DomainEntityListing'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainEntityListing'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -2107,18 +2539,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -2127,62 +2563,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
@@ -2194,29 +2652,22 @@ paths:
       summary: Creates a Greeting for a User
       description: ''
       operationId: postUserGreetings
-      produces:
-      - application/json
       parameters:
       - name: userId
         in: path
         description: User ID
         required: true
-        type: string
-      - in: body
-        name: body
-        description: The Greeting to create
-        required: true
         schema:
-          $ref: '#/definitions/Greeting'
+          type: string
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/Greeting'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Greeting'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -2226,18 +2677,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -2246,439 +2701,470 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - greetings
       x-purecloud-method-name: postUserGreetings
-definitions:
-  DomainEntity:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-        readOnly: true
-      name:
-        type: string
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  GreetingOwner:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-        readOnly: true
-      name:
-        type: string
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  Greeting:
-    type: object
-    required:
-    - owner
-    - ownerType
-    - type
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-        readOnly: true
-      name:
-        type: string
-      type:
-        type: string
-        description: Greeting type
-        enum:
-        - STATION
-        - VOICEMAIL
-        - NAME
-      ownerType:
-        type: string
-        description: Greeting owner type
-        enum:
-        - USER
-        - ORGANIZATION
-        - GROUP
-      owner:
-        description: Greeting owner
-        $ref: '#/definitions/DomainEntity'
-      audioFile:
-        $ref: '#/definitions/GreetingAudioFile'
-      audioTTS:
-        type: string
-      createdDate:
-        type: string
-        format: date-time
-        description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-      createdBy:
-        type: string
-        format: uri
-      modifiedDate:
-        type: string
-        format: date-time
-        description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-      modifiedBy:
-        type: string
-        format: uri
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  ErrorBody:
-    type: object
-    properties:
-      message:
-        type: string
-      code:
-        type: string
-      status:
-        type: integer
-        format: int32
-      entityId:
-        type: string
-      entityName:
-        type: string
-      messageWithParams:
-        type: string
-      messageParams:
-        type: object
-        additionalProperties:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Greeting'
+        description: The Greeting to create
+        required: true
+components:
+  schemas:
+    DomainEntity:
+      type: object
+      properties:
+        id:
           type: string
-      contextId:
-        type: string
-      details:
-        type: array
-        items:
-          $ref: '#/definitions/Detail'
-      errors:
-        type: array
-        items:
-          $ref: '#/definitions/ErrorBody'
-      limit:
-        $ref: '#/definitions/Limit'
-  DefaultGreetingList:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-        readOnly: true
-      name:
-        type: string
-      owner:
-        $ref: '#/definitions/GreetingOwner'
-      ownerType:
-        type: string
-        enum:
-        - USER
-        - ORGANIZATION
-        - GROUP
-      greetings:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/Greeting'
-      createdDate:
-        type: string
-        format: date-time
-        description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-      createdBy:
-        type: string
-        format: uri
-      modifiedDate:
-        type: string
-        format: date-time
-        description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-      modifiedBy:
-        type: string
-        format: uri
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  GreetingAudioFile:
-    type: object
-    properties:
-      durationMilliseconds:
-        type: integer
-        format: int64
-      sizeBytes:
-        type: integer
-        format: int64
-      selfUri:
-        type: string
-        format: uri
-  GreetingMediaInfo:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-        readOnly: true
-      mediaFileUri:
-        type: string
-        format: uri
-      mediaImageUri:
-        type: string
-        format: uri
-  DomainEntityListing:
-    type: object
-    properties:
-      entities:
-        type: array
-        items:
-          $ref: '#/definitions/DomainEntity'
-      pageSize:
-        type: integer
-        format: int32
-      pageNumber:
-        type: integer
-        format: int32
-      total:
-        type: integer
-        format: int64
-      firstUri:
-        type: string
-        format: uri
-      nextUri:
-        type: string
-        format: uri
-      previousUri:
-        type: string
-        format: uri
-      lastUri:
-        type: string
-        format: uri
-      selfUri:
-        type: string
-        format: uri
-      pageCount:
-        type: integer
-        format: int32
-  GreetingListing:
-    type: object
-    properties:
-      entities:
-        type: array
-        items:
-          $ref: '#/definitions/Greeting'
-      pageSize:
-        type: integer
-        format: int32
-      pageNumber:
-        type: integer
-        format: int32
-      total:
-        type: integer
-        format: int64
-      firstUri:
-        type: string
-        format: uri
-      nextUri:
-        type: string
-        format: uri
-      previousUri:
-        type: string
-        format: uri
-      lastUri:
-        type: string
-        format: uri
-      selfUri:
-        type: string
-        format: uri
-      pageCount:
-        type: integer
-        format: int32
-  Limit:
-    type: object
-    properties:
-      key:
-        type: string
-      namespace:
-        type: string
-        enum:
-        - web.deployments
-        - web.messaging
-        - agent.assistant
-        - agentic.virtual.agents
-        - analytics.agents
-        - analytics.alerting
-        - analytics.data.extraction
-        - analytics
-        - analytics.realtime
-        - analytics.reporting.settings
-        - anomaly.detection
-        - architect
-        - audiohook
-        - audiohook.monitor
-        - audit
-        - auth.api
-        - authorization
-        - automation.testing
-        - bots
-        - bots.voice
-        - business.rules
-        - callback
-        - case.management
-        - cobrowse
-        - content.management
-        - conversation
-        - copilot
-        - dataactions
-        - datatables
-        - directory
-        - dsar
-        - email
-        - employee.engagement
-        - event.orchestration
-        - external.contacts
-        - external.events.data.ingestion
-        - gamification
-        - gcv
-        - gdpr
-        - groups
-        - guides
-        - historical.adherence
-        - infrastructureascode
-        - integrations
-        - intent.miner
-        - internal.messaging
-        - journey
-        - knowledge
-        - language.understanding
-        - learning
-        - limit.registry
-        - marketplace
-        - mcp.analytics.aggregates
-        - mcp
-        - media.communications
-        - messaging
-        - micro.frontend
-        - multi.org
-        - notifications
-        - onboarding
-        - outbound
-        - platform.api
-        - predictive.routing
-        - presence
-        - quality
-        - recording
-        - response.management
-        - routing
-        - scim
-        - screen.monitoring
-        - search
-        - secondary.automation.testing
-        - skills
-        - social.media
-        - speech.and.text.analytics
-        - speech.integration
-        - supportability
-        - task.management
-        - telephony.configuration
-        - usage
-        - users
-        - users.rules
-        - voice.transcription
-        - webchat
-        - webhooks
-        - workforce.management.adherence
-        - workforce.management.agent.availability
-        - workforce.management.forecast
-        - workforce.management
-        - workforce.management.scheduling.preferences
-        - workforce.management.self.schedule
-        - workforce.management.shift.trading
-        - system
-      value:
-        type: integer
-        format: int64
-  Detail:
-    type: object
-    properties:
-      errorCode:
-        type: string
-      fieldName:
-        type: string
-      entityId:
-        type: string
-      entityName:
-        type: string
-securityDefinitions:
-  PureCloud OAuth:
-    type: oauth2
-    authorizationUrl: https://login.mypurecloud.com/authorize
-    flow: implicit
-    scopes:
-      all: All the scopes
-  Guest Chat JWT:
-    type: apiKey
-    name: Authorization
-    in: header
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    GreetingOwner:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    GreetingAudioFile:
+      type: object
+      properties:
+        durationMilliseconds:
+          type: integer
+          format: int64
+        sizeBytes:
+          type: integer
+          format: int64
+        selfUri:
+          type: string
+          format: uri
+    DomainEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DomainEntity'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    DefaultGreetingList:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        owner:
+          $ref: '#/components/schemas/GreetingOwner'
+        ownerType:
+          type: string
+          enum:
+          - USER
+          - ORGANIZATION
+          - GROUP
+        greetings:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Greeting'
+        createdDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        createdBy:
+          type: string
+          format: uri
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    GreetingListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Greeting'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    GreetingMediaInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        mediaFileUri:
+          type: string
+          format: uri
+        mediaImageUri:
+          type: string
+          format: uri
+    Greeting:
+      type: object
+      required:
+      - owner
+      - ownerType
+      - type
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        type:
+          type: string
+          description: Greeting type
+          enum:
+          - STATION
+          - VOICEMAIL
+          - NAME
+        ownerType:
+          type: string
+          description: Greeting owner type
+          enum:
+          - USER
+          - ORGANIZATION
+          - GROUP
+        owner:
+          description: Greeting owner
+          $ref: '#/components/schemas/DomainEntity'
+        audioFile:
+          $ref: '#/components/schemas/GreetingAudioFile'
+        audioTTS:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        createdBy:
+          type: string
+          format: uri
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+  securitySchemes:
+    PureCloud_OAuth:
+      type: oauth2
+      flows:
+        implicit:
+          scopes:
+            all: All the scopes
+          authorizationUrl: https://login.mypurecloud.com/authorize
+    Guest_Chat_JWT:
+      type: apiKey
+      name: Authorization
+      in: header
 externalDocs:
   description: PureCloud API Documentation
   url: https://developer.genesys.cloud/

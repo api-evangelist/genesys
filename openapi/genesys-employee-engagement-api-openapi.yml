@@ -1,8 +1,8 @@
-swagger: '2.0'
+openapi: 3.2.0
 info:
   description: With the PureCloud Platform API, you can control all aspects of your PureCloud environment. With the APIs you can access the system configuration, manage conversations and more.
   version: v2
-  title: PureCloud Platform Agent Assistants Employee Engagement API
+  title: PureCloud Platform Employee Engagement API
   termsOfService: https://help.genesys.cloud/articles/terms-and-conditions/
   contact:
     name: PureCloud Developer Evangelists
@@ -11,13 +11,8 @@ info:
   license:
     name: UNLICENSED
     url: https://help.genesys.cloud/articles/terms-and-conditions/
-host: api.mypurecloud.com
-schemes:
-- https
-consumes:
-- application/json
-produces:
-- application/json
+servers:
+- url: https://api.mypurecloud.com
 tags:
 - name: Employee Engagement
   description: Employee Engagement
@@ -32,36 +27,37 @@ paths:
       summary: Deletes a celebration
       description: ''
       operationId: deleteEmployeeengagementCelebration
-      produces:
-      - application/json
       parameters:
       - name: celebrationId
         in: path
         description: The ID of the celebration
         required: true
-        type: string
+        schema:
+          type: string
       responses:
         '204':
           description: Celebration Deleted
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -70,62 +66,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - employee-engagement
@@ -140,27 +158,18 @@ paths:
       summary: Set a state for a celebration
       description: ''
       operationId: patchEmployeeengagementCelebration
-      produces:
-      - application/json
       parameters:
       - name: celebrationId
         in: path
         description: The ID of the celebration
         required: true
-        type: string
-      - in: body
-        name: body
-        description: Patch Celebration state
-        required: true
         schema:
-          $ref: '#/definitions/CelebrationStateParam'
+          type: string
       responses:
         '204':
           description: Celebration State Updated
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -170,18 +179,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -190,62 +203,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - employee-engagement
@@ -254,6 +289,13 @@ paths:
         permissions:
         - engagement:celebration:edit
       x-purecloud-method-name: patchEmployeeengagementCelebration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CelebrationStateParam'
+        description: Patch Celebration state
+        required: true
   /api/v2/employeeengagement/celebrations:
     get:
       tags:
@@ -261,30 +303,30 @@ paths:
       summary: Get all celebrations
       description: ''
       operationId: getEmployeeengagementCelebrations
-      produces:
-      - application/json
       parameters:
       - name: pageNumber
         in: query
         required: false
-        type: integer
-        default: 1
-        format: int32
+        schema:
+          type: integer
+          format: int32
+          default: 1
       - name: pageSize
         in: query
         required: false
-        type: integer
-        default: 25
-        format: int32
+        schema:
+          type: integer
+          format: int32
+          default: 25
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/GetCelebrationListing'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCelebrationListing'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -293,18 +335,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -313,62 +359,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - employee-engagement
@@ -385,23 +453,22 @@ paths:
       summary: Gets a single recognition
       description: ''
       operationId: getEmployeeengagementRecognition
-      produces:
-      - application/json
       parameters:
       - name: recognitionId
         in: path
         description: The Recognition ID
         required: true
-        type: string
+        schema:
+          type: string
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/Recognition'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recognition'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -410,18 +477,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -431,62 +502,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - employee-engagement
@@ -503,58 +596,62 @@ paths:
       summary: Gets sent recognitions
       description: ''
       operationId: getEmployeeengagementRecognitions
-      produces:
-      - application/json
       parameters:
       - name: direction
         in: query
         description: The direction of the recognitions.
         required: false
-        type: string
-        default: received
-        enum:
-        - sent
-        - received
+        schema:
+          type: string
+          enum:
+          - sent
+          - received
+          default: received
       - name: recipient
         in: query
         description: The ID of the recipient (when direction is sent).
         required: false
-        type: string
+        schema:
+          type: string
       - name: dateStart
         in: query
         description: 'The start date of the search range. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
         required: false
-        type: string
-        format: date-time
+        schema:
+          type: string
+          format: date-time
       - name: dateEnd
         in: query
         description: 'The end date of the search range. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
         required: false
-        type: string
-        format: date-time
+        schema:
+          type: string
+          format: date-time
       - name: pageSize
         in: query
         description: Page size
         required: false
-        type: integer
-        default: 100
-        format: int32
+        schema:
+          type: integer
+          format: int32
+          default: 100
       - name: pageNumber
         in: query
         description: Page number
         required: false
-        type: integer
-        default: 1
-        format: int32
+        schema:
+          type: integer
+          format: int32
+          default: 1
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/Recognitions'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recognitions'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -563,18 +660,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -583,62 +684,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - employee-engagement
@@ -654,24 +777,15 @@ paths:
       summary: Creates a recognition
       description: ''
       operationId: postEmployeeengagementRecognitions
-      produces:
-      - application/json
-      parameters:
-      - in: body
-        name: body
-        description: Create Recognition
-        required: true
-        schema:
-          $ref: '#/definitions/CreateRecognition'
       responses:
         '200':
           description: successful operation
-          schema:
-            $ref: '#/definitions/RecognitionBase'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecognitionBase'
         '400':
           description: The request could not be understood by the server due to malformed syntax.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             bad.request: The request could not be understood by the server due to malformed syntax.
             response.entity.too.large: The response is over the size limit. Reduce pageSize or expand list to reduce response size if applicable
@@ -681,18 +795,22 @@ paths:
             invalid.property: Value [%s] is not a valid property for object [%s]
             constraint.validation: '%s'
             invalid.value: 'Value [%s] is not valid for field type [%s]. Allowable values are: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '401':
           description: No authentication bearer token specified in authorization header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.required: No authentication bearer token specified in authorization header.
             ip.not.authorized: 'Requests originating from this IP address are not authorized: [%s]'
             bad.credentials: Invalid login credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '403':
           description: You are not authorized to perform the requested action.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             missing.division.permission: Unable to perform the requested action. You are missing the following permission '%s' in the provided division(s).
             app.not.authorized.for.scope: App not authorized to use scope %s
@@ -701,62 +819,84 @@ paths:
             missing.any.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s'
             authz.policy.denied: 'Unable to perform the requested action. Your organization''s security policies have denied access. Policy ID(s): [%s]'
             missing.any.division.permissions: 'Unable to perform the requested action. You must have at least one of the following permissions assigned: %s in at least one of the following division(s): %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '404':
           description: The requested resource was not found.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             not.found: The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '408':
           description: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             client.timeout: The client did not produce a request within the server timeout limit. This can be caused by a slow network connection and/or large payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '409':
           description: The request conflicts with the current state of the target resource.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.conflict: The request conflicts with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '413':
           description: 'The request is over the size limit. Maximum bytes: %s'
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             request.entity.too.large: 'The request is over the size limit. Maximum bytes: %s'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '415':
           description: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             unsupported.media.type: Unsupported Media Type - Unsupported or incorrect media type, such as an incorrect Content-Type value in the header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '429':
           description: Rate limit exceeded the maximum. Retry the request in [%s] seconds
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             too.many.requests.retry.after: Rate limit exceeded the maximum. Retry the request in [%s] seconds
             too.many.requests: Rate limit exceeded the maximum [%s] requests within [%s] seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '500':
           description: The server encountered an unexpected condition which prevented it from fulfilling the request.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             internal.server.error: The server encountered an unexpected condition which prevented it from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '503':
           description: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             service.unavailable: Service Unavailable - The server is currently unavailable (because it is overloaded or down for maintenance).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
         '504':
           description: The request timed out.
-          schema:
-            $ref: '#/definitions/ErrorBody'
           x-inin-error-codes:
             authentication.request.timeout: Authentication request timeout.
             request.timeout: The request timed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
       security:
       - PureCloud OAuth:
         - employee-engagement
@@ -765,542 +905,551 @@ paths:
         permissions:
         - engagement:recognition:add
       x-purecloud-method-name: postEmployeeengagementRecognitions
-definitions:
-  GetCelebrationListing:
-    type: object
-    properties:
-      entities:
-        type: array
-        items:
-          $ref: '#/definitions/Celebration'
-      pageSize:
-        type: integer
-        format: int32
-      pageNumber:
-        type: integer
-        format: int32
-      total:
-        type: integer
-        format: int64
-      firstUri:
-        type: string
-        format: uri
-      nextUri:
-        type: string
-        format: uri
-      previousUri:
-        type: string
-        format: uri
-      lastUri:
-        type: string
-        format: uri
-      selfUri:
-        type: string
-        format: uri
-      pageCount:
-        type: integer
-        format: int32
-  ErrorBody:
-    type: object
-    properties:
-      message:
-        type: string
-      code:
-        type: string
-      status:
-        type: integer
-        format: int32
-      entityId:
-        type: string
-      entityName:
-        type: string
-      messageWithParams:
-        type: string
-      messageParams:
-        type: object
-        additionalProperties:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecognition'
+        description: Create Recognition
+        required: true
+components:
+  schemas:
+    Limit:
+      type: object
+      properties:
+        key:
           type: string
-      contextId:
-        type: string
-      details:
-        type: array
-        items:
-          $ref: '#/definitions/Detail'
-      errors:
-        type: array
-        items:
-          $ref: '#/definitions/ErrorBody'
-      limit:
-        $ref: '#/definitions/Limit'
-  ContestCompleteData:
-    type: object
-    properties:
-      dateEnd:
-        type: string
-        format: date
-        description: 'End date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-      anonymization:
-        type: string
-        description: Anonymization of the contest
-        enum:
-        - NoAnonymization
-        - All
-        - AllExceptTop
-      metrics:
-        type: array
-        description: Metrics of the contest
-        items:
-          $ref: '#/definitions/ContestDataMetrics'
-      prizes:
-        type: array
-        description: Prizes of the contest
-        items:
-          $ref: '#/definitions/ContestDataPrizes'
-      winners:
-        type: array
-        description: Winners of the contest
-        items:
-          $ref: '#/definitions/ContestDataWinners'
-  ContestDataPrizes:
-    type: object
-    properties:
-      tier:
-        type: integer
-        format: int32
-        description: Tier of the prize
-      name:
-        type: string
-        description: Name of the prize
-      imageId:
-        type: string
-        description: Id of the prize image
-  RecognitionBase:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-        readOnly: true
-      recipient:
-        description: The recipient of the recognition
-        $ref: '#/definitions/UserReference'
-      createdBy:
-        description: The creator of the recognition
-        $ref: '#/definitions/UserReference'
-      dateCreated:
-        type: string
-        format: date-time
-        example: '2023-01-01T01:01:01Z'
-        description: 'The creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-      type:
-        type: string
-        description: The type of recognition
-        enum:
-        - ThankYou
-        - Congratulations
-        - HighPerformance
-        - CompanyValues
-      title:
-        type: string
-        description: The recognition title
-      note:
-        type: string
-        description: The recognition note
-      contextType:
-        type: string
-        description: The context type (optional)
-        enum:
-        - Interaction
-        - Insights
-        - Development
-        - Scorecard
-      contextId:
-        type: string
-        description: The context id (optional)
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  ContestDataWinnersUsers:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-      rank:
-        type: integer
-        format: int32
-        description: The Contest user's rank
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  Celebration:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-        readOnly: true
-      recipient:
-        description: The Recipient of the celebration
-        $ref: '#/definitions/UserReference'
-      createdBy:
-        description: The creator of the celebration
-        $ref: '#/definitions/UserReference'
-      dateCreated:
-        type: string
-        format: date-time
-        example: '2023-01-01T01:01:01Z'
-        description: 'The date the celebration was created on. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-      type:
-        type: string
-        description: The Celebration Type
-        enum:
-        - Recognition
-        - ContestComplete
-      title:
-        type: string
-        description: The Celebration title
-      note:
-        type: string
-        description: The Celebration note
-      sourceEntity:
-        description: The celebration's source entity
-        $ref: '#/definitions/SourceEntity'
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  Recognitions:
-    type: object
-    properties:
-      entities:
-        type: array
-        items:
-          $ref: '#/definitions/Recognition'
-      pageSize:
-        type: integer
-        format: int32
-      pageNumber:
-        type: integer
-        format: int32
-      total:
-        type: integer
-        format: int64
-      pageCount:
-        type: integer
-        format: int32
-  UserReference:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  ContestDataWinners:
-    type: object
-    properties:
-      tier:
-        type: integer
-        format: int32
-        description: Tier of the winners
-      winnersCount:
-        type: integer
-        format: int32
-        description: Number of winners in this tier
-      contestScore:
-        description: Number of winners in this tier
-        $ref: '#/definitions/ContestCompleteDataScore'
-      users:
-        type: array
-        description: List of users in this tier
-        items:
-          $ref: '#/definitions/ContestDataWinnersUsers'
-  SourceEntity:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-        readOnly: true
-      type:
-        type: string
-        description: The type of the source entity
-        enum:
-        - ThankYou
-        - Congratulations
-        - HighPerformance
-        - CompanyValues
-        - Competition
-        - Race
-        - Raffle
-        - TeamGoal
-      contestCompleteData:
-        description: The contest data - Only supplied when celebration is of type ContestComplete
-        $ref: '#/definitions/ContestCompleteData'
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  CelebrationStateParam:
-    type: object
-    properties:
-      state:
-        type: string
-        description: The state of the celebration
-        enum:
-        - Displayed
-  CreateRecognition:
-    type: object
-    required:
-    - recipientId
-    - title
-    - type
-    properties:
-      recipientId:
-        type: string
-        description: The recipient of the recognition
-      type:
-        type: string
-        description: The type of the recognition
-        enum:
-        - ThankYou
-        - Congratulations
-        - HighPerformance
-        - CompanyValues
-      title:
-        type: string
-        description: The title of the recognition. Max length of 100 characters
-      note:
-        type: string
-        description: The note of the recognition. Max length of 800 characters (optional)
-      contextType:
-        type: string
-        description: The context type (optional)
-        enum:
-        - Interaction
-        - Insights
-        - Development
-        - Scorecard
-      contextId:
-        type: string
-        description: The context id (optional)
-  Recognition:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-        readOnly: true
-      recipient:
-        description: The recipient of the recognition
-        $ref: '#/definitions/UserReference'
-      createdBy:
-        description: The creator of the recognition
-        $ref: '#/definitions/UserReference'
-      dateCreated:
-        type: string
-        format: date-time
-        example: '2023-01-01T01:01:01Z'
-        description: 'The creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-      type:
-        type: string
-        description: The type of recognition
-        enum:
-        - ThankYou
-        - Congratulations
-        - HighPerformance
-        - CompanyValues
-      title:
-        type: string
-        description: The recognition title
-      note:
-        type: string
-        description: The recognition note
-      contextType:
-        type: string
-        description: The context type (optional)
-        enum:
-        - Interaction
-        - Insights
-        - Development
-        - Scorecard
-      contextId:
-        type: string
-        description: The context id (optional)
-      dateDisplayed:
-        type: string
-        format: date-time
-        example: '2023-01-01T01:01:01Z'
-        description: 'The displayed date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-      dateAcknowledged:
-        type: string
-        format: date-time
-        example: '2023-01-01T01:01:01Z'
-        description: 'The acknowledged date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  ContestDataMetrics:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The globally unique identifier for the object.
-        readOnly: true
-      name:
-        type: string
-        description: The Contest Metrics name
-        readOnly: true
-      selfUri:
-        type: string
-        format: uri
-        description: The URI for this object
-        readOnly: true
-  ContestCompleteDataScore:
-    type: object
-    properties:
-      score:
-        type: number
-        format: double
-        description: The Contest score
-  Limit:
-    type: object
-    properties:
-      key:
-        type: string
-      namespace:
-        type: string
-        enum:
-        - web.deployments
-        - web.messaging
-        - agent.assistant
-        - agentic.virtual.agents
-        - analytics.agents
-        - analytics.alerting
-        - analytics.data.extraction
-        - analytics
-        - analytics.realtime
-        - analytics.reporting.settings
-        - anomaly.detection
-        - architect
-        - audiohook
-        - audiohook.monitor
-        - audit
-        - auth.api
-        - authorization
-        - automation.testing
-        - bots
-        - bots.voice
-        - business.rules
-        - callback
-        - case.management
-        - cobrowse
-        - content.management
-        - conversation
-        - copilot
-        - dataactions
-        - datatables
-        - directory
-        - dsar
-        - email
-        - employee.engagement
-        - event.orchestration
-        - external.contacts
-        - external.events.data.ingestion
-        - gamification
-        - gcv
-        - gdpr
-        - groups
-        - guides
-        - historical.adherence
-        - infrastructureascode
-        - integrations
-        - intent.miner
-        - internal.messaging
-        - journey
-        - knowledge
-        - language.understanding
-        - learning
-        - limit.registry
-        - marketplace
-        - mcp.analytics.aggregates
-        - mcp
-        - media.communications
-        - messaging
-        - micro.frontend
-        - multi.org
-        - notifications
-        - onboarding
-        - outbound
-        - platform.api
-        - predictive.routing
-        - presence
-        - quality
-        - recording
-        - response.management
-        - routing
-        - scim
-        - screen.monitoring
-        - search
-        - secondary.automation.testing
-        - skills
-        - social.media
-        - speech.and.text.analytics
-        - speech.integration
-        - supportability
-        - task.management
-        - telephony.configuration
-        - usage
-        - users
-        - users.rules
-        - voice.transcription
-        - webchat
-        - webhooks
-        - workforce.management.adherence
-        - workforce.management.agent.availability
-        - workforce.management.forecast
-        - workforce.management
-        - workforce.management.scheduling.preferences
-        - workforce.management.self.schedule
-        - workforce.management.shift.trading
-        - system
-      value:
-        type: integer
-        format: int64
-  Detail:
-    type: object
-    properties:
-      errorCode:
-        type: string
-      fieldName:
-        type: string
-      entityId:
-        type: string
-      entityName:
-        type: string
-securityDefinitions:
-  PureCloud OAuth:
-    type: oauth2
-    authorizationUrl: https://login.mypurecloud.com/authorize
-    flow: implicit
-    scopes:
-      all: All the scopes
-  Guest Chat JWT:
-    type: apiKey
-    name: Authorization
-    in: header
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    Celebration:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        recipient:
+          description: The Recipient of the celebration
+          $ref: '#/components/schemas/UserReference'
+        createdBy:
+          description: The creator of the celebration
+          $ref: '#/components/schemas/UserReference'
+        dateCreated:
+          type: string
+          format: date-time
+          example: '2023-01-01T01:01:01Z'
+          description: 'The date the celebration was created on. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        type:
+          type: string
+          description: The Celebration Type
+          enum:
+          - Recognition
+          - ContestComplete
+        title:
+          type: string
+          description: The Celebration title
+        note:
+          type: string
+          description: The Celebration note
+        sourceEntity:
+          description: The celebration's source entity
+          $ref: '#/components/schemas/SourceEntity'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    SourceEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        type:
+          type: string
+          description: The type of the source entity
+          enum:
+          - ThankYou
+          - Congratulations
+          - HighPerformance
+          - CompanyValues
+          - Competition
+          - Race
+          - Raffle
+          - TeamGoal
+        contestCompleteData:
+          description: The contest data - Only supplied when celebration is of type ContestComplete
+          $ref: '#/components/schemas/ContestCompleteData'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ContestCompleteData:
+      type: object
+      properties:
+        dateEnd:
+          type: string
+          format: date
+          description: 'End date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        anonymization:
+          type: string
+          description: Anonymization of the contest
+          enum:
+          - NoAnonymization
+          - All
+          - AllExceptTop
+        metrics:
+          type: array
+          description: Metrics of the contest
+          items:
+            $ref: '#/components/schemas/ContestDataMetrics'
+        prizes:
+          type: array
+          description: Prizes of the contest
+          items:
+            $ref: '#/components/schemas/ContestDataPrizes'
+        winners:
+          type: array
+          description: Winners of the contest
+          items:
+            $ref: '#/components/schemas/ContestDataWinners'
+    ContestDataWinners:
+      type: object
+      properties:
+        tier:
+          type: integer
+          format: int32
+          description: Tier of the winners
+        winnersCount:
+          type: integer
+          format: int32
+          description: Number of winners in this tier
+        contestScore:
+          description: Number of winners in this tier
+          $ref: '#/components/schemas/ContestCompleteDataScore'
+        users:
+          type: array
+          description: List of users in this tier
+          items:
+            $ref: '#/components/schemas/ContestDataWinnersUsers'
+    Recognition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        recipient:
+          description: The recipient of the recognition
+          $ref: '#/components/schemas/UserReference'
+        createdBy:
+          description: The creator of the recognition
+          $ref: '#/components/schemas/UserReference'
+        dateCreated:
+          type: string
+          format: date-time
+          example: '2023-01-01T01:01:01Z'
+          description: 'The creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        type:
+          type: string
+          description: The type of recognition
+          enum:
+          - ThankYou
+          - Congratulations
+          - HighPerformance
+          - CompanyValues
+        title:
+          type: string
+          description: The recognition title
+        note:
+          type: string
+          description: The recognition note
+        contextType:
+          type: string
+          description: The context type (optional)
+          enum:
+          - Interaction
+          - Insights
+          - Development
+          - Scorecard
+        contextId:
+          type: string
+          description: The context id (optional)
+        dateDisplayed:
+          type: string
+          format: date-time
+          example: '2023-01-01T01:01:01Z'
+          description: 'The displayed date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateAcknowledged:
+          type: string
+          format: date-time
+          example: '2023-01-01T01:01:01Z'
+          description: 'The acknowledged date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CreateRecognition:
+      type: object
+      required:
+      - recipientId
+      - title
+      - type
+      properties:
+        recipientId:
+          type: string
+          description: The recipient of the recognition
+        type:
+          type: string
+          description: The type of the recognition
+          enum:
+          - ThankYou
+          - Congratulations
+          - HighPerformance
+          - CompanyValues
+        title:
+          type: string
+          description: The title of the recognition. Max length of 100 characters
+        note:
+          type: string
+          description: The note of the recognition. Max length of 800 characters (optional)
+        contextType:
+          type: string
+          description: The context type (optional)
+          enum:
+          - Interaction
+          - Insights
+          - Development
+          - Scorecard
+        contextId:
+          type: string
+          description: The context id (optional)
+    GetCelebrationListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Celebration'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    RecognitionBase:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        recipient:
+          description: The recipient of the recognition
+          $ref: '#/components/schemas/UserReference'
+        createdBy:
+          description: The creator of the recognition
+          $ref: '#/components/schemas/UserReference'
+        dateCreated:
+          type: string
+          format: date-time
+          example: '2023-01-01T01:01:01Z'
+          description: 'The creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        type:
+          type: string
+          description: The type of recognition
+          enum:
+          - ThankYou
+          - Congratulations
+          - HighPerformance
+          - CompanyValues
+        title:
+          type: string
+          description: The recognition title
+        note:
+          type: string
+          description: The recognition note
+        contextType:
+          type: string
+          description: The context type (optional)
+          enum:
+          - Interaction
+          - Insights
+          - Development
+          - Scorecard
+        contextId:
+          type: string
+          description: The context id (optional)
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ContestDataPrizes:
+      type: object
+      properties:
+        tier:
+          type: integer
+          format: int32
+          description: Tier of the prize
+        name:
+          type: string
+          description: Name of the prize
+        imageId:
+          type: string
+          description: Id of the prize image
+    ContestCompleteDataScore:
+      type: object
+      properties:
+        score:
+          type: number
+          format: double
+          description: The Contest score
+    Recognitions:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recognition'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        pageCount:
+          type: integer
+          format: int32
+    CelebrationStateParam:
+      type: object
+      properties:
+        state:
+          type: string
+          description: The state of the celebration
+          enum:
+          - Displayed
+    ContestDataMetrics:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The Contest Metrics name
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ContestDataWinnersUsers:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        rank:
+          type: integer
+          format: int32
+          description: The Contest user's rank
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+  securitySchemes:
+    PureCloud_OAuth:
+      type: oauth2
+      flows:
+        implicit:
+          scopes:
+            all: All the scopes
+          authorizationUrl: https://login.mypurecloud.com/authorize
+    Guest_Chat_JWT:
+      type: apiKey
+      name: Authorization
+      in: header
 externalDocs:
   description: PureCloud API Documentation
   url: https://developer.genesys.cloud/

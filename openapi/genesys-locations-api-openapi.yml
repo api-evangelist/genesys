@@ -1202,11 +1202,10 @@ paths:
         required: true
 components:
   schemas:
-    LocationUpdateDefinition:
+    LocationCreateDefinition:
       type: object
       required:
       - name
-      - version
       properties:
         name:
           type: string
@@ -1238,73 +1237,224 @@ components:
         address:
           description: Address of the location
           $ref: '#/components/schemas/LocationAddress'
-    LocationDefinition:
+    LocationEmergencyNumber:
+      type: object
+      properties:
+        e164:
+          type: string
+        number:
+          type: string
+        type:
+          type: string
+          description: The type of emergency number.
+          enum:
+          - default
+          - elin
+    LocationSearchCriteria:
+      type: object
+      required:
+      - type
+      properties:
+        endValue:
+          type: string
+          description: The end value of the range. This field is used for range search types.
+        values:
+          type: array
+          description: A list of values for the search to match against
+          items:
+            type: string
+        startValue:
+          type: string
+          description: The start value of the range. This field is used for range search types.
+        value:
+          type: string
+          description: A value for the search to match against
+        operator:
+          type: string
+          description: How to apply this search criteria against other criteria
+          enum:
+          - AND
+          - OR
+          - NOT
+        group:
+          type: array
+          description: Groups multiple conditions
+          items:
+            $ref: '#/components/schemas/LocationSearchCriteria'
+        dateFormat:
+          type: string
+          description: Set date format for criteria values when using date range search type.  Supports Java date format syntax, example yyyy-MM-dd'T'HH:mm:ss.SSSX.
+        type:
+          type: string
+          description: Search Type
+          enum:
+          - EXACT
+          - STARTS_WITH
+          - CONTAINS
+          - REGEX
+          - TERM
+          - TERMS
+          - REQUIRED_FIELDS
+          - MATCH_ALL
+        fields:
+          type: array
+          description: Field names to search against
+          items:
+            type: string
+          x-genesys-search-fields:
+            value:
+            - id
+            - name
+            - notes
+            - addressFields.city
+            - addressFields.country
+            - addressFields.state
+            - addressFields.street1
+            - addressFields.street2
+            - addressFields.zipcode
+            - addressVerified
+            - emergencyNumber
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    LocationEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationDefinition'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    LocationImage:
+      type: object
+      properties:
+        resolution:
+          type: string
+          description: 'Height and/or width of image. ex: 640x480 or x128'
+        imageUri:
+          type: string
+    LocationSearchRequest:
+      type: object
+      properties:
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
+        pageSize:
+          type: integer
+          format: int32
+          description: The number of results per page
+        pageNumber:
+          type: integer
+          format: int32
+          description: The page of resources you want to retrieve
+        sort:
+          type: array
+          description: Multi-value sort order, list of multiple sort values
+          items:
+            $ref: '#/components/schemas/SearchSort'
+        expand:
+          type: array
+          description: Provides more details about a specified resource
+          items:
+            type: string
+        query:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationSearchCriteria'
+    LocationAddressVerificationDetails:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of address verification process
+          enum:
+          - Pending
+          - InProgress
+          - Retry
+          - Complete
+          - Failed
+        dateFinished:
+          type: string
+          format: date-time
+          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        service:
+          type: string
+          example: smartystreets-us
+          description: Third party service used for address verification
+    AddressableEntityRef:
       type: object
       properties:
         id:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        contactUser:
-          description: Site contact for the location entity
-          $ref: '#/components/schemas/AddressableEntityRef'
-        emergencyNumber:
-          description: Emergency number for the location entity
-          $ref: '#/components/schemas/LocationEmergencyNumber'
-        address:
-          $ref: '#/components/schemas/LocationAddress'
-        state:
-          type: string
-          description: Current state of the location entity
-          enum:
-          - active
-          - deleted
-        notes:
-          type: string
-          description: Notes for the location entity
-        version:
-          type: integer
-          format: int32
-          description: Current version of the location entity, value to be supplied should be retrieved by a GET or on create/update response
-        path:
-          type: array
-          description: A list of ancestor IDs in order
-          readOnly: true
-          items:
-            type: string
-        profileImage:
-          type: array
-          description: Profile image of the location entity, retrieved with ?expand=images query parameter
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LocationImage'
-        floorplanImage:
-          type: array
-          description: Floorplan images of the location entity, retrieved with ?expand=images query parameter
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LocationImage'
-        addressVerificationDetails:
-          description: Address verification information, retrieve dwith the ?expand=addressVerificationDetails query parameter
-          readOnly: true
-          $ref: '#/components/schemas/LocationAddressVerificationDetails'
-        addressVerified:
-          type: boolean
-          description: Boolean field which states if the address has been verified as an actual address
-          readOnly: true
-        addressStored:
-          type: boolean
-          description: Boolean field which states if the address has been stored for E911
-          readOnly: true
-        images:
-          type: string
         selfUri:
           type: string
           format: uri
-          description: The URI for this object
-          readOnly: true
     Limit:
       type: object
       properties:
@@ -1409,141 +1559,17 @@ components:
         value:
           type: integer
           format: int64
-    LocationAddressVerificationDetails:
+    Detail:
       type: object
       properties:
-        status:
+        errorCode:
           type: string
-          description: Status of address verification process
-          enum:
-          - Pending
-          - InProgress
-          - Retry
-          - Complete
-          - Failed
-        dateFinished:
+        fieldName:
           type: string
-          format: date-time
-          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateStarted:
+        entityId:
           type: string
-          format: date-time
-          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        service:
+        entityName:
           type: string
-          example: smartystreets-us
-          description: Third party service used for address verification
-    LocationEmergencyNumber:
-      type: object
-      properties:
-        e164:
-          type: string
-        number:
-          type: string
-        type:
-          type: string
-          description: The type of emergency number.
-          enum:
-          - default
-          - elin
-    LocationEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/LocationDefinition'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    LocationSearchCriteria:
-      type: object
-      required:
-      - type
-      properties:
-        endValue:
-          type: string
-          description: The end value of the range. This field is used for range search types.
-        values:
-          type: array
-          description: A list of values for the search to match against
-          items:
-            type: string
-        startValue:
-          type: string
-          description: The start value of the range. This field is used for range search types.
-        value:
-          type: string
-          description: A value for the search to match against
-        operator:
-          type: string
-          description: How to apply this search criteria against other criteria
-          enum:
-          - AND
-          - OR
-          - NOT
-        group:
-          type: array
-          description: Groups multiple conditions
-          items:
-            $ref: '#/components/schemas/LocationSearchCriteria'
-        dateFormat:
-          type: string
-          description: Set date format for criteria values when using date range search type.  Supports Java date format syntax, example yyyy-MM-dd'T'HH:mm:ss.SSSX.
-        type:
-          type: string
-          description: Search Type
-          enum:
-          - EXACT
-          - STARTS_WITH
-          - CONTAINS
-          - REGEX
-          - TERM
-          - TERMS
-          - REQUIRED_FIELDS
-          - MATCH_ALL
-        fields:
-          type: array
-          description: Field names to search against
-          items:
-            type: string
-          x-genesys-search-fields:
-            value:
-            - id
-            - name
-            - notes
-            - addressFields.city
-            - addressFields.country
-            - addressFields.state
-            - addressFields.street1
-            - addressFields.street2
-            - addressFields.zipcode
-            - addressVerified
-            - emergencyNumber
     LocationsSearchResponse:
       type: object
       required:
@@ -1589,74 +1615,78 @@ components:
           description: Search results
           items:
             $ref: '#/components/schemas/LocationDefinition'
-    LocationSearchRequest:
-      type: object
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-        pageSize:
-          type: integer
-          format: int32
-          description: The number of results per page
-        pageNumber:
-          type: integer
-          format: int32
-          description: The page of resources you want to retrieve
-        sort:
-          type: array
-          description: Multi-value sort order, list of multiple sort values
-          items:
-            $ref: '#/components/schemas/SearchSort'
-        expand:
-          type: array
-          description: Provides more details about a specified resource
-          items:
-            type: string
-        query:
-          type: array
-          items:
-            $ref: '#/components/schemas/LocationSearchCriteria'
-    SearchSort:
-      type: object
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-    LocationImage:
-      type: object
-      properties:
-        resolution:
-          type: string
-          description: 'Height and/or width of image. ex: 640x480 or x128'
-        imageUri:
-          type: string
-    AddressableEntityRef:
+    LocationDefinition:
       type: object
       properties:
         id:
           type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        contactUser:
+          description: Site contact for the location entity
+          $ref: '#/components/schemas/AddressableEntityRef'
+        emergencyNumber:
+          description: Emergency number for the location entity
+          $ref: '#/components/schemas/LocationEmergencyNumber'
+        address:
+          $ref: '#/components/schemas/LocationAddress'
+        state:
+          type: string
+          description: Current state of the location entity
+          enum:
+          - active
+          - deleted
+        notes:
+          type: string
+          description: Notes for the location entity
+        version:
+          type: integer
+          format: int32
+          description: Current version of the location entity, value to be supplied should be retrieved by a GET or on create/update response
+        path:
+          type: array
+          description: A list of ancestor IDs in order
+          readOnly: true
+          items:
+            type: string
+        profileImage:
+          type: array
+          description: Profile image of the location entity, retrieved with ?expand=images query parameter
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LocationImage'
+        floorplanImage:
+          type: array
+          description: Floorplan images of the location entity, retrieved with ?expand=images query parameter
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LocationImage'
+        addressVerificationDetails:
+          description: Address verification information, retrieve dwith the ?expand=addressVerificationDetails query parameter
+          readOnly: true
+          $ref: '#/components/schemas/LocationAddressVerificationDetails'
+        addressVerified:
+          type: boolean
+          description: Boolean field which states if the address has been verified as an actual address
+          readOnly: true
+        addressStored:
+          type: boolean
+          description: Boolean field which states if the address has been stored for E911
+          readOnly: true
+        images:
+          type: string
         selfUri:
           type: string
           format: uri
-    LocationCreateDefinition:
+          description: The URI for this object
+          readOnly: true
+    LocationUpdateDefinition:
       type: object
       required:
       - name
+      - version
       properties:
         name:
           type: string
@@ -1688,6 +1718,19 @@ components:
         address:
           description: Address of the location
           $ref: '#/components/schemas/LocationAddress'
+    SearchSort:
+      type: object
+      properties:
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
     LocationAddress:
       type: object
       properties:
@@ -1704,49 +1747,6 @@ components:
         street2:
           type: string
         zipcode:
-          type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
           type: string
   securitySchemes:
     PureCloud_OAuth:

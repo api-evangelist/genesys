@@ -296,6 +296,75 @@ paths:
               $ref: '#/components/schemas/EmergencyLocation'
 components:
   schemas:
+    EmergencyLocation:
+      type: object
+      required:
+      - address
+      - did
+      - source
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        address:
+          description: Emergency address
+          $ref: '#/components/schemas/LocationAddress'
+        did:
+          type: string
+          description: Phone number in E164 format
+        source:
+          type: string
+          description: source
+          enum:
+          - Admin
+          - User
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    ErrorInfo:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
     Limit:
       type: object
       properties:
@@ -400,43 +469,17 @@ components:
         value:
           type: integer
           format: int64
-    ErrorInfo:
+    Detail:
       type: object
       properties:
-        message:
+        errorCode:
           type: string
-        code:
+        fieldName:
           type: string
-    EmergencyLocation:
-      type: object
-      required:
-      - address
-      - did
-      - source
-      properties:
-        id:
+        entityId:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
+        entityName:
           type: string
-        address:
-          description: Emergency address
-          $ref: '#/components/schemas/LocationAddress'
-        did:
-          type: string
-          description: Phone number in E164 format
-        source:
-          type: string
-          description: source
-          enum:
-          - Admin
-          - User
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     LocationAddress:
       type: object
       properties:
@@ -453,49 +496,6 @@ components:
         street2:
           type: string
         zipcode:
-          type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
           type: string
   securitySchemes:
     PureCloud_OAuth:

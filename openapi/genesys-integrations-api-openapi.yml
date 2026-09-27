@@ -13439,2417 +13439,6 @@ paths:
         required: true
 components:
   schemas:
-    NuanceBotVariable:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-          description: The variable ID
-        name:
-          type: string
-          description: The variable display name
-        description:
-          type: string
-          description: The variable description
-        reserved:
-          type: boolean
-          description: True if the variable is a reserved variable
-        simpleVariableInfo:
-          type: string
-          description: The type information for this variable
-        complexGenericVariableInfo:
-          description: The type information for this variable
-          $ref: '#/components/schemas/ComplexVariableInfo'
-      description: Model for a Nuance bot variable
-    Image:
-      type: object
-      properties:
-        resolution:
-          type: string
-          description: 'Height and/or width of image. ex: 640x480 or x128'
-        imageUri:
-          type: string
-    LexV2BotAlias:
-      type: object
-      required:
-      - aliasId
-      - region
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        region:
-          type: string
-          description: The Lex V2 bot region
-        aliasId:
-          type: string
-          description: The Lex V2 bot alias Id
-        bot:
-          description: The Lex V2 bot this is an alias for
-          $ref: '#/components/schemas/LexV2Bot'
-        botVersion:
-          type: string
-          description: The version of the Lex V2 bot this alias points at
-        status:
-          type: string
-          description: The status of the Lex V2 bot alias
-          enum:
-          - Creating
-          - Available
-          - Deleting
-          - Failed
-        language:
-          type: string
-          description: The target language of the Lex V2 bot
-        intents:
-          type: array
-          description: An array of Intents associated with this bot alias
-          items:
-            $ref: '#/components/schemas/LexV2Intent'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    NuanceApplication:
-      type: object
-      required:
-      - id
-      - name
-      - tag
-      properties:
-        id:
-          type: string
-          description: The application ID
-        tag:
-          type: string
-          description: The application Tag
-        name:
-          type: string
-          description: The application name
-      description: Model for a Nuance bot application
-    ActionConfig:
-      type: object
-      properties:
-        timeoutSeconds:
-          type: integer
-          format: int32
-          description: Optional 1-60 second timeout enforced on the execution or test of this action. This setting is invalid for Custom Authentication Actions.
-        request:
-          description: Configuration of outbound request.
-          $ref: '#/components/schemas/RequestConfig'
-        response:
-          description: Configuration of response processing.
-          $ref: '#/components/schemas/ResponseConfig'
-      description: Defines components of the Action Config.
-    DialogflowCXAgentSummaryEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/DialogflowCXAgentSummary'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    CreateIntegrationRequest:
-      type: object
-      required:
-      - integrationType
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the integration, used to distinguish this integration from others of the same type.
-        integrationType:
-          description: Type of the integration to create.
-          $ref: '#/components/schemas/IntegrationType'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Details for an Integration
-    DialogflowCXAgentSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        project:
-          description: The project this Dialogflow CX agent belongs to.
-          $ref: '#/components/schemas/DialogflowCXProject'
-        description:
-          type: string
-          description: A description of the Dialogflow CX agent.
-        integration:
-          description: The Integration this Dialogflow CX agent was referenced from.
-          $ref: '#/components/schemas/DomainEntityRef'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UserApp:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the userApp, used to distinguish this userApp from others of the same type.
-          readOnly: true
-        integrationType:
-          description: Integration Type for the userApp
-          readOnly: true
-          $ref: '#/components/schemas/IntegrationType'
-        config:
-          $ref: '#/components/schemas/UserAppConfigurationInfo'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Details for a UserApp
-    MessageInfo:
-      type: object
-      properties:
-        localizableMessageCode:
-          type: string
-          description: Key that can be used to localize the message.
-        message:
-          type: string
-          description: Description of the message.
-        messageWithParams:
-          type: string
-          description: Message with template fields for variable replacement.
-        messageParams:
-          type: object
-          description: Map with fields for variable replacement.
-          additionalProperties:
-            type: string
-    TtsSettings:
-      type: object
-      required:
-      - defaultEngine
-      - languageOverrides
-      properties:
-        defaultEngine:
-          type: string
-          description: ID of the global default TTS engine
-        languageOverrides:
-          type: array
-          description: The list of default overrides for specific languages
-          items:
-            $ref: '#/components/schemas/LanguageOverride'
-    BotConnectorBotSummaryEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/BotSummary'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    JsonSchemaDocument:
-      type: object
-      properties:
-        id:
-          type: string
-        $schema:
-          type: string
-        title:
-          type: string
-        description:
-          type: string
-        type:
-          type: string
-        required:
-          type: array
-          items:
-            type: string
-        properties:
-          type: object
-          additionalProperties:
-            type: object
-        additionalProperties:
-          type: object
-      description: A JSON Schema document.
-    PostOutputContract:
-      type: object
-      required:
-      - successSchema
-      properties:
-        successSchema:
-          description: JSON schema that defines the transformed, successful result that will be sent back to the caller.
-          $ref: '#/components/schemas/JsonSchemaDocument'
-      description: The schemas defining all of the expected responses/outputs.
-    LexBot:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        description:
-          type: string
-          description: A description of the Lex bot
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    DialogflowAgentSummaryEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/DialogflowAgentSummary'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    TrustedCertificates:
-      type: object
-      properties:
-        entities:
-          type: array
-          description: The list of trusted certificates
-          items:
-            $ref: '#/components/schemas/TrustedCertificateInfo'
-        total:
-          type: integer
-          format: int32
-          description: The total number of trusted certificates
-      description: Information about trusted certificates
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    ClientAppEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClientApp'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    AudioConnectorIntegration:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CredentialInfoCursorListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CredentialInfo'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    UnifiedCommunicationsIntegrationListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/UnifiedCommunicationsIntegration'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    CredentialType:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        properties:
-          type: object
-          description: Properties describing credentials of this type.
-          readOnly: true
-        displayOrder:
-          type: array
-          description: Order in which properties should be displayed in the UI.
-          readOnly: true
-          items:
-            type: string
-        required:
-          type: array
-          description: Properties that are required fields.
-          readOnly: true
-          items:
-            type: string
-    Category:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Category name
-      description: List of available Action categories.
-    ActionContractInput:
-      type: object
-      required:
-      - input
-      - output
-      properties:
-        input:
-          description: Execution input contract
-          $ref: '#/components/schemas/PostInputContract'
-        output:
-          description: Execution output contract
-          $ref: '#/components/schemas/PostOutputContract'
-      description: Contract definition.
-    FunctionUploadResponse:
-      type: object
-      properties:
-        url:
-          type: string
-          description: Presigned URL to PUT the file to
-          readOnly: true
-        headers:
-          type: object
-          description: Required headers when uploading a file through PUT request to the URL
-          readOnly: true
-          additionalProperties:
-            type: string
-        signedUrlTimeoutSeconds:
-          type: integer
-          format: int32
-          description: Upload time to live in seconds.
-      description: Action function create upload URL response.
-    LexBotAliasEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/LexBotAlias'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    CredentialSpecification:
-      type: object
-      properties:
-        required:
-          type: boolean
-          description: Indicates if the credential must be provided in order for the integration configuration to be valid.
-          readOnly: true
-        title:
-          type: string
-          description: Title describing the usage for this credential.
-          readOnly: true
-        credentialTypes:
-          type: array
-          description: List of acceptable credential types that can be provided for this credential.
-          readOnly: true
-          items:
-            type: string
-      description: Specifies the requirements for a credential that can be provided for configuring an integration
-    ResponseConfig:
-      type: object
-      properties:
-        translationMap:
-          type: object
-          description: Map 'attribute name' and 'JSON path' pairs used to extract data from REST response.
-          additionalProperties:
-            type: string
-        translationMapDefaults:
-          type: object
-          description: Map 'attribute name' and 'default value' pairs used as fallback values if JSON path extraction fails for specified key.
-          additionalProperties:
-            type: string
-        successTemplate:
-          type: string
-          description: Velocity template to build response to return from Action.
-        successTemplateUri:
-          type: string
-          description: URI to retrieve success template.
-      description: Defines response components of the Action Request.
-    AsyncJob:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-        state:
-          type: string
-          enum:
-          - Running
-          - Completed
-          - Failed
-          - Cancelled
-    BotIntent:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of this intent.  This can be up to 100 characters long and must be comprised of displayable characters without leading or trailing whitespace
-        slots:
-          type: object
-          description: Optional returned data values associated with this intent, limit of 50.
-          additionalProperties:
-            $ref: '#/components/schemas/BotSlot'
-      description: A botConnector's bot intention
-    Function:
-      type: object
-      required:
-      - description
-      - handler
-      - runtime
-      properties:
-        id:
-          type: string
-          description: Function identifier.
-          readOnly: true
-        name:
-          type: string
-          description: Function name. This is automatically created based on the Action Id.
-          readOnly: true
-        description:
-          type: string
-          description: Description of the function. Limit 255 characters.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date and time function was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        zipId:
-          type: string
-          description: Zip file identifier.
-          readOnly: true
-        handler:
-          type: string
-          description: Handler entry point into zip file to execute function. Should be path within upload function package to the invocation module without language extension, followed by a period and then exported invocation method name. e.g. 'src/index.handler'
-        runtime:
-          type: string
-          description: Runtime required for execution. Valid runtimes change over time as versions are deprecated. Use /api/v2/integrations/actions/functions/runtimes for current list.
-        timeoutSeconds:
-          type: integer
-          format: int32
-          description: Execution timeout to apply to function. Value is in seconds. Range allowed 1 to 15. Default value 15 seconds.
-          minimum: 1
-          maximum: 15
-      description: Action function settings.
-    LexIntent:
-      type: object
-      required:
-      - name
-      - slots
-      - version
-      properties:
-        name:
-          type: string
-          description: The intent name
-        description:
-          type: string
-          description: A description of the intent
-        slots:
-          type: object
-          description: An object mapping slot names to Slot objects
-          additionalProperties:
-            $ref: '#/components/schemas/LexSlot'
-        version:
-          type: string
-          description: The intent version
-    BotSlot:
-      type: object
-      required:
-      - name
-      - type
-      properties:
-        name:
-          type: string
-          description: The name of the slot. This can be up to 100 characters long and must be comprised of displayable characters without leading or trailing whitespace
-        type:
-          type: string
-          description: The data type of the slot string, integer, decimal, duration, boolean, currency, datetime or the xxxCollection versions of those types
-      description: Description of a data value returned from an intent
-    ClientAppConfigurationInfo:
-      type: object
-      properties:
-        current:
-          description: The current, active configuration for the integration.
-          readOnly: true
-          $ref: '#/components/schemas/IntegrationConfiguration'
-        effective:
-          description: The effective configuration for the app, containing the integration specific configuration along with overrides specified in the integration type.
-          readOnly: true
-          $ref: '#/components/schemas/EffectiveConfiguration'
-      description: Configuration information for the integration
-    IntegrationStatusInfo:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable status as reported by the integration.
-          readOnly: true
-          enum:
-          - ACTIVE
-          - ACTIVATING
-          - INACTIVE
-          - DEACTIVATING
-          - ERROR
-        effective:
-          type: string
-          description: Localized, human-readable, effective status of the integration.
-          readOnly: true
-        detail:
-          description: Localizable status details for the integration.
-          readOnly: true
-          $ref: '#/components/schemas/MessageInfo'
-        lastUpdated:
-          type: string
-          format: date-time
-          description: 'Date and time (in UTC) when the integration status (i.e. the code field) was last updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-      description: Status information for an Integration.
-    NuanceBotTransferNode:
-      type: object
-      required:
-      - id
-      - name
-      - type
-      properties:
-        id:
-          type: string
-          description: The transfer node ID
-        name:
-          type: string
-          description: The transfer node name
-        type:
-          type: string
-          description: The transfer node type
-          enum:
-          - End
-          - Escalate
-        description:
-          type: string
-          description: The transfer node description
-        requestVariables:
-          type: array
-          description: List of variables associated with this transfer node
-          items:
-            $ref: '#/components/schemas/NuanceBotVariable'
-      description: Model for a Nuance bot transfer node
-    NuanceBot:
-      type: object
-      required:
-      - application
-      - geography
-      - id
-      - integrationId
-      - name
-      - nuanceEnvironment
-      - nuanceOrganization
-      properties:
-        id:
-          type: string
-          description: Nuance bot Id
-        name:
-          type: string
-          description: Nuance bot name
-        integrationId:
-          type: string
-          description: The Integration Id for this bot
-        nuanceOrganization:
-          description: The Nuance Organization for this bot
-          $ref: '#/components/schemas/NuanceOrganization'
-        application:
-          description: The Application for this bot
-          $ref: '#/components/schemas/NuanceApplication'
-        nuanceEnvironment:
-          description: The environment of the Nuance bot
-          $ref: '#/components/schemas/NuanceEnvironment'
-        geography:
-          description: The Geography of the Nuance bot
-          $ref: '#/components/schemas/NuanceGeography'
-        credentials:
-          type: array
-          description: client ID/Secret objects for the credentials that execute this Nuance bot
-          items:
-            $ref: '#/components/schemas/NuanceBotCredentials'
-        variables:
-          type: array
-          description: List of available variables in this Nuance bot.  When querying, use the 'expand=variables' query param to populate this value
-          items:
-            $ref: '#/components/schemas/NuanceBotVariable'
-        transferNodes:
-          type: array
-          description: List of transferNodes in this Nuance bot.  When querying, use the 'expand=transferNodes' query param to populate this value
-          items:
-            $ref: '#/components/schemas/NuanceBotTransferNode'
-        locales:
-          type: array
-          description: List of locales associated with this Nuance bot.  Generally in the ISO format such as 'en-US'
-          items:
-            type: string
-        channels:
-          type: array
-          description: List of channels associated with this Nuance bot.
-          items:
-            $ref: '#/components/schemas/NuanceChannel'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Model for a Nuance bot
-    PostActionInput:
-      type: object
-      required:
-      - category
-      - config
-      - contract
-      - integrationId
-      - name
-      properties:
-        category:
-          type: string
-          description: Category of action, Can be up to 256 characters long
-        name:
-          type: string
-          description: Name of action, Can be up to 256 characters long
-        integrationId:
-          type: string
-          description: The ID of the integration this action is associated to
-        config:
-          description: Configuration to support request and response processing
-          $ref: '#/components/schemas/ActionConfig'
-        contract:
-          description: Action contract
-          $ref: '#/components/schemas/ActionContractInput'
-        secure:
-          type: boolean
-          description: Indication of whether or not the action is designed to accept sensitive data
-      description: Definition of an Action to be created or updated.
-    BotSummary:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the bot.
-        id:
-          type: string
-          description: The id of the bot.
-        description:
-          type: string
-          description: An optional description of the bot.
-        botCompositeTag:
-          type: string
-          description: A system-generated string that contains metadata about this bot.
-          readOnly: true
-      description: A summary description for a botConnector bot
-    LexV2Bot:
-      type: object
-      required:
-      - botId
-      - region
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        botId:
-          type: string
-          description: Lex V2 bot Id
-        region:
-          type: string
-          description: A region of the Lex V2 bot
-        description:
-          type: string
-          description: A description of the Lex V2 bot
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    DialogflowIntent:
-      type: object
-      required:
-      - name
-      - parameters
-      properties:
-        name:
-          type: string
-          description: The intent name
-        parameters:
-          type: object
-          description: An object mapping parameter names to Parameter objects
-          additionalProperties:
-            $ref: '#/components/schemas/DialogflowParameter'
-    AudioConnectorIntegrationEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/AudioConnectorIntegration'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    UpdateActionInput:
-      type: object
-      required:
-      - version
-      properties:
-        category:
-          type: string
-          description: Category of action, Can be up to 256 characters long
-        name:
-          type: string
-          description: Name of action, Can be up to 256 characters long
-        config:
-          description: Configuration to support request and response processing
-          $ref: '#/components/schemas/ActionConfig'
-        version:
-          type: integer
-          format: int32
-          description: Version of this action
-    RequestConfig:
-      type: object
-      properties:
-        requestUrlTemplate:
-          type: string
-          description: URL that may include placeholders for requests to 3rd party service. This value is read only for Function Integrations and will be set when a draft is created.
-        requestTemplate:
-          type: string
-          description: Velocity template to define request body sent to 3rd party service.
-        requestTemplateUri:
-          type: string
-          description: URI to retrieve requestTemplate
-        requestType:
-          type: string
-          description: HTTP method to use for request
-        headers:
-          type: object
-          description: Headers to include in request in (Header Name, Value) pairs.
-          additionalProperties:
-            type: string
-      description: Defines response components of the Action Request.
-    WebhookInvocationResponse:
-      type: object
-      required:
-      - invocationId
-      properties:
-        invocationId:
-          type: string
-          description: The id of the Webhook Invocation
-    LexV2BotAliasEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/LexV2BotAlias'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    BotExecutionConfiguration:
-      type: object
-      required:
-      - botCredentials
-      - botId
-      - executionHost
-      properties:
-        botId:
-          type: string
-          description: The Nuance bot ID
-        executionHost:
-          type: string
-          description: The hostname to use when contacting Nuance to execute this bot
-        botCredentials:
-          description: The bot's launch credentials
-          $ref: '#/components/schemas/NuanceBotCredentials'
-      description: Model for setting the launch configuration for a Nuance bot available to Genesys Cloud
-    UpdateDraftInput:
-      type: object
-      required:
-      - version
-      properties:
-        category:
-          type: string
-          description: Category of action, Can be up to 256 characters long
-        name:
-          type: string
-          description: Name of action, Can be up to 256 characters long
-        config:
-          description: Configuration to support request and response processing
-          $ref: '#/components/schemas/ActionConfig'
-        contract:
-          description: Action contract
-          $ref: '#/components/schemas/ActionContractInput'
-        secure:
-          type: boolean
-          description: Indication of whether or not the action is designed to accept sensitive data
-        version:
-          type: integer
-          format: int32
-          description: Version of current Draft
-      description: Definition of an Action Draft to be created or updated.
-    NuanceOrganization:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-          description: The organization ID
-        name:
-          type: string
-          description: The organization name
-      description: Model for a Nuance bot organization
-    NuanceBotLaunchSettings:
-      type: object
-      required:
-      - botExecutionConfigurations
-      properties:
-        botExecutionConfigurations:
-          type: array
-          description: The list of Nuance bots that are configured as available to the Genesys Cloud system
-          items:
-            $ref: '#/components/schemas/BotExecutionConfiguration'
-      description: Model for setting the launch configuration for Nuance bots available to Genesys Cloud
-    ClientApp:
-      type: object
-      required:
-      - intendedState
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the integration, used to distinguish this integration from others of the same type.
-          readOnly: true
-        integrationType:
-          description: Type of the integration
-          readOnly: true
-          $ref: '#/components/schemas/IntegrationType'
-        notes:
-          type: string
-          description: Notes about the integration.
-          readOnly: true
-        intendedState:
-          type: string
-          description: Configured state of the integration.
-          enum:
-          - ENABLED
-          - DISABLED
-          - DELETED
-          - RESTORED
-        config:
-          description: Configuration information for the integration.
-          readOnly: true
-          $ref: '#/components/schemas/ClientAppConfigurationInfo'
-        reportedState:
-          description: Last reported status of the integration.
-          readOnly: true
-          $ref: '#/components/schemas/IntegrationStatusInfo'
-        attributes:
-          type: object
-          description: Read-only attributes for the integration.
-          readOnly: true
-          additionalProperties:
-            type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Details for a ClientApp
-    DialogflowProject:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-    CategoryEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Category'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        pageCount:
-          type: integer
-          format: int32
-    BotVersionSummary:
-      type: object
-      required:
-      - id
-      - name
-      - version
-      properties:
-        name:
-          type: string
-          description: The name of the bot.
-        id:
-          type: string
-          description: The id of the bot.
-        description:
-          type: string
-          description: An optional description of the bot.
-        botCompositeTag:
-          type: string
-          description: A system-generated string that contains metadata about this bot.
-          readOnly: true
-        version:
-          type: string
-          description: The name of the version.
-      description: A version summary for a botConnector bot.
-    FlattenedJsonSchemaDocument:
-      type: object
-      properties:
-        schema:
-          $ref: '#/components/schemas/JsonSchemaDocument'
-        arrayProperties:
-          type: array
-          description: Properties in the original document that were arrays
-          items:
-            type: string
-      description: JSON schema that defines the transformed result that will be sent back to the caller. The schema is transformed based on Architect's flattened format. If the 'flatten' query parameter is supplied as true, this field will be returned.
-    BotConnectorBotVersion:
-      type: object
-      required:
-      - intents
-      - supportedLanguages
-      - version
-      properties:
-        version:
-          type: string
-          description: The name of the version. This can be up to 100 characters long and must be comprised of displayable characters without leading or trailing whitespace
-        supportedLanguages:
-          type: array
-          description: The supported languages for this bot. EG 'en-us' or 'es', etc; These language codes are W3C language identification tags (ISO 639-1 for the language name and ISO 3166 for the country code)
-          items:
-            type: string
-        intents:
-          type: array
-          description: A list of potential intents this bot will return, limit of 50
-          items:
-            $ref: '#/components/schemas/BotIntent'
-      description: A version description for a botConnector bot.
-    UserAppConfigurationInfo:
-      type: object
-      properties:
-        current:
-          description: The current, active configuration for the integration.
-          readOnly: true
-          $ref: '#/components/schemas/IntegrationConfiguration'
-        effective:
-          description: The effective configuration for the app, containing the integration specific configuration along with overrides specified in the integration type.
-          readOnly: true
-          $ref: '#/components/schemas/EffectiveConfiguration'
-      description: Configuration information for the integration
-    Action:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        integrationId:
-          type: string
-          description: The ID of the integration for which this action is associated
-        category:
-          type: string
-          description: Category of Action
-        contract:
-          description: Action contract
-          $ref: '#/components/schemas/ActionContract'
-        version:
-          type: integer
-          format: int32
-          description: Version of this action
-        secure:
-          type: boolean
-          description: Indication of whether or not the action is designed to accept sensitive data
-        config:
-          description: Configuration to support request and response processing
-          $ref: '#/components/schemas/ActionConfig'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    BotList:
-      type: object
-      required:
-      - chatBots
-      properties:
-        chatBots:
-          type: array
-          description: A list of botConnector Bots. Max 50
-          items:
-            $ref: '#/components/schemas/BotConnectorBot'
-      description: A list of BotConnectorBots
-    NuanceChannel:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-          description: The channel ID
-        name:
-          type: string
-          description: The channel name
-        modes:
-          type: array
-          description: Supported Channel Modes
-          items:
-            type: string
-        color:
-          type: string
-          description: The Channel Color
-      description: Model for a Nuance channel
-    TtsVoiceEntity:
-      type: object
-      required:
-      - engine
-      - gender
-      - language
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        gender:
-          type: string
-          description: The gender of the TTS voice
-        language:
-          type: string
-          description: The language supported by the TTS voice
-        engine:
-          description: Ths TTS engine this voice belongs to
-          $ref: '#/components/schemas/TtsEngineEntity'
-        isDefault:
-          type: boolean
-          description: The voice is the default voice for its language
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    DialogflowAgentSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        project:
-          description: The project this Dialogflow agent belongs to.
-          $ref: '#/components/schemas/DialogflowProject'
-        description:
-          type: string
-          description: A description of the Dialogflow agent.
-        integration:
-          description: The Integration this Dialogflow agent was referenced from.
-          $ref: '#/components/schemas/DomainEntityRef'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UCThirdPartyPresence:
-      type: object
-      required:
-      - email
-      - presence
-      properties:
-        email:
-          type: string
-          description: Primary Email address of the associated Genesys Cloud user.
-        presence:
-          type: string
-          description: Integration presence value.
-        message:
-          type: string
-          description: Integration presence message.
-        dateModified:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp of presence value change.
-      description: Update a Genesys Cloud user's presence from a given 3rd-party integration
-    TtsVoiceEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/TtsVoiceEntity'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    TestExecutionOperationResult:
-      type: object
-      properties:
-        step:
-          type: integer
-          format: int32
-          description: The step number to indicate the order in which the operation was performed
-        name:
-          type: string
-          description: Name of the operation performed
-        success:
-          type: boolean
-          description: Indicated whether or not the operation was successful
-        result:
-          type: object
-          description: The result of the operation
-        error:
-          description: Error that occurred during the operation
-          $ref: '#/components/schemas/ErrorBody'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    BotConnectorBot:
-      type: object
-      required:
-      - id
-      - versions
-      properties:
-        id:
-          type: string
-          description: The Botconnector Bot Id - this is configurable by the user when put
-        name:
-          type: string
-        description:
-          type: string
-          description: An optional description of the bot.  This can be up to 256 characters long and must be comprised of displayable characters without leading or trailing whitespace
-        versions:
-          type: array
-          description: This bots versions, limit of 50 per bot
-          items:
-            $ref: '#/components/schemas/BotConnectorBotVersion'
-        botCompositeTag:
-          type: string
-          description: A system-generated string that contains metadata about this bot.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: A botConnector Bot Instance
-    LexSlot:
-      type: object
-      required:
-      - name
-      - type
-      properties:
-        name:
-          type: string
-          description: The slot name
-        description:
-          type: string
-          description: The slot description
-        type:
-          type: string
-          description: The slot type
-        priority:
-          type: integer
-          format: int32
-          description: The priority of the slot
-    SttEngineEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        grammarBased:
-          type: boolean
-          description: The STT engine is intended to be used for Grammars
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ActionCertificateListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActionCertificate'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    Credential:
-      type: object
-      required:
-      - type
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        type:
-          description: The type of credential.
-          $ref: '#/components/schemas/CredentialType'
-        credentialFields:
-          type: object
-          additionalProperties:
-            type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    NuanceBotEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/NuanceBot'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-      description: Model for a paged listing of Nuance bots
-    DialogflowCXProject:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-    ActionCertificate:
-      type: object
-      properties:
-        signingAuthority:
-          type: string
-          description: The Signing Authority for the certificate
-          enum:
-          - DigiCert
-          - Genesys
-        certificate:
-          type: string
-          description: The certificate string
-        status:
-          type: string
-          description: The certificate status
-          enum:
-          - Current
-          - Upcoming
-        type:
-          type: string
-          description: The certificate type
-          enum:
-          - Client
-      description: Details for an mTLS certificate
-    LexV2Slot:
-      type: object
-      required:
-      - slotId
-      - slotName
-      - slotTypeId
-      - type
-      properties:
-        slotName:
-          type: string
-          description: The slot name
-        description:
-          type: string
-          description: The slot description
-        slotId:
-          type: string
-          description: The slot id
-        type:
-          type: string
-          description: The slot type
-        slotTypeId:
-          type: string
-          description: The slot type id
-    Limit:
-      type: object
-      properties:
-        key:
-          type: string
-        namespace:
-          type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
-    BotConnectorBotVersionSummaryEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/BotVersionSummary'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    IntegrationEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Integration'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    UCI10n:
-      type: object
-      properties:
-        name:
-          type: string
-    LexBotEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/LexBot'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    EffectiveConfiguration:
-      type: object
-      required:
-      - advanced
-      - credentials
-      - name
-      - notes
-      - properties
-      properties:
-        properties:
-          type: object
-          description: Key-value configuration settings described by the schema in the propertiesSchemaUri field.
-          additionalProperties:
-            type: object
-        advanced:
-          type: object
-          description: Advanced configuration described by the schema in the advancedSchemaUri field.
-          additionalProperties:
-            type: object
-        name:
-          type: string
-          description: The name of the integration, used to distinguish this integration from others of the same type.
-        notes:
-          type: string
-          description: Notes about the integration.
-        credentials:
-          type: object
-          description: Credentials required by the integration. The required keys are indicated in the credentials property of the Integration Type
-          additionalProperties:
-            $ref: '#/components/schemas/CredentialInfo'
-      description: Effective Configuration for an ClientApp. This is comprised of the integration specific configuration along with overrides specified in the integration type.
-    DialogflowCXAgent:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        project:
-          description: The project this Dialogflow CX agent belongs to.
-          $ref: '#/components/schemas/DialogflowCXProject'
-        languages:
-          type: array
-          description: The supported languages of the Dialogflow CX agent.  Each value will be a language code in the country-locale format. e.g. en-us, es-us, fr-ca, etc.
-          items:
-            type: string
-        environments:
-          type: array
-          description: Available environments for this CX agent.
-          items:
-            $ref: '#/components/schemas/DialogflowCXEnvironment'
-        integration:
-          description: The Integration this Dialogflow CX agent was referenced from.
-          $ref: '#/components/schemas/DomainEntityRef'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UnifiedCommunicationsIntegration:
-      type: object
-      required:
-      - badgeIcons
-      - i10n
-      - icon
-      - integrationPresenceSource
-      - pbxPermission
-      - polledPresence
-      - ucIntegrationKey
-      - userPermissions
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        ucIntegrationKey:
-          description: ucIntegrationKey
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        integrationPresenceSource:
-          type: string
-          description: integrationPresenceType
-          readOnly: true
-          enum:
-          - MicrosoftTeams
-          - ZoomPhone
-          - EightByEight
-        pbxPermission:
-          type: string
-          description: pbxPermission
-          readOnly: true
-        icon:
-          description: icon
-          readOnly: true
-          $ref: '#/components/schemas/UCIcon'
-        badgeIcons:
-          type: object
-          description: badgeIcon
-          readOnly: true
-          additionalProperties:
-            $ref: '#/components/schemas/UCIcon'
-        i10n:
-          type: object
-          description: i10n
-          readOnly: true
-          additionalProperties:
-            $ref: '#/components/schemas/UCI10n'
-        polledPresence:
-          type: boolean
-          description: polledPresence
-          readOnly: true
-        pollIntervalSec:
-          type: integer
-          format: int32
-          description: pollIntervalSec
-          readOnly: true
-        includeBadge:
-          type: boolean
-          description: includeBadge
-          readOnly: true
-        userPermissions:
-          type: array
-          description: userPermissions
-          readOnly: true
-          items:
-            type: string
-        oauthScopes:
-          type: array
-          items:
-            type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: UC Integration UI configuration data
-    TtsEngineEntity:
-      type: object
-      required:
-      - languages
-      - outputFormats
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        languages:
-          type: array
-          description: The set of languages the TTS engine supports
-          items:
-            type: string
-        outputFormats:
-          type: array
-          description: The set of output formats the TTS engine can produce
-          items:
-            type: string
-        voices:
-          type: array
-          description: The set of voices the TTS engine supports
-          items:
-            $ref: '#/components/schemas/TtsVoiceEntity'
-        isDefault:
-          type: boolean
-          description: The TTS engine is the global default engine
-        isSecure:
-          type: boolean
-          description: The TTS engine can be used in a secure call flow
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ActionContract:
-      type: object
-      properties:
-        output:
-          description: The output to expect when executing this action.
-          $ref: '#/components/schemas/ActionOutput'
-        input:
-          description: The input required when executing this action.
-          $ref: '#/components/schemas/ActionInput'
-      description: This resource contains all of the schemas needed to define the inputs and outputs, of a single Action.
-    NuanceBotCredentials:
-      type: object
-      required:
-      - appId
-      - clientId
-      properties:
-        appId:
-          type: string
-          description: The application ID
-        clientId:
-          type: string
-          description: The credentials client ID
-        clientSecret:
-          type: string
-          description: The credentials client secret
-        clientSecretProvided:
-          type: boolean
-          description: True if the credentials secret is set (but not returned due to security reasons)
-      description: Model for a Nuance bot credentials
-    FunctionRuntime:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the function runtime.
-          readOnly: true
-        description:
-          type: string
-          description: Description of function runtime.
-          readOnly: true
-        status:
-          type: string
-          description: Availability status of runtime
-          readOnly: true
-          enum:
-          - Available
-          - Deprecated
-          - Unavailable
-        dateEndOfLife:
-          type: string
-          format: date
-          description: 'Optional end of life date. Present if the status is Deprecated. Date represents when support for runtime can no longer be guaranteed. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-      description: Action function runtime.
-    LexV2BotEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/LexV2Bot'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    ActionEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Action'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    LexV2Intent:
-      type: object
-      required:
-      - intentId
-      - intentName
-      - slots
-      properties:
-        intentName:
-          type: string
-          description: The intent name
-        description:
-          type: string
-          description: A description of the intent
-        slots:
-          type: object
-          description: An object mapping slot names to Slot objects
-          additionalProperties:
-            $ref: '#/components/schemas/LexV2Slot'
-        intentId:
-          type: string
-          description: The intent id
-    HelpLink:
-      type: object
-      properties:
-        uri:
-          type: string
-          description: URI of the help resource
-          readOnly: true
-        title:
-          type: string
-          description: Link text of the resource
-          readOnly: true
-        description:
-          type: string
-          description: Description of the document or resource
-          readOnly: true
-      description: Link to a help or support resource
-    UCIcon:
-      type: object
-      required:
-      - vector
-      properties:
-        vector:
-          type: string
-          description: vector
-          readOnly: true
-    FunctionZipConfig:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Status of zip upload.
-          readOnly: true
-          enum:
-          - Pending
-          - Transferring
-          - Available
-          - Unknown
-          - Invalid
-          - InvalidFormat
-          - InvalidFile
-        id:
-          type: string
-          description: Zip file Identifier
-          readOnly: true
-        name:
-          type: string
-          description: Zip file name
-          readOnly: true
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date and time zip record was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        errorMessage:
-          type: string
-          description: Error message if upload failed.
-          readOnly: true
-          allowEmptyValue: true
-        requestId:
-          type: string
-          description: Upload request id used for zip upload
-          readOnly: true
-      description: Action function zip file upload settings and state.
-    SttEngineEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/SttEngineEntity'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    ComplexVariableInfo:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-          description: The variable type ID
-        name:
-          type: string
-          description: The variable type display name
-      description: Variable type information about a complex type from the bot's definition
-    FunctionConfig:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Action identifier.
-          readOnly: true
-        function:
-          description: Function configuration.
-          readOnly: true
-          $ref: '#/components/schemas/Function'
-        zip:
-          description: Zip file configuration and state.
-          readOnly: true
-          $ref: '#/components/schemas/FunctionZipConfig'
-        uploadExceptionHistory:
-          type: array
-          description: History of failed zip upload file configuration including their state and error messages. Contains no more than last ten failures.
-          readOnly: true
-          allowEmptyValue: true
-          items:
-            $ref: '#/components/schemas/FunctionZipConfig'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Current action function configuration and zip upload configuration.
-    Integration:
-      type: object
-      required:
-      - intendedState
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the integration, used to distinguish this integration from others of the same type.
-          readOnly: true
-        integrationType:
-          description: Type of the integration
-          readOnly: true
-          $ref: '#/components/schemas/IntegrationType'
-        notes:
-          type: string
-          description: Notes about the integration.
-          readOnly: true
-        intendedState:
-          type: string
-          description: Configured state of the integration.
-          enum:
-          - ENABLED
-          - DISABLED
-          - DELETED
-          - RESTORED
-        config:
-          description: Configuration information for the integration.
-          readOnly: true
-          $ref: '#/components/schemas/IntegrationConfigurationInfo'
-        reportedState:
-          description: Last reported status of the integration.
-          readOnly: true
-          $ref: '#/components/schemas/IntegrationStatusInfo'
-        attributes:
-          type: object
-          description: Read-only attributes for the integration.
-          readOnly: true
-          additionalProperties:
-            type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Details for an Integration
-    NuanceGeography:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-          description: The geography ID
-        name:
-          type: string
-          description: The geography name
-      description: Model for a Nuance bot geography
     IntegrationType:
       type: object
       required:
@@ -15961,22 +13550,235 @@ components:
           description: The URI for this object
           readOnly: true
       description: Descriptor for a type of Integration.
-    PostInputContract:
-      type: object
-      required:
-      - inputSchema
-      properties:
-        inputSchema:
-          description: JSON Schema that defines the body of the request that the client (edge/architect/postman) is sending to the service, on the /execute path.
-          $ref: '#/components/schemas/JsonSchemaDocument'
-      description: The schemas defining all of the expected requests/inputs.
-    UserAppEntityListing:
+    CredentialInfoCursorListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/UserApp'
+            $ref: '#/components/schemas/CredentialInfo'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    ActionConfig:
+      type: object
+      properties:
+        timeoutSeconds:
+          type: integer
+          format: int32
+          description: Optional 1-60 second timeout enforced on the execution or test of this action. This setting is invalid for Custom Authentication Actions.
+        request:
+          description: Configuration of outbound request.
+          $ref: '#/components/schemas/RequestConfig'
+        response:
+          description: Configuration of response processing.
+          $ref: '#/components/schemas/ResponseConfig'
+      description: Defines components of the Action Config.
+    ComplexVariableInfo:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          description: The variable type ID
+        name:
+          type: string
+          description: The variable type display name
+      description: Variable type information about a complex type from the bot's definition
+    CredentialSpecification:
+      type: object
+      properties:
+        required:
+          type: boolean
+          description: Indicates if the credential must be provided in order for the integration configuration to be valid.
+          readOnly: true
+        title:
+          type: string
+          description: Title describing the usage for this credential.
+          readOnly: true
+        credentialTypes:
+          type: array
+          description: List of acceptable credential types that can be provided for this credential.
+          readOnly: true
+          items:
+            type: string
+      description: Specifies the requirements for a credential that can be provided for configuring an integration
+    BotIntent:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of this intent.  This can be up to 100 characters long and must be comprised of displayable characters without leading or trailing whitespace
+        slots:
+          type: object
+          description: Optional returned data values associated with this intent, limit of 50.
+          additionalProperties:
+            $ref: '#/components/schemas/BotSlot'
+      description: A botConnector's bot intention
+    WebhookInvocationResponse:
+      type: object
+      required:
+      - invocationId
+      properties:
+        invocationId:
+          type: string
+          description: The id of the Webhook Invocation
+    NuanceBotVariable:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          description: The variable ID
+        name:
+          type: string
+          description: The variable display name
+        description:
+          type: string
+          description: The variable description
+        reserved:
+          type: boolean
+          description: True if the variable is a reserved variable
+        simpleVariableInfo:
+          type: string
+          description: The type information for this variable
+        complexGenericVariableInfo:
+          description: The type information for this variable
+          $ref: '#/components/schemas/ComplexVariableInfo'
+      description: Model for a Nuance bot variable
+    FunctionConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Action identifier.
+          readOnly: true
+        function:
+          description: Function configuration.
+          readOnly: true
+          $ref: '#/components/schemas/Function'
+        zip:
+          description: Zip file configuration and state.
+          readOnly: true
+          $ref: '#/components/schemas/FunctionZipConfig'
+        uploadExceptionHistory:
+          type: array
+          description: History of failed zip upload file configuration including their state and error messages. Contains no more than last ten failures.
+          readOnly: true
+          allowEmptyValue: true
+          items:
+            $ref: '#/components/schemas/FunctionZipConfig'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Current action function configuration and zip upload configuration.
+    TtsSettings:
+      type: object
+      required:
+      - defaultEngine
+      - languageOverrides
+      properties:
+        defaultEngine:
+          type: string
+          description: ID of the global default TTS engine
+        languageOverrides:
+          type: array
+          description: The list of default overrides for specific languages
+          items:
+            $ref: '#/components/schemas/LanguageOverride'
+    ClientApp:
+      type: object
+      required:
+      - intendedState
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the integration, used to distinguish this integration from others of the same type.
+          readOnly: true
+        integrationType:
+          description: Type of the integration
+          readOnly: true
+          $ref: '#/components/schemas/IntegrationType'
+        notes:
+          type: string
+          description: Notes about the integration.
+          readOnly: true
+        intendedState:
+          type: string
+          description: Configured state of the integration.
+          enum:
+          - ENABLED
+          - DISABLED
+          - DELETED
+          - RESTORED
+        config:
+          description: Configuration information for the integration.
+          readOnly: true
+          $ref: '#/components/schemas/ClientAppConfigurationInfo'
+        reportedState:
+          description: Last reported status of the integration.
+          readOnly: true
+          $ref: '#/components/schemas/IntegrationStatusInfo'
+        attributes:
+          type: object
+          description: Read-only attributes for the integration.
+          readOnly: true
+          additionalProperties:
+            type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Details for a ClientApp
+    UCIcon:
+      type: object
+      required:
+      - vector
+      properties:
+        vector:
+          type: string
+          description: vector
+          readOnly: true
+    NuanceApplication:
+      type: object
+      required:
+      - id
+      - name
+      - tag
+      properties:
+        id:
+          type: string
+          description: The application ID
+        tag:
+          type: string
+          description: The application Tag
+        name:
+          type: string
+          description: The application name
+      description: Model for a Nuance bot application
+    SttEngineEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SttEngineEntity'
         pageSize:
           type: integer
           format: int32
@@ -16004,40 +13806,470 @@ components:
         pageCount:
           type: integer
           format: int32
-    TrustedCertificateInfo:
+    LexSlot:
       type: object
+      required:
+      - name
+      - type
       properties:
+        name:
+          type: string
+          description: The slot name
         description:
           type: string
-          description: The description of the certificate
-        serialNumber:
+          description: The slot description
+        type:
           type: string
-          description: The serial number of the certificate
-        signature:
-          type: string
-          description: The signature of the certificate
-    ActionOutput:
+          description: The slot type
+        priority:
+          type: integer
+          format: int32
+          description: The priority of the slot
+    BotConnectorBotSummaryEntityListing:
       type: object
       properties:
-        successSchema:
-          description: JSON schema that defines the transformed, successful result that will be sent back to the caller. If the 'flatten' query parameter is omitted or false, this field will be returned. Either successSchema or successSchemaFlattened will be returned, not both.
-          $ref: '#/components/schemas/JsonSchemaDocument'
-        successSchemaUri:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/BotSummary'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
           type: string
-          description: URI to retrieve success schema
-        errorSchema:
-          description: JSON schema that defines the body of response when request is not successful. If the 'flatten' query parameter is omitted or false, this field will be returned. Either errorSchema or errorSchemaFlattened will be returned, not both.
-          $ref: '#/components/schemas/JsonSchemaDocument'
-        errorSchemaUri:
+          format: uri
+        nextUri:
           type: string
-          description: URI to retrieve error schema
-        successSchemaFlattened:
-          description: JSON schema that defines the transformed, successful result that will be sent back to the caller. The schema is transformed based on Architect's flattened format. If the 'flatten' query parameter is supplied as true, this field will be returned. Either successSchema or successSchemaFlattened will be returned, not both.
-          $ref: '#/components/schemas/FlattenedJsonSchemaDocument'
-        errorSchemaFlattened:
-          description: JSON schema that defines the body of response when request is not successful. The schema is transformed based on Architect's flattened format. If the 'flatten' query parameter is supplied as true, this field will be returned. Either errorSchema or errorSchemaFlattened will be returned, not both.
-          $ref: '#/components/schemas/FlattenedJsonSchemaDocument'
-      description: Output definition of Action.
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    IntegrationConfiguration:
+      type: object
+      required:
+      - advanced
+      - credentials
+      - name
+      - notes
+      - properties
+      - version
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the integration, used to distinguish this integration from others of the same type.
+        version:
+          type: integer
+          format: int32
+          description: Version number required for updates.
+        properties:
+          type: object
+          description: Key-value configuration settings described by the schema in the propertiesSchemaUri field.
+        advanced:
+          type: object
+          description: Advanced configuration described by the schema in the advancedSchemaUri field.
+        notes:
+          type: string
+          description: Notes about the integration.
+        credentials:
+          type: object
+          description: Credentials required by the integration. The required keys are indicated in the credentials property of the Integration Type
+          additionalProperties:
+            $ref: '#/components/schemas/CredentialInfo'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Configuration for an Integration
+    DraftValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          description: Indicates if configuration is valid
+        errors:
+          type: array
+          description: List of errors causing validation failure
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+      description: Validation results
+    BotVersionSummary:
+      type: object
+      required:
+      - id
+      - name
+      - version
+      properties:
+        name:
+          type: string
+          description: The name of the bot.
+        id:
+          type: string
+          description: The id of the bot.
+        description:
+          type: string
+          description: An optional description of the bot.
+        botCompositeTag:
+          type: string
+          description: A system-generated string that contains metadata about this bot.
+          readOnly: true
+        version:
+          type: string
+          description: The name of the version.
+      description: A version summary for a botConnector bot.
+    BotSlot:
+      type: object
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: The name of the slot. This can be up to 100 characters long and must be comprised of displayable characters without leading or trailing whitespace
+        type:
+          type: string
+          description: The data type of the slot string, integer, decimal, duration, boolean, currency, datetime or the xxxCollection versions of those types
+      description: Description of a data value returned from an intent
+    CredentialInfoListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredentialInfo'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    UCThirdPartyPresence:
+      type: object
+      required:
+      - email
+      - presence
+      properties:
+        email:
+          type: string
+          description: Primary Email address of the associated Genesys Cloud user.
+        presence:
+          type: string
+          description: Integration presence value.
+        message:
+          type: string
+          description: Integration presence message.
+        dateModified:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of presence value change.
+      description: Update a Genesys Cloud user's presence from a given 3rd-party integration
+    NuanceBotCredentials:
+      type: object
+      required:
+      - appId
+      - clientId
+      properties:
+        appId:
+          type: string
+          description: The application ID
+        clientId:
+          type: string
+          description: The credentials client ID
+        clientSecret:
+          type: string
+          description: The credentials client secret
+        clientSecretProvided:
+          type: boolean
+          description: True if the credentials secret is set (but not returned due to security reasons)
+      description: Model for a Nuance bot credentials
+    LanguageOverride:
+      type: object
+      required:
+      - engine
+      - language
+      - voice
+      properties:
+        language:
+          type: string
+          description: The language code of the language being overridden
+        engine:
+          type: string
+          description: The ID of the TTS engine to use for this language override
+        voice:
+          type: string
+          description: The ID of the voice to use for this language override. The voice must be supported by the chosen engine.
+    UpdateActionInput:
+      type: object
+      required:
+      - version
+      properties:
+        category:
+          type: string
+          description: Category of action, Can be up to 256 characters long
+        name:
+          type: string
+          description: Name of action, Can be up to 256 characters long
+        config:
+          description: Configuration to support request and response processing
+          $ref: '#/components/schemas/ActionConfig'
+        version:
+          type: integer
+          format: int32
+          description: Version of this action
+    PostInputContract:
+      type: object
+      required:
+      - inputSchema
+      properties:
+        inputSchema:
+          description: JSON Schema that defines the body of the request that the client (edge/architect/postman) is sending to the service, on the /execute path.
+          $ref: '#/components/schemas/JsonSchemaDocument'
+      description: The schemas defining all of the expected requests/inputs.
+    ClientAppEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientApp'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    AudioConnectorIntegrationEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AudioConnectorIntegration'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    UCI10n:
+      type: object
+      properties:
+        name:
+          type: string
+    EffectiveConfiguration:
+      type: object
+      required:
+      - advanced
+      - credentials
+      - name
+      - notes
+      - properties
+      properties:
+        properties:
+          type: object
+          description: Key-value configuration settings described by the schema in the propertiesSchemaUri field.
+          additionalProperties:
+            type: object
+        advanced:
+          type: object
+          description: Advanced configuration described by the schema in the advancedSchemaUri field.
+          additionalProperties:
+            type: object
+        name:
+          type: string
+          description: The name of the integration, used to distinguish this integration from others of the same type.
+        notes:
+          type: string
+          description: Notes about the integration.
+        credentials:
+          type: object
+          description: Credentials required by the integration. The required keys are indicated in the credentials property of the Integration Type
+          additionalProperties:
+            $ref: '#/components/schemas/CredentialInfo'
+      description: Effective Configuration for an ClientApp. This is comprised of the integration specific configuration along with overrides specified in the integration type.
+    ActionContract:
+      type: object
+      properties:
+        output:
+          description: The output to expect when executing this action.
+          $ref: '#/components/schemas/ActionOutput'
+        input:
+          description: The input required when executing this action.
+          $ref: '#/components/schemas/ActionInput'
+      description: This resource contains all of the schemas needed to define the inputs and outputs, of a single Action.
+    LexV2Bot:
+      type: object
+      required:
+      - botId
+      - region
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        botId:
+          type: string
+          description: Lex V2 bot Id
+        region:
+          type: string
+          description: A region of the Lex V2 bot
+        description:
+          type: string
+          description: A description of the Lex V2 bot
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LexV2Intent:
+      type: object
+      required:
+      - intentId
+      - intentName
+      - slots
+      properties:
+        intentName:
+          type: string
+          description: The intent name
+        description:
+          type: string
+          description: A description of the intent
+        slots:
+          type: object
+          description: An object mapping slot names to Slot objects
+          additionalProperties:
+            $ref: '#/components/schemas/LexV2Slot'
+        intentId:
+          type: string
+          description: The intent id
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    ActionEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Action'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
     PublishDraftInput:
       type: object
       required:
@@ -16049,7 +14281,7 @@ components:
           example: If the current draft version is 2 and the current published version of Action is 33, then you would send 2 here. (Your draft will become published version 34)
           description: The current draft version.
       description: Draft to be published
-    DialogflowAgent:
+    CredentialInfo:
       type: object
       properties:
         id:
@@ -16058,48 +14290,24 @@ components:
           readOnly: true
         name:
           type: string
-        project:
-          description: The project this Dialogflow agent belongs to
-          $ref: '#/components/schemas/DialogflowProject'
-        languages:
-          type: array
-          description: The supported languages of the Dialogflow agent
-          items:
-            type: string
-        intents:
-          type: array
-          description: An array of Intents associated with this agent
-          items:
-            $ref: '#/components/schemas/DialogflowIntent'
-        environments:
-          type: array
-          description: Available environments for this agent
-          items:
-            type: string
-        integration:
-          description: The Integration this Dialogflow agent was referenced from.
-          $ref: '#/components/schemas/DomainEntityRef'
+        createdDate:
+          type: string
+          format: date-time
+          description: 'Date the credentials were created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date credentials were last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        type:
+          description: Type of the credentials.
+          $ref: '#/components/schemas/CredentialType'
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-    FunctionUploadRequest:
-      type: object
-      required:
-      - fileName
-      properties:
-        fileName:
-          type: string
-          description: 'Name of the file to upload.File name can only contain letters, numbers, and the following special characters: + - _ . '' ( )'
-          pattern: ^[a-zA-Z0-9\.\+\-\_\(\)\s]+$
-        signedUrlTimeoutSeconds:
-          type: integer
-          format: int32
-          description: The number of seconds the presigned URL is valid for (from 1 to 604800 seconds). If none provided, defaults to 900 seconds
-          minimum: 1
-          maximum: 604800
-      description: Action function URL upload input.
     TestExecutionResult:
       type: object
       properties:
@@ -16117,13 +14325,580 @@ components:
         success:
           type: boolean
           description: Indicates whether or not the test was a success
-    TtsEngineEntityListing:
+    IntegrationConfigurationInfo:
+      type: object
+      properties:
+        current:
+          description: The current, active configuration for the integration.
+          readOnly: true
+          $ref: '#/components/schemas/IntegrationConfiguration'
+      description: Configuration information for the integration
+    BotConnectorBot:
+      type: object
+      required:
+      - id
+      - versions
+      properties:
+        id:
+          type: string
+          description: The Botconnector Bot Id - this is configurable by the user when put
+        name:
+          type: string
+        description:
+          type: string
+          description: An optional description of the bot.  This can be up to 256 characters long and must be comprised of displayable characters without leading or trailing whitespace
+        versions:
+          type: array
+          description: This bots versions, limit of 50 per bot
+          items:
+            $ref: '#/components/schemas/BotConnectorBotVersion'
+        botCompositeTag:
+          type: string
+          description: A system-generated string that contains metadata about this bot.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: A botConnector Bot Instance
+    TtsVoiceEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/TtsEngineEntity'
+            $ref: '#/components/schemas/TtsVoiceEntity'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    NuanceOrganization:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          description: The organization ID
+        name:
+          type: string
+          description: The organization name
+      description: Model for a Nuance bot organization
+    NuanceBotEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/NuanceBot'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+      description: Model for a paged listing of Nuance bots
+    NuanceGeography:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          description: The geography ID
+        name:
+          type: string
+          description: The geography name
+      description: Model for a Nuance bot geography
+    IntegrationEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Integration'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    ResponseConfig:
+      type: object
+      properties:
+        translationMap:
+          type: object
+          description: Map 'attribute name' and 'JSON path' pairs used to extract data from REST response.
+          additionalProperties:
+            type: string
+        translationMapDefaults:
+          type: object
+          description: Map 'attribute name' and 'default value' pairs used as fallback values if JSON path extraction fails for specified key.
+          additionalProperties:
+            type: string
+        successTemplate:
+          type: string
+          description: Velocity template to build response to return from Action.
+        successTemplateUri:
+          type: string
+          description: URI to retrieve success template.
+      description: Defines response components of the Action Request.
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    NuanceBotTransferNode:
+      type: object
+      required:
+      - id
+      - name
+      - type
+      properties:
+        id:
+          type: string
+          description: The transfer node ID
+        name:
+          type: string
+          description: The transfer node name
+        type:
+          type: string
+          description: The transfer node type
+          enum:
+          - End
+          - Escalate
+        description:
+          type: string
+          description: The transfer node description
+        requestVariables:
+          type: array
+          description: List of variables associated with this transfer node
+          items:
+            $ref: '#/components/schemas/NuanceBotVariable'
+      description: Model for a Nuance bot transfer node
+    NuanceBotLaunchSettings:
+      type: object
+      required:
+      - botExecutionConfigurations
+      properties:
+        botExecutionConfigurations:
+          type: array
+          description: The list of Nuance bots that are configured as available to the Genesys Cloud system
+          items:
+            $ref: '#/components/schemas/BotExecutionConfiguration'
+      description: Model for setting the launch configuration for Nuance bots available to Genesys Cloud
+    LexBotAlias:
+      type: object
+      required:
+      - status
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        bot:
+          description: The Lex bot this is an alias for
+          $ref: '#/components/schemas/LexBot'
+        botVersion:
+          type: string
+          description: The version of the Lex bot this alias points at
+        status:
+          type: string
+          description: The status of the Lex bot alias
+          enum:
+          - BUILDING
+          - READY
+          - FAILED
+          - NOT_BUILT
+        failureReason:
+          type: string
+          description: If the status is FAILED, Amazon Lex explains why it failed to build the bot
+        language:
+          type: string
+          description: The target language of the Lex bot
+          enum:
+          - en-US
+        intents:
+          type: array
+          description: An array of Intents associated with this bot alias
+          items:
+            $ref: '#/components/schemas/LexIntent'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DialogflowCXProject:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    LexV2BotAliasEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LexV2BotAlias'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    BotConnectorBotVersionSummaryEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/BotVersionSummary'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    FunctionUploadRequest:
+      type: object
+      required:
+      - fileName
+      properties:
+        fileName:
+          type: string
+          description: 'Name of the file to upload.File name can only contain letters, numbers, and the following special characters: + - _ . '' ( )'
+          pattern: ^[a-zA-Z0-9\.\+\-\_\(\)\s]+$
+        signedUrlTimeoutSeconds:
+          type: integer
+          format: int32
+          description: The number of seconds the presigned URL is valid for (from 1 to 604800 seconds). If none provided, defaults to 900 seconds
+          minimum: 1
+          maximum: 604800
+      description: Action function URL upload input.
+    UserAppConfigurationInfo:
+      type: object
+      properties:
+        current:
+          description: The current, active configuration for the integration.
+          readOnly: true
+          $ref: '#/components/schemas/IntegrationConfiguration'
+        effective:
+          description: The effective configuration for the app, containing the integration specific configuration along with overrides specified in the integration type.
+          readOnly: true
+          $ref: '#/components/schemas/EffectiveConfiguration'
+      description: Configuration information for the integration
+    AsyncJob:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+        state:
+          type: string
+          enum:
+          - Running
+          - Completed
+          - Failed
+          - Cancelled
+    Action:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        integrationId:
+          type: string
+          description: The ID of the integration for which this action is associated
+        category:
+          type: string
+          description: Category of Action
+        contract:
+          description: Action contract
+          $ref: '#/components/schemas/ActionContract'
+        version:
+          type: integer
+          format: int32
+          description: Version of this action
+        secure:
+          type: boolean
+          description: Indication of whether or not the action is designed to accept sensitive data
+        config:
+          description: Configuration to support request and response processing
+          $ref: '#/components/schemas/ActionConfig'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ClientAppConfigurationInfo:
+      type: object
+      properties:
+        current:
+          description: The current, active configuration for the integration.
+          readOnly: true
+          $ref: '#/components/schemas/IntegrationConfiguration'
+        effective:
+          description: The effective configuration for the app, containing the integration specific configuration along with overrides specified in the integration type.
+          readOnly: true
+          $ref: '#/components/schemas/EffectiveConfiguration'
+      description: Configuration information for the integration
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    LexV2BotEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LexV2Bot'
         pageSize:
           type: integer
           format: int32
@@ -16185,85 +14960,174 @@ components:
         pageCount:
           type: integer
           format: int32
-    LanguageOverride:
-      type: object
-      required:
-      - engine
-      - language
-      - voice
-      properties:
-        language:
-          type: string
-          description: The language code of the language being overridden
-        engine:
-          type: string
-          description: The ID of the TTS engine to use for this language override
-        voice:
-          type: string
-          description: The ID of the voice to use for this language override. The voice must be supported by the chosen engine.
-    ActionInput:
+    IntegrationStatusInfo:
       type: object
       properties:
-        inputSchema:
-          description: JSON Schema that defines the body of the request that the client (edge/architect/postman) is sending to the service, on the /execute path. If the 'flatten' query parameter is omitted or false, this field will be returned. Either inputSchema or inputSchemaFlattened will be returned, not both.
-          $ref: '#/components/schemas/JsonSchemaDocument'
-        inputSchemaFlattened:
-          description: JSON Schema that defines the body of the request that the client (edge/architect/postman) is sending to the service, on the /execute path. The schema is transformed based on Architect's flattened format. If the 'flatten' query parameter is supplied as true, this field will be returned. Either inputSchema or inputSchemaFlattened will be returned, not both.
-          $ref: '#/components/schemas/JsonSchemaDocument'
-        inputSchemaUri:
+        code:
           type: string
-          description: The URI of the input schema
-      description: Input requirements of Action.
-    LexBotAlias:
-      type: object
-      required:
-      - status
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
+          description: Machine-readable status as reported by the integration.
           readOnly: true
-        name:
-          type: string
-        bot:
-          description: The Lex bot this is an alias for
-          $ref: '#/components/schemas/LexBot'
-        botVersion:
-          type: string
-          description: The version of the Lex bot this alias points at
-        status:
-          type: string
-          description: The status of the Lex bot alias
           enum:
-          - BUILDING
-          - READY
-          - FAILED
-          - NOT_BUILT
-        failureReason:
+          - ACTIVE
+          - ACTIVATING
+          - INACTIVE
+          - DEACTIVATING
+          - ERROR
+        effective:
           type: string
-          description: If the status is FAILED, Amazon Lex explains why it failed to build the bot
-        language:
-          type: string
-          description: The target language of the Lex bot
-          enum:
-          - en-US
-        intents:
-          type: array
-          description: An array of Intents associated with this bot alias
-          items:
-            $ref: '#/components/schemas/LexIntent'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
+          description: Localized, human-readable, effective status of the integration.
           readOnly: true
-    CredentialInfoListing:
+        detail:
+          description: Localizable status details for the integration.
+          readOnly: true
+          $ref: '#/components/schemas/MessageInfo'
+        lastUpdated:
+          type: string
+          format: date-time
+          description: 'Date and time (in UTC) when the integration status (i.e. the code field) was last updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+      description: Status information for an Integration.
+    CategoryEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/CredentialInfo'
+            $ref: '#/components/schemas/Category'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        pageCount:
+          type: integer
+          format: int32
+    MessageInfo:
+      type: object
+      properties:
+        localizableMessageCode:
+          type: string
+          description: Key that can be used to localize the message.
+        message:
+          type: string
+          description: Description of the message.
+        messageWithParams:
+          type: string
+          description: Message with template fields for variable replacement.
+        messageParams:
+          type: object
+          description: Map with fields for variable replacement.
+          additionalProperties:
+            type: string
+    ActionCertificate:
+      type: object
+      properties:
+        signingAuthority:
+          type: string
+          description: The Signing Authority for the certificate
+          enum:
+          - DigiCert
+          - Genesys
+        certificate:
+          type: string
+          description: The certificate string
+        status:
+          type: string
+          description: The certificate status
+          enum:
+          - Current
+          - Upcoming
+        type:
+          type: string
+          description: The certificate type
+          enum:
+          - Client
+      description: Details for an mTLS certificate
+    TrustedCertificates:
+      type: object
+      properties:
+        entities:
+          type: array
+          description: The list of trusted certificates
+          items:
+            $ref: '#/components/schemas/TrustedCertificateInfo'
+        total:
+          type: integer
+          format: int32
+          description: The total number of trusted certificates
+      description: Information about trusted certificates
+    Function:
+      type: object
+      required:
+      - description
+      - handler
+      - runtime
+      properties:
+        id:
+          type: string
+          description: Function identifier.
+          readOnly: true
+        name:
+          type: string
+          description: Function name. This is automatically created based on the Action Id.
+          readOnly: true
+        description:
+          type: string
+          description: Description of the function. Limit 255 characters.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date and time function was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        zipId:
+          type: string
+          description: Zip file identifier.
+          readOnly: true
+        handler:
+          type: string
+          description: Handler entry point into zip file to execute function. Should be path within upload function package to the invocation module without language extension, followed by a period and then exported invocation method name. e.g. 'src/index.handler'
+        runtime:
+          type: string
+          description: Runtime required for execution. Valid runtimes change over time as versions are deprecated. Use /api/v2/integrations/actions/functions/runtimes for current list.
+        timeoutSeconds:
+          type: integer
+          format: int32
+          description: Execution timeout to apply to function. Value is in seconds. Range allowed 1 to 15. Default value 15 seconds.
+          minimum: 1
+          maximum: 15
+      description: Action function settings.
+    LexIntent:
+      type: object
+      required:
+      - name
+      - slots
+      - version
+      properties:
+        name:
+          type: string
+          description: The intent name
+        description:
+          type: string
+          description: A description of the intent
+        slots:
+          type: object
+          description: An object mapping slot names to Slot objects
+          additionalProperties:
+            $ref: '#/components/schemas/LexSlot'
+        version:
+          type: string
+          description: The intent version
+    TtsEngineEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/TtsEngineEntity'
         pageSize:
           type: integer
           format: int32
@@ -16291,100 +15155,113 @@ components:
         pageCount:
           type: integer
           format: int32
-    DraftValidationResult:
+    DialogflowCXAgent:
       type: object
       properties:
-        valid:
-          type: boolean
-          description: Indicates if configuration is valid
-        errors:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        project:
+          description: The project this Dialogflow CX agent belongs to.
+          $ref: '#/components/schemas/DialogflowCXProject'
+        languages:
           type: array
-          description: List of errors causing validation failure
+          description: The supported languages of the Dialogflow CX agent.  Each value will be a language code in the country-locale format. e.g. en-us, es-us, fr-ca, etc.
           items:
-            $ref: '#/components/schemas/ErrorBody'
-      description: Validation results
-    IntegrationConfiguration:
+            type: string
+        environments:
+          type: array
+          description: Available environments for this CX agent.
+          items:
+            $ref: '#/components/schemas/DialogflowCXEnvironment'
+        integration:
+          description: The Integration this Dialogflow CX agent was referenced from.
+          $ref: '#/components/schemas/DomainEntityRef'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    PostActionInput:
       type: object
       required:
-      - advanced
-      - credentials
+      - category
+      - config
+      - contract
+      - integrationId
       - name
-      - notes
-      - properties
-      - version
+      properties:
+        category:
+          type: string
+          description: Category of action, Can be up to 256 characters long
+        name:
+          type: string
+          description: Name of action, Can be up to 256 characters long
+        integrationId:
+          type: string
+          description: The ID of the integration this action is associated to
+        config:
+          description: Configuration to support request and response processing
+          $ref: '#/components/schemas/ActionConfig'
+        contract:
+          description: Action contract
+          $ref: '#/components/schemas/ActionContractInput'
+        secure:
+          type: boolean
+          description: Indication of whether or not the action is designed to accept sensitive data
+      description: Definition of an Action to be created or updated.
+    FunctionRuntime:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the function runtime.
+          readOnly: true
+        description:
+          type: string
+          description: Description of function runtime.
+          readOnly: true
+        status:
+          type: string
+          description: Availability status of runtime
+          readOnly: true
+          enum:
+          - Available
+          - Deprecated
+          - Unavailable
+        dateEndOfLife:
+          type: string
+          format: date
+          description: 'Optional end of life date. Present if the status is Deprecated. Date represents when support for runtime can no longer be guaranteed. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+      description: Action function runtime.
+    JsonSchemaDocument:
+      type: object
       properties:
         id:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
+        $schema:
           type: string
-          description: The name of the integration, used to distinguish this integration from others of the same type.
-        version:
-          type: integer
-          format: int32
-          description: Version number required for updates.
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        required:
+          type: array
+          items:
+            type: string
         properties:
           type: object
-          description: Key-value configuration settings described by the schema in the propertiesSchemaUri field.
-        advanced:
-          type: object
-          description: Advanced configuration described by the schema in the advancedSchemaUri field.
-        notes:
-          type: string
-          description: Notes about the integration.
-        credentials:
-          type: object
-          description: Credentials required by the integration. The required keys are indicated in the credentials property of the Integration Type
           additionalProperties:
-            $ref: '#/components/schemas/CredentialInfo'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Configuration for an Integration
-    CredentialInfo:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        createdDate:
-          type: string
-          format: date-time
-          description: 'Date the credentials were created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'Date credentials were last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        type:
-          description: Type of the credentials.
-          $ref: '#/components/schemas/CredentialType'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    DialogflowCXEnvironment:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
+            type: object
+        additionalProperties:
+          type: object
+      description: A JSON Schema document.
     DialogflowParameter:
       type: object
       required:
@@ -16397,6 +15274,762 @@ components:
         type:
           type: string
           description: The parameter type
+    NuanceBot:
+      type: object
+      required:
+      - application
+      - geography
+      - id
+      - integrationId
+      - name
+      - nuanceEnvironment
+      - nuanceOrganization
+      properties:
+        id:
+          type: string
+          description: Nuance bot Id
+        name:
+          type: string
+          description: Nuance bot name
+        integrationId:
+          type: string
+          description: The Integration Id for this bot
+        nuanceOrganization:
+          description: The Nuance Organization for this bot
+          $ref: '#/components/schemas/NuanceOrganization'
+        application:
+          description: The Application for this bot
+          $ref: '#/components/schemas/NuanceApplication'
+        nuanceEnvironment:
+          description: The environment of the Nuance bot
+          $ref: '#/components/schemas/NuanceEnvironment'
+        geography:
+          description: The Geography of the Nuance bot
+          $ref: '#/components/schemas/NuanceGeography'
+        credentials:
+          type: array
+          description: client ID/Secret objects for the credentials that execute this Nuance bot
+          items:
+            $ref: '#/components/schemas/NuanceBotCredentials'
+        variables:
+          type: array
+          description: List of available variables in this Nuance bot.  When querying, use the 'expand=variables' query param to populate this value
+          items:
+            $ref: '#/components/schemas/NuanceBotVariable'
+        transferNodes:
+          type: array
+          description: List of transferNodes in this Nuance bot.  When querying, use the 'expand=transferNodes' query param to populate this value
+          items:
+            $ref: '#/components/schemas/NuanceBotTransferNode'
+        locales:
+          type: array
+          description: List of locales associated with this Nuance bot.  Generally in the ISO format such as 'en-US'
+          items:
+            type: string
+        channels:
+          type: array
+          description: List of channels associated with this Nuance bot.
+          items:
+            $ref: '#/components/schemas/NuanceChannel'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Model for a Nuance bot
+    ActionCertificateListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionCertificate'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    DialogflowCXAgentSummaryEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DialogflowCXAgentSummary'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    Category:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Category name
+      description: List of available Action categories.
+    UnifiedCommunicationsIntegration:
+      type: object
+      required:
+      - badgeIcons
+      - i10n
+      - icon
+      - integrationPresenceSource
+      - pbxPermission
+      - polledPresence
+      - ucIntegrationKey
+      - userPermissions
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        ucIntegrationKey:
+          description: ucIntegrationKey
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        integrationPresenceSource:
+          type: string
+          description: integrationPresenceType
+          readOnly: true
+          enum:
+          - MicrosoftTeams
+          - ZoomPhone
+          - EightByEight
+        pbxPermission:
+          type: string
+          description: pbxPermission
+          readOnly: true
+        icon:
+          description: icon
+          readOnly: true
+          $ref: '#/components/schemas/UCIcon'
+        badgeIcons:
+          type: object
+          description: badgeIcon
+          readOnly: true
+          additionalProperties:
+            $ref: '#/components/schemas/UCIcon'
+        i10n:
+          type: object
+          description: i10n
+          readOnly: true
+          additionalProperties:
+            $ref: '#/components/schemas/UCI10n'
+        polledPresence:
+          type: boolean
+          description: polledPresence
+          readOnly: true
+        pollIntervalSec:
+          type: integer
+          format: int32
+          description: pollIntervalSec
+          readOnly: true
+        includeBadge:
+          type: boolean
+          description: includeBadge
+          readOnly: true
+        userPermissions:
+          type: array
+          description: userPermissions
+          readOnly: true
+          items:
+            type: string
+        oauthScopes:
+          type: array
+          items:
+            type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: UC Integration UI configuration data
+    CreateIntegrationRequest:
+      type: object
+      required:
+      - integrationType
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the integration, used to distinguish this integration from others of the same type.
+        integrationType:
+          description: Type of the integration to create.
+          $ref: '#/components/schemas/IntegrationType'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Details for an Integration
+    HelpLink:
+      type: object
+      properties:
+        uri:
+          type: string
+          description: URI of the help resource
+          readOnly: true
+        title:
+          type: string
+          description: Link text of the resource
+          readOnly: true
+        description:
+          type: string
+          description: Description of the document or resource
+          readOnly: true
+      description: Link to a help or support resource
+    BotConnectorBotVersion:
+      type: object
+      required:
+      - intents
+      - supportedLanguages
+      - version
+      properties:
+        version:
+          type: string
+          description: The name of the version. This can be up to 100 characters long and must be comprised of displayable characters without leading or trailing whitespace
+        supportedLanguages:
+          type: array
+          description: The supported languages for this bot. EG 'en-us' or 'es', etc; These language codes are W3C language identification tags (ISO 639-1 for the language name and ISO 3166 for the country code)
+          items:
+            type: string
+        intents:
+          type: array
+          description: A list of potential intents this bot will return, limit of 50
+          items:
+            $ref: '#/components/schemas/BotIntent'
+      description: A version description for a botConnector bot.
+    FunctionZipConfig:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of zip upload.
+          readOnly: true
+          enum:
+          - Pending
+          - Transferring
+          - Available
+          - Unknown
+          - Invalid
+          - InvalidFormat
+          - InvalidFile
+        id:
+          type: string
+          description: Zip file Identifier
+          readOnly: true
+        name:
+          type: string
+          description: Zip file name
+          readOnly: true
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date and time zip record was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        errorMessage:
+          type: string
+          description: Error message if upload failed.
+          readOnly: true
+          allowEmptyValue: true
+        requestId:
+          type: string
+          description: Upload request id used for zip upload
+          readOnly: true
+      description: Action function zip file upload settings and state.
+    TestExecutionOperationResult:
+      type: object
+      properties:
+        step:
+          type: integer
+          format: int32
+          description: The step number to indicate the order in which the operation was performed
+        name:
+          type: string
+          description: Name of the operation performed
+        success:
+          type: boolean
+          description: Indicated whether or not the operation was successful
+        result:
+          type: object
+          description: The result of the operation
+        error:
+          description: Error that occurred during the operation
+          $ref: '#/components/schemas/ErrorBody'
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    ActionInput:
+      type: object
+      properties:
+        inputSchema:
+          description: JSON Schema that defines the body of the request that the client (edge/architect/postman) is sending to the service, on the /execute path. If the 'flatten' query parameter is omitted or false, this field will be returned. Either inputSchema or inputSchemaFlattened will be returned, not both.
+          $ref: '#/components/schemas/JsonSchemaDocument'
+        inputSchemaFlattened:
+          description: JSON Schema that defines the body of the request that the client (edge/architect/postman) is sending to the service, on the /execute path. The schema is transformed based on Architect's flattened format. If the 'flatten' query parameter is supplied as true, this field will be returned. Either inputSchema or inputSchemaFlattened will be returned, not both.
+          $ref: '#/components/schemas/JsonSchemaDocument'
+        inputSchemaUri:
+          type: string
+          description: The URI of the input schema
+      description: Input requirements of Action.
+    RequestConfig:
+      type: object
+      properties:
+        requestUrlTemplate:
+          type: string
+          description: URL that may include placeholders for requests to 3rd party service. This value is read only for Function Integrations and will be set when a draft is created.
+        requestTemplate:
+          type: string
+          description: Velocity template to define request body sent to 3rd party service.
+        requestTemplateUri:
+          type: string
+          description: URI to retrieve requestTemplate
+        requestType:
+          type: string
+          description: HTTP method to use for request
+        headers:
+          type: object
+          description: Headers to include in request in (Header Name, Value) pairs.
+          additionalProperties:
+            type: string
+      description: Defines response components of the Action Request.
+    LexBot:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+          description: A description of the Lex bot
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LexBotEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LexBot'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    UpdateDraftInput:
+      type: object
+      required:
+      - version
+      properties:
+        category:
+          type: string
+          description: Category of action, Can be up to 256 characters long
+        name:
+          type: string
+          description: Name of action, Can be up to 256 characters long
+        config:
+          description: Configuration to support request and response processing
+          $ref: '#/components/schemas/ActionConfig'
+        contract:
+          description: Action contract
+          $ref: '#/components/schemas/ActionContractInput'
+        secure:
+          type: boolean
+          description: Indication of whether or not the action is designed to accept sensitive data
+        version:
+          type: integer
+          format: int32
+          description: Version of current Draft
+      description: Definition of an Action Draft to be created or updated.
+    DialogflowIntent:
+      type: object
+      required:
+      - name
+      - parameters
+      properties:
+        name:
+          type: string
+          description: The intent name
+        parameters:
+          type: object
+          description: An object mapping parameter names to Parameter objects
+          additionalProperties:
+            $ref: '#/components/schemas/DialogflowParameter'
+    UserApp:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the userApp, used to distinguish this userApp from others of the same type.
+          readOnly: true
+        integrationType:
+          description: Integration Type for the userApp
+          readOnly: true
+          $ref: '#/components/schemas/IntegrationType'
+        config:
+          $ref: '#/components/schemas/UserAppConfigurationInfo'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Details for a UserApp
+    UnifiedCommunicationsIntegrationListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnifiedCommunicationsIntegration'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    TtsEngineEntity:
+      type: object
+      required:
+      - languages
+      - outputFormats
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        languages:
+          type: array
+          description: The set of languages the TTS engine supports
+          items:
+            type: string
+        outputFormats:
+          type: array
+          description: The set of output formats the TTS engine can produce
+          items:
+            type: string
+        voices:
+          type: array
+          description: The set of voices the TTS engine supports
+          items:
+            $ref: '#/components/schemas/TtsVoiceEntity'
+        isDefault:
+          type: boolean
+          description: The TTS engine is the global default engine
+        isSecure:
+          type: boolean
+          description: The TTS engine can be used in a secure call flow
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DialogflowAgentSummaryEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DialogflowAgentSummary'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    SttEngineEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        grammarBased:
+          type: boolean
+          description: The STT engine is intended to be used for Grammars
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ActionContractInput:
+      type: object
+      required:
+      - input
+      - output
+      properties:
+        input:
+          description: Execution input contract
+          $ref: '#/components/schemas/PostInputContract'
+        output:
+          description: Execution output contract
+          $ref: '#/components/schemas/PostOutputContract'
+      description: Contract definition.
+    AudioConnectorIntegration:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ActionOutput:
+      type: object
+      properties:
+        successSchema:
+          description: JSON schema that defines the transformed, successful result that will be sent back to the caller. If the 'flatten' query parameter is omitted or false, this field will be returned. Either successSchema or successSchemaFlattened will be returned, not both.
+          $ref: '#/components/schemas/JsonSchemaDocument'
+        successSchemaUri:
+          type: string
+          description: URI to retrieve success schema
+        errorSchema:
+          description: JSON schema that defines the body of response when request is not successful. If the 'flatten' query parameter is omitted or false, this field will be returned. Either errorSchema or errorSchemaFlattened will be returned, not both.
+          $ref: '#/components/schemas/JsonSchemaDocument'
+        errorSchemaUri:
+          type: string
+          description: URI to retrieve error schema
+        successSchemaFlattened:
+          description: JSON schema that defines the transformed, successful result that will be sent back to the caller. The schema is transformed based on Architect's flattened format. If the 'flatten' query parameter is supplied as true, this field will be returned. Either successSchema or successSchemaFlattened will be returned, not both.
+          $ref: '#/components/schemas/FlattenedJsonSchemaDocument'
+        errorSchemaFlattened:
+          description: JSON schema that defines the body of response when request is not successful. The schema is transformed based on Architect's flattened format. If the 'flatten' query parameter is supplied as true, this field will be returned. Either errorSchema or errorSchemaFlattened will be returned, not both.
+          $ref: '#/components/schemas/FlattenedJsonSchemaDocument'
+      description: Output definition of Action.
+    Credential:
+      type: object
+      required:
+      - type
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        type:
+          description: The type of credential.
+          $ref: '#/components/schemas/CredentialType'
+        credentialFields:
+          type: object
+          additionalProperties:
+            type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DialogflowProject:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    BotSummary:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the bot.
+        id:
+          type: string
+          description: The id of the bot.
+        description:
+          type: string
+          description: An optional description of the bot.
+        botCompositeTag:
+          type: string
+          description: A system-generated string that contains metadata about this bot.
+          readOnly: true
+      description: A summary description for a botConnector bot
+    DialogflowAgent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        project:
+          description: The project this Dialogflow agent belongs to
+          $ref: '#/components/schemas/DialogflowProject'
+        languages:
+          type: array
+          description: The supported languages of the Dialogflow agent
+          items:
+            type: string
+        intents:
+          type: array
+          description: An array of Intents associated with this agent
+          items:
+            $ref: '#/components/schemas/DialogflowIntent'
+        environments:
+          type: array
+          description: Available environments for this agent
+          items:
+            type: string
+        integration:
+          description: The Integration this Dialogflow agent was referenced from.
+          $ref: '#/components/schemas/DomainEntityRef'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     NuanceEnvironment:
       type: object
       required:
@@ -16417,46 +16050,413 @@ components:
           type: string
           description: The host used to execute this bot, similar to 'api.nuance.com:443'
       description: Model for a Nuance bot environment
-    IntegrationConfigurationInfo:
+    LexBotAliasEntityListing:
       type: object
       properties:
-        current:
-          description: The current, active configuration for the integration.
-          readOnly: true
-          $ref: '#/components/schemas/IntegrationConfiguration'
-      description: Configuration information for the integration
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LexBotAlias'
+        pageSize:
           type: integer
           format: int32
-        entityId:
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
           type: string
-        entityName:
+          format: uri
+        nextUri:
           type: string
-        messageWithParams:
+          format: uri
+        previousUri:
           type: string
-        messageParams:
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    FlattenedJsonSchemaDocument:
+      type: object
+      properties:
+        schema:
+          $ref: '#/components/schemas/JsonSchemaDocument'
+        arrayProperties:
+          type: array
+          description: Properties in the original document that were arrays
+          items:
+            type: string
+      description: JSON schema that defines the transformed result that will be sent back to the caller. The schema is transformed based on Architect's flattened format. If the 'flatten' query parameter is supplied as true, this field will be returned.
+    LexV2BotAlias:
+      type: object
+      required:
+      - aliasId
+      - region
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        region:
+          type: string
+          description: The Lex V2 bot region
+        aliasId:
+          type: string
+          description: The Lex V2 bot alias Id
+        bot:
+          description: The Lex V2 bot this is an alias for
+          $ref: '#/components/schemas/LexV2Bot'
+        botVersion:
+          type: string
+          description: The version of the Lex V2 bot this alias points at
+        status:
+          type: string
+          description: The status of the Lex V2 bot alias
+          enum:
+          - Creating
+          - Available
+          - Deleting
+          - Failed
+        language:
+          type: string
+          description: The target language of the Lex V2 bot
+        intents:
+          type: array
+          description: An array of Intents associated with this bot alias
+          items:
+            $ref: '#/components/schemas/LexV2Intent'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DialogflowCXEnvironment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    BotList:
+      type: object
+      required:
+      - chatBots
+      properties:
+        chatBots:
+          type: array
+          description: A list of botConnector Bots. Max 50
+          items:
+            $ref: '#/components/schemas/BotConnectorBot'
+      description: A list of BotConnectorBots
+    CredentialType:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        properties:
           type: object
+          description: Properties describing credentials of this type.
+          readOnly: true
+        displayOrder:
+          type: array
+          description: Order in which properties should be displayed in the UI.
+          readOnly: true
+          items:
+            type: string
+        required:
+          type: array
+          description: Properties that are required fields.
+          readOnly: true
+          items:
+            type: string
+    LexV2Slot:
+      type: object
+      required:
+      - slotId
+      - slotName
+      - slotTypeId
+      - type
+      properties:
+        slotName:
+          type: string
+          description: The slot name
+        description:
+          type: string
+          description: The slot description
+        slotId:
+          type: string
+          description: The slot id
+        type:
+          type: string
+          description: The slot type
+        slotTypeId:
+          type: string
+          description: The slot type id
+    Image:
+      type: object
+      properties:
+        resolution:
+          type: string
+          description: 'Height and/or width of image. ex: 640x480 or x128'
+        imageUri:
+          type: string
+    TtsVoiceEntity:
+      type: object
+      required:
+      - engine
+      - gender
+      - language
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        gender:
+          type: string
+          description: The gender of the TTS voice
+        language:
+          type: string
+          description: The language supported by the TTS voice
+        engine:
+          description: Ths TTS engine this voice belongs to
+          $ref: '#/components/schemas/TtsEngineEntity'
+        isDefault:
+          type: boolean
+          description: The voice is the default voice for its language
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TrustedCertificateInfo:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The description of the certificate
+        serialNumber:
+          type: string
+          description: The serial number of the certificate
+        signature:
+          type: string
+          description: The signature of the certificate
+    DialogflowCXAgentSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        project:
+          description: The project this Dialogflow CX agent belongs to.
+          $ref: '#/components/schemas/DialogflowCXProject'
+        description:
+          type: string
+          description: A description of the Dialogflow CX agent.
+        integration:
+          description: The Integration this Dialogflow CX agent was referenced from.
+          $ref: '#/components/schemas/DomainEntityRef'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Integration:
+      type: object
+      required:
+      - intendedState
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the integration, used to distinguish this integration from others of the same type.
+          readOnly: true
+        integrationType:
+          description: Type of the integration
+          readOnly: true
+          $ref: '#/components/schemas/IntegrationType'
+        notes:
+          type: string
+          description: Notes about the integration.
+          readOnly: true
+        intendedState:
+          type: string
+          description: Configured state of the integration.
+          enum:
+          - ENABLED
+          - DISABLED
+          - DELETED
+          - RESTORED
+        config:
+          description: Configuration information for the integration.
+          readOnly: true
+          $ref: '#/components/schemas/IntegrationConfigurationInfo'
+        reportedState:
+          description: Last reported status of the integration.
+          readOnly: true
+          $ref: '#/components/schemas/IntegrationStatusInfo'
+        attributes:
+          type: object
+          description: Read-only attributes for the integration.
+          readOnly: true
           additionalProperties:
             type: string
-        contextId:
+        selfUri:
           type: string
-        details:
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Details for an Integration
+    UserAppEntityListing:
+      type: object
+      properties:
+        entities:
           type: array
           items:
-            $ref: '#/components/schemas/Detail'
-        errors:
+            $ref: '#/components/schemas/UserApp'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    NuanceChannel:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          description: The channel ID
+        name:
+          type: string
+          description: The channel name
+        modes:
           type: array
+          description: Supported Channel Modes
           items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
+            type: string
+        color:
+          type: string
+          description: The Channel Color
+      description: Model for a Nuance channel
+    PostOutputContract:
+      type: object
+      required:
+      - successSchema
+      properties:
+        successSchema:
+          description: JSON schema that defines the transformed, successful result that will be sent back to the caller.
+          $ref: '#/components/schemas/JsonSchemaDocument'
+      description: The schemas defining all of the expected responses/outputs.
+    FunctionUploadResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Presigned URL to PUT the file to
+          readOnly: true
+        headers:
+          type: object
+          description: Required headers when uploading a file through PUT request to the URL
+          readOnly: true
+          additionalProperties:
+            type: string
+        signedUrlTimeoutSeconds:
+          type: integer
+          format: int32
+          description: Upload time to live in seconds.
+      description: Action function create upload URL response.
+    DialogflowAgentSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        project:
+          description: The project this Dialogflow agent belongs to.
+          $ref: '#/components/schemas/DialogflowProject'
+        description:
+          type: string
+          description: A description of the Dialogflow agent.
+        integration:
+          description: The Integration this Dialogflow agent was referenced from.
+          $ref: '#/components/schemas/DomainEntityRef'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    BotExecutionConfiguration:
+      type: object
+      required:
+      - botCredentials
+      - botId
+      - executionHost
+      properties:
+        botId:
+          type: string
+          description: The Nuance bot ID
+        executionHost:
+          type: string
+          description: The hostname to use when contacting Nuance to execute this bot
+        botCredentials:
+          description: The bot's launch credentials
+          $ref: '#/components/schemas/NuanceBotCredentials'
+      description: Model for setting the launch configuration for a Nuance bot available to Genesys Cloud
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

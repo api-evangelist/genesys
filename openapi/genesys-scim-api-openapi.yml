@@ -6282,6 +6282,487 @@ paths:
         required: true
 components:
   schemas:
+    ScimServiceProviderConfigBulkFeature:
+      type: object
+      properties:
+        supported:
+          type: boolean
+          description: Indicates whether configuration options are supported.
+          readOnly: true
+        maxOperations:
+          type: integer
+          format: int32
+          description: The maximum number of operations for each bulk request.
+          readOnly: true
+        maxPayloadSize:
+          type: integer
+          format: int32
+          description: The maximum payload size.
+          readOnly: true
+      description: Defines a "bulk" request in the SCIM service provider's configuration.
+    ScimUserRoutingSkill:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The case-sensitive name of a routing skill configured in Genesys Cloud.
+        proficiency:
+          type: number
+          format: double
+          description: A rating from 0.0 to 5.0 that indicates how adept an agent is at a particular skill. When "Best available skills" is enabled for a queue in Genesys Cloud, ACD interactions in that queue are routed to agents with higher proficiency ratings.
+      description: The routing skill assigned to a user.
+    ScimGroupListResponse:
+      type: object
+      properties:
+        schemas:
+          type: array
+          description: The list of supported schemas.
+          items:
+            type: string
+        totalResults:
+          type: integer
+          format: int64
+          description: The total number of results.
+          readOnly: true
+        startIndex:
+          type: integer
+          format: int64
+          description: The 1-based index of the first result returned by this request. Add this to "itemsPerPage" when requesting the next page of results.
+          readOnly: true
+        itemsPerPage:
+          type: integer
+          format: int64
+          description: The number of resources returned per page.
+          readOnly: true
+        Resources:
+          type: array
+          description: The list of requested resources. If "count" is 0, then the list will be empty.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ScimV2Group'
+      description: Defines a response for a list of SCIM groups.
+    ScimGenesysUserExternalId:
+      type: object
+      required:
+      - authority
+      - value
+      properties:
+        authority:
+          type: string
+          description: Authority, or scope, of "externalId". Allows multiple external identifiers to be defined. Represents the source of the external identifier.
+        value:
+          type: string
+          description: Identifier of the user in an external system.
+      description: External Identifiers of user. The external identifier must be unique within the organization and the 'authority'
+    ScimV2PatchRequest:
+      type: object
+      required:
+      - schemas
+      properties:
+        schemas:
+          type: array
+          description: The list of schemas used in the PATCH request.
+          items:
+            type: string
+        Operations:
+          type: array
+          description: The list of operations to perform for the PATCH request.
+          items:
+            $ref: '#/components/schemas/ScimV2PatchOperation'
+      description: Defines a SCIM PATCH request. See section 3.5.2 "Modifying with PATCH" in RFC 7644 for details.
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ScimV2SchemaAttribute:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the attribute.
+          readOnly: true
+        type:
+          type: string
+          description: The data type of the attribute.
+          readOnly: true
+          enum:
+          - string
+          - boolean
+          - decimal
+          - integer
+          - dateTime
+          - reference
+          - complex
+        subAttributes:
+          type: array
+          description: The list of subattributes for an attribute of the type "complex". Uses the same schema as "attributes".
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ScimV2SchemaAttribute'
+        multiValued:
+          type: boolean
+          description: Indicates whether an attribute contains multiple values.
+          readOnly: true
+        description:
+          type: string
+          description: The description of the attribute.
+          readOnly: true
+        required:
+          type: boolean
+          description: Indicates whether an attribute is required.
+          readOnly: true
+        canonicalValues:
+          type: array
+          description: The list of standard values that service providers may use. Service providers may ignore unsupported values.
+          readOnly: true
+          items:
+            type: string
+        caseExact:
+          type: boolean
+          description: Indicates whether a string attribute is case-sensitive. If set to "true", the server preserves case sensitivity. If set to "false", the server may change the case. The server also uses case sensitivity when evaluating filters. See section 3.4.2.2 "Filtering" in RFC 7644 for details.
+          readOnly: true
+        mutability:
+          type: string
+          description: The circumstances under which an attribute can be defined or redefined. The default is "readWrite".
+          readOnly: true
+          enum:
+          - readWrite
+          - readOnly
+          - immutable
+          - writeOnly
+        returned:
+          type: string
+          description: The circumstances under which an attribute and its values are returned in response to a GET, PUT, POST, or PATCH request.
+          readOnly: true
+          enum:
+          - always
+          - never
+          - default
+          - request
+        uniqueness:
+          type: string
+          description: The method by which the service provider enforces the uniqueness of an attribute value. A server can reject a value by returning the HTTP response code 400 (Bad Request). A client can enforce uniqueness to a greater degree than the server provider enforces. For example, a client could make a value unique even though the server has "uniqueness" set to "none".
+          readOnly: true
+          enum:
+          - none
+          - server
+          - global
+        referenceTypes:
+          type: array
+          description: The list of SCIM resource types that may be referenced. Only applies when "type" is set to "reference".
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - User
+            - Group
+            - external
+            - uri
+      description: A complex type that defines service provider attributes or subattributes and their qualities.
+    JsonNode:
+      type: object
+    Manager:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The ID of the manager.
+        $ref:
+          type: string
+          format: uri
+          description: The reference URI of the manager's user record.
+          readOnly: true
+      description: Defines a SCIM manager.
+    ScimServiceProviderConfigAuthenticationScheme:
+      type: object
+      required:
+      - description
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: The name of the authentication scheme, for example, HTTP Basic.
+          readOnly: true
+        description:
+          type: string
+          description: The description of the authentication scheme.
+          readOnly: true
+        specUri:
+          type: string
+          format: uri
+          description: The HTTP-addressable URL that points to the authentication scheme's specification.
+          readOnly: true
+        documentationUri:
+          type: string
+          format: uri
+          description: The HTTP-addressable URL that points to the authentication scheme's usage documentation.
+          readOnly: true
+        type:
+          type: string
+          description: The type of authentication scheme.
+          readOnly: true
+          enum:
+          - oauth
+          - oauth2
+          - oauthbearertoken
+          - httpbasic
+          - httpdigest
+        primary:
+          type: boolean
+          description: Indicates whether this authentication scheme is the primary method of authentication.
+          readOnly: true
+      description: Defines an authentication scheme in the SCIM service provider's configuration.
+    ScimMetadata:
+      type: object
+      properties:
+        resourceType:
+          type: string
+          description: The type of SCIM resource.
+          readOnly: true
+          enum:
+          - User
+          - Group
+          - ServiceProviderConfig
+          - ResourceType
+          - Schema
+        lastModified:
+          type: string
+          format: date-time
+          description: The last time that the resource was modified. Date time is represented as an "ISO-8601 string", for example, yyyy-MM-ddTHH:mm:ss.SSSZ. Not included with "Schema" and "ResourceType" resources.
+          readOnly: true
+        location:
+          type: string
+          format: uri
+          description: The URI of the resource.
+          readOnly: true
+        version:
+          type: string
+          description: The version of the resource. Matches the ETag HTTP response header. Not included with "Schema" and "ResourceType" resources.
+          readOnly: true
+      description: Defines the SCIM metadata.
+    ScimV2SchemaListResponse:
+      type: object
+      properties:
+        schemas:
+          type: array
+          description: The list of supported schemas.
+          items:
+            type: string
+        totalResults:
+          type: integer
+          format: int64
+          description: The total number of results.
+          readOnly: true
+        startIndex:
+          type: integer
+          format: int64
+          description: The 1-based index of the first result returned by this request. Add this to "itemsPerPage" when requesting the next page of results.
+          readOnly: true
+        itemsPerPage:
+          type: integer
+          format: int64
+          description: The number of resources returned per page.
+          readOnly: true
+        Resources:
+          type: array
+          description: The list of requested resources.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ScimV2SchemaDefinition'
+      description: Defines the list response for SCIM resource types.
+    ScimV2EnterpriseUser:
+      type: object
+      properties:
+        division:
+          type: string
+          description: The division that the user belongs to.
+        department:
+          type: string
+          description: The department that the user belongs to.
+        manager:
+          description: The user's manager.
+          $ref: '#/components/schemas/Manager'
+        employeeNumber:
+          type: string
+          description: The user's employee number.
+        dateHire:
+          type: string
+          description: The user's hire date. Format in JSON will be YYYY-MM-DD.
+      description: Defines a SCIM enterprise user.
+    ScimUserListResponse:
+      type: object
+      properties:
+        schemas:
+          type: array
+          description: The list of supported schemas.
+          items:
+            type: string
+        totalResults:
+          type: integer
+          format: int64
+          description: The total number of results.
+          readOnly: true
+        startIndex:
+          type: integer
+          format: int64
+          description: The 1-based index of the first result returned by this request. Add this to "itemsPerPage" when requesting the next page of results.
+          readOnly: true
+        itemsPerPage:
+          type: integer
+          format: int64
+          description: The number of resources returned per page.
+          readOnly: true
+        Resources:
+          type: array
+          description: The list of requested resources. If "count" is 0, then the list will be empty.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ScimV2User'
+      description: Defines a response for a list of SCIM users.
+    ScimV2Group:
+      type: object
+      required:
+      - displayName
+      properties:
+        id:
+          type: string
+          description: The ID of the SCIM resource. Set by the service provider. "caseExact" is set to "true". "mutability" is set to "readOnly". "returned" is set to "always".
+          readOnly: true
+        schemas:
+          type: array
+          description: The list of supported schemas.
+          readOnly: true
+          items:
+            type: string
+        displayName:
+          type: string
+          description: The display name of the group.
+          readOnly: true
+        externalId:
+          type: string
+          description: The external ID of the group. Set by the provisioning client. "caseExact" is set to "true". "mutability" is set to "readWrite".
+        members:
+          type: array
+          description: The list of members in the group.
+          items:
+            $ref: '#/components/schemas/ScimV2MemberReference'
+        meta:
+          description: The metadata of the SCIM resource. Metadata is defined as immutable per SCIM RFC.
+          readOnly: true
+          $ref: '#/components/schemas/ScimMetadata'
+      description: Defines a SCIM group.
+    ScimEmail:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The email address. Is immutable if "type" is set to "other".
+        type:
+          type: string
+          description: The type of email address. "value" is immutable if "type" is set to "other".
+          enum:
+          - work
+          - other
+        primary:
+          type: boolean
+          description: Indicates whether the email address is the primary email address.
+      description: Defines a SCIM email address.
+    Empty:
+      type: object
+    ScimServiceProviderConfigFilterFeature:
+      type: object
+      properties:
+        supported:
+          type: boolean
+          description: Indicates whether configuration options are supported.
+          readOnly: true
+        maxResults:
+          type: integer
+          format: int32
+          description: The maximum number of results returned from a filtered query.
+          readOnly: true
+      description: Defines a "filter" request in the SCIM service provider's configuration.
+    ScimServiceProviderConfig:
+      type: object
+      properties:
+        schemas:
+          type: array
+          description: The list of supported schemas.
+          readOnly: true
+          items:
+            type: string
+        documentationUri:
+          type: string
+          format: uri
+          description: The HTTP-addressable URL that points to the service provider's documentation.
+          readOnly: true
+        patch:
+          description: The "patch" configuration options.
+          readOnly: true
+          $ref: '#/components/schemas/ScimServiceProviderConfigSimpleFeature'
+        filter:
+          description: The "filter" configuration options.
+          readOnly: true
+          $ref: '#/components/schemas/ScimServiceProviderConfigFilterFeature'
+        etag:
+          description: The "etag" configuration options.
+          readOnly: true
+          $ref: '#/components/schemas/ScimServiceProviderConfigSimpleFeature'
+        sort:
+          description: The "sort" configuration options.
+          readOnly: true
+          $ref: '#/components/schemas/ScimServiceProviderConfigSimpleFeature'
+        bulk:
+          description: The "bulk" configuration options.
+          readOnly: true
+          $ref: '#/components/schemas/ScimServiceProviderConfigBulkFeature'
+        changePassword:
+          description: The "changePassword" configuration options.
+          readOnly: true
+          $ref: '#/components/schemas/ScimServiceProviderConfigSimpleFeature'
+        authenticationSchemes:
+          type: array
+          description: The list of supported authentication schemes.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ScimServiceProviderConfigAuthenticationScheme'
+        meta:
+          description: The metadata of the SCIM resource. Metadata is defined as immutable per SCIM RFC.
+          readOnly: true
+          $ref: '#/components/schemas/ScimMetadata'
+      description: Defines a SCIM service provider's configuration.
+    ScimV2MemberReference:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of SCIM resource.
+          readOnly: true
+          enum:
+          - User
+          - Group
+          - ServiceProviderConfig
+          - ResourceType
+          - Schema
+        value:
+          type: string
+          description: The ID of the group member. Can be "userId" or "groupId".
+        $ref:
+          type: string
+          format: uri
+          description: The reference URI of the SCIM resource.
+          readOnly: true
+      description: Defines a reference to SCIM group members.
     ErrorBody:
       type: object
       properties:
@@ -6314,6 +6795,106 @@ components:
             $ref: '#/components/schemas/ErrorBody'
         limit:
           $ref: '#/components/schemas/Limit'
+    ScimV2CreateUser:
+      type: object
+      required:
+      - displayName
+      - userName
+      properties:
+        schemas:
+          type: array
+          description: The list of supported schemas.
+          readOnly: true
+          items:
+            type: string
+        active:
+          type: boolean
+          description: Indicates whether the user's administrative status is active.
+        userName:
+          type: string
+          description: The user's Genesys Cloud email address. Must be unique.
+        displayName:
+          type: string
+          description: The display name of the user.
+        password:
+          type: string
+          description: The new password for the Genesys Cloud user. Does not return an existing password. When creating a user, if a password is not supplied, then a password will be randomly generated that is 40 characters in length and contains five characters from each of the password policy groups.
+        title:
+          type: string
+          description: The user's title.
+        phoneNumbers:
+          type: array
+          description: The list of the user's phone numbers.
+          items:
+            $ref: '#/components/schemas/ScimPhoneNumber'
+        emails:
+          type: array
+          description: The list of the user's email addresses.
+          items:
+            $ref: '#/components/schemas/ScimEmail'
+        externalId:
+          type: string
+          description: The external ID of the user. Set by the provisioning client. "caseExact" is set to "true". "mutability" is set to "readWrite".
+        groups:
+          type: array
+          description: The list of groups that the user is a member of. This list is immutable per SCIM RFC and may only be updated using the GROUPS resource endpoint.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ScimV2GroupReference'
+        roles:
+          type: array
+          description: The list of roles assigned to the user.
+          items:
+            $ref: '#/components/schemas/ScimUserRole'
+        urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:
+          description: The URI of the schema for the enterprise user.
+          $ref: '#/components/schemas/ScimV2EnterpriseUser'
+        urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:
+          description: The URI of the schema for the Genesys Cloud user.
+          $ref: '#/components/schemas/ScimUserExtensions'
+      description: Defines the creation of a SCIM user.
+    ScimConfigResourceTypeSchemaExtension:
+      type: object
+      properties:
+        schema:
+          type: string
+          description: The URI of an extended schema, for example, "urn:edu:2.0:Staff". Must be equal to the "id" attribute of a schema.
+          readOnly: true
+        required:
+          type: boolean
+          description: Indicates whether a schema extension is required.
+          readOnly: true
+      description: Defines a SCIM resource type's schema extension.
+    ScimServiceProviderConfigSimpleFeature:
+      type: object
+      properties:
+        supported:
+          type: boolean
+          description: Indicates whether configuration options are supported.
+          readOnly: true
+      description: Defines a request in the SCIM service provider's configuration.
+    ScimV2GroupReference:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of SCIM resource.
+          readOnly: true
+          enum:
+          - User
+          - Group
+          - ServiceProviderConfig
+          - ResourceType
+          - Schema
+        value:
+          type: string
+          description: The ID of the group member. Can be "userId" or "groupId".
+        $ref:
+          type: string
+          format: uri
+          description: The reference URI of the SCIM resource.
+          readOnly: true
+      description: Defines a reference to SCIM groups.
     ScimConfigResourceType:
       type: object
       properties:
@@ -6354,54 +6935,83 @@ components:
           readOnly: true
           $ref: '#/components/schemas/ScimMetadata'
       description: Defines a SCIM resource.
-    ScimV2MemberReference:
+    ScimPhoneNumber:
       type: object
       properties:
+        value:
+          type: string
+          description: The phone number in E.164 or tel URI format, for example, tel:+nnnnnnnn; ext=xxxxx.
         type:
           type: string
-          description: The type of SCIM resource.
+          description: The type of phone number.
+          enum:
+          - work
+          - work2
+          - work3
+          - work4
+          - home
+          - mobile
+          - other
+          - microsoftteams
+          - zoomphone
+          - eightbyeight
+          - ringcentral
+        primary:
+          type: boolean
+          description: Indicates whether the phone number is the primary phone number.
+      description: Defines a SCIM phone number.
+    ScimV2PatchOperation:
+      type: object
+      required:
+      - op
+      properties:
+        op:
+          type: string
+          description: The PATCH operation to perform.
+          enum:
+          - add
+          - replace
+          - remove
+        path:
+          type: string
+          description: The attribute path that describes the target of the operation. Required for a "remove" operation.
+        value:
+          description: The value to set in the path.
+          $ref: '#/components/schemas/JsonNode'
+      description: Defines a SCIM PATCH operation. The path and value follow very specific rules based on operation types. See section 3.5.2 "Modifying with PATCH" in RFC 7644 for details.
+    ScimError:
+      type: object
+      properties:
+        schemas:
+          type: array
+          description: The list of schemas for the SCIM error.
+          readOnly: true
+          items:
+            type: string
+        status:
+          type: string
+          description: The HTTP status code returned for the SCIM error.
+          readOnly: true
+        scimType:
+          type: string
+          description: The type of SCIM error when httpStatus is a "400" error.
           readOnly: true
           enum:
-          - User
-          - Group
-          - ServiceProviderConfig
-          - ResourceType
-          - Schema
-        value:
+          - invalidFilter
+          - tooMany
+          - uniqueness
+          - mutability
+          - invalidSyntax
+          - invalidPath
+          - noTarget
+          - invalidValue
+          - invalidVers
+          - sensitive
+        detail:
           type: string
-          description: The ID of the group member. Can be "userId" or "groupId".
-        $ref:
-          type: string
-          format: uri
-          description: The reference URI of the SCIM resource.
+          description: The detailed description of the SCIM error.
           readOnly: true
-      description: Defines a reference to SCIM group members.
-    ScimUserRole:
-      type: object
-      properties:
-        value:
-          type: string
-          description: The role of the Genesys Cloud user.
-      description: Defines a user role.
-    ScimUserExtensions:
-      type: object
-      properties:
-        routingSkills:
-          type: array
-          description: The list of routing skills assigned to a user. Maximum 50 skills.
-          items:
-            $ref: '#/components/schemas/ScimUserRoutingSkill'
-        routingLanguages:
-          type: array
-          description: The list of routing languages assigned to a user. Maximum 50 languages.
-          items:
-            $ref: '#/components/schemas/ScimUserRoutingLanguage'
-        externalIds:
-          type: array
-          description: The list of external identifiers assigned to user. Always includes an immutable SCIM authority prefixed with "x-pc:scimv2:v1". ExternalIds are searchable with complex filter query parameter using 'authority' and 'value', e.g., filter=urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:externalIds[authority eq "matchAuthName" and value eq "matchingExternalKeyValue"].
-          items:
-            $ref: '#/components/schemas/ScimGenesysUserExternalId'
-      description: Genesys Cloud user extensions to SCIM RFC.
+      description: Defines a SCIM error.
     ScimUserRoutingLanguage:
       type: object
       required:
@@ -6415,68 +7025,6 @@ components:
           format: double
           description: A rating from 0.0 to 5.0 that indicates how fluent an agent is in a particular language. ACD interactions are routed to agents with higher proficiency ratings.
       description: The routing language assigned to a user.
-    Empty:
-      type: object
-    ScimV2EnterpriseUser:
-      type: object
-      properties:
-        division:
-          type: string
-          description: The division that the user belongs to.
-        department:
-          type: string
-          description: The department that the user belongs to.
-        manager:
-          description: The user's manager.
-          $ref: '#/components/schemas/Manager'
-        employeeNumber:
-          type: string
-          description: The user's employee number.
-        dateHire:
-          type: string
-          description: The user's hire date. Format in JSON will be YYYY-MM-DD.
-      description: Defines a SCIM enterprise user.
-    ScimEmail:
-      type: object
-      properties:
-        value:
-          type: string
-          description: The email address. Is immutable if "type" is set to "other".
-        type:
-          type: string
-          description: The type of email address. "value" is immutable if "type" is set to "other".
-          enum:
-          - work
-          - other
-        primary:
-          type: boolean
-          description: Indicates whether the email address is the primary email address.
-      description: Defines a SCIM email address.
-    Manager:
-      type: object
-      properties:
-        value:
-          type: string
-          description: The ID of the manager.
-        $ref:
-          type: string
-          format: uri
-          description: The reference URI of the manager's user record.
-          readOnly: true
-      description: Defines a SCIM manager.
-    ScimGenesysUserExternalId:
-      type: object
-      required:
-      - authority
-      - value
-      properties:
-        authority:
-          type: string
-          description: Authority, or scope, of "externalId". Allows multiple external identifiers to be defined. Represents the source of the external identifier.
-        value:
-          type: string
-          description: Identifier of the user in an external system.
-      description: External Identifiers of user. The external identifier must be unique within the organization and the 'authority'
     Limit:
       type: object
       properties:
@@ -6581,49 +7129,13 @@ components:
         value:
           type: integer
           format: int64
-    ScimUserRoutingSkill:
+    ScimUserRole:
       type: object
-      required:
-      - name
       properties:
-        name:
+        value:
           type: string
-          description: The case-sensitive name of a routing skill configured in Genesys Cloud.
-        proficiency:
-          type: number
-          format: double
-          description: A rating from 0.0 to 5.0 that indicates how adept an agent is at a particular skill. When "Best available skills" is enabled for a queue in Genesys Cloud, ACD interactions in that queue are routed to agents with higher proficiency ratings.
-      description: The routing skill assigned to a user.
-    ScimGroupListResponse:
-      type: object
-      properties:
-        schemas:
-          type: array
-          description: The list of supported schemas.
-          items:
-            type: string
-        totalResults:
-          type: integer
-          format: int64
-          description: The total number of results.
-          readOnly: true
-        startIndex:
-          type: integer
-          format: int64
-          description: The 1-based index of the first result returned by this request. Add this to "itemsPerPage" when requesting the next page of results.
-          readOnly: true
-        itemsPerPage:
-          type: integer
-          format: int64
-          description: The number of resources returned per page.
-          readOnly: true
-        Resources:
-          type: array
-          description: The list of requested resources. If "count" is 0, then the list will be empty.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/ScimV2Group'
-      description: Defines a response for a list of SCIM groups.
+          description: The role of the Genesys Cloud user.
+      description: Defines a user role.
     ScimConfigResourceTypesListResponse:
       type: object
       properties:
@@ -6654,125 +7166,6 @@ components:
           items:
             $ref: '#/components/schemas/ScimConfigResourceType'
       description: Defines a response for a list of SCIM resource types.
-    ScimServiceProviderConfig:
-      type: object
-      properties:
-        schemas:
-          type: array
-          description: The list of supported schemas.
-          readOnly: true
-          items:
-            type: string
-        documentationUri:
-          type: string
-          format: uri
-          description: The HTTP-addressable URL that points to the service provider's documentation.
-          readOnly: true
-        patch:
-          description: The "patch" configuration options.
-          readOnly: true
-          $ref: '#/components/schemas/ScimServiceProviderConfigSimpleFeature'
-        filter:
-          description: The "filter" configuration options.
-          readOnly: true
-          $ref: '#/components/schemas/ScimServiceProviderConfigFilterFeature'
-        etag:
-          description: The "etag" configuration options.
-          readOnly: true
-          $ref: '#/components/schemas/ScimServiceProviderConfigSimpleFeature'
-        sort:
-          description: The "sort" configuration options.
-          readOnly: true
-          $ref: '#/components/schemas/ScimServiceProviderConfigSimpleFeature'
-        bulk:
-          description: The "bulk" configuration options.
-          readOnly: true
-          $ref: '#/components/schemas/ScimServiceProviderConfigBulkFeature'
-        changePassword:
-          description: The "changePassword" configuration options.
-          readOnly: true
-          $ref: '#/components/schemas/ScimServiceProviderConfigSimpleFeature'
-        authenticationSchemes:
-          type: array
-          description: The list of supported authentication schemes.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/ScimServiceProviderConfigAuthenticationScheme'
-        meta:
-          description: The metadata of the SCIM resource. Metadata is defined as immutable per SCIM RFC.
-          readOnly: true
-          $ref: '#/components/schemas/ScimMetadata'
-      description: Defines a SCIM service provider's configuration.
-    ScimV2CreateUser:
-      type: object
-      required:
-      - displayName
-      - userName
-      properties:
-        schemas:
-          type: array
-          description: The list of supported schemas.
-          readOnly: true
-          items:
-            type: string
-        active:
-          type: boolean
-          description: Indicates whether the user's administrative status is active.
-        userName:
-          type: string
-          description: The user's Genesys Cloud email address. Must be unique.
-        displayName:
-          type: string
-          description: The display name of the user.
-        password:
-          type: string
-          description: The new password for the Genesys Cloud user. Does not return an existing password. When creating a user, if a password is not supplied, then a password will be randomly generated that is 40 characters in length and contains five characters from each of the password policy groups.
-        title:
-          type: string
-          description: The user's title.
-        phoneNumbers:
-          type: array
-          description: The list of the user's phone numbers.
-          items:
-            $ref: '#/components/schemas/ScimPhoneNumber'
-        emails:
-          type: array
-          description: The list of the user's email addresses.
-          items:
-            $ref: '#/components/schemas/ScimEmail'
-        externalId:
-          type: string
-          description: The external ID of the user. Set by the provisioning client. "caseExact" is set to "true". "mutability" is set to "readWrite".
-        groups:
-          type: array
-          description: The list of groups that the user is a member of. This list is immutable per SCIM RFC and may only be updated using the GROUPS resource endpoint.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/ScimV2GroupReference'
-        roles:
-          type: array
-          description: The list of roles assigned to the user.
-          items:
-            $ref: '#/components/schemas/ScimUserRole'
-        urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:
-          description: The URI of the schema for the enterprise user.
-          $ref: '#/components/schemas/ScimV2EnterpriseUser'
-        urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:
-          description: The URI of the schema for the Genesys Cloud user.
-          $ref: '#/components/schemas/ScimUserExtensions'
-      description: Defines the creation of a SCIM user.
-    ScimConfigResourceTypeSchemaExtension:
-      type: object
-      properties:
-        schema:
-          type: string
-          description: The URI of an extended schema, for example, "urn:edu:2.0:Staff". Must be equal to the "id" attribute of a schema.
-          readOnly: true
-        required:
-          type: boolean
-          description: Indicates whether a schema extension is required.
-          readOnly: true
-      description: Defines a SCIM resource type's schema extension.
     ScimV2User:
       type: object
       properties:
@@ -6836,59 +7229,25 @@ components:
           readOnly: true
           $ref: '#/components/schemas/ScimMetadata'
       description: Defines a SCIM user.
-    ScimServiceProviderConfigFilterFeature:
+    ScimUserExtensions:
       type: object
       properties:
-        supported:
-          type: boolean
-          description: Indicates whether configuration options are supported.
-          readOnly: true
-        maxResults:
-          type: integer
-          format: int32
-          description: The maximum number of results returned from a filtered query.
-          readOnly: true
-      description: Defines a "filter" request in the SCIM service provider's configuration.
-    ScimUserListResponse:
-      type: object
-      properties:
-        schemas:
+        routingSkills:
           type: array
-          description: The list of supported schemas.
+          description: The list of routing skills assigned to a user. Maximum 50 skills.
           items:
-            type: string
-        totalResults:
-          type: integer
-          format: int64
-          description: The total number of results.
-          readOnly: true
-        startIndex:
-          type: integer
-          format: int64
-          description: The 1-based index of the first result returned by this request. Add this to "itemsPerPage" when requesting the next page of results.
-          readOnly: true
-        itemsPerPage:
-          type: integer
-          format: int64
-          description: The number of resources returned per page.
-          readOnly: true
-        Resources:
+            $ref: '#/components/schemas/ScimUserRoutingSkill'
+        routingLanguages:
           type: array
-          description: The list of requested resources. If "count" is 0, then the list will be empty.
-          readOnly: true
+          description: The list of routing languages assigned to a user. Maximum 50 languages.
           items:
-            $ref: '#/components/schemas/ScimV2User'
-      description: Defines a response for a list of SCIM users.
-    JsonNode:
-      type: object
-    ScimServiceProviderConfigSimpleFeature:
-      type: object
-      properties:
-        supported:
-          type: boolean
-          description: Indicates whether configuration options are supported.
-          readOnly: true
-      description: Defines a request in the SCIM service provider's configuration.
+            $ref: '#/components/schemas/ScimUserRoutingLanguage'
+        externalIds:
+          type: array
+          description: The list of external identifiers assigned to user. Always includes an immutable SCIM authority prefixed with "x-pc:scimv2:v1". ExternalIds are searchable with complex filter query parameter using 'authority' and 'value', e.g., filter=urn:ietf:params:scim:schemas:extension:genesys:purecloud:2.0:User:externalIds[authority eq "matchAuthName" and value eq "matchingExternalKeyValue"].
+          items:
+            $ref: '#/components/schemas/ScimGenesysUserExternalId'
+      description: Genesys Cloud user extensions to SCIM RFC.
     ScimV2SchemaDefinition:
       type: object
       properties:
@@ -6915,365 +7274,6 @@ components:
           readOnly: true
           $ref: '#/components/schemas/ScimMetadata'
       description: Defines a SCIM schema.
-    ScimV2PatchRequest:
-      type: object
-      required:
-      - schemas
-      properties:
-        schemas:
-          type: array
-          description: The list of schemas used in the PATCH request.
-          items:
-            type: string
-        Operations:
-          type: array
-          description: The list of operations to perform for the PATCH request.
-          items:
-            $ref: '#/components/schemas/ScimV2PatchOperation'
-      description: Defines a SCIM PATCH request. See section 3.5.2 "Modifying with PATCH" in RFC 7644 for details.
-    ScimV2PatchOperation:
-      type: object
-      required:
-      - op
-      properties:
-        op:
-          type: string
-          description: The PATCH operation to perform.
-          enum:
-          - add
-          - replace
-          - remove
-        path:
-          type: string
-          description: The attribute path that describes the target of the operation. Required for a "remove" operation.
-        value:
-          description: The value to set in the path.
-          $ref: '#/components/schemas/JsonNode'
-      description: Defines a SCIM PATCH operation. The path and value follow very specific rules based on operation types. See section 3.5.2 "Modifying with PATCH" in RFC 7644 for details.
-    ScimServiceProviderConfigAuthenticationScheme:
-      type: object
-      required:
-      - description
-      - name
-      - type
-      properties:
-        name:
-          type: string
-          description: The name of the authentication scheme, for example, HTTP Basic.
-          readOnly: true
-        description:
-          type: string
-          description: The description of the authentication scheme.
-          readOnly: true
-        specUri:
-          type: string
-          format: uri
-          description: The HTTP-addressable URL that points to the authentication scheme's specification.
-          readOnly: true
-        documentationUri:
-          type: string
-          format: uri
-          description: The HTTP-addressable URL that points to the authentication scheme's usage documentation.
-          readOnly: true
-        type:
-          type: string
-          description: The type of authentication scheme.
-          readOnly: true
-          enum:
-          - oauth
-          - oauth2
-          - oauthbearertoken
-          - httpbasic
-          - httpdigest
-        primary:
-          type: boolean
-          description: Indicates whether this authentication scheme is the primary method of authentication.
-          readOnly: true
-      description: Defines an authentication scheme in the SCIM service provider's configuration.
-    ScimV2GroupReference:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of SCIM resource.
-          readOnly: true
-          enum:
-          - User
-          - Group
-          - ServiceProviderConfig
-          - ResourceType
-          - Schema
-        value:
-          type: string
-          description: The ID of the group member. Can be "userId" or "groupId".
-        $ref:
-          type: string
-          format: uri
-          description: The reference URI of the SCIM resource.
-          readOnly: true
-      description: Defines a reference to SCIM groups.
-    ScimV2SchemaListResponse:
-      type: object
-      properties:
-        schemas:
-          type: array
-          description: The list of supported schemas.
-          items:
-            type: string
-        totalResults:
-          type: integer
-          format: int64
-          description: The total number of results.
-          readOnly: true
-        startIndex:
-          type: integer
-          format: int64
-          description: The 1-based index of the first result returned by this request. Add this to "itemsPerPage" when requesting the next page of results.
-          readOnly: true
-        itemsPerPage:
-          type: integer
-          format: int64
-          description: The number of resources returned per page.
-          readOnly: true
-        Resources:
-          type: array
-          description: The list of requested resources.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/ScimV2SchemaDefinition'
-      description: Defines the list response for SCIM resource types.
-    ScimV2Group:
-      type: object
-      required:
-      - displayName
-      properties:
-        id:
-          type: string
-          description: The ID of the SCIM resource. Set by the service provider. "caseExact" is set to "true". "mutability" is set to "readOnly". "returned" is set to "always".
-          readOnly: true
-        schemas:
-          type: array
-          description: The list of supported schemas.
-          readOnly: true
-          items:
-            type: string
-        displayName:
-          type: string
-          description: The display name of the group.
-          readOnly: true
-        externalId:
-          type: string
-          description: The external ID of the group. Set by the provisioning client. "caseExact" is set to "true". "mutability" is set to "readWrite".
-        members:
-          type: array
-          description: The list of members in the group.
-          items:
-            $ref: '#/components/schemas/ScimV2MemberReference'
-        meta:
-          description: The metadata of the SCIM resource. Metadata is defined as immutable per SCIM RFC.
-          readOnly: true
-          $ref: '#/components/schemas/ScimMetadata'
-      description: Defines a SCIM group.
-    ScimError:
-      type: object
-      properties:
-        schemas:
-          type: array
-          description: The list of schemas for the SCIM error.
-          readOnly: true
-          items:
-            type: string
-        status:
-          type: string
-          description: The HTTP status code returned for the SCIM error.
-          readOnly: true
-        scimType:
-          type: string
-          description: The type of SCIM error when httpStatus is a "400" error.
-          readOnly: true
-          enum:
-          - invalidFilter
-          - tooMany
-          - uniqueness
-          - mutability
-          - invalidSyntax
-          - invalidPath
-          - noTarget
-          - invalidValue
-          - invalidVers
-          - sensitive
-        detail:
-          type: string
-          description: The detailed description of the SCIM error.
-          readOnly: true
-      description: Defines a SCIM error.
-    ScimMetadata:
-      type: object
-      properties:
-        resourceType:
-          type: string
-          description: The type of SCIM resource.
-          readOnly: true
-          enum:
-          - User
-          - Group
-          - ServiceProviderConfig
-          - ResourceType
-          - Schema
-        lastModified:
-          type: string
-          format: date-time
-          description: The last time that the resource was modified. Date time is represented as an "ISO-8601 string", for example, yyyy-MM-ddTHH:mm:ss.SSSZ. Not included with "Schema" and "ResourceType" resources.
-          readOnly: true
-        location:
-          type: string
-          format: uri
-          description: The URI of the resource.
-          readOnly: true
-        version:
-          type: string
-          description: The version of the resource. Matches the ETag HTTP response header. Not included with "Schema" and "ResourceType" resources.
-          readOnly: true
-      description: Defines the SCIM metadata.
-    ScimV2SchemaAttribute:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the attribute.
-          readOnly: true
-        type:
-          type: string
-          description: The data type of the attribute.
-          readOnly: true
-          enum:
-          - string
-          - boolean
-          - decimal
-          - integer
-          - dateTime
-          - reference
-          - complex
-        subAttributes:
-          type: array
-          description: The list of subattributes for an attribute of the type "complex". Uses the same schema as "attributes".
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/ScimV2SchemaAttribute'
-        multiValued:
-          type: boolean
-          description: Indicates whether an attribute contains multiple values.
-          readOnly: true
-        description:
-          type: string
-          description: The description of the attribute.
-          readOnly: true
-        required:
-          type: boolean
-          description: Indicates whether an attribute is required.
-          readOnly: true
-        canonicalValues:
-          type: array
-          description: The list of standard values that service providers may use. Service providers may ignore unsupported values.
-          readOnly: true
-          items:
-            type: string
-        caseExact:
-          type: boolean
-          description: Indicates whether a string attribute is case-sensitive. If set to "true", the server preserves case sensitivity. If set to "false", the server may change the case. The server also uses case sensitivity when evaluating filters. See section 3.4.2.2 "Filtering" in RFC 7644 for details.
-          readOnly: true
-        mutability:
-          type: string
-          description: The circumstances under which an attribute can be defined or redefined. The default is "readWrite".
-          readOnly: true
-          enum:
-          - readWrite
-          - readOnly
-          - immutable
-          - writeOnly
-        returned:
-          type: string
-          description: The circumstances under which an attribute and its values are returned in response to a GET, PUT, POST, or PATCH request.
-          readOnly: true
-          enum:
-          - always
-          - never
-          - default
-          - request
-        uniqueness:
-          type: string
-          description: The method by which the service provider enforces the uniqueness of an attribute value. A server can reject a value by returning the HTTP response code 400 (Bad Request). A client can enforce uniqueness to a greater degree than the server provider enforces. For example, a client could make a value unique even though the server has "uniqueness" set to "none".
-          readOnly: true
-          enum:
-          - none
-          - server
-          - global
-        referenceTypes:
-          type: array
-          description: The list of SCIM resource types that may be referenced. Only applies when "type" is set to "reference".
-          readOnly: true
-          items:
-            type: string
-            enum:
-            - User
-            - Group
-            - external
-            - uri
-      description: A complex type that defines service provider attributes or subattributes and their qualities.
-    ScimServiceProviderConfigBulkFeature:
-      type: object
-      properties:
-        supported:
-          type: boolean
-          description: Indicates whether configuration options are supported.
-          readOnly: true
-        maxOperations:
-          type: integer
-          format: int32
-          description: The maximum number of operations for each bulk request.
-          readOnly: true
-        maxPayloadSize:
-          type: integer
-          format: int32
-          description: The maximum payload size.
-          readOnly: true
-      description: Defines a "bulk" request in the SCIM service provider's configuration.
-    ScimPhoneNumber:
-      type: object
-      properties:
-        value:
-          type: string
-          description: The phone number in E.164 or tel URI format, for example, tel:+nnnnnnnn; ext=xxxxx.
-        type:
-          type: string
-          description: The type of phone number.
-          enum:
-          - work
-          - work2
-          - work3
-          - work4
-          - home
-          - mobile
-          - other
-          - microsoftteams
-          - zoomphone
-          - eightbyeight
-          - ringcentral
-        primary:
-          type: boolean
-          description: Indicates whether the phone number is the primary phone number.
-      description: Defines a SCIM phone number.
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

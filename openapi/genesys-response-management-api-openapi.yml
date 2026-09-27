@@ -2968,23 +2968,156 @@ paths:
         required: true
 components:
   schemas:
-    CreateResponseAssetResponse:
+    LocationEmergencyNumber:
+      type: object
+      properties:
+        e164:
+          type: string
+        number:
+          type: string
+        type:
+          type: string
+          description: The type of emergency number.
+          enum:
+          - default
+          - elin
+    CarouselCard:
+      type: object
+      required:
+      - buttons
+      - header
+      properties:
+        header:
+          description: Header for whatsApp carousel card
+          $ref: '#/components/schemas/MessageHeader'
+        buttons:
+          type: array
+          description: List of buttons to be included in the whatsApp carousel messages template
+          items:
+            $ref: '#/components/schemas/Button'
+        cardBodyText:
+          description: Optional card body text to be included in the whatsApp carousel messages template
+          $ref: '#/components/schemas/CardBodyText'
+    UserStation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A globally unique identifier for this station
+          readOnly: true
+        name:
+          type: string
+        type:
+          type: string
+        associatedUser:
+          $ref: '#/components/schemas/User'
+        associatedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        defaultUser:
+          $ref: '#/components/schemas/User'
+        providerInfo:
+          type: object
+          description: 'Provider-specific info for this station, e.g. { "edgeGroupId": "ffe7b15c-a9cc-4f4c-88f5-781327819a49" }'
+          additionalProperties:
+            type: string
+        webRtcCallAppearances:
+          type: integer
+          format: int32
+          description: The number of call appearances on the station.
+          readOnly: true
+    ResponseAsset:
       type: object
       properties:
         id:
           type: string
           description: The globally unique identifier for the object.
           readOnly: true
-        url:
+        name:
           type: string
-          description: Pre-signed URL to PUT the file to
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/Division'
+        contentLength:
+          type: integer
+          format: int64
+          description: response asset size in bytes
+        contentLocation:
+          type: string
+          description: response asset location.
+        contentType:
+          type: string
+          description: MIME type of response asset
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Created date of the response asset. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        createdBy:
+          description: User who created the response asset
+          $ref: '#/components/schemas/DomainEntityRef'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Last modified date of the response asset. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          description: User who last modified the response asset
+          $ref: '#/components/schemas/DomainEntityRef'
+        responses:
+          type: array
+          description: Canned responses actively using this asset
+          items:
+            $ref: '#/components/schemas/DomainEntityRef'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
           readOnly: true
-        headers:
-          type: object
-          description: Required headers when uploading a file through PUT request to the URL
+    ResponseAssetStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
           readOnly: true
-          additionalProperties:
-            type: string
+        status:
+          type: string
+          description: Upload status of the asset
+          readOnly: true
+          enum:
+          - InProgress
+          - Uploaded
+          - Failed
+        errorCode:
+          type: string
+          description: Error code. Used for localization
+          readOnly: true
+        errorMessage:
+          type: string
+          description: 'Error message that explains upload failure status '
+          readOnly: true
+    QueryCriteriaGroup:
+      type: object
+      properties:
+        and:
+          type: array
+          description: Items that will be AND'd together
+          items:
+            $ref: '#/components/schemas/QueryCriteriaItem'
+        or:
+          type: array
+          description: Items that will be OR'd together
+          items:
+            $ref: '#/components/schemas/QueryCriteriaItem'
+        not:
+          type: array
+          description: Items that must all be false
+          items:
+            $ref: '#/components/schemas/QueryCriteriaItem'
+        criteria:
+          description: A single item
+          $ref: '#/components/schemas/QueryCriteriaItem'
+      description: A group of logical items for library queries
     Contact:
       type: object
       properties:
@@ -3022,146 +3155,17 @@ components:
           type: string
           example: microsoftteams
           description: Integration tag value if this number is associated with an external integration.
-    Image:
-      type: object
-      properties:
-        resolution:
-          type: string
-          description: 'Height and/or width of image. ex: 640x480 or x128'
-        imageUri:
-          type: string
-    ResponseAssetBulkRequest:
+    QueryCriteriaQuery:
       type: object
       required:
-      - assetIds
+      - query
       properties:
-        assetIds:
+        query:
           type: array
-          description: List of Response Asset IDs (max 50)
+          description: List of criteria groups that will be AND'd together
           items:
-            type: string
-          maxItems: 50
-          minItems: 1
-        sortBy:
-          type: string
-          description: 'The field in the resource that you want to sort the results by. Allowed values: name, dateCreated, dateModified, contentLength'
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - asc
-          - desc
-    CreateResponseAssetRequest:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: 'Name of the file to upload. It must not start with a dot and not end with a forward slash. Whitespace and the following characters are not allowed: \{^}%`]">[~<#|'
-        divisionId:
-          type: string
-          description: Division to associate to this asset. Can only be used with this division.
-        contentMd5:
-          type: string
-          description: Content MD-5 of the file to upload
-    ResponseFilter:
-      type: object
-      required:
-      - name
-      - operator
-      - values
-      properties:
-        name:
-          type: string
-          description: Field to filter on. Allowed values are 'name', 'libraryId', 'text.contentType', 'messagingTemplate' and 'responseType'
-        operator:
-          type: string
-          description: 'Filter operation: IN, EQUALS, NOTEQUALS.'
-          enum:
-          - IN
-          - EQUALS
-          - NOTEQUALS
-          - BEGINS_WITH
-          - ENDS_WITH
-          - CONTAINS
-        values:
-          type: array
-          description: Values to filter on. If name is 'responseType' then allowed values are 'CampaignSmsTemplate', 'CampaignEmailTemplate', 'Footer' and 'Signature'
-          items:
-            type: string
-      description: Used to filter response queries
-    Education:
-      type: object
-      properties:
-        school:
-          type: string
-        fieldOfStudy:
-          type: string
-        notes:
-          type: string
-          description: Notes about education has a 2000 character limit
-        dateStart:
-          type: string
-          format: date
-          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEnd:
-          type: string
-          format: date
-          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-    QueryCriteriaGroup:
-      type: object
-      properties:
-        and:
-          type: array
-          description: Items that will be AND'd together
-          items:
-            $ref: '#/components/schemas/QueryCriteriaItem'
-        or:
-          type: array
-          description: Items that will be OR'd together
-          items:
-            $ref: '#/components/schemas/QueryCriteriaItem'
-        not:
-          type: array
-          description: Items that must all be false
-          items:
-            $ref: '#/components/schemas/QueryCriteriaItem'
-        criteria:
-          description: A single item
-          $ref: '#/components/schemas/QueryCriteriaItem'
-      description: A group of logical items for library queries
-    MessagingTemplate:
-      type: object
-      properties:
-        whatsApp:
-          description: Defines a messaging template for a WhatsApp messaging channel
-          $ref: '#/components/schemas/WhatsAppDefinition'
-      description: The messaging template identifies a structured message templates supported by a messaging channel.
-    LocationAddressVerificationDetails:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Status of address verification process
-          enum:
-          - Pending
-          - InProgress
-          - Retry
-          - Complete
-          - Failed
-        dateFinished:
-          type: string
-          format: date-time
-          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        service:
-          type: string
-          example: smartystreets-us
-          description: Third party service used for address verification
+            $ref: '#/components/schemas/QueryCriteriaGroup'
+      description: Query object for searching libraries based on criteria
     ResponseEntityList:
       type: object
       properties:
@@ -3198,30 +3202,506 @@ components:
           type: string
           format: uri
       description: Query result list
-    JsonSchemaDocument:
+    ResponseQueryResults:
+      type: object
+      required:
+      - results
+      properties:
+        results:
+          description: Contains the query results
+          $ref: '#/components/schemas/ResponseEntityList'
+      description: Used to return response query results
+    StatusInfo:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Status code
+          readOnly: true
+        message:
+          type: string
+          description: Status Message
+          readOnly: true
+    ResponseAssetSearchResults:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The total number of results found
+        pageCount:
+          type: integer
+          format: int32
+          description: The total number of pages
+        pageSize:
+          type: integer
+          format: int32
+          description: The current page size
+        pageNumber:
+          type: integer
+          format: int32
+          description: The current page number
+        results:
+          type: array
+          description: Search results
+          items:
+            $ref: '#/components/schemas/ResponseAsset'
+    LocationAddress:
+      type: object
+      properties:
+        city:
+          type: string
+        country:
+          type: string
+        countryName:
+          type: string
+        state:
+          type: string
+        street1:
+          type: string
+        street2:
+          type: string
+        zipcode:
+          type: string
+    ResponseAssetRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: 'Name of the file to upload. It must not start with a dot and not end with a forward slash. Whitespace and the following characters are not allowed: \{^}%`]">[~<#|'
+        divisionId:
+          type: string
+          description: Division to associate to this asset. Can only be used with this division.
+    ResponseText:
+      type: object
+      required:
+      - content
+      properties:
+        content:
+          type: string
+          description: Response text content.
+        contentType:
+          type: string
+          description: Response text content type.
+          enum:
+          - text/plain
+          - text/html
+        type:
+          type: string
+          description: Response text type.
+          enum:
+          - body
+          - subject
+      description: Contains information about the text associated with a response.
+    ResourceConditionValue:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - SCALAR
+          - VARIABLE
+          - USER
+          - QUEUE
+          - TEAM
+        value:
+          type: string
+    MessagingTemplate:
+      type: object
+      properties:
+        whatsApp:
+          description: Defines a messaging template for a WhatsApp messaging channel
+          $ref: '#/components/schemas/WhatsAppDefinition'
+      description: The messaging template identifies a structured message templates supported by a messaging channel.
+    UserConversationSummary:
+      type: object
+      properties:
+        userId:
+          type: string
+        call:
+          $ref: '#/components/schemas/MediaSummary'
+        callback:
+          $ref: '#/components/schemas/MediaSummary'
+        email:
+          $ref: '#/components/schemas/MediaSummary'
+        message:
+          $ref: '#/components/schemas/MediaSummary'
+        chat:
+          $ref: '#/components/schemas/MediaSummary'
+        socialExpression:
+          $ref: '#/components/schemas/MediaSummary'
+        video:
+          $ref: '#/components/schemas/MediaSummary'
+    CreateResponseAssetResponse:
       type: object
       properties:
         id:
           type: string
-        $schema:
+          description: The globally unique identifier for the object.
+          readOnly: true
+        url:
           type: string
-        title:
+          description: Pre-signed URL to PUT the file to
+          readOnly: true
+        headers:
+          type: object
+          description: Required headers when uploading a file through PUT request to the URL
+          readOnly: true
+          additionalProperties:
+            type: string
+    UserRoutingLanguage:
+      type: object
+      properties:
+        id:
           type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        proficiency:
+          type: number
+          format: double
+          description: A rating from 0.0 to 5.0 that indicates how fluent an agent is in a particular language. ACD interactions are routed to agents with higher proficiency ratings.
+        state:
+          type: string
+          description: Activate or deactivate this routing language.
+          enum:
+          - active
+          - inactive
+          - deleted
+        languageUri:
+          type: string
+          format: uri
+          description: URI to the organization language used by this user language.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Represents an organization language assigned to a user. When assigning to a user specify the organization language id as the id.
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    UserStations:
+      type: object
+      properties:
+        associatedStation:
+          description: Current associated station for this user.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+        effectiveStation:
+          description: The station where the user can be reached based on their default and associated station.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+        defaultStation:
+          description: Default station to be used if not associated with a station.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+        lastAssociatedStation:
+          description: Last associated station for this user.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+    LocationImage:
+      type: object
+      properties:
+        resolution:
+          type: string
+          description: 'Height and/or width of image. ex: 640x480 or x128'
+        imageUri:
+          type: string
+    Education:
+      type: object
+      properties:
+        school:
+          type: string
+        fieldOfStudy:
+          type: string
+        notes:
+          type: string
+          description: Notes about education has a 2000 character limit
+        dateStart:
+          type: string
+          format: date
+          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEnd:
+          type: string
+          format: date
+          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+    Location:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the location
+        floorplanId:
+          type: string
+          description: Unique identifier for the location floorplan image
+          readOnly: true
+        coordinates:
+          type: object
+          description: Users coordinates on the floorplan. Only used when floorplanImage is set
+          additionalProperties:
+            type: number
+            format: double
+        notes:
+          type: string
+          description: Optional description on the users location
+        locationDefinition:
+          $ref: '#/components/schemas/LocationDefinition'
+    MessageFooter:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Defines the content type of the footer in message
+          enum:
+          - Text
+        content:
+          type: string
+          description: Content associated with the footer in the message
+    ResponseFilter:
+      type: object
+      required:
+      - name
+      - operator
+      - values
+      properties:
+        name:
+          type: string
+          description: Field to filter on. Allowed values are 'name', 'libraryId', 'text.contentType', 'messagingTemplate' and 'responseType'
+        operator:
+          type: string
+          description: 'Filter operation: IN, EQUALS, NOTEQUALS.'
+          enum:
+          - IN
+          - EQUALS
+          - NOTEQUALS
+          - BEGINS_WITH
+          - ENDS_WITH
+          - CONTAINS
+        values:
+          type: array
+          description: Values to filter on. If name is 'responseType' then allowed values are 'CampaignSmsTemplate', 'CampaignEmailTemplate', 'Footer' and 'Signature'
+          items:
+            type: string
+      description: Used to filter response queries
+    LibraryBatchRequest:
+      type: object
+      required:
+      - libraryIds
+      properties:
+        libraryIds:
+          type: array
+          description: List of Library IDs
+          items:
+            type: string
+    UserPresence:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        source:
+          type: string
+          description: Deprecated - The sourceID field should be used as a replacement.
+        sourceId:
+          type: string
+          description: Represents the ID of a registered source
+        primary:
+          type: boolean
+          description: A boolean used to tell whether or not to set this presence source as the primary on a PATCH
+        presenceDefinition:
+          $ref: '#/components/schemas/PresenceDefinition'
+        futurePresenceDefinition:
+          description: The definition of the user's desired future presence
+          readOnly: true
+          $ref: '#/components/schemas/PresenceDefinition'
+        message:
+          type: string
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    RmsAssetAddressableRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+        assetUsage:
+          type: string
+          description: Usage of the asset. Null for inline images, 'FileAttachments' for file attachments
+          enum:
+          - FileAttachments
+        contentLocation:
+          type: string
+          description: Content location URL for the asset
+    ResponseSubstitution:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: Response substitution identifier.
         description:
+          type: string
+          description: Response substitution description.
+        defaultValue:
+          type: string
+          description: Response substitution default value.
+      description: Contains information about the substitutions associated with a response.
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    QueryCriteriaItem:
+      type: object
+      required:
+      - key
+      - operator
+      properties:
+        key:
+          type: string
+          description: The key to filter on
+          enum:
+          - Name
+          - DivisionId
+          - Id
+          - CreatedBy
+        operator:
+          type: string
+          description: The operator for comparison. For DivisionId, only EQUALS and NOTEQUALS operators are supported.
+          enum:
+          - IN
+          - EQUALS
+          - NOTEQUALS
+          - BEGINS_WITH
+          - ENDS_WITH
+          - CONTAINS
+        value:
+          type: string
+          description: The target value to match
+      description: A singular item used to query libraries
+    FooterTemplate:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Specifies the type represented by Footer.
+          enum:
+          - Signature
+        applicableResources:
+          type: array
+          description: Specifies the canned response template where the footer can be used.
+          items:
+            type: string
+            enum:
+            - Campaign
+      description: The Footer template identifies the Footer type and its footerUsage
+    Geolocation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
           type: string
         type:
           type: string
-        required:
+          description: A string used to describe the type of client the geolocation is being updated from e.g. ios, android, web, etc.
+        primary:
+          type: boolean
+          description: A boolean used to tell whether or not to set this geolocation client as the primary on a PATCH
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        country:
+          type: string
+        region:
+          type: string
+        city:
+          type: string
+        locations:
           type: array
           items:
-            type: string
-        properties:
-          type: object
-          additionalProperties:
-            type: object
-        additionalProperties:
-          type: object
-      description: A JSON Schema document.
+            $ref: '#/components/schemas/LocationDefinition'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    RoutingStatus:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The userId of the agent
+        status:
+          type: string
+          description: Indicates the Routing State of the agent.  A value of OFF_QUEUE will be returned if the specified user does not exist.
+          enum:
+          - OFF_QUEUE
+          - IDLE
+          - INTERACTING
+          - NOT_RESPONDING
+          - COMMUNICATING
+        startTime:
+          type: string
+          format: date-time
+          description: 'The timestamp when the agent went into this state. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
     Response:
       type: object
       required:
@@ -3301,35 +3781,218 @@ components:
           description: The URI for this object
           readOnly: true
       description: Contains information about a response.
-    UserStation:
+    WorkPlanBidRanks:
       type: object
       properties:
         id:
           type: string
-          description: A globally unique identifier for this station
-          readOnly: true
-        name:
-          type: string
-        type:
-          type: string
-        associatedUser:
-          $ref: '#/components/schemas/User'
-        associatedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        defaultUser:
-          $ref: '#/components/schemas/User'
-        providerInfo:
-          type: object
-          description: 'Provider-specific info for this station, e.g. { "edgeGroupId": "ffe7b15c-a9cc-4f4c-88f5-781327819a49" }'
-          additionalProperties:
-            type: string
-        webRtcCallAppearances:
+          description: The globally unique identifier for the user.
+        workPlanBiddingPerformance:
           type: integer
           format: int32
-          description: The number of call appearances on the station.
+          description: Work plan bidding agent performance ranking. The range of values is between 0 and 9999.
+        biddingTieBreaker:
+          type: string
+          description: Custom agent ranking metric that some customers can use.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
           readOnly: true
+    DomainRole:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the role
+        name:
+          type: string
+          description: The name of the role
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    ResponseAssetFilter:
+      type: object
+      properties:
+        endValue:
+          type: string
+          description: The end value of the range. This field is used for range search types. Accepts numbers and date in ISO8601 format
+        values:
+          type: array
+          description: A list of values for the search to match against
+          items:
+            type: string
+        startValue:
+          type: string
+          description: The start value of the range. This field is used for range search types. Accepts numbers and date in ISO8601 format
+        fields:
+          type: array
+          description: 'Field name to search against. Allowed Values: divisionId, name, contentLength, contentType, dateCreated'
+          items:
+            type: string
+        value:
+          type: string
+          description: A value for the search to match against
+        type:
+          type: string
+          description: How to apply this search criteria against other criteria. Filter type supported for each field:- name:[STARTS_WITH, TERM], divisionId:[TERM, TERMS], contentLength:[RANGE, GREATER_THAN_EQUAL_TO, LESS_THAN_EQUAL_TO], contentType:[STARTS_WITH, TERM] dateCreated:[DATE_RANGE]
+          enum:
+          - TERM
+          - TERMS
+          - STARTS_WITH
+          - RANGE
+          - GREATER_THAN_EQUAL_TO
+          - LESS_THAN_EQUAL_TO
+          - DATE_RANGE
+    CardBodyText:
+      type: object
+      required:
+      - content
+      - contentType
+      properties:
+        content:
+          type: string
+          description: Body content for carousel card.
+        contentType:
+          type: string
+          description: 'Body content type for carousel card. Allowed value: text/plain'
+          enum:
+          - text/plain
+    ResponseEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Response'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
     Library:
       type: object
       required:
@@ -3373,47 +4036,76 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Button:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Type of button to include in whatsApp template
-          enum:
-          - QuickReply
-          - PhoneNumber
-          - Url
-        content:
-          type: string
-          description: Content of the button. Use for 'Url' or 'PhoneNumber' button type
-        contentText:
-          type: string
-          description: The text label that will be displayed on the button
-        payload:
-          type: string
-          description: A payload to uniquely identify a quickReply button in carousel
-    AddressableEntityRef:
+    OutOfOffice:
       type: object
       properties:
         id:
           type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+        startDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        endDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        active:
+          type: boolean
+        indefinite:
+          type: boolean
         selfUri:
           type: string
           format: uri
-    MediaSummary:
+          description: The URI for this object
+          readOnly: true
+    JsonSchemaDocument:
       type: object
       properties:
-        contactCenter:
-          $ref: '#/components/schemas/MediaSummaryDetail'
-        enterprise:
-          $ref: '#/components/schemas/MediaSummaryDetail'
-    ResponseEntityListing:
+        id:
+          type: string
+        $schema:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        required:
+          type: array
+          items:
+            type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        additionalProperties:
+          type: object
+      description: A JSON Schema document.
+    Carousel:
+      type: object
+      required:
+      - cards
+      properties:
+        cards:
+          type: array
+          description: List of cards in a carousels template.
+          items:
+            $ref: '#/components/schemas/CarouselCard'
+      description: A WhatsApp Carousel messaging template definition
+    LibraryEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/Response'
+            $ref: '#/components/schemas/Library'
         pageSize:
           type: integer
           format: int32
@@ -3441,11 +4133,581 @@ components:
         pageCount:
           type: integer
           format: int32
+    ResponseQueryRequest:
+      type: object
+      properties:
+        queryPhrase:
+          type: string
+          description: Query phrase to search response text and name. If not set will match all.
+        pageSize:
+          type: integer
+          format: int32
+          description: 'The maximum number of hits to return. Default: 25, Maximum: 500.'
+        pageNumber:
+          type: integer
+          format: int32
+          description: Page Number
+        filters:
+          type: array
+          description: Filter the query results.
+          items:
+            $ref: '#/components/schemas/ResponseFilter'
+      description: Used to query for responses
+    AppleInvitation:
+      type: object
+      required:
+      - businessName
+      - locale
+      - templateType
+      - transcriptMessage
+      properties:
+        businessName:
+          type: string
+          description: The business name displayed in the invitation
+        transcriptMessage:
+          type: string
+          description: The transcript message displayed in the invitation
+        templateType:
+          type: string
+          description: The template type for the invitation
+          enum:
+          - WithImage
+          - WithoutImage
+        locale:
+          type: string
+          description: The locale for the invitation
+      description: Apple Messages for Business invitation template configuration
+    CreateResponseAssetRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: 'Name of the file to upload. It must not start with a dot and not end with a forward slash. Whitespace and the following characters are not allowed: \{^}%`]">[~<#|'
+        divisionId:
+          type: string
+          description: Division to associate to this asset. Can only be used with this division.
+        contentMd5:
+          type: string
+          description: Content MD-5 of the file to upload
+    MessageHeader:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Defines the content type of the Header in message
+          enum:
+          - Text
+          - Image
+          - Video
+          - Document
+        content:
+          type: string
+          description: Content associated with the header in the message
+    WhatsAppDefinition:
+      type: object
+      required:
+      - language
+      - name
+      properties:
+        name:
+          type: string
+          description: The messaging template name.
+        namespace:
+          type: string
+          description: The messaging template namespace.
+        language:
+          type: string
+          description: The messaging template language configured for this template. This is a WhatsApp specific value. For example, 'en_US'
+        buttons:
+          type: array
+          description: List of buttons to be included in the standard WhatsApp messages channel
+          items:
+            $ref: '#/components/schemas/Button'
+        messageFooter:
+          description: Footer for the message in the standard WhatsApp messages channel
+          $ref: '#/components/schemas/MessageFooter'
+        header:
+          description: Header for the message in the standard WhatsApp messages channel
+          $ref: '#/components/schemas/MessageHeader'
+        integrationId:
+          type: string
+          description: WhatsApp integration ID for whatsApp carousels
+        category:
+          type: string
+          description: Category of whatsApp carousels template.
+          enum:
+          - marketing
+        templateStatus:
+          type: string
+          description: Template status of whatsApp carousels template.
+          readOnly: true
+        statusInfo:
+          description: Status information about the template
+          readOnly: true
+          $ref: '#/components/schemas/StatusInfo'
+        carousel:
+          description: Definition for whatsApp carousels template.
+          $ref: '#/components/schemas/Carousel'
+      description: A WhatsApp messaging template definition as defined in the WhatsApp Business Manager
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    LocationDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        contactUser:
+          description: Site contact for the location entity
+          $ref: '#/components/schemas/AddressableEntityRef'
+        emergencyNumber:
+          description: Emergency number for the location entity
+          $ref: '#/components/schemas/LocationEmergencyNumber'
+        address:
+          $ref: '#/components/schemas/LocationAddress'
+        state:
+          type: string
+          description: Current state of the location entity
+          enum:
+          - active
+          - deleted
+        notes:
+          type: string
+          description: Notes for the location entity
+        version:
+          type: integer
+          format: int32
+          description: Current version of the location entity, value to be supplied should be retrieved by a GET or on create/update response
+        path:
+          type: array
+          description: A list of ancestor IDs in order
+          readOnly: true
+          items:
+            type: string
+        profileImage:
+          type: array
+          description: Profile image of the location entity, retrieved with ?expand=images query parameter
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LocationImage'
+        floorplanImage:
+          type: array
+          description: Floorplan images of the location entity, retrieved with ?expand=images query parameter
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LocationImage'
+        addressVerificationDetails:
+          description: Address verification information, retrieve dwith the ?expand=addressVerificationDetails query parameter
+          readOnly: true
+          $ref: '#/components/schemas/LocationAddressVerificationDetails'
+        addressVerified:
+          type: boolean
+          description: Boolean field which states if the address has been verified as an actual address
+          readOnly: true
+        addressStored:
+          type: boolean
+          description: Boolean field which states if the address has been stored for E911
+          readOnly: true
+        images:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    GroupContact:
+      type: object
+      required:
+      - address
+      - mediaType
+      - type
+      properties:
+        address:
+          type: string
+          description: Phone number for this contact type
+        extension:
+          type: string
+          description: Extension is set if the number is e164 valid
+        display:
+          type: string
+          description: Formatted version of the address property
+          readOnly: true
+        type:
+          type: string
+          description: Contact type of the address
+          enum:
+          - GROUPRING
+          - GROUPPHONE
+        mediaType:
+          type: string
+          description: Media type of the address
+          enum:
+          - PHONE
+    MediaSummaryDetail:
+      type: object
+      properties:
+        active:
+          type: integer
+          format: int32
+        acw:
+          type: integer
+          format: int32
+    ResponseAssetSearchRequest:
+      type: object
+      required:
+      - query
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+          description: 'The number of results per page. Default: 25, Maximum: 100.'
+        pageNumber:
+          type: integer
+          format: int32
+          description: The page of resources you want to retrieve
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
+        query:
+          type: array
+          description: Filter the query results.
+          items:
+            $ref: '#/components/schemas/ResponseAssetFilter'
+    EmployerInfo:
+      type: object
+      properties:
+        officialName:
+          type: string
+        employeeId:
+          type: string
+        employeeType:
+          type: string
+        dateHire:
+          type: string
+    ResourceConditionNode:
+      type: object
+      properties:
+        variableName:
+          type: string
+        conjunction:
+          type: string
+          enum:
+          - AND
+          - OR
+        operator:
+          type: string
+          enum:
+          - EQ
+          - IN
+          - GE
+          - GT
+          - LE
+          - LT
+        operands:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceConditionValue'
+        terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceConditionNode'
+    PresenceDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: description
+        systemPresence:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Button:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type of button to include in whatsApp template
+          enum:
+          - QuickReply
+          - PhoneNumber
+          - Url
+        content:
+          type: string
+          description: Content of the button. Use for 'Url' or 'PhoneNumber' button type
+        contentText:
+          type: string
+          description: The text label that will be displayed on the button
+        payload:
+          type: string
+          description: A payload to uniquely identify a quickReply button in carousel
+    UserAuthorization:
+      type: object
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DomainRole'
+        unusedRoles:
+          type: array
+          description: A collection of the roles the user is not using
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/DomainRole'
+        permissions:
+          type: array
+          description: A collection of the permissions granted by all assigned roles
+          readOnly: true
+          items:
+            type: string
+        permissionPolicies:
+          type: array
+          description: The policies configured for assigned permissions.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ResourcePermissionPolicy'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ResponseAssetEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          description: List of response assets
+          items:
+            $ref: '#/components/schemas/ResponseAsset'
+        notFound:
+          type: array
+          description: Asset IDs not found
+          items:
+            type: string
+    ResponseAssetBulkRequest:
+      type: object
+      required:
+      - assetIds
+      properties:
+        assetIds:
+          type: array
+          description: List of Response Asset IDs (max 50)
+          items:
+            type: string
+          maxItems: 50
+          minItems: 1
+        sortBy:
+          type: string
+          description: 'The field in the resource that you want to sort the results by. Allowed values: name, dateCreated, dateModified, contentLength'
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - asc
+          - desc
+    LocationAddressVerificationDetails:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of address verification process
+          enum:
+          - Pending
+          - InProgress
+          - Retry
+          - Complete
+          - Failed
+        dateFinished:
+          type: string
+          format: date-time
+          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        service:
+          type: string
+          example: smartystreets-us
+          description: Third party service used for address verification
+    Division:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    OAuthLastTokenIssued:
+      type: object
+      properties:
+        dateIssued:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    Image:
+      type: object
+      properties:
+        resolution:
+          type: string
+          description: 'Height and/or width of image. ex: 640x480 or x128'
+        imageUri:
+          type: string
     Chat:
       type: object
       properties:
         jabberId:
           type: string
+    Team:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The team name
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/WritableDivision'
+        description:
+          type: string
+          description: Team information.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        memberCount:
+          type: integer
+          format: int64
+          description: Number of members in a team
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ResourcePermissionPolicy:
+      type: object
+      properties:
+        id:
+          type: string
+        domain:
+          type: string
+        entityName:
+          type: string
+        policyName:
+          type: string
+        policyDescription:
+          type: string
+        actionSetKey:
+          type: string
+        allowConditions:
+          type: boolean
+        resourceConditionNode:
+          $ref: '#/components/schemas/ResourceConditionNode'
+        namedResources:
+          type: array
+          items:
+            type: string
+        resourceCondition:
+          type: string
+        actionSet:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    UserRoutingSkill:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        proficiency:
+          type: number
+          format: double
+          description: A rating from 0.0 to 5.0 that indicates how adept an agent is at a particular skill. When "Best available skills" is enabled for a queue in Genesys Cloud, ACD interactions in that queue are routed to agents with higher proficiency ratings.
+        state:
+          type: string
+          description: Activate or deactivate this routing skill.
+          enum:
+          - active
+          - inactive
+          - deleted
+        skillUri:
+          type: string
+          format: uri
+          description: URI to the organization skill used by this user skill.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Represents an organization skill assigned to a user. When assigning to a user specify the organization skill id as the id.
+    Biography:
+      type: object
+      properties:
+        biography:
+          type: string
+          description: Personal detailed description
+        interests:
+          type: array
+          items:
+            type: string
+        hobbies:
+          type: array
+          items:
+            type: string
+        spouse:
+          type: string
+        education:
+          type: array
+          description: User education details
+          items:
+            $ref: '#/components/schemas/Education'
     WritableDivision:
       type: object
       properties:
@@ -3459,43 +4721,13 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    UserConversationSummary:
+    MediaSummary:
       type: object
       properties:
-        userId:
-          type: string
-        call:
-          $ref: '#/components/schemas/MediaSummary'
-        callback:
-          $ref: '#/components/schemas/MediaSummary'
-        email:
-          $ref: '#/components/schemas/MediaSummary'
-        message:
-          $ref: '#/components/schemas/MediaSummary'
-        chat:
-          $ref: '#/components/schemas/MediaSummary'
-        socialExpression:
-          $ref: '#/components/schemas/MediaSummary'
-        video:
-          $ref: '#/components/schemas/MediaSummary'
-    WorkPlanBidRanks:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the user.
-        workPlanBiddingPerformance:
-          type: integer
-          format: int32
-          description: Work plan bidding agent performance ranking. The range of values is between 0 and 9999.
-        biddingTieBreaker:
-          type: string
-          description: Custom agent ranking metric that some customers can use.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
+        contactCenter:
+          $ref: '#/components/schemas/MediaSummaryDetail'
+        enterprise:
+          $ref: '#/components/schemas/MediaSummaryDetail'
     Group:
       type: object
       required:
@@ -3579,510 +4811,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    LocationImage:
-      type: object
-      properties:
-        resolution:
-          type: string
-          description: 'Height and/or width of image. ex: 640x480 or x128'
-        imageUri:
-          type: string
-    Location:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the location
-        floorplanId:
-          type: string
-          description: Unique identifier for the location floorplan image
-          readOnly: true
-        coordinates:
-          type: object
-          description: Users coordinates on the floorplan. Only used when floorplanImage is set
-          additionalProperties:
-            type: number
-            format: double
-        notes:
-          type: string
-          description: Optional description on the users location
-        locationDefinition:
-          $ref: '#/components/schemas/LocationDefinition'
-    ResponseAssetFilter:
-      type: object
-      properties:
-        endValue:
-          type: string
-          description: The end value of the range. This field is used for range search types. Accepts numbers and date in ISO8601 format
-        values:
-          type: array
-          description: A list of values for the search to match against
-          items:
-            type: string
-        startValue:
-          type: string
-          description: The start value of the range. This field is used for range search types. Accepts numbers and date in ISO8601 format
-        fields:
-          type: array
-          description: 'Field name to search against. Allowed Values: divisionId, name, contentLength, contentType, dateCreated'
-          items:
-            type: string
-        value:
-          type: string
-          description: A value for the search to match against
-        type:
-          type: string
-          description: How to apply this search criteria against other criteria. Filter type supported for each field:- name:[STARTS_WITH, TERM], divisionId:[TERM, TERMS], contentLength:[RANGE, GREATER_THAN_EQUAL_TO, LESS_THAN_EQUAL_TO], contentType:[STARTS_WITH, TERM] dateCreated:[DATE_RANGE]
-          enum:
-          - TERM
-          - TERMS
-          - STARTS_WITH
-          - RANGE
-          - GREATER_THAN_EQUAL_TO
-          - LESS_THAN_EQUAL_TO
-          - DATE_RANGE
-    ResponseAssetStatus:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        status:
-          type: string
-          description: Upload status of the asset
-          readOnly: true
-          enum:
-          - InProgress
-          - Uploaded
-          - Failed
-        errorCode:
-          type: string
-          description: Error code. Used for localization
-          readOnly: true
-        errorMessage:
-          type: string
-          description: 'Error message that explains upload failure status '
-          readOnly: true
-    OutOfOffice:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        user:
-          $ref: '#/components/schemas/User'
-        startDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        endDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        active:
-          type: boolean
-        indefinite:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ResponseAsset:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/Division'
-        contentLength:
-          type: integer
-          format: int64
-          description: response asset size in bytes
-        contentLocation:
-          type: string
-          description: response asset location.
-        contentType:
-          type: string
-          description: MIME type of response asset
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Created date of the response asset. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        createdBy:
-          description: User who created the response asset
-          $ref: '#/components/schemas/DomainEntityRef'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Last modified date of the response asset. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          description: User who last modified the response asset
-          $ref: '#/components/schemas/DomainEntityRef'
-        responses:
-          type: array
-          description: Canned responses actively using this asset
-          items:
-            $ref: '#/components/schemas/DomainEntityRef'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Team:
-      type: object
-      required:
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The team name
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/WritableDivision'
-        description:
-          type: string
-          description: Team information.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        memberCount:
-          type: integer
-          format: int64
-          description: Number of members in a team
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    StatusInfo:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Status code
-          readOnly: true
-        message:
-          type: string
-          description: Status Message
-          readOnly: true
-    LocationAddress:
-      type: object
-      properties:
-        city:
-          type: string
-        country:
-          type: string
-        countryName:
-          type: string
-        state:
-          type: string
-        street1:
-          type: string
-        street2:
-          type: string
-        zipcode:
-          type: string
-    LocationEmergencyNumber:
-      type: object
-      properties:
-        e164:
-          type: string
-        number:
-          type: string
-        type:
-          type: string
-          description: The type of emergency number.
-          enum:
-          - default
-          - elin
-    CardBodyText:
-      type: object
-      required:
-      - content
-      - contentType
-      properties:
-        content:
-          type: string
-          description: Body content for carousel card.
-        contentType:
-          type: string
-          description: 'Body content type for carousel card. Allowed value: text/plain'
-          enum:
-          - text/plain
-    QueryCriteriaItem:
-      type: object
-      required:
-      - key
-      - operator
-      properties:
-        key:
-          type: string
-          description: The key to filter on
-          enum:
-          - Name
-          - DivisionId
-          - Id
-          - CreatedBy
-        operator:
-          type: string
-          description: The operator for comparison. For DivisionId, only EQUALS and NOTEQUALS operators are supported.
-          enum:
-          - IN
-          - EQUALS
-          - NOTEQUALS
-          - BEGINS_WITH
-          - ENDS_WITH
-          - CONTAINS
-        value:
-          type: string
-          description: The target value to match
-      description: A singular item used to query libraries
-    ResponseAssetEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          description: List of response assets
-          items:
-            $ref: '#/components/schemas/ResponseAsset'
-        notFound:
-          type: array
-          description: Asset IDs not found
-          items:
-            type: string
-    LocationDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        contactUser:
-          description: Site contact for the location entity
-          $ref: '#/components/schemas/AddressableEntityRef'
-        emergencyNumber:
-          description: Emergency number for the location entity
-          $ref: '#/components/schemas/LocationEmergencyNumber'
-        address:
-          $ref: '#/components/schemas/LocationAddress'
-        state:
-          type: string
-          description: Current state of the location entity
-          enum:
-          - active
-          - deleted
-        notes:
-          type: string
-          description: Notes for the location entity
-        version:
-          type: integer
-          format: int32
-          description: Current version of the location entity, value to be supplied should be retrieved by a GET or on create/update response
-        path:
-          type: array
-          description: A list of ancestor IDs in order
-          readOnly: true
-          items:
-            type: string
-        profileImage:
-          type: array
-          description: Profile image of the location entity, retrieved with ?expand=images query parameter
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LocationImage'
-        floorplanImage:
-          type: array
-          description: Floorplan images of the location entity, retrieved with ?expand=images query parameter
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LocationImage'
-        addressVerificationDetails:
-          description: Address verification information, retrieve dwith the ?expand=addressVerificationDetails query parameter
-          readOnly: true
-          $ref: '#/components/schemas/LocationAddressVerificationDetails'
-        addressVerified:
-          type: boolean
-          description: Boolean field which states if the address has been verified as an actual address
-          readOnly: true
-        addressStored:
-          type: boolean
-          description: Boolean field which states if the address has been stored for E911
-          readOnly: true
-        images:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    MessageFooter:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Defines the content type of the footer in message
-          enum:
-          - Text
-        content:
-          type: string
-          description: Content associated with the footer in the message
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    ResourcePermissionPolicy:
-      type: object
-      properties:
-        id:
-          type: string
-        domain:
-          type: string
-        entityName:
-          type: string
-        policyName:
-          type: string
-        policyDescription:
-          type: string
-        actionSetKey:
-          type: string
-        allowConditions:
-          type: boolean
-        resourceConditionNode:
-          $ref: '#/components/schemas/ResourceConditionNode'
-        namedResources:
-          type: array
-          items:
-            type: string
-        resourceCondition:
-          type: string
-        actionSet:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
-    Carousel:
-      type: object
-      required:
-      - cards
-      properties:
-        cards:
-          type: array
-          description: List of cards in a carousels template.
-          items:
-            $ref: '#/components/schemas/CarouselCard'
-      description: A WhatsApp Carousel messaging template definition
-    ResponseQueryRequest:
-      type: object
-      properties:
-        queryPhrase:
-          type: string
-          description: Query phrase to search response text and name. If not set will match all.
-        pageSize:
-          type: integer
-          format: int32
-          description: 'The maximum number of hits to return. Default: 25, Maximum: 500.'
-        pageNumber:
-          type: integer
-          format: int32
-          description: Page Number
-        filters:
-          type: array
-          description: Filter the query results.
-          items:
-            $ref: '#/components/schemas/ResponseFilter'
-      description: Used to query for responses
-    LibraryBatchRequest:
-      type: object
-      required:
-      - libraryIds
-      properties:
-        libraryIds:
-          type: array
-          description: List of Library IDs
-          items:
-            type: string
-    UserStations:
-      type: object
-      properties:
-        associatedStation:
-          description: Current associated station for this user.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        effectiveStation:
-          description: The station where the user can be reached based on their default and associated station.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        defaultStation:
-          description: Default station to be used if not associated with a station.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        lastAssociatedStation:
-          description: Last associated station for this user.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-    ResponseAssetSearchResults:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-          description: The total number of results found
-        pageCount:
-          type: integer
-          format: int32
-          description: The total number of pages
-        pageSize:
-          type: integer
-          format: int32
-          description: The current page size
-        pageNumber:
-          type: integer
-          format: int32
-          description: The current page number
-        results:
-          type: array
-          description: Search results
-          items:
-            $ref: '#/components/schemas/ResponseAsset'
-    DomainRole:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the role
-        name:
-          type: string
-          description: The name of the role
     User:
       type: object
       required:
@@ -4241,734 +4969,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    RmsAssetAddressableRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-        assetUsage:
-          type: string
-          description: Usage of the asset. Null for inline images, 'FileAttachments' for file attachments
-          enum:
-          - FileAttachments
-        contentLocation:
-          type: string
-          description: Content location URL for the asset
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    UserRoutingSkill:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        proficiency:
-          type: number
-          format: double
-          description: A rating from 0.0 to 5.0 that indicates how adept an agent is at a particular skill. When "Best available skills" is enabled for a queue in Genesys Cloud, ACD interactions in that queue are routed to agents with higher proficiency ratings.
-        state:
-          type: string
-          description: Activate or deactivate this routing skill.
-          enum:
-          - active
-          - inactive
-          - deleted
-        skillUri:
-          type: string
-          format: uri
-          description: URI to the organization skill used by this user skill.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Represents an organization skill assigned to a user. When assigning to a user specify the organization skill id as the id.
-    UserPresence:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        source:
-          type: string
-          description: Deprecated - The sourceID field should be used as a replacement.
-        sourceId:
-          type: string
-          description: Represents the ID of a registered source
-        primary:
-          type: boolean
-          description: A boolean used to tell whether or not to set this presence source as the primary on a PATCH
-        presenceDefinition:
-          $ref: '#/components/schemas/PresenceDefinition'
-        futurePresenceDefinition:
-          description: The definition of the user's desired future presence
-          readOnly: true
-          $ref: '#/components/schemas/PresenceDefinition'
-        message:
-          type: string
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ResponseQueryResults:
-      type: object
-      required:
-      - results
-      properties:
-        results:
-          description: Contains the query results
-          $ref: '#/components/schemas/ResponseEntityList'
-      description: Used to return response query results
-    AppleInvitation:
-      type: object
-      required:
-      - businessName
-      - locale
-      - templateType
-      - transcriptMessage
-      properties:
-        businessName:
-          type: string
-          description: The business name displayed in the invitation
-        transcriptMessage:
-          type: string
-          description: The transcript message displayed in the invitation
-        templateType:
-          type: string
-          description: The template type for the invitation
-          enum:
-          - WithImage
-          - WithoutImage
-        locale:
-          type: string
-          description: The locale for the invitation
-      description: Apple Messages for Business invitation template configuration
-    MessageHeader:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Defines the content type of the Header in message
-          enum:
-          - Text
-          - Image
-          - Video
-          - Document
-        content:
-          type: string
-          description: Content associated with the header in the message
-    Limit:
-      type: object
-      properties:
-        key:
-          type: string
-        namespace:
-          type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
-    Biography:
-      type: object
-      properties:
-        biography:
-          type: string
-          description: Personal detailed description
-        interests:
-          type: array
-          items:
-            type: string
-        hobbies:
-          type: array
-          items:
-            type: string
-        spouse:
-          type: string
-        education:
-          type: array
-          description: User education details
-          items:
-            $ref: '#/components/schemas/Education'
-    RoutingStatus:
-      type: object
-      properties:
-        userId:
-          type: string
-          description: The userId of the agent
-        status:
-          type: string
-          description: Indicates the Routing State of the agent.  A value of OFF_QUEUE will be returned if the specified user does not exist.
-          enum:
-          - OFF_QUEUE
-          - IDLE
-          - INTERACTING
-          - NOT_RESPONDING
-          - COMMUNICATING
-        startTime:
-          type: string
-          format: date-time
-          description: 'The timestamp when the agent went into this state. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    UserRoutingLanguage:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        proficiency:
-          type: number
-          format: double
-          description: A rating from 0.0 to 5.0 that indicates how fluent an agent is in a particular language. ACD interactions are routed to agents with higher proficiency ratings.
-        state:
-          type: string
-          description: Activate or deactivate this routing language.
-          enum:
-          - active
-          - inactive
-          - deleted
-        languageUri:
-          type: string
-          format: uri
-          description: URI to the organization language used by this user language.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Represents an organization language assigned to a user. When assigning to a user specify the organization language id as the id.
-    LibraryEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Library'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    CarouselCard:
-      type: object
-      required:
-      - buttons
-      - header
-      properties:
-        header:
-          description: Header for whatsApp carousel card
-          $ref: '#/components/schemas/MessageHeader'
-        buttons:
-          type: array
-          description: List of buttons to be included in the whatsApp carousel messages template
-          items:
-            $ref: '#/components/schemas/Button'
-        cardBodyText:
-          description: Optional card body text to be included in the whatsApp carousel messages template
-          $ref: '#/components/schemas/CardBodyText'
-    FooterTemplate:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Specifies the type represented by Footer.
-          enum:
-          - Signature
-        applicableResources:
-          type: array
-          description: Specifies the canned response template where the footer can be used.
-          items:
-            type: string
-            enum:
-            - Campaign
-      description: The Footer template identifies the Footer type and its footerUsage
-    GroupContact:
-      type: object
-      required:
-      - address
-      - mediaType
-      - type
-      properties:
-        address:
-          type: string
-          description: Phone number for this contact type
-        extension:
-          type: string
-          description: Extension is set if the number is e164 valid
-        display:
-          type: string
-          description: Formatted version of the address property
-          readOnly: true
-        type:
-          type: string
-          description: Contact type of the address
-          enum:
-          - GROUPRING
-          - GROUPPHONE
-        mediaType:
-          type: string
-          description: Media type of the address
-          enum:
-          - PHONE
-    WhatsAppDefinition:
-      type: object
-      required:
-      - language
-      - name
-      properties:
-        name:
-          type: string
-          description: The messaging template name.
-        namespace:
-          type: string
-          description: The messaging template namespace.
-        language:
-          type: string
-          description: The messaging template language configured for this template. This is a WhatsApp specific value. For example, 'en_US'
-        buttons:
-          type: array
-          description: List of buttons to be included in the standard WhatsApp messages channel
-          items:
-            $ref: '#/components/schemas/Button'
-        messageFooter:
-          description: Footer for the message in the standard WhatsApp messages channel
-          $ref: '#/components/schemas/MessageFooter'
-        header:
-          description: Header for the message in the standard WhatsApp messages channel
-          $ref: '#/components/schemas/MessageHeader'
-        integrationId:
-          type: string
-          description: WhatsApp integration ID for whatsApp carousels
-        category:
-          type: string
-          description: Category of whatsApp carousels template.
-          enum:
-          - marketing
-        templateStatus:
-          type: string
-          description: Template status of whatsApp carousels template.
-          readOnly: true
-        statusInfo:
-          description: Status information about the template
-          readOnly: true
-          $ref: '#/components/schemas/StatusInfo'
-        carousel:
-          description: Definition for whatsApp carousels template.
-          $ref: '#/components/schemas/Carousel'
-      description: A WhatsApp messaging template definition as defined in the WhatsApp Business Manager
-    Division:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    QueryCriteriaQuery:
-      type: object
-      required:
-      - query
-      properties:
-        query:
-          type: array
-          description: List of criteria groups that will be AND'd together
-          items:
-            $ref: '#/components/schemas/QueryCriteriaGroup'
-      description: Query object for searching libraries based on criteria
-    Geolocation:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        type:
-          type: string
-          description: A string used to describe the type of client the geolocation is being updated from e.g. ios, android, web, etc.
-        primary:
-          type: boolean
-          description: A boolean used to tell whether or not to set this geolocation client as the primary on a PATCH
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        country:
-          type: string
-        region:
-          type: string
-        city:
-          type: string
-        locations:
-          type: array
-          items:
-            $ref: '#/components/schemas/LocationDefinition'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    EmployerInfo:
-      type: object
-      properties:
-        officialName:
-          type: string
-        employeeId:
-          type: string
-        employeeType:
-          type: string
-        dateHire:
-          type: string
-    MediaSummaryDetail:
-      type: object
-      properties:
-        active:
-          type: integer
-          format: int32
-        acw:
-          type: integer
-          format: int32
-    ResponseSubstitution:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: Response substitution identifier.
-        description:
-          type: string
-          description: Response substitution description.
-        defaultValue:
-          type: string
-          description: Response substitution default value.
-      description: Contains information about the substitutions associated with a response.
-    ResponseAssetSearchRequest:
-      type: object
-      required:
-      - query
-      properties:
-        pageSize:
-          type: integer
-          format: int32
-          description: 'The number of results per page. Default: 25, Maximum: 100.'
-        pageNumber:
-          type: integer
-          format: int32
-          description: The page of resources you want to retrieve
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-        query:
-          type: array
-          description: Filter the query results.
-          items:
-            $ref: '#/components/schemas/ResponseAssetFilter'
-    ResourceConditionNode:
-      type: object
-      properties:
-        variableName:
-          type: string
-        conjunction:
-          type: string
-          enum:
-          - AND
-          - OR
-        operator:
-          type: string
-          enum:
-          - EQ
-          - IN
-          - GE
-          - GT
-          - LE
-          - LT
-        operands:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceConditionValue'
-        terms:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceConditionNode'
-    OAuthLastTokenIssued:
-      type: object
-      properties:
-        dateIssued:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    ResponseAssetRequest:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: 'Name of the file to upload. It must not start with a dot and not end with a forward slash. Whitespace and the following characters are not allowed: \{^}%`]">[~<#|'
-        divisionId:
-          type: string
-          description: Division to associate to this asset. Can only be used with this division.
-    UserAuthorization:
-      type: object
-      properties:
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/DomainRole'
-        unusedRoles:
-          type: array
-          description: A collection of the roles the user is not using
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/DomainRole'
-        permissions:
-          type: array
-          description: A collection of the permissions granted by all assigned roles
-          readOnly: true
-          items:
-            type: string
-        permissionPolicies:
-          type: array
-          description: The policies configured for assigned permissions.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/ResourcePermissionPolicy'
-    ResourceConditionValue:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - SCALAR
-          - VARIABLE
-          - USER
-          - QUEUE
-          - TEAM
-        value:
-          type: string
-    PresenceDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: description
-        systemPresence:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    ResponseText:
-      type: object
-      required:
-      - content
-      properties:
-        content:
-          type: string
-          description: Response text content.
-        contentType:
-          type: string
-          description: Response text content type.
-          enum:
-          - text/plain
-          - text/html
-        type:
-          type: string
-          description: Response text type.
-          enum:
-          - body
-          - subject
-      description: Contains information about the text associated with a response.
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

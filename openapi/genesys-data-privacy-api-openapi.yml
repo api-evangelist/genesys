@@ -899,6 +899,122 @@ paths:
         required: true
 components:
   schemas:
+    MaskingRuleValidateRequest:
+      type: object
+      required:
+      - definition
+      - text
+      properties:
+        text:
+          type: string
+          description: Text to mask.
+        definition:
+          type: string
+          description: Regex to be applied
+    MaskingRuleListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/MaskingRule'
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    MaskingRule:
+      type: object
+      required:
+      - definition
+      - enabled
+      - name
+      - substituteCharacter
+      - type
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: Masking rule name.
+        description:
+          type: string
+          description: Description about masking rule.
+        substituteCharacter:
+          type: string
+          description: Replacement character for masked text character.
+        definition:
+          type: string
+          description: Definition of masking rule (a valid regex or builtin AI based mask name).
+        enabled:
+          type: boolean
+          description: True/False
+        type:
+          type: string
+          description: Masking rule type
+          enum:
+          - Custom
+          - Predefined
+          - Default
+        direction:
+          type: string
+          description: inbound/outbound
+          enum:
+          - inbound
+          - outbound
+        integrations:
+          type: array
+          description: Associated integration channels
+          items:
+            type: string
+        dateCreated:
+          type: string
+          format: date-time
+          example: '2024-07-08T07:11:42.619'
+          description: 'Date when the rule was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          example: '2024-07-08T07:13:51.647'
+          description: 'Date when the rule was modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+    ErrorInfo:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
     Limit:
       type: object
       properties:
@@ -1003,6 +1119,17 @@ components:
         value:
           type: integer
           format: int64
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     MaskingRuleValidateResponse:
       type: object
       properties:
@@ -1017,133 +1144,6 @@ components:
         maskedText:
           type: string
           description: Masked text.
-          readOnly: true
-    ErrorInfo:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-    MaskingRuleListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/MaskingRule'
-    MaskingRuleValidateRequest:
-      type: object
-      required:
-      - definition
-      - text
-      properties:
-        text:
-          type: string
-          description: Text to mask.
-        definition:
-          type: string
-          description: Regex to be applied
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    MaskingRule:
-      type: object
-      required:
-      - definition
-      - enabled
-      - name
-      - substituteCharacter
-      - type
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: Masking rule name.
-        description:
-          type: string
-          description: Description about masking rule.
-        substituteCharacter:
-          type: string
-          description: Replacement character for masked text character.
-        definition:
-          type: string
-          description: Definition of masking rule (a valid regex or builtin AI based mask name).
-        enabled:
-          type: boolean
-          description: True/False
-        type:
-          type: string
-          description: Masking rule type
-          enum:
-          - Custom
-          - Predefined
-          - Default
-        direction:
-          type: string
-          description: inbound/outbound
-          enum:
-          - inbound
-          - outbound
-        integrations:
-          type: array
-          description: Associated integration channels
-          items:
-            type: string
-        dateCreated:
-          type: string
-          format: date-time
-          example: '2024-07-08T07:11:42.619'
-          description: 'Date when the rule was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          example: '2024-07-08T07:13:51.647'
-          description: 'Date when the rule was modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
           readOnly: true
   securitySchemes:
     PureCloud_OAuth:

@@ -588,6 +588,48 @@ paths:
         required: true
 components:
   schemas:
+    AutoAnswerSettings:
+      type: object
+      required:
+      - settings
+      properties:
+        settings:
+          type: object
+          description: Map of conversation media type enabled status.
+          additionalProperties:
+            $ref: '#/components/schemas/AutoAnswerSetting'
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -692,48 +734,6 @@ components:
         value:
           type: integer
           format: int64
-    AutoAnswerSettings:
-      type: object
-      required:
-      - settings
-      properties:
-        settings:
-          type: object
-          description: Map of conversation media type enabled status.
-          additionalProperties:
-            $ref: '#/components/schemas/AutoAnswerSetting'
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
     Detail:
       type: object
       properties:

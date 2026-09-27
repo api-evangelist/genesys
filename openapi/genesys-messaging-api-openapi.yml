@@ -1884,54 +1884,47 @@ paths:
         required: true
 components:
   schemas:
-    InboundOnlySetting:
+    DomainEntityRef:
       type: object
       properties:
-        inbound:
+        id:
           type: string
-          enum:
-          - Enabled
-          - Disabled
-    MessagingConfigListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessagingSetting'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
+        name:
           type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
         selfUri:
           type: string
           format: uri
-        pageCount:
-          type: integer
-          format: int32
+    MediaTypeAccess:
+      type: object
+      properties:
+        inbound:
+          type: array
+          description: List of media types allowed for inbound messages from customers. If inbound messages from a customer contain media that is not in this list, the media will be dropped from the outbound message.
+          items:
+            $ref: '#/components/schemas/MediaType'
+        outbound:
+          type: array
+          description: List of media types allowed for outbound messages to customers. If an outbound message is sent that contains media that is not in this list, the message will not be sent.
+          items:
+            $ref: '#/components/schemas/MediaType'
+      description: Media type access definitions
     EventSetting:
       type: object
       properties:
         typing:
           description: Settings regarding typing events
           $ref: '#/components/schemas/TypingSetting'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     MessagingSetting:
       type: object
       required:
@@ -1978,6 +1971,154 @@ components:
           description: The URI for this object
           readOnly: true
       description: Messaging setting for messaging platform integrations
+    MessagingConfigListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessagingSetting'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    ContentSetting:
+      type: object
+      properties:
+        story:
+          description: Settings relating to facebook and instagram stories feature
+          $ref: '#/components/schemas/StorySetting'
+    SupportedContent:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          description: A unique supported content Id.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the supported content profile
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date this supported content profile was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date this supported content profile was modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        createdBy:
+          description: User reference that created this supported content profile
+          readOnly: true
+          $ref: '#/components/schemas/DomainEntityRef'
+        modifiedBy:
+          description: User reference that modified this supported content profile
+          readOnly: true
+          $ref: '#/components/schemas/DomainEntityRef'
+        version:
+          type: integer
+          format: int32
+          description: Version number
+          readOnly: true
+        mediaTypes:
+          description: "Defines the allowable media that may be accepted for an inbound message or to be sent in an outbound message. The following is an example of allowing all inbound media, and for outbound all images and only mpeg video: {\n  \"mediaTypes\": {\n    \"allow\": {\n      \"inbound\": [{\"type\": \"*/*\"}],\n      \"outbound\": [{\"type\": \"image/*\"}, {\"type\": \"video/mpeg\"}]\n    }\n  }\n}"
+          $ref: '#/components/schemas/MediaTypes'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Supported content profile for inbound and outbound messages
+    MessagingSettingDefaultRequest:
+      type: object
+      required:
+      - settingId
+      properties:
+        settingId:
+          type: string
+          description: Messaging Setting ID to be used as the default for this Organization.
+    StorySetting:
+      type: object
+      properties:
+        mention:
+          description: Setting relating to Story Mentions
+          $ref: '#/components/schemas/InboundOnlySetting'
+        reply:
+          description: Setting relating to Story Replies
+          $ref: '#/components/schemas/InboundOnlySetting'
+    InboundOnlySetting:
+      type: object
+      properties:
+        inbound:
+          type: string
+          enum:
+          - Enabled
+          - Disabled
+    TypingSetting:
+      type: object
+      properties:
+        'on':
+          description: Should typing indication Events be sent
+          $ref: '#/components/schemas/SettingDirection'
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     MediaTypes:
       type: object
       properties:
@@ -2000,6 +2141,13 @@ components:
           enum:
           - Enabled
           - Disabled
+    MediaType:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The media type string as defined by RFC 2046. You can define specific types such as 'image/jpeg', 'video/mpeg', or specify wild cards for a range of types, 'image/*', or all types '*/*'. See https://www.iana.org/assignments/media-types/media-types.xhtml for a list of registered media types.
+      description: Media type definition
     Limit:
       type: object
       properties:
@@ -2104,16 +2252,6 @@ components:
         value:
           type: integer
           format: int64
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
     SupportedContentListing:
       type: object
       properties:
@@ -2148,59 +2286,6 @@ components:
         pageCount:
           type: integer
           format: int32
-    SupportedContent:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-          description: A unique supported content Id.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the supported content profile
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date this supported content profile was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date this supported content profile was modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        createdBy:
-          description: User reference that created this supported content profile
-          readOnly: true
-          $ref: '#/components/schemas/DomainEntityRef'
-        modifiedBy:
-          description: User reference that modified this supported content profile
-          readOnly: true
-          $ref: '#/components/schemas/DomainEntityRef'
-        version:
-          type: integer
-          format: int32
-          description: Version number
-          readOnly: true
-        mediaTypes:
-          description: "Defines the allowable media that may be accepted for an inbound message or to be sent in an outbound message. The following is an example of allowing all inbound media, and for outbound all images and only mpeg video: {\n  \"mediaTypes\": {\n    \"allow\": {\n      \"inbound\": [{\"type\": \"*/*\"}],\n      \"outbound\": [{\"type\": \"image/*\"}, {\"type\": \"video/mpeg\"}]\n    }\n  }\n}"
-          $ref: '#/components/schemas/MediaTypes'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Supported content profile for inbound and outbound messages
-    MessagingSettingDefaultRequest:
-      type: object
-      required:
-      - settingId
-      properties:
-        settingId:
-          type: string
-          description: Messaging Setting ID to be used as the default for this Organization.
     MessagingSettingRequest:
       type: object
       required:
@@ -2225,91 +2310,6 @@ components:
           description: The URI for this object
           readOnly: true
       description: Messaging setting for messaging platform integrations
-    ContentSetting:
-      type: object
-      properties:
-        story:
-          description: Settings relating to facebook and instagram stories feature
-          $ref: '#/components/schemas/StorySetting'
-    TypingSetting:
-      type: object
-      properties:
-        'on':
-          description: Should typing indication Events be sent
-          $ref: '#/components/schemas/SettingDirection'
-    MediaTypeAccess:
-      type: object
-      properties:
-        inbound:
-          type: array
-          description: List of media types allowed for inbound messages from customers. If inbound messages from a customer contain media that is not in this list, the media will be dropped from the outbound message.
-          items:
-            $ref: '#/components/schemas/MediaType'
-        outbound:
-          type: array
-          description: List of media types allowed for outbound messages to customers. If an outbound message is sent that contains media that is not in this list, the message will not be sent.
-          items:
-            $ref: '#/components/schemas/MediaType'
-      description: Media type access definitions
-    MediaType:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The media type string as defined by RFC 2046. You can define specific types such as 'image/jpeg', 'video/mpeg', or specify wild cards for a range of types, 'image/*', or all types '*/*'. See https://www.iana.org/assignments/media-types/media-types.xhtml for a list of registered media types.
-      description: Media type definition
-    StorySetting:
-      type: object
-      properties:
-        mention:
-          description: Setting relating to Story Mentions
-          $ref: '#/components/schemas/InboundOnlySetting'
-        reply:
-          description: Setting relating to Story Replies
-          $ref: '#/components/schemas/InboundOnlySetting'
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

@@ -5261,7 +5261,7 @@ paths:
       x-purecloud-method-name: deleteIdentityprovidersSalesforce
 components:
   schemas:
-    PureCloud:
+    GenericSAML:
       type: object
       properties:
         id:
@@ -5272,12 +5272,58 @@ components:
           type: string
         disabled:
           type: boolean
+        issuerURI:
+          type: string
+        ssoTargetURI:
+          type: string
+        sloURI:
+          type: string
+        sloBinding:
+          type: string
+        relyingPartyIdentifier:
+          type: string
+        certificate:
+          type: string
+        certificates:
+          type: array
+          items:
+            type: string
+        logoImageData:
+          type: string
+        nameIdentifierFormat:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+        ssoBinding:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        signAuthnRequests:
+          type: boolean
+        providerName:
+          type: string
+        displayOnLogin:
+          type: boolean
+        metadataURL:
+          type: string
+        forceAuthn:
+          type: boolean
+        endpointCompression:
+          type: boolean
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-    IdentityNow:
+    Okta:
       type: object
       properties:
         id:
@@ -5337,7 +5383,80 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    CustomerInteractionCenter:
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    CustomProvider:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        disabled:
+          type: boolean
+        issuerURI:
+          type: string
+        ssoTargetURI:
+          type: string
+        sloURI:
+          type: string
+        sloBinding:
+          type: string
+        relyingPartyIdentifier:
+          type: string
+        certificate:
+          type: string
+        certificates:
+          type: array
+          items:
+            type: string
+        logoImageData:
+          type: string
+        nameIdentifierFormat:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+        ssoBinding:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        signAuthnRequests:
+          type: boolean
+        providerName:
+          type: string
+        displayOnLogin:
+          type: boolean
+        metadataURL:
+          type: string
+        forceAuthn:
+          type: boolean
+        endpointCompression:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Salesforce:
       type: object
       properties:
         id:
@@ -5461,7 +5580,405 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    IdentityNow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        disabled:
+          type: boolean
+        issuerURI:
+          type: string
+        ssoTargetURI:
+          type: string
+        sloURI:
+          type: string
+        sloBinding:
+          type: string
+        relyingPartyIdentifier:
+          type: string
+        certificate:
+          type: string
+        certificates:
+          type: array
+          items:
+            type: string
+        logoImageData:
+          type: string
+        nameIdentifierFormat:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+        ssoBinding:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        signAuthnRequests:
+          type: boolean
+        providerName:
+          type: string
+        displayOnLogin:
+          type: boolean
+        metadataURL:
+          type: string
+        forceAuthn:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    SAMLProvider:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        disabled:
+          type: boolean
+        issuerURI:
+          type: string
+        ssoTargetURI:
+          type: string
+        sloURI:
+          type: string
+        sloBinding:
+          type: string
+        relyingPartyIdentifier:
+          type: string
+        certificate:
+          type: string
+        certificates:
+          type: array
+          items:
+            type: string
+        logoImageData:
+          type: string
+        nameIdentifierFormat:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+        ssoBinding:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        signAuthnRequests:
+          type: boolean
+        providerName:
+          type: string
+        displayOnLogin:
+          type: boolean
+        metadataURL:
+          type: string
+        forceAuthn:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    PureCloud:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        disabled:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    OneLogin:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        disabled:
+          type: boolean
+        issuerURI:
+          type: string
+        ssoTargetURI:
+          type: string
+        sloURI:
+          type: string
+        sloBinding:
+          type: string
+        relyingPartyIdentifier:
+          type: string
+        certificate:
+          type: string
+        certificates:
+          type: array
+          items:
+            type: string
+        logoImageData:
+          type: string
+        nameIdentifierFormat:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+        ssoBinding:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        signAuthnRequests:
+          type: boolean
+        providerName:
+          type: string
+        displayOnLogin:
+          type: boolean
+        metadataURL:
+          type: string
+        forceAuthn:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     PingIdentity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        disabled:
+          type: boolean
+        issuerURI:
+          type: string
+        ssoTargetURI:
+          type: string
+        sloURI:
+          type: string
+        sloBinding:
+          type: string
+        relyingPartyIdentifier:
+          type: string
+        certificate:
+          type: string
+        certificates:
+          type: array
+          items:
+            type: string
+        logoImageData:
+          type: string
+        nameIdentifierFormat:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+        ssoBinding:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        signAuthnRequests:
+          type: boolean
+        providerName:
+          type: string
+        displayOnLogin:
+          type: boolean
+        metadataURL:
+          type: string
+        forceAuthn:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ADFS:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        disabled:
+          type: boolean
+        issuerURI:
+          type: string
+        ssoTargetURI:
+          type: string
+        sloURI:
+          type: string
+        sloBinding:
+          type: string
+        relyingPartyIdentifier:
+          type: string
+        certificate:
+          type: string
+        certificates:
+          type: array
+          items:
+            type: string
+        logoImageData:
+          type: string
+        nameIdentifierFormat:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+        ssoBinding:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        signAuthnRequests:
+          type: boolean
+        providerName:
+          type: string
+        displayOnLogin:
+          type: boolean
+        metadataURL:
+          type: string
+        forceAuthn:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    IdentityProvider:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        disabled:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    IdentityProviderEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLProvider'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    CustomerInteractionCenter:
       type: object
       properties:
         id:
@@ -5625,523 +6142,6 @@ components:
         value:
           type: integer
           format: int64
-    ADFS:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        disabled:
-          type: boolean
-        issuerURI:
-          type: string
-        ssoTargetURI:
-          type: string
-        sloURI:
-          type: string
-        sloBinding:
-          type: string
-        relyingPartyIdentifier:
-          type: string
-        certificate:
-          type: string
-        certificates:
-          type: array
-          items:
-            type: string
-        logoImageData:
-          type: string
-        nameIdentifierFormat:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-        ssoBinding:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-        signAuthnRequests:
-          type: boolean
-        providerName:
-          type: string
-        displayOnLogin:
-          type: boolean
-        metadataURL:
-          type: string
-        forceAuthn:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    IdentityProviderEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/SAMLProvider'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    SAMLProvider:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        disabled:
-          type: boolean
-        issuerURI:
-          type: string
-        ssoTargetURI:
-          type: string
-        sloURI:
-          type: string
-        sloBinding:
-          type: string
-        relyingPartyIdentifier:
-          type: string
-        certificate:
-          type: string
-        certificates:
-          type: array
-          items:
-            type: string
-        logoImageData:
-          type: string
-        nameIdentifierFormat:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-        ssoBinding:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-        signAuthnRequests:
-          type: boolean
-        providerName:
-          type: string
-        displayOnLogin:
-          type: boolean
-        metadataURL:
-          type: string
-        forceAuthn:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Okta:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        disabled:
-          type: boolean
-        issuerURI:
-          type: string
-        ssoTargetURI:
-          type: string
-        sloURI:
-          type: string
-        sloBinding:
-          type: string
-        relyingPartyIdentifier:
-          type: string
-        certificate:
-          type: string
-        certificates:
-          type: array
-          items:
-            type: string
-        logoImageData:
-          type: string
-        nameIdentifierFormat:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-        ssoBinding:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-        signAuthnRequests:
-          type: boolean
-        providerName:
-          type: string
-        displayOnLogin:
-          type: boolean
-        metadataURL:
-          type: string
-        forceAuthn:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CustomProvider:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        disabled:
-          type: boolean
-        issuerURI:
-          type: string
-        ssoTargetURI:
-          type: string
-        sloURI:
-          type: string
-        sloBinding:
-          type: string
-        relyingPartyIdentifier:
-          type: string
-        certificate:
-          type: string
-        certificates:
-          type: array
-          items:
-            type: string
-        logoImageData:
-          type: string
-        nameIdentifierFormat:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-        ssoBinding:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-        signAuthnRequests:
-          type: boolean
-        providerName:
-          type: string
-        displayOnLogin:
-          type: boolean
-        metadataURL:
-          type: string
-        forceAuthn:
-          type: boolean
-        endpointCompression:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Salesforce:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        disabled:
-          type: boolean
-        issuerURI:
-          type: string
-        ssoTargetURI:
-          type: string
-        sloURI:
-          type: string
-        sloBinding:
-          type: string
-        relyingPartyIdentifier:
-          type: string
-        certificate:
-          type: string
-        certificates:
-          type: array
-          items:
-            type: string
-        logoImageData:
-          type: string
-        nameIdentifierFormat:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-        ssoBinding:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-        signAuthnRequests:
-          type: boolean
-        providerName:
-          type: string
-        displayOnLogin:
-          type: boolean
-        metadataURL:
-          type: string
-        forceAuthn:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    GenericSAML:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        disabled:
-          type: boolean
-        issuerURI:
-          type: string
-        ssoTargetURI:
-          type: string
-        sloURI:
-          type: string
-        sloBinding:
-          type: string
-        relyingPartyIdentifier:
-          type: string
-        certificate:
-          type: string
-        certificates:
-          type: array
-          items:
-            type: string
-        logoImageData:
-          type: string
-        nameIdentifierFormat:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-        ssoBinding:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-        signAuthnRequests:
-          type: boolean
-        providerName:
-          type: string
-        displayOnLogin:
-          type: boolean
-        metadataURL:
-          type: string
-        forceAuthn:
-          type: boolean
-        endpointCompression:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    IdentityProvider:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        disabled:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    OneLogin:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        disabled:
-          type: boolean
-        issuerURI:
-          type: string
-        ssoTargetURI:
-          type: string
-        sloURI:
-          type: string
-        sloBinding:
-          type: string
-        relyingPartyIdentifier:
-          type: string
-        certificate:
-          type: string
-        certificates:
-          type: array
-          items:
-            type: string
-        logoImageData:
-          type: string
-        nameIdentifierFormat:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:entity
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-        ssoBinding:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-        signAuthnRequests:
-          type: boolean
-        providerName:
-          type: string
-        displayOnLogin:
-          type: boolean
-        metadataURL:
-          type: string
-        forceAuthn:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
     GSuite:
       type: object
       properties:

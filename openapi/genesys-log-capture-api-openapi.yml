@@ -1031,6 +1031,38 @@ paths:
       x-purecloud-method-name: deleteDiagnosticsLogcaptureBrowserUser
 components:
   schemas:
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     LogCaptureUserConfigurationResponse:
       type: object
       required:
@@ -1054,6 +1086,150 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    LogCaptureQueryResponse:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEntry'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+    LogCaptureQueryRequest:
+      type: object
+      required:
+      - interval
+      - userId
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Date and time range to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        userId:
+          type: string
+          description: Id of the user to query.
+        sortOrder:
+          type: string
+          description: Order of results. Default order is ASC.
+          enum:
+          - ASC
+          - DESC
+    LogCaptureUserConfiguration:
+      type: object
+      required:
+      - dateExpired
+      properties:
+        id:
+          type: string
+          description: The ID of the user for which log capture is configured.
+          readOnly: true
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'Indicates when log capture was enabled for the user. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateExpired:
+          type: string
+          format: date-time
+          description: 'Indicates when log capture will be turned off for the user. (Must be within 24 hours). Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        captureMethod:
+          type: string
+          description: Indicates the method by which the logs were captured.
+          readOnly: true
+          enum:
+          - OnDemand
+          - Scheduled
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LogEntry:
+      type: object
+      properties:
+        level:
+          type: string
+          description: Level of log entry
+        message:
+          type: string
+          description: Log message
+        timestamp:
+          type: integer
+          format: int64
+          description: Timestamp of log entry
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    LogCaptureUserConfigurationListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogCaptureUserConfiguration'
+        selfUri:
+          type: string
+          format: uri
+      description: List of log capture user configurations including total count and entities
+    LogCaptureDownloadExecutionResponse:
+      type: object
+      required:
+      - dateStart
+      - fileUrl
+      - id
+      - state
+      - user
+      properties:
+        id:
+          type: string
+          description: Id of file download job.
+        user:
+          description: Details of the user that created the job
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        state:
+          type: string
+          description: Execution state of the download.
+          readOnly: true
+          enum:
+          - Running
+          - Failed
+          - Succeeded
+        dateStart:
+          type: string
+          format: date-time
+          description: 'Start date of file download execution. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        fileUrl:
+          type: string
+          description: Url of a file with query result.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     Limit:
       type: object
       properties:
@@ -1158,182 +1334,6 @@ components:
         value:
           type: integer
           format: int64
-    LogEntry:
-      type: object
-      properties:
-        level:
-          type: string
-          description: Level of log entry
-        message:
-          type: string
-          description: Log message
-        timestamp:
-          type: integer
-          format: int64
-          description: Timestamp of log entry
-    LogCaptureDownloadExecutionResponse:
-      type: object
-      required:
-      - dateStart
-      - fileUrl
-      - id
-      - state
-      - user
-      properties:
-        id:
-          type: string
-          description: Id of file download job.
-        user:
-          description: Details of the user that created the job
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        state:
-          type: string
-          description: Execution state of the download.
-          readOnly: true
-          enum:
-          - Running
-          - Failed
-          - Succeeded
-        dateStart:
-          type: string
-          format: date-time
-          description: 'Start date of file download execution. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        fileUrl:
-          type: string
-          description: Url of a file with query result.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LogCaptureUserConfigurationListing:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogCaptureUserConfiguration'
-        selfUri:
-          type: string
-          format: uri
-      description: List of log capture user configurations including total count and entities
-    LogCaptureQueryResponse:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEntry'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-    LogCaptureUserConfiguration:
-      type: object
-      required:
-      - dateExpired
-      properties:
-        id:
-          type: string
-          description: The ID of the user for which log capture is configured.
-          readOnly: true
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'Indicates when log capture was enabled for the user. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateExpired:
-          type: string
-          format: date-time
-          description: 'Indicates when log capture will be turned off for the user. (Must be within 24 hours). Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        captureMethod:
-          type: string
-          description: Indicates the method by which the logs were captured.
-          readOnly: true
-          enum:
-          - OnDemand
-          - Scheduled
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LogCaptureQueryRequest:
-      type: object
-      required:
-      - interval
-      - userId
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Date and time range to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        userId:
-          type: string
-          description: Id of the user to query.
-        sortOrder:
-          type: string
-          description: Order of results. Default order is ASC.
-          enum:
-          - ASC
-          - DESC
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

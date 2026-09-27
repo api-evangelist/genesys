@@ -177,6 +177,11 @@ paths:
       x-purecloud-method-name: getDownload
 components:
   schemas:
+    UrlResponse:
+      type: object
+      properties:
+        url:
+          type: string
     Limit:
       type: object
       properties:
@@ -281,6 +286,17 @@ components:
         value:
           type: integer
           format: int64
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     ErrorBody:
       type: object
       properties:
@@ -313,22 +329,6 @@ components:
             $ref: '#/components/schemas/ErrorBody'
         limit:
           $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    UrlResponse:
-      type: object
-      properties:
-        url:
-          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

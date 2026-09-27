@@ -1300,6 +1300,69 @@ paths:
         description: The user IDs to fetch.
 components:
   schemas:
+    LicenseAssignmentRequest:
+      type: object
+      required:
+      - licenseId
+      - userIdsAdd
+      - userIdsRemove
+      properties:
+        licenseId:
+          type: string
+          description: The id of the license to assign/unassign.
+        userIdsAdd:
+          type: array
+          description: The ids of users to assign this license to.
+          uniqueItems: true
+          items:
+            type: string
+        userIdsRemove:
+          type: array
+          description: The ids of users to unassign this license from.
+          uniqueItems: true
+          items:
+            type: string
+    LicenseUpdateStatus:
+      type: object
+      properties:
+        userId:
+          type: string
+        licenseId:
+          type: string
+        result:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     LicenseDefinition:
       type: object
       properties:
@@ -1326,6 +1389,68 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    LicenseUser:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        licenses:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/LicenseDefinition'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UserLicenses:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        licenses:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Permissions:
+      type: object
+      required:
+      - ids
+      properties:
+        ids:
+          type: array
+          description: List of permission ids.
+          items:
+            type: string
+    LicenseOrgToggle:
+      type: object
+      properties:
+        featureName:
+          type: string
+        enabled:
+          type: boolean
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     Limit:
       type: object
       properties:
@@ -1430,28 +1555,6 @@ components:
         value:
           type: integer
           format: int64
-    LicenseAssignmentRequest:
-      type: object
-      required:
-      - licenseId
-      - userIdsAdd
-      - userIdsRemove
-      properties:
-        licenseId:
-          type: string
-          description: The id of the license to assign/unassign.
-        userIdsAdd:
-          type: array
-          description: The ids of users to assign this license to.
-          uniqueItems: true
-          items:
-            type: string
-        userIdsRemove:
-          type: array
-          description: The ids of users to unassign this license from.
-          uniqueItems: true
-          items:
-            type: string
     UserLicensesEntityListing:
       type: object
       properties:
@@ -1471,119 +1574,6 @@ components:
         pageCount:
           type: integer
           format: int32
-    UserLicenses:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        licenses:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LicenseOrgToggle:
-      type: object
-      properties:
-        featureName:
-          type: string
-        enabled:
-          type: boolean
-    Permissions:
-      type: object
-      required:
-      - ids
-      properties:
-        ids:
-          type: array
-          description: List of permission ids.
-          items:
-            type: string
-    LicenseUser:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        licenses:
-          type: array
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/LicenseDefinition'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LicenseUpdateStatus:
-      type: object
-      properties:
-        userId:
-          type: string
-        licenseId:
-          type: string
-        result:
-          type: string
-    LicenseBatchAssignmentRequest:
-      type: object
-      required:
-      - assignments
-      properties:
-        assignments:
-          type: array
-          description: The list of license assignment updates to make.
-          items:
-            $ref: '#/components/schemas/LicenseAssignmentRequest'
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
     AddressableLicenseDefinition:
       type: object
       properties:
@@ -1596,6 +1586,16 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    LicenseBatchAssignmentRequest:
+      type: object
+      required:
+      - assignments
+      properties:
+        assignments:
+          type: array
+          description: The list of license assignment updates to make.
+          items:
+            $ref: '#/components/schemas/LicenseAssignmentRequest'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

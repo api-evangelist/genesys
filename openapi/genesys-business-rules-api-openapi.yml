@@ -6296,6 +6296,59 @@ paths:
         required: true
 components:
   schemas:
+    UpdateRowIndexRequest:
+      type: object
+      required:
+      - rowId
+      - rowIndex
+      properties:
+        rowId:
+          type: string
+          description: The row UUID.
+        rowIndex:
+          type: integer
+          format: int32
+          description: The updated row index. Must be an integer value greater than or equal to 1. Must be less than or equal to x, where x is the number of rows in the decision table version.
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    DecisionTableImportJobListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DecisionTableImportJob'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    BusinessRulesSchemaUpdateRequest:
+      type: object
+      required:
+      - jsonSchema
+      - version
+      properties:
+        version:
+          type: integer
+          format: int32
+          description: The schema's version, a positive integer. Required for updates.
+        enabled:
+          type: boolean
+          description: The schema's enabled/disabled status. A disabled schema cannot be assigned to any other entities, but the data on those entities from the schema still exists.
+        jsonSchema:
+          description: A JSON schema defining the extension to the built-in entity type.
+          $ref: '#/components/schemas/JsonSchemaWithDefinitions'
+      description: Request to update an existing Business Rules Schema
     CopyDecisionTableRequest:
       type: object
       required:
@@ -6307,44 +6360,19 @@ components:
         description:
           type: string
           description: The description of newly created decision table.
-    UpdateDecisionTableColumnsRequest:
+    PutDecisionTableRowRequest:
       type: object
       properties:
         inputs:
-          type: array
-          description: The input columns of the decision table.
-          items:
-            $ref: '#/components/schemas/DecisionTableInputColumnRequest'
-          maxItems: 2147483647
-          minItems: 1
+          type: object
+          description: The full updated input values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity
+          additionalProperties:
+            $ref: '#/components/schemas/DecisionTableRowParameterValue'
         outputs:
-          type: array
-          description: The output columns of the decision table.
-          items:
-            $ref: '#/components/schemas/DecisionTableOutputColumnRequest'
-          maxItems: 2147483647
-          minItems: 1
-      description: Decision table columns will equal the columns contained in this request after the update is performed. If a list of columns types is not provided (i.e. is null) then no update is performed for that column type
-    CreateDecisionTableColumnsRequest:
-      type: object
-      required:
-      - inputs
-      - outputs
-      properties:
-        inputs:
-          type: array
-          description: The input columns of the decision table.
-          items:
-            $ref: '#/components/schemas/DecisionTableInputColumnRequest'
-          maxItems: 2147483647
-          minItems: 1
-        outputs:
-          type: array
-          description: The output columns of the decision table.
-          items:
-            $ref: '#/components/schemas/DecisionTableOutputColumnRequest'
-          maxItems: 2147483647
-          minItems: 1
+          type: object
+          description: The full updated output values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity
+          additionalProperties:
+            $ref: '#/components/schemas/DecisionTableRowParameterValue'
     DecisionTableImportJob:
       type: object
       required:
@@ -6417,28 +6445,179 @@ components:
           description: The URI for this object
           readOnly: true
       description: State of a decision table row import job
-    BusinessRulesSchemaCreateRequest:
-      type: object
-      required:
-      - jsonSchema
-      properties:
-        jsonSchema:
-          description: A JSON schema defining the extension to the built-in entity type.
-          $ref: '#/components/schemas/JsonSchemaWithDefinitions'
-      description: Request to create a new Business Rules Schema
-    DecisionTableImportJobListing:
+    DecisionTableListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/DecisionTableImportJob'
+            $ref: '#/components/schemas/DecisionTable'
         nextUri:
           type: string
         selfUri:
           type: string
         previousUri:
           type: string
+    DecisionTableExportJobListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DecisionTableExportJob'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    DecisionTableVersion:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/Division'
+        version:
+          type: integer
+          format: int32
+          description: The decision table version.
+        status:
+          type: string
+          description: Current status of this decision table version
+          enum:
+          - Draft
+          - Published
+          - Error
+          - Preparing
+          - Superseded
+        description:
+          type: string
+          description: The decision table description.
+        rowCount:
+          type: integer
+          format: int32
+          description: The number of rows in this decision table version.
+        rowsUri:
+          type: string
+          description: The rows URI for this decision table version.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'UTC date time indicating when this decision table version was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          description: 'UTC date time indicating when this decision table version was last updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        datePublished:
+          type: string
+          format: date-time
+          description: 'UTC date time indicating when this decision table version was published. Null if never published. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        columns:
+          description: The column definitions of this decision table version.
+          $ref: '#/components/schemas/DecisionTableColumns'
+        contract:
+          description: The contract information for this decision table version.
+          $ref: '#/components/schemas/DecisionTableContract'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DecisionTableExportJobError:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: The error code for this job failure.
+        errorMessage:
+          type: string
+          description: A human-readable error message.
+        messageWithParams:
+          type: string
+          description: Parameterized message template for the aggregate failure (when applicable)
+        messageParams:
+          type: object
+          description: Parameters for messageWithParams
+          additionalProperties:
+            type: string
+        validationErrors:
+          type: array
+          description: Validation failures for the export job
+          items:
+            $ref: '#/components/schemas/DecisionTableJobValidationError'
+      description: Error details when a decision table export job fails
+    Coretype:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        version:
+          type: integer
+          format: int32
+          description: A positive integer denoting the core type's version
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The date the core type was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        schema:
+          description: The core type's built-in schema
+          $ref: '#/components/schemas/Schema'
+        current:
+          type: boolean
+          description: A boolean indicating if the core type's version is the current one in use by the system
+        validationFields:
+          type: array
+          description: An array of strings naming the fields of the core type subject to validation.  Validation constraints are specified by a schema author using the core type.
+          items:
+            type: string
+        validationLimits:
+          example: '"validationLimits": {
+
+            "minLength": {"min": 0, "max": 100},
+
+            "maxLength": {"min": 1, "max": 100}
+
+            }'
+          description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
+          $ref: '#/components/schemas/ValidationLimits'
+        itemValidationFields:
+          type: array
+          description: Specific to the "tag" core type, this is an array of strings naming the tag item fields of the core type subject to validation
+          items:
+            type: string
+        itemValidationLimits:
+          example: "\"validationLimits\": {\n     \"minLength\": {\"min\": 1, \"max\": 100},\n     \"maxLength\": {\"min\": 1, \"max\": 100}\n}"
+          description: A structure denoting the system-imposed minimum and maximum string length for string-array based core types such as "tag" and "enum".  Forexample, the validationLimits for a schema field using a tag core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schema author on individual tags.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field's tags.
+          $ref: '#/components/schemas/ItemValidationLimits'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     DecisionTableInputColumn:
       type: object
       required:
@@ -6454,6 +6633,489 @@ components:
         expression:
           description: The input column condition expression, comprising the left side and comparator of a logical condition in the form of left|comparator|right, where each row of the decision table will provide the right side to form a complete condition
           $ref: '#/components/schemas/DecisionTableInputColumnExpression'
+    RowSearchFilter:
+      type: object
+      required:
+      - predicates
+      properties:
+        predicates:
+          type: array
+          description: The predicates that each row matches in the search results must match
+          items:
+            $ref: '#/components/schemas/RowSearchPredicate'
+          maxItems: 5
+          minItems: 1
+    CreateDecisionTableRowRequest:
+      type: object
+      required:
+      - inputs
+      - outputs
+      properties:
+        rowIndex:
+          type: integer
+          format: int32
+          description: 'The absolute position of this row in the decision table. Must be an integerstarting from 1, must be positive and less than or equal to the size of the table. If not provided row will be append to the end of the table. '
+        inputs:
+          type: object
+          description: The input values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity
+          additionalProperties:
+            $ref: '#/components/schemas/DecisionTableRowParameterValue'
+        outputs:
+          type: object
+          description: The output values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity
+          additionalProperties:
+            $ref: '#/components/schemas/DecisionTableRowParameterValue'
+    ItemValidationLimits:
+      type: object
+      required:
+      - maxLength
+      - minLength
+      properties:
+        minLength:
+          example: '"minLength": {"min": 0, "max": 100}'
+          description: A structure denoting the system-imposed minimum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
+          $ref: '#/components/schemas/MinLength'
+        maxLength:
+          example: '"validationLimits": {
+
+            "minLength": {"min": 0, "max": 100},
+
+            "maxLength": {"min": 1, "max": 100}
+
+            }'
+          description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
+          $ref: '#/components/schemas/MaxLength'
+    JsonSchemaDocument:
+      type: object
+      properties:
+        id:
+          type: string
+        $schema:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        required:
+          type: array
+          items:
+            type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        additionalProperties:
+          type: object
+      description: A JSON Schema document.
+    DecisionTableExecutionRequest:
+      type: object
+      required:
+      - inputs
+      properties:
+        inputs:
+          type: object
+          example: "{\n    \"inputs\": {\n        \"string_attribute\": \"value\",\n        \"integer_attribute\": 1234,\n        \"number_attribute\": 1234.567,\n        \"boolean_attribute\": true,\n        \"enum_attribute\": \"enum_option_key\",\n        \"date_attribute\": \"2024-12-01\",\n        \"date_time_attribute\": \"2024-12-01T00:00:00.000Z\",\n        \"queue_attribute\": {\n            \"queue\": {\n                \"id\": \"4340dbda-acba-4bbb-a861-7016da22cbf6\"\n            }\n        }\n    }\n}"
+          description: The JSON input data for executing the decision table. Must be valid according to the execution input contract defined on the table. In the case of enum decision table columns the enum options key should be provided as the value, not the enum options label as this can be changed. For business rules queue columns both “queue” and “id” keys will be required regardless of the queue attribute key and these do not change.
+          additionalProperties:
+            type: object
+    Literal:
+      type: object
+      properties:
+        string:
+          type: string
+          description: A string value
+        integer:
+          type: integer
+          format: int64
+          description: A positive or negative whole number, including zero
+        number:
+          type: number
+          format: double
+          description: A positive or negative decimal number, including zero
+        date:
+          type: string
+          format: date
+          description: 'A date value, must be in the format of yyyy-MM-dd, e.g. 2024-09-23. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        datetime:
+          type: string
+          format: date-time
+          description: 'A date time value, must be in the format of yyyy-MM-dd''T''HH:mm:ss.SSSZ, e.g. 2024-10-02T01:01:01.111Z. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        special:
+          type: string
+          description: A special value enum, such as Wildcard, Null, etc
+          enum:
+          - Wildcard
+          - 'Null'
+          - Empty
+          - CurrentTime
+        strings:
+          type: array
+          description: A string list value
+          items:
+            type: string
+        boolean:
+          type: boolean
+          description: A boolean value
+    BusinessRulesDataSchema:
+      type: object
+      required:
+      - jsonSchema
+      - version
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the schema.  Only required if a schema is used for custom fields during external entity creation or updates.
+        name:
+          type: string
+        version:
+          type: integer
+          format: int32
+          description: The schema's version, a positive integer. Required for updates.
+        appliesTo:
+          type: array
+          description: Indicates the built-in entity type to which this schema applies.
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - CONTACT
+            - CONVERSATION
+            - EXTERNAL_ORGANIZATION
+            - OPEN_ACTION
+            - WORKITEM
+            - DECISION_TABLE
+            - USER_CUSTOM_ATTRIBUTES
+            - EXTERNAL_EVENTS
+        enabled:
+          type: boolean
+          description: The schema's enabled/disabled status. A disabled schema cannot be assigned to any other entities, but the data on those entities from the schema still exists.
+        createdBy:
+          description: The URI of the user that created this schema.
+          readOnly: true
+          $ref: '#/components/schemas/DomainEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The date and time this schema version was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        jsonSchema:
+          example: "{\n    \"appliesTo\": [\n        \"CONTACT\"\n    ],\n    \"jsonSchema\": {\n        \"title\": \"Example schema\",\n        \"description\": \"Uses all of the core types for illustrative purposes\",\n        \"properties\": {\n            \"field1_text\": {\n                \"title\": \"Field 1\",\n                \"description\": \"field1\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/text\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 39\n            },\n            \"field2_longtext\": {\n                \"title\": \"Field 2\",\n                \"description\": \"field2\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/longtext\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 1000\n            },\n            \"field3_enum\": {\n                \"title\": \"Field 3\",\n                \"description\": \"Field 3\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/enum\" } ],\n                \"enum\": [\n                    \"enum1\",\n                    \"enum2\"\n                ]\n            },\n            \"field4_identifier\": {\n                \"title\": \"field4\",\n                \"description\": \"Field 4\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/identifier\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 37\n            },\n            \"field5_integer\": {\n                \"title\": \"field5\",\n                \"description\": \"Field 5\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/integer\" } ],\n                \"minimum\": 1,\n                \"maximum\": 24\n            },\n            \"field6_number\": {\n                \"title\": \"field6\",\n                \"description\": \"Field 6\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/number\" } ],\n                \"minimum\": 2.7,\n                \"maximum\": 31.3\n            },\n            \"field7_date\": {\n                \"title\": \"field7\",\n                \"description\": \"Field 7\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/date\"}]\n            },\n            \"field8_datetime\": {\n                \"title\": \"field8\",\n                \"description\": \"Field 8\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/datetime\"}]\n            },\n            \"field9_checkbox\": {\n                \"title\": \"field9\",\n                \"description\": \"Field 9\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/checkbox\"}]\n            },\n            \"field10_tag\": {\n                \"title\": \"field10\",\n                \"description\": \"Field 10\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/tag\" } ],\n                \"items\": {\n                    \"minLength\": 1,\n                    \"maxLength\": 20\n                },\n                \"minItems\": 0,\n                \"maxItems\": 10,\n                \"uniqueItems\": true\n            }\n        },\n        \"$schema\": \"http://json-schema.org/draft-04/schema#\"\n    }\n}"
+          description: A JSON schema defining the extension to the built-in entity type.
+          $ref: '#/components/schemas/JsonSchemaDocument'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DecisionTableExportJob:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        tableVersion:
+          type: integer
+          format: int32
+          description: The version of the decision table that was exported.
+          readOnly: true
+        status:
+          type: string
+          description: Current status of the export job.
+          readOnly: true
+          enum:
+          - Pending
+          - Complete
+          - Failed
+        createdBy:
+          description: The user who created the export job.
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date when this export job was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date when this export job was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        fileName:
+          type: string
+          description: Name of the exported file.
+          readOnly: true
+        download:
+          description: Reference to the download resource for obtaining the exported file.
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateDownloadExpires:
+          type: string
+          format: date-time
+          description: 'Date when the download link expires. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        exportType:
+          type: string
+          description: The type of export that was performed.
+          readOnly: true
+          enum:
+          - Template
+          - Populated
+        totalRows:
+          type: integer
+          format: int32
+          description: Total number of rows to export (set when row loading begins).
+          readOnly: true
+        rowsExported:
+          type: integer
+          format: int32
+          description: The number of rows exported.
+          readOnly: true
+        format:
+          type: string
+          description: The format of the exported file.
+          readOnly: true
+          enum:
+          - Csv
+        error:
+          description: Error details if the export job failed.
+          readOnly: true
+          $ref: '#/components/schemas/DecisionTableExportJobError'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    RowSearchPredicate:
+      type: object
+      required:
+      - columnId
+      - operator
+      properties:
+        columnId:
+          type: string
+          description: The decision table column identifier this predicate applies to
+        operator:
+          type: string
+          description: The search operator for this predicate
+          enum:
+          - Equals
+          - StartsWith
+          - GreaterThan
+          - GreaterThanOrEquals
+          - LessThan
+          - LessThanOrEquals
+          - ContainsItem
+        value:
+          type: string
+          description: The value that will be searched for in rows. Exactly one of 'value' or 'special' can be used.
+          minLength: 1
+          maxLength: 200
+        special:
+          type: string
+          description: The special value that will be searched for in rows. Exactly one of 'value' or 'special' can be used.
+          enum:
+          - Wildcard
+          - 'Null'
+          - Empty
+          - CurrentTime
+    DecisionTableExecutionResponse:
+      type: object
+      properties:
+        table:
+          description: The decision table version entity that was executed.
+          $ref: '#/components/schemas/DecisionTableVersionEntity'
+        totalMatchRowCount:
+          type: integer
+          format: int32
+          description: Total number of rows that matched execution input and would return results
+        topMatchRows:
+          type: array
+          description: Top 5 rows matching execution input, excluding the one produced the result.
+          items:
+            $ref: '#/components/schemas/DecisionTableRowEntityRef'
+        rowExecutionOutputs:
+          type: array
+          description: The output data for each executed row for which output is collected.
+          items:
+            $ref: '#/components/schemas/DecisionTableRowExecutionOutput'
+    BulkAddDecisionTableRowsResponse:
+      type: object
+      required:
+      - rows
+      - totalCreated
+      properties:
+        totalCreated:
+          type: integer
+          format: int32
+          description: The total number of rows successfully created
+        rows:
+          type: array
+          description: The list of created decision table rows
+          items:
+            $ref: '#/components/schemas/DecisionTableRow'
+    UpdateDecisionTableVersionRequest:
+      type: object
+      properties:
+        rowIndexUpdate:
+          description: An update to a decision table version row index, which moves the row to a new position in the table.
+          $ref: '#/components/schemas/UpdateRowIndexRequest'
+    DecisionTableVersionListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DecisionTableVersion'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    BulkUpdateDecisionTableRowsRequest:
+      type: object
+      required:
+      - rows
+      properties:
+        rows:
+          type: array
+          description: The list of rows to update. Maximum 15 rows per request. Each row must have a unique rowId.
+          items:
+            $ref: '#/components/schemas/Row'
+          maxItems: 15
+          minItems: 1
+    DecisionTableInputColumnRequest:
+      type: object
+      required:
+      - expression
+      properties:
+        defaultsTo:
+          description: The default row value for this column that will complete the condition expression where no value is provided by a row.
+          $ref: '#/components/schemas/DecisionTableColumnDefaultRowValue'
+        expression:
+          description: The input column condition expression, comprising the left side and comparator of a logical condition in the form of left|comparator|right, where each row of the decision table will provide the right side to form a complete condition
+          $ref: '#/components/schemas/DecisionTableInputColumnExpression'
+    UpdateDecisionTableRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The decision table name.
+        description:
+          type: string
+          description: The decision table description.
+        columns:
+          description: The column definitions for this decision table.
+          $ref: '#/components/schemas/UpdateDecisionTableColumnsRequest'
+    BulkDeleteDecisionTableRowsRequest:
+      type: object
+      required:
+      - rowIds
+      properties:
+        rowIds:
+          type: array
+          description: The set of unique row IDs to be deleted. Maximum 49 rows per request.
+          uniqueItems: true
+          items:
+            type: string
+          maxItems: 49
+          minItems: 1
+    MinLength:
+      type: object
+      required:
+      - max
+      - min
+      properties:
+        min:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the minimum smallest length a string field can contain for a schema instance.
+        max:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the maximum smallest length string the field can contain for a schema instance.
+    DecisionTableInputColumnExpression:
+      type: object
+      required:
+      - comparator
+      - contractual
+      properties:
+        contractual:
+          description: A value that is defined by a contract schema and used to form the left side of a logical condition.
+          $ref: '#/components/schemas/Contractual'
+        comparator:
+          type: string
+          description: A comparator used to join the left and right sides of a logical condition.
+          enum:
+          - Equals
+          - NotEquals
+          - GreaterThan
+          - GreaterThanOrEquals
+          - LessThan
+          - LessThanOrEquals
+          - StartsWith
+          - NotStartsWith
+          - EndsWith
+          - NotEndsWith
+          - Contains
+          - NotContains
+          - ContainsAny
+          - NotContainsAny
+          - ContainsAll
+          - NotContainsAll
+          - ContainsExactly
+          - NotContainsExactly
+          - ContainsSequence
+          - NotContainsSequence
+          - IsSubset
+          - NotIsSubset
+          - IsSubsequence
+          - NotIsSubsequence
+    JsonSchemaWithDefinitions:
+      type: object
+      properties:
+        id:
+          type: string
+        $schema:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        required:
+          type: array
+          items:
+            type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        additionalProperties:
+          type: object
+        definitions:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Definition'
+      description: A JSON Schema document.
+    BusinessRulesParentSchemaRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+        version:
+          type: integer
+          format: int32
+          description: DSS schema version number used by this decision table version
     Division:
       type: object
       properties:
@@ -6468,6 +7130,316 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    DecisionTableColumns:
+      type: object
+      properties:
+        inputs:
+          type: array
+          description: The input columns of the decision table.
+          items:
+            $ref: '#/components/schemas/DecisionTableInputColumn'
+        outputs:
+          type: array
+          description: The output columns of the decision table.
+          items:
+            $ref: '#/components/schemas/DecisionTableOutputColumn'
+    DecisionTableVersionEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/Division'
+        version:
+          type: integer
+          format: int32
+          description: The decision table version.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CoretypeListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coretype'
+        selfUri:
+          type: string
+          format: uri
+    Schema:
+      type: object
+      properties:
+        title:
+          type: string
+          description: A core type's title
+          readOnly: true
+        description:
+          type: string
+          description: A core type's description
+          readOnly: true
+        type:
+          type: array
+          example: '["string"] for a text-based core type, ["integer"] for a numeric core type, or ["boolean", "null"] for the checkbox core type'
+          description: An array of fundamental JSON Schema primitive types on which the core type is based
+          readOnly: true
+          items:
+            type: string
+        items:
+          example: '{
+
+            type": "string",
+
+            "pattern": "^[\\S]+$"
+
+            }'
+          description: Denotes the type and pattern of the items in an enum core type
+          readOnly: true
+          $ref: '#/components/schemas/Items'
+        pattern:
+          type: string
+          description: For the "date" and "datetime" core types, denotes the regex prescribing the allowable date/datetime format
+          readOnly: true
+    DecisionTableExportJobRequest:
+      type: object
+      required:
+      - exportType
+      - format
+      properties:
+        tableVersion:
+          type: integer
+          format: int32
+        exportType:
+          type: string
+          description: The type of export to perform.
+          enum:
+          - Template
+          - Populated
+        format:
+          type: string
+          description: The format of the exported file.
+          enum:
+          - Csv
+    Items:
+      type: object
+      properties:
+        type:
+          type: string
+        pattern:
+          type: string
+    CreateDecisionTableImportJobRequest:
+      type: object
+      required:
+      - fileName
+      - importMode
+      properties:
+        importMode:
+          type: string
+          description: How imported rows are merged with existing rows
+          enum:
+          - Append
+          - Replace
+        fileName:
+          type: string
+          description: Name of the file to import. Must include the file extension.
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    CreateDecisionTableVersionRequest:
+      type: object
+      properties:
+        sourceVersion:
+          type: integer
+          format: int32
+          description: The published, superseded, or snapshot version to create the new draft from. When not provided or null, the published version is used. Must be at least 1 when provided.
+          minimum: 1
+    DecisionTableOutputColumn:
+      type: object
+      required:
+      - value
+      properties:
+        id:
+          type: string
+          description: The id of the column.
+          readOnly: true
+        defaultsTo:
+          description: The default row value for this column that will be used for an output value where no value  is provided by a row.
+          $ref: '#/components/schemas/DecisionTableColumnDefaultRowValue'
+        value:
+          description: The output data of this column that will be provided by each row.
+          $ref: '#/components/schemas/OutputValue'
+    MaxLength:
+      type: object
+      required:
+      - max
+      - min
+      properties:
+        min:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the minimum largest length string the field can contain for a schema instance.
+        max:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the maximum largest string the field can contain for a schema instance.
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    BusinessRulesSchemaCreateRequest:
+      type: object
+      required:
+      - jsonSchema
+      properties:
+        jsonSchema:
+          description: A JSON schema defining the extension to the built-in entity type.
+          $ref: '#/components/schemas/JsonSchemaWithDefinitions'
+      description: Request to create a new Business Rules Schema
+    DecisionTable:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/Division'
+        description:
+          type: string
+          description: The decision table description.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'UTC date time indicating when this decision table was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          description: 'UTC date time indicating when this decision table was last updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        datePublished:
+          type: string
+          format: date-time
+          description: 'UTC date time indicating when this decision table was published. Null if never published. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        published:
+          description: The entity reference to the most recently published decision table version. Null if never published.
+          readOnly: true
+          $ref: '#/components/schemas/DecisionTableVersionEntity'
+        latest:
+          description: The entity reference to the most recently created decision table version.
+          readOnly: true
+          $ref: '#/components/schemas/DecisionTableVersionEntity'
+        latestVersionStatus:
+          type: string
+          description: The status of the most recently created decision table version. Lets clients distinguish e.g. a Draft latest version from a Superseded one without an extra request.
+          readOnly: true
+          enum:
+          - Draft
+          - Published
+          - Error
+          - Preparing
+          - Superseded
+        columns:
+          description: The column definitions of this decision table.
+          $ref: '#/components/schemas/DecisionTableColumns'
+        publishedContract:
+          description: The published contract information for this decision table.
+          $ref: '#/components/schemas/DecisionTableContract'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DecisionTableColumnDefaultRowValue:
+      type: object
+      properties:
+        value:
+          type: string
+          description: A default string value for this column, will be cast to appropriate type according to the relevant contract schema property.
+        values:
+          type: array
+          description: A default list of values for this column, items will be cast to appropriate type according to the relevant contract schema property
+          items:
+            type: string
+        special:
+          type: string
+          description: A default special value enum for this column.
+          enum:
+          - Wildcard
+          - 'Null'
+          - Empty
+          - CurrentTime
+      description: Must provide a valid value for exactly one of the fields in this class.
+    ValidationLimits:
+      type: object
+      properties:
+        minLength:
+          $ref: '#/components/schemas/MinLength'
+        maxLength:
+          $ref: '#/components/schemas/MaxLength'
+        minItems:
+          $ref: '#/components/schemas/MinLength'
+        maxItems:
+          $ref: '#/components/schemas/MaxLength'
+        minimum:
+          $ref: '#/components/schemas/MinLength'
+        maximum:
+          $ref: '#/components/schemas/MaxLength'
+    DecisionTableRowEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
     DecisionTableRow:
       type: object
       required:
@@ -6507,41 +7479,86 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    MinLength:
+    DecisionTableRowListing:
       type: object
-      required:
-      - max
-      - min
       properties:
-        min:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DecisionTableRow'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
           type: integer
           format: int64
-          description: A non-negative integer for a text-based schema field denoting the minimum smallest length a string field can contain for a schema instance.
-        max:
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
           type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the maximum smallest length string the field can contain for a schema instance.
-    DecisionTableColumns:
+          format: int32
+    DecisionTableImportRowMetrics:
       type: object
       properties:
-        inputs:
-          type: array
-          description: The input columns of the decision table.
-          items:
-            $ref: '#/components/schemas/DecisionTableInputColumn'
-        outputs:
-          type: array
-          description: The output columns of the decision table.
-          items:
-            $ref: '#/components/schemas/DecisionTableOutputColumn'
-    SearchDecisionTableRowsRequest:
+        totalRows:
+          type: integer
+          format: int32
+          description: Total number of rows in the import file (set after parsing completes)
+        rowsParsed:
+          type: integer
+          format: int32
+          description: Number of rows successfully parsed so far
+        rowParseFailed:
+          type: integer
+          format: int32
+          description: Number of rows that failed to parse
+        rowsCreated:
+          type: integer
+          format: int32
+          description: Number of rows successfully created so far
+        rowsUpdated:
+          type: integer
+          format: int32
+          description: Number of rows successfully updated so far
+        rowsDeleted:
+          type: integer
+          format: int32
+          description: Number of rows deleted (Replace mode only)
+        rowCreateFailed:
+          type: integer
+          format: int32
+          description: Number of rows that failed during batch create
+        rowUpdateFailed:
+          type: integer
+          format: int32
+          description: Number of rows that failed during batch update
+        rowDeleteFailed:
+          type: integer
+          format: int32
+          description: Number of rows that failed during delete
+      description: Progress metrics for a decision table import job
+    DecisionTableRowParameterValue:
       type: object
-      required:
-      - filter
       properties:
-        filter:
-          description: The filter criteria for searching decision table rows
-          $ref: '#/components/schemas/RowSearchFilter'
+        literal:
+          description: A literal parameter value
+          $ref: '#/components/schemas/Literal'
     BulkUpdateDecisionTableRowsResponse:
       type: object
       required:
@@ -6557,31 +7574,141 @@ components:
           description: The list of updated decision table rows
           items:
             $ref: '#/components/schemas/DecisionTableRow'
-    CreateDecisionTableVersionRequest:
-      type: object
-      properties:
-        sourceVersion:
-          type: integer
-          format: int32
-          description: The published, superseded, or snapshot version to create the new draft from. When not provided or null, the published version is used. Must be at least 1 when provided.
-          minimum: 1
-    UpdateDecisionTableVersionRequest:
-      type: object
-      properties:
-        rowIndexUpdate:
-          description: An update to a decision table version row index, which moves the row to a new position in the table.
-          $ref: '#/components/schemas/UpdateRowIndexRequest'
-    DecisionTableOutputColumnRequest:
+    UpdateDecisionTableImportJobRequest:
       type: object
       required:
-      - value
+      - status
       properties:
-        defaultsTo:
-          description: The default row value for this column that will be used for an output value where no value  is provided by a row.
-          $ref: '#/components/schemas/DecisionTableColumnDefaultRowValue'
-        value:
-          description: The output data of this column that will be provided by each row.
-          $ref: '#/components/schemas/OutputValue'
+        status:
+          type: string
+          description: Updated status for the job
+          enum:
+          - Uploading
+          - Processing
+          - Complete
+          - Failed
+          - Cancelled
+    UpdateDecisionTableColumnsRequest:
+      type: object
+      properties:
+        inputs:
+          type: array
+          description: The input columns of the decision table.
+          items:
+            $ref: '#/components/schemas/DecisionTableInputColumnRequest'
+          maxItems: 2147483647
+          minItems: 1
+        outputs:
+          type: array
+          description: The output columns of the decision table.
+          items:
+            $ref: '#/components/schemas/DecisionTableOutputColumnRequest'
+          maxItems: 2147483647
+          minItems: 1
+      description: Decision table columns will equal the columns contained in this request after the update is performed. If a list of columns types is not provided (i.e. is null) then no update is performed for that column type
+    CreateDecisionTableRequest:
+      type: object
+      required:
+      - columns
+      - divisionId
+      - name
+      - schemaId
+      properties:
+        name:
+          type: string
+          description: The decision table name.
+        description:
+          type: string
+          description: The decision table description.
+        divisionId:
+          type: string
+          description: The ID of the division the decision table belongs to.
+        schemaId:
+          type: string
+          description: The ID of the rules schema used by the decision table.
+        columns:
+          description: The column definitions for this decision table.
+          $ref: '#/components/schemas/CreateDecisionTableColumnsRequest'
+    DecisionTableRowExecutionOutput:
+      type: object
+      required:
+      - outputs
+      - rowId
+      - rowIndex
+      properties:
+        rowId:
+          type: string
+          description: Unique rule identifier.
+        rowIndex:
+          type: integer
+          format: int32
+          description: Unique rule identifier.
+        outputs:
+          type: object
+          example: "{\n    \"outputs\": {\n        \"string_attribute\": \"value\",\n        \"integer_attribute\": 1234,\n        \"number_attribute\": 1234.567,\n        \"boolean_attribute\": true,\n        \"enum_attribute\": \"enum_option_key\",\n        \"date_attribute\": \"2024-12-01\",\n        \"date_time_attribute\": \"2024-12-01T00:00:00.000Z\",\n        \"business_rules_queue_attribute\": {\n            \"queue\": {\n                \"id\": \"4340dbda-acba-4bbb-a861-7016da22cbf6\"\n            }\n        }\n    }\n}"
+          description: The JSON output produced by this rule. Valid according to the execution output contract. In the case of enum decision table output columns, the enum options key will be provided as the value, not the enum options label as this can be changed. For business rules queue columns both “queue” and “id” keys will always be returned  regardless of the business rules queue attribute key and these do not change.
+          additionalProperties:
+            type: object
+    Definition:
+      type: object
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: array
+          items:
+            type: string
+        pattern:
+          type: string
+        items:
+          $ref: '#/components/schemas/Items'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DecisionTableContract:
+      type: object
+      properties:
+        parentSchema:
+          description: DSS schema entity defining source properties for the decision table contract schemas
+          $ref: '#/components/schemas/BusinessRulesParentSchemaRef'
+        rowAuthoringSchema:
+          description: JSON schema describing required value types for each column in every row in a decision table
+          $ref: '#/components/schemas/JsonSchemaDocument'
+        executionInputSchema:
+          description: JSON schema for execution input data for a decision table
+          $ref: '#/components/schemas/JsonSchemaDocument'
+        executionOutputSchema:
+          description: JSON schema for execution output data for a decision table
+          $ref: '#/components/schemas/JsonSchemaDocument'
+    DecisionTableImportJobError:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: The error code for this job failure.
+        errorMessage:
+          type: string
+          description: A human-readable error message.
+        messageWithParams:
+          type: string
+          description: Parameterized message template for the aggregate failure (when applicable)
+        messageParams:
+          type: object
+          description: Parameters for messageWithParams
+          additionalProperties:
+            type: string
+        validationErrors:
+          type: array
+          description: Validation failures for individual rows or the file structure
+          items:
+            $ref: '#/components/schemas/DecisionTableJobValidationError'
+      description: Error details when a decision table import job fails
     OutputValue:
       type: object
       required:
@@ -6595,6 +7722,26 @@ components:
           description: The nested output properties of this column that will be provided by each row, if any.
           items:
             $ref: '#/components/schemas/OutputValue'
+    CreateDecisionTableColumnsRequest:
+      type: object
+      required:
+      - inputs
+      - outputs
+      properties:
+        inputs:
+          type: array
+          description: The input columns of the decision table.
+          items:
+            $ref: '#/components/schemas/DecisionTableInputColumnRequest'
+          maxItems: 2147483647
+          minItems: 1
+        outputs:
+          type: array
+          description: The output columns of the decision table.
+          items:
+            $ref: '#/components/schemas/DecisionTableOutputColumnRequest'
+          maxItems: 2147483647
+          minItems: 1
     Limit:
       type: object
       properties:
@@ -6699,102 +7846,6 @@ components:
         value:
           type: integer
           format: int64
-    DecisionTableRowEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    Items:
-      type: object
-      properties:
-        type:
-          type: string
-        pattern:
-          type: string
-    BulkAddDecisionTableRowsRequest:
-      type: object
-      required:
-      - rows
-      properties:
-        rows:
-          type: array
-          description: The list of rows to create. Maximum 15 rows per request. RowIndex is not supported for bulk add - all rows will be appended to the end of the table in the order provided.
-          items:
-            $ref: '#/components/schemas/CreateDecisionTableRowRequest'
-          maxItems: 15
-          minItems: 1
-    BulkUpdateDecisionTableRowsRequest:
-      type: object
-      required:
-      - rows
-      properties:
-        rows:
-          type: array
-          description: The list of rows to update. Maximum 15 rows per request. Each row must have a unique rowId.
-          items:
-            $ref: '#/components/schemas/Row'
-          maxItems: 15
-          minItems: 1
-    JsonSchemaDocument:
-      type: object
-      properties:
-        id:
-          type: string
-        $schema:
-          type: string
-        title:
-          type: string
-        description:
-          type: string
-        type:
-          type: string
-        required:
-          type: array
-          items:
-            type: string
-        properties:
-          type: object
-          additionalProperties:
-            type: object
-        additionalProperties:
-          type: object
-      description: A JSON Schema document.
-    DecisionTableImportJobError:
-      type: object
-      properties:
-        errorCode:
-          type: string
-          description: The error code for this job failure.
-        errorMessage:
-          type: string
-          description: A human-readable error message.
-        messageWithParams:
-          type: string
-          description: Parameterized message template for the aggregate failure (when applicable)
-        messageParams:
-          type: object
-          description: Parameters for messageWithParams
-          additionalProperties:
-            type: string
-        validationErrors:
-          type: array
-          description: Validation failures for individual rows or the file structure
-          items:
-            $ref: '#/components/schemas/DecisionTableJobValidationError'
-      description: Error details when a decision table import job fails
     Contractual:
       type: object
       required:
@@ -6806,1006 +7857,14 @@ components:
         contractual:
           description: The nested contractual definition that is defined by a contract schema, if any.
           $ref: '#/components/schemas/Contractual'
-    DecisionTableContract:
-      type: object
-      properties:
-        parentSchema:
-          description: DSS schema entity defining source properties for the decision table contract schemas
-          $ref: '#/components/schemas/BusinessRulesParentSchemaRef'
-        rowAuthoringSchema:
-          description: JSON schema describing required value types for each column in every row in a decision table
-          $ref: '#/components/schemas/JsonSchemaDocument'
-        executionInputSchema:
-          description: JSON schema for execution input data for a decision table
-          $ref: '#/components/schemas/JsonSchemaDocument'
-        executionOutputSchema:
-          description: JSON schema for execution output data for a decision table
-          $ref: '#/components/schemas/JsonSchemaDocument'
-    UpdateDecisionTableImportJobRequest:
+    SearchDecisionTableRowsRequest:
       type: object
       required:
-      - status
+      - filter
       properties:
-        status:
-          type: string
-          description: Updated status for the job
-          enum:
-          - Uploading
-          - Processing
-          - Complete
-          - Failed
-          - Cancelled
-    DecisionTableExportJobError:
-      type: object
-      properties:
-        errorCode:
-          type: string
-          description: The error code for this job failure.
-        errorMessage:
-          type: string
-          description: A human-readable error message.
-        messageWithParams:
-          type: string
-          description: Parameterized message template for the aggregate failure (when applicable)
-        messageParams:
-          type: object
-          description: Parameters for messageWithParams
-          additionalProperties:
-            type: string
-        validationErrors:
-          type: array
-          description: Validation failures for the export job
-          items:
-            $ref: '#/components/schemas/DecisionTableJobValidationError'
-      description: Error details when a decision table export job fails
-    CoretypeListing:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coretype'
-        selfUri:
-          type: string
-          format: uri
-    BusinessRulesParentSchemaRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-        version:
-          type: integer
-          format: int32
-          description: DSS schema version number used by this decision table version
-    RowSearchFilter:
-      type: object
-      required:
-      - predicates
-      properties:
-        predicates:
-          type: array
-          description: The predicates that each row matches in the search results must match
-          items:
-            $ref: '#/components/schemas/RowSearchPredicate'
-          maxItems: 5
-          minItems: 1
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    DecisionTableExportJob:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        tableVersion:
-          type: integer
-          format: int32
-          description: The version of the decision table that was exported.
-          readOnly: true
-        status:
-          type: string
-          description: Current status of the export job.
-          readOnly: true
-          enum:
-          - Pending
-          - Complete
-          - Failed
-        createdBy:
-          description: The user who created the export job.
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date when this export job was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date when this export job was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        fileName:
-          type: string
-          description: Name of the exported file.
-          readOnly: true
-        download:
-          description: Reference to the download resource for obtaining the exported file.
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateDownloadExpires:
-          type: string
-          format: date-time
-          description: 'Date when the download link expires. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        exportType:
-          type: string
-          description: The type of export that was performed.
-          readOnly: true
-          enum:
-          - Template
-          - Populated
-        totalRows:
-          type: integer
-          format: int32
-          description: Total number of rows to export (set when row loading begins).
-          readOnly: true
-        rowsExported:
-          type: integer
-          format: int32
-          description: The number of rows exported.
-          readOnly: true
-        format:
-          type: string
-          description: The format of the exported file.
-          readOnly: true
-          enum:
-          - Csv
-        error:
-          description: Error details if the export job failed.
-          readOnly: true
-          $ref: '#/components/schemas/DecisionTableExportJobError'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    DecisionTableInputColumnRequest:
-      type: object
-      required:
-      - expression
-      properties:
-        defaultsTo:
-          description: The default row value for this column that will complete the condition expression where no value is provided by a row.
-          $ref: '#/components/schemas/DecisionTableColumnDefaultRowValue'
-        expression:
-          description: The input column condition expression, comprising the left side and comparator of a logical condition in the form of left|comparator|right, where each row of the decision table will provide the right side to form a complete condition
-          $ref: '#/components/schemas/DecisionTableInputColumnExpression'
-    DecisionTableVersionListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/DecisionTableVersion'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    JsonSchemaWithDefinitions:
-      type: object
-      properties:
-        id:
-          type: string
-        $schema:
-          type: string
-        title:
-          type: string
-        description:
-          type: string
-        type:
-          type: string
-        required:
-          type: array
-          items:
-            type: string
-        properties:
-          type: object
-          additionalProperties:
-            type: object
-        additionalProperties:
-          type: object
-        definitions:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Definition'
-      description: A JSON Schema document.
-    ItemValidationLimits:
-      type: object
-      required:
-      - maxLength
-      - minLength
-      properties:
-        minLength:
-          example: '"minLength": {"min": 0, "max": 100}'
-          description: A structure denoting the system-imposed minimum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
-          $ref: '#/components/schemas/MinLength'
-        maxLength:
-          example: '"validationLimits": {
-
-            "minLength": {"min": 0, "max": 100},
-
-            "maxLength": {"min": 1, "max": 100}
-
-            }'
-          description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
-          $ref: '#/components/schemas/MaxLength'
-    ValidationLimits:
-      type: object
-      properties:
-        minLength:
-          $ref: '#/components/schemas/MinLength'
-        maxLength:
-          $ref: '#/components/schemas/MaxLength'
-        minItems:
-          $ref: '#/components/schemas/MinLength'
-        maxItems:
-          $ref: '#/components/schemas/MaxLength'
-        minimum:
-          $ref: '#/components/schemas/MinLength'
-        maximum:
-          $ref: '#/components/schemas/MaxLength'
-    DecisionTableExecutionResponse:
-      type: object
-      properties:
-        table:
-          description: The decision table version entity that was executed.
-          $ref: '#/components/schemas/DecisionTableVersionEntity'
-        totalMatchRowCount:
-          type: integer
-          format: int32
-          description: Total number of rows that matched execution input and would return results
-        topMatchRows:
-          type: array
-          description: Top 5 rows matching execution input, excluding the one produced the result.
-          items:
-            $ref: '#/components/schemas/DecisionTableRowEntityRef'
-        rowExecutionOutputs:
-          type: array
-          description: The output data for each executed row for which output is collected.
-          items:
-            $ref: '#/components/schemas/DecisionTableRowExecutionOutput'
-    DecisionTableRowListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/DecisionTableRow'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    Definition:
-      type: object
-      properties:
-        name:
-          type: string
-        title:
-          type: string
-        description:
-          type: string
-        type:
-          type: array
-          items:
-            type: string
-        pattern:
-          type: string
-        items:
-          $ref: '#/components/schemas/Items'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    BusinessRulesDataSchemaListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/BusinessRulesDataSchema'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    Row:
-      type: object
-      required:
-      - inputs
-      - outputs
-      - rowId
-      properties:
-        rowId:
-          type: string
-          description: The ID of the row to update
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        inputs:
-          type: object
-          description: The input values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity.
-          additionalProperties:
-            $ref: '#/components/schemas/DecisionTableRowParameterValue'
-        outputs:
-          type: object
-          description: The output values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity.
-          additionalProperties:
-            $ref: '#/components/schemas/DecisionTableRowParameterValue'
-    BulkDeleteDecisionTableRowsRequest:
-      type: object
-      required:
-      - rowIds
-      properties:
-        rowIds:
-          type: array
-          description: The set of unique row IDs to be deleted. Maximum 49 rows per request.
-          uniqueItems: true
-          items:
-            type: string
-          maxItems: 49
-          minItems: 1
-    BulkAddDecisionTableRowsResponse:
-      type: object
-      required:
-      - rows
-      - totalCreated
-      properties:
-        totalCreated:
-          type: integer
-          format: int32
-          description: The total number of rows successfully created
-        rows:
-          type: array
-          description: The list of created decision table rows
-          items:
-            $ref: '#/components/schemas/DecisionTableRow'
-    BusinessRulesSchemaUpdateRequest:
-      type: object
-      required:
-      - jsonSchema
-      - version
-      properties:
-        version:
-          type: integer
-          format: int32
-          description: The schema's version, a positive integer. Required for updates.
-        enabled:
-          type: boolean
-          description: The schema's enabled/disabled status. A disabled schema cannot be assigned to any other entities, but the data on those entities from the schema still exists.
-        jsonSchema:
-          description: A JSON schema defining the extension to the built-in entity type.
-          $ref: '#/components/schemas/JsonSchemaWithDefinitions'
-      description: Request to update an existing Business Rules Schema
-    Coretype:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        version:
-          type: integer
-          format: int32
-          description: A positive integer denoting the core type's version
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The date the core type was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        schema:
-          description: The core type's built-in schema
-          $ref: '#/components/schemas/Schema'
-        current:
-          type: boolean
-          description: A boolean indicating if the core type's version is the current one in use by the system
-        validationFields:
-          type: array
-          description: An array of strings naming the fields of the core type subject to validation.  Validation constraints are specified by a schema author using the core type.
-          items:
-            type: string
-        validationLimits:
-          example: '"validationLimits": {
-
-            "minLength": {"min": 0, "max": 100},
-
-            "maxLength": {"min": 1, "max": 100}
-
-            }'
-          description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
-          $ref: '#/components/schemas/ValidationLimits'
-        itemValidationFields:
-          type: array
-          description: Specific to the "tag" core type, this is an array of strings naming the tag item fields of the core type subject to validation
-          items:
-            type: string
-        itemValidationLimits:
-          example: "\"validationLimits\": {\n     \"minLength\": {\"min\": 1, \"max\": 100},\n     \"maxLength\": {\"min\": 1, \"max\": 100}\n}"
-          description: A structure denoting the system-imposed minimum and maximum string length for string-array based core types such as "tag" and "enum".  Forexample, the validationLimits for a schema field using a tag core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schema author on individual tags.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field's tags.
-          $ref: '#/components/schemas/ItemValidationLimits'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CreateDecisionTableImportJobRequest:
-      type: object
-      required:
-      - fileName
-      - importMode
-      properties:
-        importMode:
-          type: string
-          description: How imported rows are merged with existing rows
-          enum:
-          - Append
-          - Replace
-        fileName:
-          type: string
-          description: Name of the file to import. Must include the file extension.
-    DecisionTableVersionEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/Division'
-        version:
-          type: integer
-          format: int32
-          description: The decision table version.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Literal:
-      type: object
-      properties:
-        string:
-          type: string
-          description: A string value
-        integer:
-          type: integer
-          format: int64
-          description: A positive or negative whole number, including zero
-        number:
-          type: number
-          format: double
-          description: A positive or negative decimal number, including zero
-        date:
-          type: string
-          format: date
-          description: 'A date value, must be in the format of yyyy-MM-dd, e.g. 2024-09-23. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        datetime:
-          type: string
-          format: date-time
-          description: 'A date time value, must be in the format of yyyy-MM-dd''T''HH:mm:ss.SSSZ, e.g. 2024-10-02T01:01:01.111Z. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        special:
-          type: string
-          description: A special value enum, such as Wildcard, Null, etc
-          enum:
-          - Wildcard
-          - 'Null'
-          - Empty
-          - CurrentTime
-        strings:
-          type: array
-          description: A string list value
-          items:
-            type: string
-        boolean:
-          type: boolean
-          description: A boolean value
-    UpdateRowIndexRequest:
-      type: object
-      required:
-      - rowId
-      - rowIndex
-      properties:
-        rowId:
-          type: string
-          description: The row UUID.
-        rowIndex:
-          type: integer
-          format: int32
-          description: The updated row index. Must be an integer value greater than or equal to 1. Must be less than or equal to x, where x is the number of rows in the decision table version.
-    MaxLength:
-      type: object
-      required:
-      - max
-      - min
-      properties:
-        min:
-          type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the minimum largest length string the field can contain for a schema instance.
-        max:
-          type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the maximum largest string the field can contain for a schema instance.
-    BusinessRulesDataSchema:
-      type: object
-      required:
-      - jsonSchema
-      - version
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the schema.  Only required if a schema is used for custom fields during external entity creation or updates.
-        name:
-          type: string
-        version:
-          type: integer
-          format: int32
-          description: The schema's version, a positive integer. Required for updates.
-        appliesTo:
-          type: array
-          description: Indicates the built-in entity type to which this schema applies.
-          readOnly: true
-          items:
-            type: string
-            enum:
-            - CONTACT
-            - CONVERSATION
-            - EXTERNAL_ORGANIZATION
-            - OPEN_ACTION
-            - WORKITEM
-            - DECISION_TABLE
-            - USER_CUSTOM_ATTRIBUTES
-            - EXTERNAL_EVENTS
-        enabled:
-          type: boolean
-          description: The schema's enabled/disabled status. A disabled schema cannot be assigned to any other entities, but the data on those entities from the schema still exists.
-        createdBy:
-          description: The URI of the user that created this schema.
-          readOnly: true
-          $ref: '#/components/schemas/DomainEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The date and time this schema version was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        jsonSchema:
-          example: "{\n    \"appliesTo\": [\n        \"CONTACT\"\n    ],\n    \"jsonSchema\": {\n        \"title\": \"Example schema\",\n        \"description\": \"Uses all of the core types for illustrative purposes\",\n        \"properties\": {\n            \"field1_text\": {\n                \"title\": \"Field 1\",\n                \"description\": \"field1\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/text\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 39\n            },\n            \"field2_longtext\": {\n                \"title\": \"Field 2\",\n                \"description\": \"field2\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/longtext\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 1000\n            },\n            \"field3_enum\": {\n                \"title\": \"Field 3\",\n                \"description\": \"Field 3\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/enum\" } ],\n                \"enum\": [\n                    \"enum1\",\n                    \"enum2\"\n                ]\n            },\n            \"field4_identifier\": {\n                \"title\": \"field4\",\n                \"description\": \"Field 4\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/identifier\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 37\n            },\n            \"field5_integer\": {\n                \"title\": \"field5\",\n                \"description\": \"Field 5\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/integer\" } ],\n                \"minimum\": 1,\n                \"maximum\": 24\n            },\n            \"field6_number\": {\n                \"title\": \"field6\",\n                \"description\": \"Field 6\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/number\" } ],\n                \"minimum\": 2.7,\n                \"maximum\": 31.3\n            },\n            \"field7_date\": {\n                \"title\": \"field7\",\n                \"description\": \"Field 7\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/date\"}]\n            },\n            \"field8_datetime\": {\n                \"title\": \"field8\",\n                \"description\": \"Field 8\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/datetime\"}]\n            },\n            \"field9_checkbox\": {\n                \"title\": \"field9\",\n                \"description\": \"Field 9\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/checkbox\"}]\n            },\n            \"field10_tag\": {\n                \"title\": \"field10\",\n                \"description\": \"Field 10\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/tag\" } ],\n                \"items\": {\n                    \"minLength\": 1,\n                    \"maxLength\": 20\n                },\n                \"minItems\": 0,\n                \"maxItems\": 10,\n                \"uniqueItems\": true\n            }\n        },\n        \"$schema\": \"http://json-schema.org/draft-04/schema#\"\n    }\n}"
-          description: A JSON schema defining the extension to the built-in entity type.
-          $ref: '#/components/schemas/JsonSchemaDocument'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    DecisionTableInputColumnExpression:
-      type: object
-      required:
-      - comparator
-      - contractual
-      properties:
-        contractual:
-          description: A value that is defined by a contract schema and used to form the left side of a logical condition.
-          $ref: '#/components/schemas/Contractual'
-        comparator:
-          type: string
-          description: A comparator used to join the left and right sides of a logical condition.
-          enum:
-          - Equals
-          - NotEquals
-          - GreaterThan
-          - GreaterThanOrEquals
-          - LessThan
-          - LessThanOrEquals
-          - StartsWith
-          - NotStartsWith
-          - EndsWith
-          - NotEndsWith
-          - Contains
-          - NotContains
-          - ContainsAny
-          - NotContainsAny
-          - ContainsAll
-          - NotContainsAll
-          - ContainsExactly
-          - NotContainsExactly
-          - ContainsSequence
-          - NotContainsSequence
-          - IsSubset
-          - NotIsSubset
-          - IsSubsequence
-          - NotIsSubsequence
-    PutDecisionTableRowRequest:
-      type: object
-      properties:
-        inputs:
-          type: object
-          description: The full updated input values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity
-          additionalProperties:
-            $ref: '#/components/schemas/DecisionTableRowParameterValue'
-        outputs:
-          type: object
-          description: The full updated output values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity
-          additionalProperties:
-            $ref: '#/components/schemas/DecisionTableRowParameterValue'
-    UpdateDecisionTableRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The decision table name.
-        description:
-          type: string
-          description: The decision table description.
-        columns:
-          description: The column definitions for this decision table.
-          $ref: '#/components/schemas/UpdateDecisionTableColumnsRequest'
-    CreateDecisionTableRequest:
-      type: object
-      required:
-      - columns
-      - divisionId
-      - name
-      - schemaId
-      properties:
-        name:
-          type: string
-          description: The decision table name.
-        description:
-          type: string
-          description: The decision table description.
-        divisionId:
-          type: string
-          description: The ID of the division the decision table belongs to.
-        schemaId:
-          type: string
-          description: The ID of the rules schema used by the decision table.
-        columns:
-          description: The column definitions for this decision table.
-          $ref: '#/components/schemas/CreateDecisionTableColumnsRequest'
-    DecisionTableExecutionRequest:
-      type: object
-      required:
-      - inputs
-      properties:
-        inputs:
-          type: object
-          example: "{\n    \"inputs\": {\n        \"string_attribute\": \"value\",\n        \"integer_attribute\": 1234,\n        \"number_attribute\": 1234.567,\n        \"boolean_attribute\": true,\n        \"enum_attribute\": \"enum_option_key\",\n        \"date_attribute\": \"2024-12-01\",\n        \"date_time_attribute\": \"2024-12-01T00:00:00.000Z\",\n        \"queue_attribute\": {\n            \"queue\": {\n                \"id\": \"4340dbda-acba-4bbb-a861-7016da22cbf6\"\n            }\n        }\n    }\n}"
-          description: The JSON input data for executing the decision table. Must be valid according to the execution input contract defined on the table. In the case of enum decision table columns the enum options key should be provided as the value, not the enum options label as this can be changed. For business rules queue columns both “queue” and “id” keys will be required regardless of the queue attribute key and these do not change.
-          additionalProperties:
-            type: object
-    DecisionTableListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/DecisionTable'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    DecisionTableExportJobRequest:
-      type: object
-      required:
-      - exportType
-      - format
-      properties:
-        tableVersion:
-          type: integer
-          format: int32
-        exportType:
-          type: string
-          description: The type of export to perform.
-          enum:
-          - Template
-          - Populated
-        format:
-          type: string
-          description: The format of the exported file.
-          enum:
-          - Csv
-    DecisionTable:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/Division'
-        description:
-          type: string
-          description: The decision table description.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'UTC date time indicating when this decision table was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          description: 'UTC date time indicating when this decision table was last updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        datePublished:
-          type: string
-          format: date-time
-          description: 'UTC date time indicating when this decision table was published. Null if never published. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        published:
-          description: The entity reference to the most recently published decision table version. Null if never published.
-          readOnly: true
-          $ref: '#/components/schemas/DecisionTableVersionEntity'
-        latest:
-          description: The entity reference to the most recently created decision table version.
-          readOnly: true
-          $ref: '#/components/schemas/DecisionTableVersionEntity'
-        latestVersionStatus:
-          type: string
-          description: The status of the most recently created decision table version. Lets clients distinguish e.g. a Draft latest version from a Superseded one without an extra request.
-          readOnly: true
-          enum:
-          - Draft
-          - Published
-          - Error
-          - Preparing
-          - Superseded
-        columns:
-          description: The column definitions of this decision table.
-          $ref: '#/components/schemas/DecisionTableColumns'
-        publishedContract:
-          description: The published contract information for this decision table.
-          $ref: '#/components/schemas/DecisionTableContract'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    DecisionTableColumnDefaultRowValue:
-      type: object
-      properties:
-        value:
-          type: string
-          description: A default string value for this column, will be cast to appropriate type according to the relevant contract schema property.
-        values:
-          type: array
-          description: A default list of values for this column, items will be cast to appropriate type according to the relevant contract schema property
-          items:
-            type: string
-        special:
-          type: string
-          description: A default special value enum for this column.
-          enum:
-          - Wildcard
-          - 'Null'
-          - Empty
-          - CurrentTime
-      description: Must provide a valid value for exactly one of the fields in this class.
-    DecisionTableRowParameterValue:
-      type: object
-      properties:
-        literal:
-          description: A literal parameter value
-          $ref: '#/components/schemas/Literal'
-    CreateDecisionTableRowRequest:
-      type: object
-      required:
-      - inputs
-      - outputs
-      properties:
-        rowIndex:
-          type: integer
-          format: int32
-          description: 'The absolute position of this row in the decision table. Must be an integerstarting from 1, must be positive and less than or equal to the size of the table. If not provided row will be append to the end of the table. '
-        inputs:
-          type: object
-          description: The input values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity
-          additionalProperties:
-            $ref: '#/components/schemas/DecisionTableRowParameterValue'
-        outputs:
-          type: object
-          description: The output values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity
-          additionalProperties:
-            $ref: '#/components/schemas/DecisionTableRowParameterValue'
-    DecisionTableOutputColumn:
-      type: object
-      required:
-      - value
-      properties:
-        id:
-          type: string
-          description: The id of the column.
-          readOnly: true
-        defaultsTo:
-          description: The default row value for this column that will be used for an output value where no value  is provided by a row.
-          $ref: '#/components/schemas/DecisionTableColumnDefaultRowValue'
-        value:
-          description: The output data of this column that will be provided by each row.
-          $ref: '#/components/schemas/OutputValue'
-    Schema:
-      type: object
-      properties:
-        title:
-          type: string
-          description: A core type's title
-          readOnly: true
-        description:
-          type: string
-          description: A core type's description
-          readOnly: true
-        type:
-          type: array
-          example: '["string"] for a text-based core type, ["integer"] for a numeric core type, or ["boolean", "null"] for the checkbox core type'
-          description: An array of fundamental JSON Schema primitive types on which the core type is based
-          readOnly: true
-          items:
-            type: string
-        items:
-          example: '{
-
-            type": "string",
-
-            "pattern": "^[\\S]+$"
-
-            }'
-          description: Denotes the type and pattern of the items in an enum core type
-          readOnly: true
-          $ref: '#/components/schemas/Items'
-        pattern:
-          type: string
-          description: For the "date" and "datetime" core types, denotes the regex prescribing the allowable date/datetime format
-          readOnly: true
-    DecisionTableVersion:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/Division'
-        version:
-          type: integer
-          format: int32
-          description: The decision table version.
-        status:
-          type: string
-          description: Current status of this decision table version
-          enum:
-          - Draft
-          - Published
-          - Error
-          - Preparing
-          - Superseded
-        description:
-          type: string
-          description: The decision table description.
-        rowCount:
-          type: integer
-          format: int32
-          description: The number of rows in this decision table version.
-        rowsUri:
-          type: string
-          description: The rows URI for this decision table version.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'UTC date time indicating when this decision table version was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          description: 'UTC date time indicating when this decision table version was last updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        datePublished:
-          type: string
-          format: date-time
-          description: 'UTC date time indicating when this decision table version was published. Null if never published. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        columns:
-          description: The column definitions of this decision table version.
-          $ref: '#/components/schemas/DecisionTableColumns'
-        contract:
-          description: The contract information for this decision table version.
-          $ref: '#/components/schemas/DecisionTableContract'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    RowSearchPredicate:
-      type: object
-      required:
-      - columnId
-      - operator
-      properties:
-        columnId:
-          type: string
-          description: The decision table column identifier this predicate applies to
-        operator:
-          type: string
-          description: The search operator for this predicate
-          enum:
-          - Equals
-          - StartsWith
-          - GreaterThan
-          - GreaterThanOrEquals
-          - LessThan
-          - LessThanOrEquals
-          - ContainsItem
-        value:
-          type: string
-          description: The value that will be searched for in rows. Exactly one of 'value' or 'special' can be used.
-          minLength: 1
-          maxLength: 200
-        special:
-          type: string
-          description: The special value that will be searched for in rows. Exactly one of 'value' or 'special' can be used.
-          enum:
-          - Wildcard
-          - 'Null'
-          - Empty
-          - CurrentTime
+        filter:
+          description: The filter criteria for searching decision table rows
+          $ref: '#/components/schemas/RowSearchFilter'
     DecisionTableJobValidationError:
       type: object
       properties:
@@ -7843,122 +7902,63 @@ components:
           format: int32
           description: Row number in the import file when applicable (1-based for data rows; 0 may be used for file-level issues such as headers)
       description: Validation error for a decision table import or export job (e.g. import file row or header, export division checks)
-    DecisionTableExportJobListing:
+    Row:
+      type: object
+      required:
+      - inputs
+      - outputs
+      - rowId
+      properties:
+        rowId:
+          type: string
+          description: The ID of the row to update
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        inputs:
+          type: object
+          description: The input values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity.
+          additionalProperties:
+            $ref: '#/components/schemas/DecisionTableRowParameterValue'
+        outputs:
+          type: object
+          description: The output values of the row. The key for this map is the column ID the row value relates. Column IDs are available from the decision table entity.
+          additionalProperties:
+            $ref: '#/components/schemas/DecisionTableRowParameterValue'
+    BusinessRulesDataSchemaListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/DecisionTableExportJob'
+            $ref: '#/components/schemas/BusinessRulesDataSchema'
         nextUri:
           type: string
         selfUri:
           type: string
         previousUri:
           type: string
-    DecisionTableRowExecutionOutput:
+    BulkAddDecisionTableRowsRequest:
       type: object
       required:
-      - outputs
-      - rowId
-      - rowIndex
+      - rows
       properties:
-        rowId:
-          type: string
-          description: Unique rule identifier.
-        rowIndex:
-          type: integer
-          format: int32
-          description: Unique rule identifier.
-        outputs:
-          type: object
-          example: "{\n    \"outputs\": {\n        \"string_attribute\": \"value\",\n        \"integer_attribute\": 1234,\n        \"number_attribute\": 1234.567,\n        \"boolean_attribute\": true,\n        \"enum_attribute\": \"enum_option_key\",\n        \"date_attribute\": \"2024-12-01\",\n        \"date_time_attribute\": \"2024-12-01T00:00:00.000Z\",\n        \"business_rules_queue_attribute\": {\n            \"queue\": {\n                \"id\": \"4340dbda-acba-4bbb-a861-7016da22cbf6\"\n            }\n        }\n    }\n}"
-          description: The JSON output produced by this rule. Valid according to the execution output contract. In the case of enum decision table output columns, the enum options key will be provided as the value, not the enum options label as this can be changed. For business rules queue columns both “queue” and “id” keys will always be returned  regardless of the business rules queue attribute key and these do not change.
-          additionalProperties:
-            type: object
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
+        rows:
           type: array
+          description: The list of rows to create. Maximum 15 rows per request. RowIndex is not supported for bulk add - all rows will be appended to the end of the table in the order provided.
           items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
+            $ref: '#/components/schemas/CreateDecisionTableRowRequest'
+          maxItems: 15
+          minItems: 1
+    DecisionTableOutputColumnRequest:
       type: object
+      required:
+      - value
       properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    DecisionTableImportRowMetrics:
-      type: object
-      properties:
-        totalRows:
-          type: integer
-          format: int32
-          description: Total number of rows in the import file (set after parsing completes)
-        rowsParsed:
-          type: integer
-          format: int32
-          description: Number of rows successfully parsed so far
-        rowParseFailed:
-          type: integer
-          format: int32
-          description: Number of rows that failed to parse
-        rowsCreated:
-          type: integer
-          format: int32
-          description: Number of rows successfully created so far
-        rowsUpdated:
-          type: integer
-          format: int32
-          description: Number of rows successfully updated so far
-        rowsDeleted:
-          type: integer
-          format: int32
-          description: Number of rows deleted (Replace mode only)
-        rowCreateFailed:
-          type: integer
-          format: int32
-          description: Number of rows that failed during batch create
-        rowUpdateFailed:
-          type: integer
-          format: int32
-          description: Number of rows that failed during batch update
-        rowDeleteFailed:
-          type: integer
-          format: int32
-          description: Number of rows that failed during delete
-      description: Progress metrics for a decision table import job
+        defaultsTo:
+          description: The default row value for this column that will be used for an output value where no value  is provided by a row.
+          $ref: '#/components/schemas/DecisionTableColumnDefaultRowValue'
+        value:
+          description: The output data of this column that will be provided by each row.
+          $ref: '#/components/schemas/OutputValue'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

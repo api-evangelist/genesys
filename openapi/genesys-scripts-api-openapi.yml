@@ -2507,6 +2507,191 @@ paths:
       x-purecloud-method-name: getScripts
 components:
   schemas:
+    ExportScriptRequest:
+      type: object
+      properties:
+        fileName:
+          type: string
+          description: 'The final file name (no extension) of the script download: <fileName>.script'
+        versionId:
+          type: string
+          description: The UUID version of the script to be exported.  Defaults to the current editable version.
+      description: Creating an exported script via Download Service
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    ExportScriptResponse:
+      type: object
+      properties:
+        url:
+          type: string
+    PublishScriptRequestData:
+      type: object
+      required:
+      - scriptId
+      properties:
+        scriptId:
+          type: string
+          description: The id of the script to publish
+        versionId:
+          type: string
+    Script:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/Division'
+        versionId:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        publishedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        versionDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        startPageId:
+          type: string
+        startPageName:
+          type: string
+        features:
+          type: object
+        variables:
+          type: object
+        customActions:
+          type: object
+        pages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Page'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Page:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        versionId:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        rootContainer:
+          type: object
+          additionalProperties:
+            type: object
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ScriptEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Script'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        truncatedDivisions:
+          type: boolean
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
     Limit:
       type: object
       properties:
@@ -2611,72 +2796,6 @@ components:
         value:
           type: integer
           format: int64
-    ExportScriptRequest:
-      type: object
-      properties:
-        fileName:
-          type: string
-          description: 'The final file name (no extension) of the script download: <fileName>.script'
-        versionId:
-          type: string
-          description: The UUID version of the script to be exported.  Defaults to the current editable version.
-      description: Creating an exported script via Download Service
-    ScriptEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Script'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        truncatedDivisions:
-          type: boolean
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    ImportScriptStatusResponse:
-      type: object
-      properties:
-        url:
-          type: string
-          format: uri
-        succeeded:
-          type: boolean
-        message:
-          type: string
-    PublishScriptRequestData:
-      type: object
-      required:
-      - scriptId
-      properties:
-        scriptId:
-          type: string
-          description: The id of the script to publish
-        versionId:
-          type: string
     Division:
       type: object
       properties:
@@ -2691,134 +2810,15 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Script:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/Division'
-        versionId:
-          type: string
-        createdDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        publishedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        versionDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        startPageId:
-          type: string
-        startPageName:
-          type: string
-        features:
-          type: object
-        variables:
-          type: object
-        customActions:
-          type: object
-        pages:
-          type: array
-          items:
-            $ref: '#/components/schemas/Page'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Page:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        versionId:
-          type: string
-        createdDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        rootContainer:
-          type: object
-          additionalProperties:
-            type: object
-        properties:
-          type: object
-          additionalProperties:
-            type: object
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ExportScriptResponse:
+    ImportScriptStatusResponse:
       type: object
       properties:
         url:
           type: string
-    ErrorBody:
-      type: object
-      properties:
+          format: uri
+        succeeded:
+          type: boolean
         message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
           type: string
   securitySchemes:
     PureCloud_OAuth:

@@ -807,11 +807,50 @@ paths:
               $ref: '#/components/schemas/IdleTokenTimeout'
 components:
   schemas:
-    OrgOAuthClient:
+    DomainEntityRef:
       type: object
-      required:
-      - authorizedGrantType
-      - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    NamedEntity:
+      type: object
       properties:
         id:
           type: string
@@ -819,74 +858,52 @@ components:
           readOnly: true
         name:
           type: string
-          description: The name of the OAuth client.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date this client was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date this client was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        createdBy:
-          description: User that created this client
-          $ref: '#/components/schemas/DomainEntityRef'
-        modifiedBy:
-          description: User that last modified this client
-          $ref: '#/components/schemas/DomainEntityRef'
-        authorizedGrantType:
-          type: string
-          description: 'The OAuth Grant/Client type supported by this client.
-
-            Code Authorization Grant/Client type - Preferred client type where the Client ID and Secret are required to create tokens. Used where the secret can be secured.
-
-            PKCE-Enabled Code Authorization grant type - Code grant type which requires PKCE challenge and verifier to create tokens. Used in public clients for increased security.
-
-            Implicit grant type - Client ID only is required to create tokens. Used in browser and mobile apps where the secret can not be secured.
-
-            SAML2-Bearer extension grant type - SAML2 assertion provider for user authentication at the token endpoint.
-
-            Client Credential grant type - Used to created access tokens that are tied only to the client.
-
-            '
-          enum:
-          - CODE
-          - TOKEN
-          - SAML2-BEARER
-          - PASSWORD
-          - CLIENT-CREDENTIALS
-        scope:
-          type: array
-          description: The scope requested by this client. Scopes only apply to clients not using the client_credential grant
-          items:
-            type: string
-        roleDivisions:
-          type: array
-          description: Set of roles and their corresponding divisions associated with this client. Roles and divisions only apply to clients using the client_credential grant
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/RoleDivision'
-        state:
-          type: string
-          description: 'The state of the OAuth client.
-
-            Active: The OAuth client can be used to create access tokens. This is the default state.
-
-            Disabled: Access tokens created by the client are invalid and new ones cannot be created.
-
-            Inactive: Access tokens cannot be created with this OAuth client and it will be deleted.'
-          enum:
-          - active
-          - disabled
-          - inactive
-        dateToDelete:
-          type: string
-          format: date-time
-          description: 'The time at which this client will be deleted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        organization:
-          description: The  oauth client's organization.
+          description: The name of the object.
           readOnly: true
-          $ref: '#/components/schemas/NamedEntity'
+    RoleDivision:
+      type: object
+      required:
+      - divisionId
+      - roleId
+      properties:
+        roleId:
+          type: string
+          description: Role to be associated with the given division which forms a grant
+        divisionId:
+          type: string
+          description: Division associated with the given role which forms a grant
+    IdleTokenTimeout:
+      type: object
+      properties:
+        idleTokenTimeoutSeconds:
+          type: integer
+          format: int32
+          description: Token timeout length in seconds. Must be at least 5 minutes and at most 8 hours. HIPAA-enabled organizations may be subject to a stricter 15-minute maximum during rollout.
+          minimum: 300
+        enableIdleTokenTimeout:
+          type: boolean
+          description: Indicates whether the Token Timeout should be enabled or disabled.
+        inactivityTimeoutUnit:
+          type: string
+          description: The unit for the inactivity timeout (MINUTES or HOURS).
+          enum:
+          - Minutes
+          - Hours
+        inactivityTimeoutGroupsEnabled:
+          type: boolean
+          description: Indicates whether inactivity timeout groups are enabled.
+        inactivityTimeoutGroupBundles:
+          type: array
+          description: Group bundle configuration for inactivity timeout.
+          items:
+            $ref: '#/components/schemas/InactivityTimeoutGroupBundle'
+    Entity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
     TokenInfo:
       type: object
       properties:
@@ -1019,6 +1036,97 @@ components:
         value:
           type: integer
           format: int64
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    OrgOAuthClient:
+      type: object
+      required:
+      - authorizedGrantType
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the OAuth client.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date this client was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date this client was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        createdBy:
+          description: User that created this client
+          $ref: '#/components/schemas/DomainEntityRef'
+        modifiedBy:
+          description: User that last modified this client
+          $ref: '#/components/schemas/DomainEntityRef'
+        authorizedGrantType:
+          type: string
+          description: 'The OAuth Grant/Client type supported by this client.
+
+            Code Authorization Grant/Client type - Preferred client type where the Client ID and Secret are required to create tokens. Used where the secret can be secured.
+
+            PKCE-Enabled Code Authorization grant type - Code grant type which requires PKCE challenge and verifier to create tokens. Used in public clients for increased security.
+
+            Implicit grant type - Client ID only is required to create tokens. Used in browser and mobile apps where the secret can not be secured.
+
+            SAML2-Bearer extension grant type - SAML2 assertion provider for user authentication at the token endpoint.
+
+            Client Credential grant type - Used to created access tokens that are tied only to the client.
+
+            '
+          enum:
+          - CODE
+          - TOKEN
+          - SAML2-BEARER
+          - PASSWORD
+          - CLIENT-CREDENTIALS
+        scope:
+          type: array
+          description: The scope requested by this client. Scopes only apply to clients not using the client_credential grant
+          items:
+            type: string
+        roleDivisions:
+          type: array
+          description: Set of roles and their corresponding divisions associated with this client. Roles and divisions only apply to clients using the client_credential grant
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/RoleDivision'
+        state:
+          type: string
+          description: 'The state of the OAuth client.
+
+            Active: The OAuth client can be used to create access tokens. This is the default state.
+
+            Disabled: Access tokens created by the client are invalid and new ones cannot be created.
+
+            Inactive: Access tokens cannot be created with this OAuth client and it will be deleted.'
+          enum:
+          - active
+          - disabled
+          - inactive
+        dateToDelete:
+          type: string
+          format: date-time
+          description: 'The time at which this client will be deleted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        organization:
+          description: The  oauth client's organization.
+          readOnly: true
+          $ref: '#/components/schemas/NamedEntity'
     InactivityTimeoutGroupBundle:
       type: object
       required:
@@ -1045,46 +1153,6 @@ components:
           description: The list of group IDs to select.
           items:
             type: string
-    Entity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    NamedEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the object.
-          readOnly: true
-    RoleDivision:
-      type: object
-      required:
-      - divisionId
-      - roleId
-      properties:
-        roleId:
-          type: string
-          description: Role to be associated with the given division which forms a grant
-        divisionId:
-          type: string
-          description: Division associated with the given role which forms a grant
     TokenInfoClonedUser:
       type: object
       properties:
@@ -1096,74 +1164,6 @@ components:
           description: Organization of the original native user
           readOnly: true
           $ref: '#/components/schemas/Entity'
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    IdleTokenTimeout:
-      type: object
-      properties:
-        idleTokenTimeoutSeconds:
-          type: integer
-          format: int32
-          description: Token timeout length in seconds. Must be at least 5 minutes and at most 8 hours. HIPAA-enabled organizations may be subject to a stricter 15-minute maximum during rollout.
-          minimum: 300
-        enableIdleTokenTimeout:
-          type: boolean
-          description: Indicates whether the Token Timeout should be enabled or disabled.
-        inactivityTimeoutUnit:
-          type: string
-          description: The unit for the inactivity timeout (MINUTES or HOURS).
-          enum:
-          - Minutes
-          - Hours
-        inactivityTimeoutGroupsEnabled:
-          type: boolean
-          description: Indicates whether inactivity timeout groups are enabled.
-        inactivityTimeoutGroupBundles:
-          type: array
-          description: Group bundle configuration for inactivity timeout.
-          items:
-            $ref: '#/components/schemas/InactivityTimeoutGroupBundle'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

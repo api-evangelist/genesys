@@ -156,6 +156,38 @@ paths:
               $ref: '#/components/schemas/BackgroundAssistantUserAuthenticatedInfo'
 components:
   schemas:
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -260,51 +292,6 @@ components:
         value:
           type: integer
           format: int64
-    BackgroundAssistantUserAuthenticatedInfo:
-      type: object
-      required:
-      - backgroundAssistantId
-      properties:
-        backgroundAssistantId:
-          type: string
-          description: Id of Genesys Cloud Background Assistant
-    SignedData:
-      type: object
-      properties:
-        jwt:
-          type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
     Detail:
       type: object
       properties:
@@ -316,6 +303,19 @@ components:
           type: string
         entityName:
           type: string
+    SignedData:
+      type: object
+      properties:
+        jwt:
+          type: string
+    BackgroundAssistantUserAuthenticatedInfo:
+      type: object
+      required:
+      - backgroundAssistantId
+      properties:
+        backgroundAssistantId:
+          type: string
+          description: Id of Genesys Cloud Background Assistant
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

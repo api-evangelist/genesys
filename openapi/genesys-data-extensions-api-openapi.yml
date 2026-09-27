@@ -443,6 +443,105 @@ paths:
       x-purecloud-method-name: getDataextensionsLimits
 components:
   schemas:
+    Schema:
+      type: object
+      properties:
+        title:
+          type: string
+          description: A core type's title
+          readOnly: true
+        description:
+          type: string
+          description: A core type's description
+          readOnly: true
+        type:
+          type: array
+          example: '["string"] for a text-based core type, ["integer"] for a numeric core type, or ["boolean", "null"] for the checkbox core type'
+          description: An array of fundamental JSON Schema primitive types on which the core type is based
+          readOnly: true
+          items:
+            type: string
+        items:
+          example: '{
+
+            type": "string",
+
+            "pattern": "^[\\S]+$"
+
+            }'
+          description: Denotes the type and pattern of the items in an enum core type
+          readOnly: true
+          $ref: '#/components/schemas/Items'
+        pattern:
+          type: string
+          description: For the "date" and "datetime" core types, denotes the regex prescribing the allowable date/datetime format
+          readOnly: true
+    CoretypeListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coretype'
+        selfUri:
+          type: string
+          format: uri
+    Items:
+      type: object
+      properties:
+        type:
+          type: string
+        pattern:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    MaxLength:
+      type: object
+      required:
+      - max
+      - min
+      properties:
+        min:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the minimum largest length string the field can contain for a schema instance.
+        max:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the maximum largest string the field can contain for a schema instance.
     ValidationLimits:
       type: object
       properties:
@@ -458,98 +557,6 @@ components:
           $ref: '#/components/schemas/MinLength'
         maximum:
           $ref: '#/components/schemas/MaxLength'
-    SchemaQuantityLimits:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        minFieldNameCharacters:
-          type: integer
-          format: int32
-          example: '"minFieldNameCharacters":1'
-          description: The minimum number of schema field name characters allowed.
-          readOnly: true
-        maxFieldNameCharacters:
-          type: integer
-          format: int32
-          example: '"maxFieldNameCharacters":100'
-          description: The maximum number of schema field name characters allowed.
-          readOnly: true
-        minFieldTitleCharacters:
-          type: integer
-          format: int32
-          example: '"minFieldTitleCharacters":1'
-          description: The minimum number of schema field title characters allowed.
-          readOnly: true
-        maxFieldTitleCharacters:
-          type: integer
-          format: int32
-          example: '"maxFieldTitleCharacters":100'
-          description: The maximum number of schema field title characters allowed.
-          readOnly: true
-        minFieldDescriptionCharacters:
-          type: integer
-          format: int32
-          example: '"minFieldDescriptionCharacters":0'
-          description: The minimum number of schema field description characters allowed.
-          readOnly: true
-        maxFieldDescriptionCharacters:
-          type: integer
-          format: int32
-          example: '"maxFieldDescriptionCharacters":200'
-          description: The maximum number of schema field description characters allowed.
-          readOnly: true
-        minSchemaNameCharacters:
-          type: integer
-          format: int32
-          example: '"minSchemaNameCharacters":1'
-          description: The minimum number of schema name characters allowed.
-          readOnly: true
-        maxSchemaNameCharacters:
-          type: integer
-          format: int32
-          example: '"maxSchemaNameCharacters":50'
-          description: The maximum number of schema name characters allowed.
-          readOnly: true
-        minSchemaDescriptionCharacters:
-          type: integer
-          format: int32
-          example: '"minSchemaDescriptionCharacters":0'
-          description: The minimum number of schema description characters allowed.
-          readOnly: true
-        maxSchemaDescriptionCharacters:
-          type: integer
-          format: int32
-          example: '"maxSchemaDescriptionCharacters":200'
-          description: The maximum number of schema description characters allowed.
-          readOnly: true
-        maxNumberOfSchemasPerOrg:
-          type: integer
-          format: int32
-          example: '"maxNumberOfSchemasPerOrg":20'
-          description: The maximum number of schema allowed per org.
-          readOnly: true
-        maxNumberOfFieldsPerSchema:
-          type: integer
-          format: int32
-          example: '"maxNumberOfFieldsPerSchema":25'
-          description: The maximum number of schema fields allowed per schema.
-          readOnly: true
-        maxNumberOfFieldsPerOrg:
-          type: integer
-          format: int32
-          example: '"maxNumberOfFieldsPerOrg":500'
-          description: The maximum number of schema fields allowed per organization across all of their schemas.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     Limit:
       type: object
       properties:
@@ -654,13 +661,31 @@ components:
         value:
           type: integer
           format: int64
-    Items:
+    Detail:
       type: object
       properties:
-        type:
+        errorCode:
           type: string
-        pattern:
+        fieldName:
           type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    MinLength:
+      type: object
+      required:
+      - max
+      - min
+      properties:
+        min:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the minimum smallest length a string field can contain for a schema instance.
+        max:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the maximum smallest length string the field can contain for a schema instance.
     Coretype:
       type: object
       properties:
@@ -713,123 +738,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Schema:
-      type: object
-      properties:
-        title:
-          type: string
-          description: A core type's title
-          readOnly: true
-        description:
-          type: string
-          description: A core type's description
-          readOnly: true
-        type:
-          type: array
-          example: '["string"] for a text-based core type, ["integer"] for a numeric core type, or ["boolean", "null"] for the checkbox core type'
-          description: An array of fundamental JSON Schema primitive types on which the core type is based
-          readOnly: true
-          items:
-            type: string
-        items:
-          example: '{
-
-            type": "string",
-
-            "pattern": "^[\\S]+$"
-
-            }'
-          description: Denotes the type and pattern of the items in an enum core type
-          readOnly: true
-          $ref: '#/components/schemas/Items'
-        pattern:
-          type: string
-          description: For the "date" and "datetime" core types, denotes the regex prescribing the allowable date/datetime format
-          readOnly: true
-    MaxLength:
-      type: object
-      required:
-      - max
-      - min
-      properties:
-        min:
-          type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the minimum largest length string the field can contain for a schema instance.
-        max:
-          type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the maximum largest string the field can contain for a schema instance.
-    CoretypeListing:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coretype'
-        selfUri:
-          type: string
-          format: uri
-    MinLength:
-      type: object
-      required:
-      - max
-      - min
-      properties:
-        min:
-          type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the minimum smallest length a string field can contain for a schema instance.
-        max:
-          type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the maximum smallest length string the field can contain for a schema instance.
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
     ItemValidationLimits:
       type: object
       required:
@@ -850,6 +758,98 @@ components:
             }'
           description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
           $ref: '#/components/schemas/MaxLength'
+    SchemaQuantityLimits:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        minFieldNameCharacters:
+          type: integer
+          format: int32
+          example: '"minFieldNameCharacters":1'
+          description: The minimum number of schema field name characters allowed.
+          readOnly: true
+        maxFieldNameCharacters:
+          type: integer
+          format: int32
+          example: '"maxFieldNameCharacters":100'
+          description: The maximum number of schema field name characters allowed.
+          readOnly: true
+        minFieldTitleCharacters:
+          type: integer
+          format: int32
+          example: '"minFieldTitleCharacters":1'
+          description: The minimum number of schema field title characters allowed.
+          readOnly: true
+        maxFieldTitleCharacters:
+          type: integer
+          format: int32
+          example: '"maxFieldTitleCharacters":100'
+          description: The maximum number of schema field title characters allowed.
+          readOnly: true
+        minFieldDescriptionCharacters:
+          type: integer
+          format: int32
+          example: '"minFieldDescriptionCharacters":0'
+          description: The minimum number of schema field description characters allowed.
+          readOnly: true
+        maxFieldDescriptionCharacters:
+          type: integer
+          format: int32
+          example: '"maxFieldDescriptionCharacters":200'
+          description: The maximum number of schema field description characters allowed.
+          readOnly: true
+        minSchemaNameCharacters:
+          type: integer
+          format: int32
+          example: '"minSchemaNameCharacters":1'
+          description: The minimum number of schema name characters allowed.
+          readOnly: true
+        maxSchemaNameCharacters:
+          type: integer
+          format: int32
+          example: '"maxSchemaNameCharacters":50'
+          description: The maximum number of schema name characters allowed.
+          readOnly: true
+        minSchemaDescriptionCharacters:
+          type: integer
+          format: int32
+          example: '"minSchemaDescriptionCharacters":0'
+          description: The minimum number of schema description characters allowed.
+          readOnly: true
+        maxSchemaDescriptionCharacters:
+          type: integer
+          format: int32
+          example: '"maxSchemaDescriptionCharacters":200'
+          description: The maximum number of schema description characters allowed.
+          readOnly: true
+        maxNumberOfSchemasPerOrg:
+          type: integer
+          format: int32
+          example: '"maxNumberOfSchemasPerOrg":20'
+          description: The maximum number of schema allowed per org.
+          readOnly: true
+        maxNumberOfFieldsPerSchema:
+          type: integer
+          format: int32
+          example: '"maxNumberOfFieldsPerSchema":25'
+          description: The maximum number of schema fields allowed per schema.
+          readOnly: true
+        maxNumberOfFieldsPerOrg:
+          type: integer
+          format: int32
+          example: '"maxNumberOfFieldsPerOrg":500'
+          description: The maximum number of schema fields allowed per organization across all of their schemas.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

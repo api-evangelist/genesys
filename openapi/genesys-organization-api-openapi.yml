@@ -2722,192 +2722,72 @@ paths:
       x-purecloud-method-name: getOrganizationsLimitsNamespaceDefaults
 components:
   schemas:
-    ErrorBody:
+    LimitDocumentation:
       type: object
       properties:
-        message:
+        url:
           type: string
-        code:
+        namespaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamespaceDocs'
+    OrgAuthSettings:
+      type: object
+      properties:
+        multifactorAuthenticationRequired:
+          type: boolean
+          description: Indicates whether multi-factor authentication is required.
+        domainAllowlistEnabled:
+          type: boolean
+          description: Indicates whether the domain allowlist is enabled.
+        domainAllowlist:
+          type: array
+          description: The list of domains that will be allowed to embed Genesys Cloud applications.
+          items:
+            type: string
+        ipAddressAllowlist:
+          type: array
+          description: The list of IP addresses that will be allowed to authenticate with Genesys Cloud.
+          items:
+            type: string
+        passwordRequirements:
+          description: The password requirements for the organization.
+          $ref: '#/components/schemas/PasswordRequirements'
+        inactivityTimeoutExclusions:
+          type: array
+          description: The list of exempt apis from inactivity timeout.
+          items:
+            type: string
+        universalLogout:
+          type: boolean
+          description: Indicates whether universal logout is enabled for the organization.
+    FieldList:
+      type: object
+      properties:
+        customLabels:
+          type: boolean
+        instructionText:
           type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
+        key:
           type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
+        labelKeys:
+          type: array
+          items:
+            type: string
+        params:
           type: object
           additionalProperties:
-            type: string
-        contextId:
+            type: object
+        repeatable:
+          type: boolean
+        state:
           type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    PagedNamespaceListing:
-      type: object
-    ApprovalNamespace:
-      type: object
-      properties:
-        namespace:
-          type: string
-          description: The namespace of the associated approvers.
-          readOnly: true
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        status:
-          type: string
-          description: The current namespace approval status.
-          readOnly: true
-          enum:
-          - Approved
-          - Rejected
-          - Rollback
-          - Pending
-          - Open
-          - SecondaryApprovalNamespacesAdded
-          - ReviewerApproved
-          - ReviewerRejected
-          - ReviewerRollback
-          - ImplementingChange
-          - ChangeImplemented
-          - ImplementingRollback
-          - RollbackImplemented
         type:
           type: string
-          description: The type of namespace approval.
-          readOnly: true
-          enum:
-          - Primary
-          - Secondary
-          - System
-    NamespaceDocs:
-      type: object
-      properties:
-        name:
-          type: string
-        friendlyName:
-          type: string
-        limits:
-          type: array
-          items:
-            $ref: '#/components/schemas/LimitDocs'
-    FeatureState:
-      type: object
-      properties:
-        enabled:
+        required:
           type: boolean
-    EmbeddedIntegration:
-      type: object
-      properties:
-        enableWhitelist:
+        gdpr:
           type: boolean
-        domainWhitelist:
-          type: array
-          items:
-            type: string
     Organization:
       type: object
       required:
@@ -2975,121 +2855,17 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Limit:
+    Detail:
       type: object
       properties:
-        key:
+        errorCode:
           type: string
-        namespace:
+        fieldName:
           type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
-    FreeTrialNamespace:
-      type: object
-      properties:
-        name:
+        entityId:
           type: string
-        friendlyName:
+        entityName:
           type: string
-        limits:
-          type: array
-          items:
-            $ref: '#/components/schemas/FreeTrialLimit'
     LimitChangeRequestsEntityListing:
       type: object
       properties:
@@ -3103,88 +2879,28 @@ components:
           type: string
         previousUri:
           type: string
-    FieldConfig:
+    OrgWhitelistSettings:
       type: object
       properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        entityType:
-          type: string
-          enum:
-          - person
-          - group
-          - org
-        state:
-          type: string
-        sections:
-          type: array
-          items:
-            $ref: '#/components/schemas/Section'
-        version:
-          type: string
-        schemaVersion:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LimitDocumentation:
-      type: object
-      properties:
-        url:
-          type: string
-        namespaces:
-          type: array
-          items:
-            $ref: '#/components/schemas/NamespaceDocs'
-    OrganizationFeatures:
-      type: object
-      properties:
-        realtimeCIC:
+        enableWhitelist:
           type: boolean
-        purecloud:
-          type: boolean
-        hipaa:
-          type: boolean
-        ucEnabled:
-          type: boolean
-        pci:
-          type: boolean
-        purecloudVoice:
-          type: boolean
-        xmppFederation:
-          type: boolean
-        chat:
-          type: boolean
-        informalPhotos:
-          type: boolean
-        directory:
-          type: boolean
-        contactCenter:
-          type: boolean
-        unifiedCommunications:
-          type: boolean
-        custserv:
-          type: boolean
-    IpAddressAuthentication:
-      type: object
-      properties:
-        networkWhitelist:
+        domainWhitelist:
           type: array
           items:
             type: string
-    FreeTrialLimitDocs:
+    Section:
       type: object
       properties:
-        namespaces:
+        fieldList:
           type: array
           items:
-            $ref: '#/components/schemas/FreeTrialNamespace'
+            $ref: '#/components/schemas/FieldList'
+        instructionText:
+          type: string
+        key:
+          type: string
+        state:
+          type: string
     LimitDocs:
       type: object
       properties:
@@ -3201,48 +2917,13 @@ components:
           type: boolean
         trackable:
           type: boolean
-    OrgAuthSettings:
+    LimitsEntityListing:
       type: object
       properties:
-        multifactorAuthenticationRequired:
-          type: boolean
-          description: Indicates whether multi-factor authentication is required.
-        domainAllowlistEnabled:
-          type: boolean
-          description: Indicates whether the domain allowlist is enabled.
-        domainAllowlist:
+        entities:
           type: array
-          description: The list of domains that will be allowed to embed Genesys Cloud applications.
           items:
-            type: string
-        ipAddressAllowlist:
-          type: array
-          description: The list of IP addresses that will be allowed to authenticate with Genesys Cloud.
-          items:
-            type: string
-        passwordRequirements:
-          description: The password requirements for the organization.
-          $ref: '#/components/schemas/PasswordRequirements'
-        inactivityTimeoutExclusions:
-          type: array
-          description: The list of exempt apis from inactivity timeout.
-          items:
-            type: string
-        universalLogout:
-          type: boolean
-          description: Indicates whether universal logout is enabled for the organization.
-    FreeTrialLimit:
-      type: object
-      properties:
-        key:
-          type: string
-        defaultValue:
-          type: integer
-          format: int64
-        description:
-          type: string
-        resource:
-          type: string
+            $ref: '#/components/schemas/Limit'
     LimitChangeRequestDetails:
       type: object
       required:
@@ -3426,27 +3107,221 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Section:
+    FreeTrialLimit:
       type: object
       properties:
-        fieldList:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldList'
-        instructionText:
-          type: string
         key:
           type: string
-        state:
+        defaultValue:
+          type: integer
+          format: int64
+        description:
           type: string
-    LimitsEntityListing:
+        resource:
+          type: string
+    FreeTrialLimitDocs:
       type: object
       properties:
-        entities:
+        namespaces:
           type: array
           items:
-            $ref: '#/components/schemas/Limit'
-    OrgWhitelistSettings:
+            $ref: '#/components/schemas/FreeTrialNamespace'
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    IpAddressAuthentication:
+      type: object
+      properties:
+        networkWhitelist:
+          type: array
+          items:
+            type: string
+    OrganizationFeatures:
+      type: object
+      properties:
+        realtimeCIC:
+          type: boolean
+        purecloud:
+          type: boolean
+        hipaa:
+          type: boolean
+        ucEnabled:
+          type: boolean
+        pci:
+          type: boolean
+        purecloudVoice:
+          type: boolean
+        xmppFederation:
+          type: boolean
+        chat:
+          type: boolean
+        informalPhotos:
+          type: boolean
+        directory:
+          type: boolean
+        contactCenter:
+          type: boolean
+        unifiedCommunications:
+          type: boolean
+        custserv:
+          type: boolean
+    ApprovalNamespace:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: The namespace of the associated approvers.
+          readOnly: true
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        status:
+          type: string
+          description: The current namespace approval status.
+          readOnly: true
+          enum:
+          - Approved
+          - Rejected
+          - Rollback
+          - Pending
+          - Open
+          - SecondaryApprovalNamespacesAdded
+          - ReviewerApproved
+          - ReviewerRejected
+          - ReviewerRollback
+          - ImplementingChange
+          - ChangeImplemented
+          - ImplementingRollback
+          - RollbackImplemented
+        type:
+          type: string
+          description: The type of namespace approval.
+          readOnly: true
+          enum:
+          - Primary
+          - Secondary
+          - System
+    EmbeddedIntegration:
       type: object
       properties:
         enableWhitelist:
@@ -3482,33 +3357,22 @@ components:
         expirationDays:
           type: integer
           format: int32
-    FieldList:
+    FeatureState:
       type: object
       properties:
-        customLabels:
+        enabled:
           type: boolean
-        instructionText:
+    FreeTrialNamespace:
+      type: object
+      properties:
+        name:
           type: string
-        key:
+        friendlyName:
           type: string
-        labelKeys:
+        limits:
           type: array
           items:
-            type: string
-        params:
-          type: object
-          additionalProperties:
-            type: object
-        repeatable:
-          type: boolean
-        state:
-          type: string
-        type:
-          type: string
-        required:
-          type: boolean
-        gdpr:
-          type: boolean
+            $ref: '#/components/schemas/FreeTrialLimit'
     StatusChange:
       type: object
       properties:
@@ -3665,17 +3529,153 @@ components:
           - PlatformMisuse
           - PlatformStability
           - OtherReason
-    Detail:
+    Limit:
       type: object
       properties:
-        errorCode:
+        key:
           type: string
-        fieldName:
+        namespace:
           type: string
-        entityId:
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    PagedNamespaceListing:
+      type: object
+    FieldConfig:
+      type: object
+      properties:
+        id:
           type: string
-        entityName:
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
           type: string
+        entityType:
+          type: string
+          enum:
+          - person
+          - group
+          - org
+        state:
+          type: string
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Section'
+        version:
+          type: string
+        schemaVersion:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    NamespaceDocs:
+      type: object
+      properties:
+        name:
+          type: string
+        friendlyName:
+          type: string
+        limits:
+          type: array
+          items:
+            $ref: '#/components/schemas/LimitDocs'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

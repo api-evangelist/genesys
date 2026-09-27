@@ -6203,6 +6203,283 @@ paths:
       x-purecloud-method-name: getCasemanagementCaseStageSteps
 components:
   schemas:
+    CaseAssociationQueryEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseAssociation'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
+    StageplanListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stageplan'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    IntakeSettingsUpdate:
+      type: object
+      properties:
+        intakeSettings:
+          type: array
+          description: The intake settings for the Caseplan.
+          items:
+            $ref: '#/components/schemas/IntakeSetting'
+    StepReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CaseListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Case'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    Case:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the Case.
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/StarrableDivision'
+        version:
+          type: integer
+          format: int32
+          description: The version of the Case.
+        reference:
+          type: string
+          description: The reference identifier of the Case.
+        caseplan:
+          description: The Caseplan the Case was created from.
+          $ref: '#/components/schemas/CaseplanReference'
+        summary:
+          type: string
+          description: Overview information for the Case.
+        owner:
+          description: The owner of the Case.
+          $ref: '#/components/schemas/CaseUserReference'
+        status:
+          type: string
+          description: The status of the Case.
+          enum:
+          - Unknown
+          - Open
+          - InProgress
+          - Terminating
+          - Terminated
+          - Closed
+          - Failed
+        priority:
+          type: string
+          description: The priority of the Case.
+          enum:
+          - Unknown
+          - Urgent
+          - High
+          - Medium
+          - Low
+        dateDue:
+          type: string
+          format: date-time
+          description: 'The due date of the Case. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'The start time of the Case. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateClosed:
+          type: string
+          format: date-time
+          description: 'The completion time of the Case. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The date the Case was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The date the Case was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          description: The ID of the User who modified the Case.
+          $ref: '#/components/schemas/CaseUserReference'
+        externalContact:
+          description: The External Contact associated with the Case.
+          $ref: '#/components/schemas/CaseExternalContactReference'
+        customerIntent:
+          description: The customer intent for the Case.
+          $ref: '#/components/schemas/CustomerIntentReference'
+        creationStatus:
+          type: string
+          description: The creation status of the Case.
+          enum:
+          - Pending
+          - InProgress
+          - Completed
+          - Failed
+        ttlSeconds:
+          type: integer
+          format: int32
+          description: The time-to-live in seconds for the lifetime of the Case.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CaseplanListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Caseplan'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    PresenceDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: description
+        systemPresence:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Stage:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the Stage.
+        description:
+          type: string
+          description: The description of the Stage.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The Stage creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The Stage modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateCompleted:
+          type: string
+          format: date-time
+          description: 'The Stage completion date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'The Stage start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          description: The ID of the User who modified the Stage.
+          $ref: '#/components/schemas/UserReference'
+        version:
+          type: integer
+          format: int32
+          description: The version of the Stage.
+        status:
+          type: string
+          description: The Status of the Stage.
+          enum:
+          - Unknown
+          - InProgress
+          - Open
+          - Completed
+          - Terminated
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+        case:
+          description: The parent Case of the Stage.
+          $ref: '#/components/schemas/CaseReference'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    IntakeSetting:
+      type: object
+      required:
+      - displayOrder
+      - property
+      - required
+      properties:
+        property:
+          type: string
+          description: The property name for this intake setting.
+          minLength: 1
+          maxLength: 256
+        required:
+          type: boolean
+          description: Whether this property is required for intake.
+        displayOrder:
+          type: integer
+          format: int32
+          description: The display order for this property.
+    CaseReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     StageplanReference:
       type: object
       properties:
@@ -6217,33 +6494,468 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    CaseplanDataSchemaListing:
+    CaseplanFilter:
       type: object
+      required:
+      - name
+      - operator
+      - values
       properties:
-        entities:
+        name:
+          type: string
+          description: 'Attribute name. Valid values: id, name, divisionId.'
+        operator:
+          type: string
+          description: Filter operator.
+          enum:
+          - IN
+          - CONTAINS
+          - BEGINS_WITH
+        values:
           type: array
+          description: List of values to be used in the filter.
           items:
-            $ref: '#/components/schemas/CaseplanDataSchema'
-    StageplanListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Stageplan'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    StageReference:
+            type: string
+    Stageplan:
       type: object
       properties:
         id:
           type: string
           description: The globally unique identifier for the object.
           readOnly: true
+        name:
+          type: string
+          description: The name of the Stageplan.
+        description:
+          type: string
+          description: The description of the Stageplan.
+        caseplan:
+          description: The Caseplan of the Stageplan.
+          $ref: '#/components/schemas/CaseplanReference'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The Stageplan creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The Stageplan modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          description: The ID of the User who modified the Stageplan.
+          $ref: '#/components/schemas/UserReference'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CaseplanCreateResponse:
+      type: object
+      required:
+      - customerIntent
+      - dateCreated
+      - dateModified
+      - defaultDueDurationInSeconds
+      - defaultTtlSeconds
+      - division
+      - latest
+      - modifiedBy
+      - name
+      - referencePrefix
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the Caseplan.
+        division:
+          description: The division to which this Caseplan belongs.
+          $ref: '#/components/schemas/StarrableDivision'
+        description:
+          type: string
+          description: The description of the Caseplan.
+        referencePrefix:
+          type: string
+          description: The prefix used when creating the reference for Cases from the Caseplan.
+        defaultDueDurationInSeconds:
+          type: integer
+          format: int32
+          description: The default due duration in seconds for Cases created from the Caseplan.
+        defaultTtlSeconds:
+          type: integer
+          format: int32
+          description: The default TTL in seconds for Cases created from the Caseplan.
+        defaultCaseOwner:
+          description: The default Case owner for Cases created from the Caseplan.
+          $ref: '#/components/schemas/UserReference'
+        latest:
+          type: integer
+          format: int32
+          description: The latest version of the Caseplan.
+        published:
+          type: integer
+          format: int32
+          description: The published version of the Caseplan.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The Caseplan creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The Caseplan modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        datePublished:
+          type: string
+          format: date-time
+          description: 'The Caseplan publication date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          description: The ID of the User who modified the Caseplan.
+          $ref: '#/components/schemas/UserReference'
+        customerIntent:
+          description: The customer intent for Cases created from this Caseplan.
+          $ref: '#/components/schemas/CustomerIntentReference'
+        versionState:
+          type: string
+          description: The version state of the Caseplan.
+          enum:
+          - Copying
+          - Draft
+          - Published
+        dataSchemas:
+          type: array
+          description: The schemas that define all data for Cases from this Caseplan.
+          items:
+            $ref: '#/components/schemas/CaseplanDataSchema'
+        intakeSettings:
+          type: array
+          description: The intake format when collecting data for a Case from this Caseplan.
+          items:
+            $ref: '#/components/schemas/IntakeSetting'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CaseplanQueryEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Caseplan'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
+    Stepplan:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the Stepplan.
+        description:
+          type: string
+          description: The description of the Stepplan.
+        caseplan:
+          description: The Caseplan of the Stepplan.
+          $ref: '#/components/schemas/CaseplanReference'
+        stageplan:
+          description: The Stageplan of the Stepplan.
+          $ref: '#/components/schemas/StageplanReference'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The Stepplan creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The Stepplan modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          description: The ID of the User who modified the Stepplan.
+          $ref: '#/components/schemas/UserReference'
+        activityType:
+          type: string
+          description: The activity type of the Stepplan.
+          enum:
+          - Unknown
+          - None
+          - Workitem
+        workitemSettings:
+          description: The Workitem settings of the Stepplan.
+          $ref: '#/components/schemas/WorkitemSettingsResponse'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CaseDateDueUpdate:
+      type: object
+      required:
+      - dateDue
+      properties:
+        dateDue:
+          type: string
+          format: date-time
+          description: 'The due date of the Case. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    CaseExternalContactReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the External Contact.
+        firstName:
+          type: string
+          description: The first name of the contact.
+        lastName:
+          type: string
+          description: The last name of the contact.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CaseplanQueryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Filter by Caseplan name (case-insensitive, partial match). Omitting name returns all Caseplans (subject to pagination).
+          minLength: 0
+          maxLength: 256
+        nameSearchType:
+          type: string
+          description: Type of name search to perform. Default is BEGINS_WITH.
+          enum:
+          - BEGINS_WITH
+          - CONTAINS
+        divisionIds:
+          type: array
+          description: Divisions to filter by. Accepts a list of UUIDs and/or '*'.
+          items:
+            type: string
+        filters:
+          type: array
+          description: 'List of filter objects to be used in the search. Valid filter names are: ''id'', ''name'', ''divisionId''. Multiple filters are combined with AND logic.'
+          items:
+            $ref: '#/components/schemas/CaseplanFilter'
+          maxItems: 3
+          minItems: 0
+        attributes:
+          type: array
+          description: List of entity attributes to be retrieved in the result.
+          items:
+            type: string
+        pageSize:
+          type: integer
+          format: int32
+          description: Number of results per page. Maximum is 200. Default is 25.
+          minimum: 1
+          maximum: 200
+        after:
+          type: string
+          description: Cursor for pagination. Use the "after" value from the previous response.
+    CaseAssociation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the association.
+        name:
+          type: string
+        associationType:
+          type: string
+          description: The association type.
+          enum:
+          - Activity
+          - Enquiry
+          - Initiation
+        dateAssociated:
+          type: string
+          format: date-time
+          description: 'The date of the interaction association. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        workitem:
+          description: The associated Workitem.
+          $ref: '#/components/schemas/WorkitemReference'
+        conversation:
+          description: The associated Conversation.
+          $ref: '#/components/schemas/ConversationReference'
+        stage:
+          description: The Stage related to this association.
+          $ref: '#/components/schemas/StageReference'
+        step:
+          description: The Step related to this association.
+          $ref: '#/components/schemas/StepReference'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+        case:
+          description: The Case for this association.
+          $ref: '#/components/schemas/CaseReference'
+      description: Represents an association between a Case and an interaction.
+    UserPresence:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        source:
+          type: string
+          description: Deprecated - The sourceID field should be used as a replacement.
+        sourceId:
+          type: string
+          description: Represents the ID of a registered source
+        primary:
+          type: boolean
+          description: A boolean used to tell whether or not to set this presence source as the primary on a PATCH
+        presenceDefinition:
+          $ref: '#/components/schemas/PresenceDefinition'
+        futurePresenceDefinition:
+          description: The definition of the user's desired future presence
+          readOnly: true
+          $ref: '#/components/schemas/PresenceDefinition'
+        message:
+          type: string
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CaseplanCreate:
+      type: object
+      required:
+      - customerIntentId
+      - divisionId
+      - name
+      - referencePrefix
+      properties:
+        name:
+          type: string
+          description: The name of the Caseplan. Valid length between 3 and 256 characters.
+          minLength: 3
+          maxLength: 256
+        defaultDueDurationInSeconds:
+          type: integer
+          format: int32
+          description: The default due duration in seconds for Cases created from the Caseplan. Valid range is between 1 and 31536000 seconds.
+          maximum: 31536000
+        defaultTtlSeconds:
+          type: integer
+          format: int32
+          description: The default TTL in seconds for Cases created from the Caseplan. Valid range is between 86400 and 31536000 seconds.
+          minimum: 86400
+          maximum: 31536000
+        referencePrefix:
+          type: string
+          description: The prefix of the Caseplan reference. Valid length between 2 and 8 alphanumeric characters.
+          minLength: 2
+          maxLength: 8
+          pattern: ^[A-Za-z0-9]+$
+        customerIntentId:
+          type: string
+          description: The ID of the customer intent associated with this Caseplan.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        description:
+          type: string
+          description: The description of the Caseplan. Maximum length of 512 characters.
+          minLength: 0
+          maxLength: 512
+        defaultCaseOwnerId:
+          type: string
+          description: The ID of the default owner of a Case created from the Caseplan.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        divisionId:
+          type: string
+          description: The ID of the division the Caseplan belongs to. Use '*' for divisionless Caseplans.
+          pattern: ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}|\*)
+        dataSchemas:
+          type: array
+          description: The schemas that define all data for Cases from this Caseplan. The schema must be defined in the TaskManagement namespace. Omit or leave null to create a draft Caseplan without a schema; assign a schema before publish.
+          items:
+            $ref: '#/components/schemas/CaseplanDataSchema'
+          maxItems: 1
+          minItems: 0
+        intakeSettings:
+          type: array
+          description: The intake format when collecting data for a Case from this Caseplan. There can be a maximum of 10 IntakeSettings defined for a Caseplan.
+          items:
+            $ref: '#/components/schemas/IntakeSetting'
+          maxItems: 10
+          minItems: 0
+    CaseplanDataSchemaRequest:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: The schema ID.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+    StepplansWorktypeReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Worktype ID.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Empty:
+      type: object
+    TerminateJob:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        status:
+          type: string
+          description: The status of the Job.
+          enum:
+          - Unknown
+          - Queued
+          - InProgress
+          - Succeeded
+          - Failed
+        jobType:
+          type: string
+          description: The type of the Job.
+          enum:
+          - Unknown
+          - Terminate
+        createdBy:
+          description: The ID of the User who created this Job.
+          $ref: '#/components/schemas/UserReference'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The Job creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The Job modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
         selfUri:
           type: string
           format: uri
@@ -6263,6 +6975,247 @@ components:
           - High
           - Medium
           - Low
+    CaseUserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        presence:
+          description: Active presence
+          readOnly: true
+          $ref: '#/components/schemas/UserPresence'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    StageReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemSettings:
+      type: object
+      properties:
+        worktypeId:
+          type: string
+          description: The UUID of the Worktype.
+    StarrableDivision:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    CaseplanDataSchemaListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseplanDataSchema'
+    CaseCreate:
+      type: object
+      required:
+      - caseplanId
+      - externalContactId
+      properties:
+        caseplanId:
+          type: string
+          description: The ID of the Caseplan used to create the Case.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+        ownerId:
+          type: string
+          description: The ID of the owner of the Case.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+        summary:
+          type: string
+          description: Overview information for the Case. Valid length between 3 and 512 characters.
+          minLength: 3
+          maxLength: 512
+        externalContactId:
+          type: string
+          description: The ID of the External Contact associated with the Case.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+        conversationId:
+          type: string
+          description: The ID of the Conversation associated with the Case.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+        workitemId:
+          type: string
+          description: The ID of the Workitem associated with the Case.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+        ttlSeconds:
+          type: integer
+          format: int32
+          description: Epoch timestamp in seconds for the Case time-to-live. Cannot be more than 365 days after the current time.
+        intake:
+          type: array
+          description: The intake data for the Case. Maximum of 10 intake objects allowed.
+          items:
+            $ref: '#/components/schemas/Intake'
+          maxItems: 10
+          minItems: 0
+    WorkitemReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CaseAssociationCreate:
+      type: object
+      properties:
+        workitemId:
+          type: string
+          description: The ID of the Workitem to associate with the Case.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+        conversationId:
+          type: string
+          description: The ID of the Conversation to associate with the Case.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+    StepplanListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stepplan'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    Step:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the Step.
+        description:
+          type: string
+          description: The description of the Step.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The Step creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The Step modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateCompleted:
+          type: string
+          format: date-time
+          description: 'The Step completion date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'The Step start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          description: The ID of the User who modified the Step.
+          $ref: '#/components/schemas/UserReference'
+        version:
+          type: integer
+          format: int32
+          description: The version of the Step.
+        status:
+          type: string
+          description: The Status of the Step.
+          enum:
+          - Unknown
+          - InProgress
+          - Open
+          - Completed
+          - Terminated
+        stage:
+          description: The parent Stage of the Step.
+          $ref: '#/components/schemas/StageReference'
+        workitemActivity:
+          description: The workitem activity linked to this step. Present only for workitem-type steps that have been activated.
+          readOnly: true
+          $ref: '#/components/schemas/WorkitemActivityReference'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+        case:
+          description: The parent Case of the Step.
+          $ref: '#/components/schemas/CaseReference'
+    CaseSummaryUpdate:
+      type: object
+      required:
+      - summary
+      properties:
+        summary:
+          type: string
+          description: Overview information for the Case. Valid length between 3 and 512 characters.
+    WorkitemSettingsResponse:
+      type: object
+      properties:
+        worktype:
+          description: The Worktype information for the Workitem settings.
+          $ref: '#/components/schemas/StepplansWorktypeReference'
     CustomerIntentReference:
       type: object
       properties:
@@ -6276,24 +7229,19 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    CaseplanReference:
+    StageListing:
       type: object
       properties:
-        id:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stage'
+        nextUri:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        version:
-          type: integer
-          format: int32
-          description: The version of the Caseplan.
         selfUri:
           type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
+        previousUri:
+          type: string
     Caseplan:
       type: object
       required:
@@ -6373,141 +7321,7 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    WorkitemSettings:
-      type: object
-      properties:
-        worktypeId:
-          type: string
-          description: The UUID of the Worktype.
-    StarrableDivision:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UserPresence:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        source:
-          type: string
-          description: Deprecated - The sourceID field should be used as a replacement.
-        sourceId:
-          type: string
-          description: Represents the ID of a registered source
-        primary:
-          type: boolean
-          description: A boolean used to tell whether or not to set this presence source as the primary on a PATCH
-        presenceDefinition:
-          $ref: '#/components/schemas/PresenceDefinition'
-        futurePresenceDefinition:
-          description: The definition of the user's desired future presence
-          readOnly: true
-          $ref: '#/components/schemas/PresenceDefinition'
-        message:
-          type: string
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CaseAssociation:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the association.
-        name:
-          type: string
-        associationType:
-          type: string
-          description: The association type.
-          enum:
-          - Activity
-          - Enquiry
-          - Initiation
-        dateAssociated:
-          type: string
-          format: date-time
-          description: 'The date of the interaction association. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        workitem:
-          description: The associated Workitem.
-          $ref: '#/components/schemas/WorkitemReference'
-        conversation:
-          description: The associated Conversation.
-          $ref: '#/components/schemas/ConversationReference'
-        stage:
-          description: The Stage related to this association.
-          $ref: '#/components/schemas/StageReference'
-        step:
-          description: The Step related to this association.
-          $ref: '#/components/schemas/StepReference'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-        case:
-          description: The Case for this association.
-          $ref: '#/components/schemas/CaseReference'
-      description: Represents an association between a Case and an interaction.
-    CaseDateDueUpdate:
-      type: object
-      required:
-      - dateDue
-      properties:
-        dateDue:
-          type: string
-          format: date-time
-          description: 'The due date of the Case. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    CaseUserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        presence:
-          description: Active presence
-          readOnly: true
-          $ref: '#/components/schemas/UserPresence'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CaseAssociationQueryEntityListing:
+    CaseAssociationListing:
       type: object
       properties:
         entities:
@@ -6520,83 +7334,7 @@ components:
           type: string
         previousUri:
           type: string
-        after:
-          type: string
-    CaseplanQueryRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Filter by Caseplan name (case-insensitive, partial match). Omitting name returns all Caseplans (subject to pagination).
-          minLength: 0
-          maxLength: 256
-        nameSearchType:
-          type: string
-          description: Type of name search to perform. Default is BEGINS_WITH.
-          enum:
-          - BEGINS_WITH
-          - CONTAINS
-        divisionIds:
-          type: array
-          description: Divisions to filter by. Accepts a list of UUIDs and/or '*'.
-          items:
-            type: string
-        filters:
-          type: array
-          description: 'List of filter objects to be used in the search. Valid filter names are: ''id'', ''name'', ''divisionId''. Multiple filters are combined with AND logic.'
-          items:
-            $ref: '#/components/schemas/CaseplanFilter'
-          maxItems: 3
-          minItems: 0
-        attributes:
-          type: array
-          description: List of entity attributes to be retrieved in the result.
-          items:
-            type: string
-        pageSize:
-          type: integer
-          format: int32
-          description: Number of results per page. Maximum is 200. Default is 25.
-          minimum: 1
-          maximum: 200
-        after:
-          type: string
-          description: Cursor for pagination. Use the "after" value from the previous response.
-    Empty:
-      type: object
-    StepplansWorktypeReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The Worktype ID.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    IntakeSetting:
-      type: object
-      required:
-      - displayOrder
-      - property
-      - required
-      properties:
-        property:
-          type: string
-          description: The property name for this intake setting.
-          minLength: 1
-          maxLength: 256
-        required:
-          type: boolean
-          description: Whether this property is required for intake.
-        displayOrder:
-          type: integer
-          format: int32
-          description: The display order for this property.
-    Stepplan:
+    CaseplanReference:
       type: object
       properties:
         id:
@@ -6605,27 +7343,51 @@ components:
           readOnly: true
         name:
           type: string
-          description: The name of the Stepplan.
+        version:
+          type: integer
+          format: int32
+          description: The version of the Caseplan.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CaseplanDataSchema:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: The schema ID.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ConversationReference:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    StepplanUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the Stepplan. Valid length between 3 and 256 characters.
+          minLength: 3
+          maxLength: 256
         description:
           type: string
-          description: The description of the Stepplan.
-        caseplan:
-          description: The Caseplan of the Stepplan.
-          $ref: '#/components/schemas/CaseplanReference'
-        stageplan:
-          description: The Stageplan of the Stepplan.
-          $ref: '#/components/schemas/StageplanReference'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The Stepplan creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The Stepplan modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          description: The ID of the User who modified the Stepplan.
-          $ref: '#/components/schemas/UserReference'
+          description: The description of the Stepplan. Maximum length of 512 characters.
+        workitemSettings:
+          description: The Workitem settings of the Stepplan.
+          $ref: '#/components/schemas/WorkitemSettings'
         activityType:
           type: string
           description: The activity type of the Stepplan.
@@ -6633,14 +7395,19 @@ components:
           - Unknown
           - None
           - Workitem
-        workitemSettings:
-          description: The Workitem settings of the Stepplan.
-          $ref: '#/components/schemas/WorkitemSettingsResponse'
+    StepListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Step'
+        nextUri:
+          type: string
         selfUri:
           type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
+        previousUri:
+          type: string
     WorkitemActivityReference:
       type: object
       properties:
@@ -6653,32 +7420,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    StepplanListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Stepplan'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    StageListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Stage'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
     Limit:
       type: object
       properties:
@@ -6783,672 +7524,6 @@ components:
         value:
           type: integer
           format: int64
-    CaseAssociationListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CaseAssociation'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    TerminateJob:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        status:
-          type: string
-          description: The status of the Job.
-          enum:
-          - Unknown
-          - Queued
-          - InProgress
-          - Succeeded
-          - Failed
-        jobType:
-          type: string
-          description: The type of the Job.
-          enum:
-          - Unknown
-          - Terminate
-        createdBy:
-          description: The ID of the User who created this Job.
-          $ref: '#/components/schemas/UserReference'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The Job creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The Job modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    IntakeSettingsListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/IntakeSetting'
-    CaseplanCreate:
-      type: object
-      required:
-      - customerIntentId
-      - divisionId
-      - name
-      - referencePrefix
-      properties:
-        name:
-          type: string
-          description: The name of the Caseplan. Valid length between 3 and 256 characters.
-          minLength: 3
-          maxLength: 256
-        defaultDueDurationInSeconds:
-          type: integer
-          format: int32
-          description: The default due duration in seconds for Cases created from the Caseplan. Valid range is between 1 and 31536000 seconds.
-          maximum: 31536000
-        defaultTtlSeconds:
-          type: integer
-          format: int32
-          description: The default TTL in seconds for Cases created from the Caseplan. Valid range is between 86400 and 31536000 seconds.
-          minimum: 86400
-          maximum: 31536000
-        referencePrefix:
-          type: string
-          description: The prefix of the Caseplan reference. Valid length between 2 and 8 alphanumeric characters.
-          minLength: 2
-          maxLength: 8
-          pattern: ^[A-Za-z0-9]+$
-        customerIntentId:
-          type: string
-          description: The ID of the customer intent associated with this Caseplan.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        description:
-          type: string
-          description: The description of the Caseplan. Maximum length of 512 characters.
-          minLength: 0
-          maxLength: 512
-        defaultCaseOwnerId:
-          type: string
-          description: The ID of the default owner of a Case created from the Caseplan.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        divisionId:
-          type: string
-          description: The ID of the division the Caseplan belongs to. Use '*' for divisionless Caseplans.
-          pattern: ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}|\*)
-        dataSchemas:
-          type: array
-          description: The schemas that define all data for Cases from this Caseplan. The schema must be defined in the TaskManagement namespace. Omit or leave null to create a draft Caseplan without a schema; assign a schema before publish.
-          items:
-            $ref: '#/components/schemas/CaseplanDataSchema'
-          maxItems: 1
-          minItems: 0
-        intakeSettings:
-          type: array
-          description: The intake format when collecting data for a Case from this Caseplan. There can be a maximum of 10 IntakeSettings defined for a Caseplan.
-          items:
-            $ref: '#/components/schemas/IntakeSetting'
-          maxItems: 10
-          minItems: 0
-    CaseCreate:
-      type: object
-      required:
-      - caseplanId
-      - externalContactId
-      properties:
-        caseplanId:
-          type: string
-          description: The ID of the Caseplan used to create the Case.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
-        ownerId:
-          type: string
-          description: The ID of the owner of the Case.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
-        summary:
-          type: string
-          description: Overview information for the Case. Valid length between 3 and 512 characters.
-          minLength: 3
-          maxLength: 512
-        externalContactId:
-          type: string
-          description: The ID of the External Contact associated with the Case.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
-        conversationId:
-          type: string
-          description: The ID of the Conversation associated with the Case.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
-        workitemId:
-          type: string
-          description: The ID of the Workitem associated with the Case.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
-        ttlSeconds:
-          type: integer
-          format: int32
-          description: Epoch timestamp in seconds for the Case time-to-live. Cannot be more than 365 days after the current time.
-        intake:
-          type: array
-          description: The intake data for the Case. Maximum of 10 intake objects allowed.
-          items:
-            $ref: '#/components/schemas/Intake'
-          maxItems: 10
-          minItems: 0
-    WorkitemSettingsResponse:
-      type: object
-      properties:
-        worktype:
-          description: The Worktype information for the Workitem settings.
-          $ref: '#/components/schemas/StepplansWorktypeReference'
-    CaseplanDataSchemaRequest:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The schema ID.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-    StepplanUpdate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the Stepplan. Valid length between 3 and 256 characters.
-          minLength: 3
-          maxLength: 256
-        description:
-          type: string
-          description: The description of the Stepplan. Maximum length of 512 characters.
-        workitemSettings:
-          description: The Workitem settings of the Stepplan.
-          $ref: '#/components/schemas/WorkitemSettings'
-        activityType:
-          type: string
-          description: The activity type of the Stepplan.
-          enum:
-          - Unknown
-          - None
-          - Workitem
-    IntakeSettingsUpdate:
-      type: object
-      properties:
-        intakeSettings:
-          type: array
-          description: The intake settings for the Caseplan.
-          items:
-            $ref: '#/components/schemas/IntakeSetting'
-    CaseplanDataSchema:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The schema ID.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Step:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the Step.
-        description:
-          type: string
-          description: The description of the Step.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The Step creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The Step modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateCompleted:
-          type: string
-          format: date-time
-          description: 'The Step completion date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'The Step start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          description: The ID of the User who modified the Step.
-          $ref: '#/components/schemas/UserReference'
-        version:
-          type: integer
-          format: int32
-          description: The version of the Step.
-        status:
-          type: string
-          description: The Status of the Step.
-          enum:
-          - Unknown
-          - InProgress
-          - Open
-          - Completed
-          - Terminated
-        stage:
-          description: The parent Stage of the Step.
-          $ref: '#/components/schemas/StageReference'
-        workitemActivity:
-          description: The workitem activity linked to this step. Present only for workitem-type steps that have been activated.
-          readOnly: true
-          $ref: '#/components/schemas/WorkitemActivityReference'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-        case:
-          description: The parent Case of the Step.
-          $ref: '#/components/schemas/CaseReference'
-    Case:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the Case.
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/StarrableDivision'
-        version:
-          type: integer
-          format: int32
-          description: The version of the Case.
-        reference:
-          type: string
-          description: The reference identifier of the Case.
-        caseplan:
-          description: The Caseplan the Case was created from.
-          $ref: '#/components/schemas/CaseplanReference'
-        summary:
-          type: string
-          description: Overview information for the Case.
-        owner:
-          description: The owner of the Case.
-          $ref: '#/components/schemas/CaseUserReference'
-        status:
-          type: string
-          description: The status of the Case.
-          enum:
-          - Unknown
-          - Open
-          - InProgress
-          - Terminating
-          - Terminated
-          - Closed
-          - Failed
-        priority:
-          type: string
-          description: The priority of the Case.
-          enum:
-          - Unknown
-          - Urgent
-          - High
-          - Medium
-          - Low
-        dateDue:
-          type: string
-          format: date-time
-          description: 'The due date of the Case. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'The start time of the Case. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateClosed:
-          type: string
-          format: date-time
-          description: 'The completion time of the Case. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The date the Case was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The date the Case was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          description: The ID of the User who modified the Case.
-          $ref: '#/components/schemas/CaseUserReference'
-        externalContact:
-          description: The External Contact associated with the Case.
-          $ref: '#/components/schemas/CaseExternalContactReference'
-        customerIntent:
-          description: The customer intent for the Case.
-          $ref: '#/components/schemas/CustomerIntentReference'
-        creationStatus:
-          type: string
-          description: The creation status of the Case.
-          enum:
-          - Pending
-          - InProgress
-          - Completed
-          - Failed
-        ttlSeconds:
-          type: integer
-          format: int32
-          description: The time-to-live in seconds for the lifetime of the Case.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CaseExternalContactReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the External Contact.
-        firstName:
-          type: string
-          description: The first name of the contact.
-        lastName:
-          type: string
-          description: The last name of the contact.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    StageplanUpdate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the Stageplan. Valid length between 3 and 256 characters.
-          minLength: 3
-          maxLength: 256
-        description:
-          type: string
-          description: The description of the Stageplan. Maximum length of 512 characters.
-    CaseReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CaseListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Case'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    Intake:
-      type: object
-      properties:
-        data:
-          type: object
-          description: The intake data containing key-value pairs.
-          additionalProperties:
-            type: object
-    CaseplanListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Caseplan'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Stage:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the Stage.
-        description:
-          type: string
-          description: The description of the Stage.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The Stage creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The Stage modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateCompleted:
-          type: string
-          format: date-time
-          description: 'The Stage completion date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'The Stage start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          description: The ID of the User who modified the Stage.
-          $ref: '#/components/schemas/UserReference'
-        version:
-          type: integer
-          format: int32
-          description: The version of the Stage.
-        status:
-          type: string
-          description: The Status of the Stage.
-          enum:
-          - Unknown
-          - InProgress
-          - Open
-          - Completed
-          - Terminated
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-        case:
-          description: The parent Case of the Stage.
-          $ref: '#/components/schemas/CaseReference'
-    CaseAssociationQuery:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          format: int32
-          description: The number of entities to return in the response.
-        after:
-          type: string
-          description: Cursor pointing to the end of the previously returned page of associations.
-        workitemId:
-          type: string
-          description: The Workitem ID to query by.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
-        conversationId:
-          type: string
-          description: The Conversation ID to query by.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
-    CaseAssociationCreate:
-      type: object
-      properties:
-        workitemId:
-          type: string
-          description: The ID of the Workitem to associate with the Case.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
-        conversationId:
-          type: string
-          description: The ID of the Conversation to associate with the Case.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
-    StepListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Step'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    CaseplanQueryEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Caseplan'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-    ConversationReference:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    CaseplanCreateResponse:
-      type: object
-      required:
-      - customerIntent
-      - dateCreated
-      - dateModified
-      - defaultDueDurationInSeconds
-      - defaultTtlSeconds
-      - division
-      - latest
-      - modifiedBy
-      - name
-      - referencePrefix
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the Caseplan.
-        division:
-          description: The division to which this Caseplan belongs.
-          $ref: '#/components/schemas/StarrableDivision'
-        description:
-          type: string
-          description: The description of the Caseplan.
-        referencePrefix:
-          type: string
-          description: The prefix used when creating the reference for Cases from the Caseplan.
-        defaultDueDurationInSeconds:
-          type: integer
-          format: int32
-          description: The default due duration in seconds for Cases created from the Caseplan.
-        defaultTtlSeconds:
-          type: integer
-          format: int32
-          description: The default TTL in seconds for Cases created from the Caseplan.
-        defaultCaseOwner:
-          description: The default Case owner for Cases created from the Caseplan.
-          $ref: '#/components/schemas/UserReference'
-        latest:
-          type: integer
-          format: int32
-          description: The latest version of the Caseplan.
-        published:
-          type: integer
-          format: int32
-          description: The published version of the Caseplan.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The Caseplan creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The Caseplan modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        datePublished:
-          type: string
-          format: date-time
-          description: 'The Caseplan publication date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          description: The ID of the User who modified the Caseplan.
-          $ref: '#/components/schemas/UserReference'
-        customerIntent:
-          description: The customer intent for Cases created from this Caseplan.
-          $ref: '#/components/schemas/CustomerIntentReference'
-        versionState:
-          type: string
-          description: The version state of the Caseplan.
-          enum:
-          - Copying
-          - Draft
-          - Published
-        dataSchemas:
-          type: array
-          description: The schemas that define all data for Cases from this Caseplan.
-          items:
-            $ref: '#/components/schemas/CaseplanDataSchema'
-        intakeSettings:
-          type: array
-          description: The intake format when collecting data for a Case from this Caseplan.
-          items:
-            $ref: '#/components/schemas/IntakeSetting'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     CaseplanUpdate:
       type: object
       properties:
@@ -7488,136 +7563,61 @@ components:
           type: string
           description: The ID of the division the Caseplan belongs to. If divisionId is null or '*', the Caseplan will be divisionless.
           pattern: ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}|\*)
-    PresenceDefinition:
+    StageplanUpdate:
       type: object
-      properties:
-        id:
-          type: string
-          description: description
-        systemPresence:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CaseSummaryUpdate:
-      type: object
-      required:
-      - summary
-      properties:
-        summary:
-          type: string
-          description: Overview information for the Case. Valid length between 3 and 512 characters.
-    StepReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CaseplanFilter:
-      type: object
-      required:
-      - name
-      - operator
-      - values
       properties:
         name:
           type: string
-          description: 'Attribute name. Valid values: id, name, divisionId.'
-        operator:
-          type: string
-          description: Filter operator.
-          enum:
-          - IN
-          - CONTAINS
-          - BEGINS_WITH
-        values:
-          type: array
-          description: List of values to be used in the filter.
-          items:
-            type: string
-    Stageplan:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the Stageplan.
+          description: The name of the Stageplan. Valid length between 3 and 256 characters.
+          minLength: 3
+          maxLength: 256
         description:
           type: string
-          description: The description of the Stageplan.
-        caseplan:
-          description: The Caseplan of the Stageplan.
-          $ref: '#/components/schemas/CaseplanReference'
-        dateCreated:
+          description: The description of the Stageplan. Maximum length of 512 characters.
+    UserReference:
+      type: object
+      properties:
+        id:
           type: string
-          format: date-time
-          description: 'The Stageplan creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The Stageplan modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          description: The ID of the User who modified the Stageplan.
-          $ref: '#/components/schemas/UserReference'
+          description: The globally unique identifier for the object.
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-    ErrorBody:
+    Intake:
       type: object
       properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
+        data:
+          type: object
+          description: The intake data containing key-value pairs.
+          additionalProperties:
+            type: object
+    IntakeSettingsListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntakeSetting'
+    CaseAssociationQuery:
+      type: object
+      properties:
+        pageSize:
           type: integer
           format: int32
-        entityId:
+          description: The number of entities to return in the response.
+        after:
           type: string
-        entityName:
+          description: Cursor pointing to the end of the previously returned page of associations.
+        workitemId:
           type: string
-        messageWithParams:
+          description: The Workitem ID to query by.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
+        conversationId:
           type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
+          description: The Conversation ID to query by.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

@@ -4948,6 +4948,15 @@ paths:
         required: true
 components:
   schemas:
+    ChatUserSettings:
+      type: object
+      required:
+      - mobile
+      properties:
+        mobile:
+          description: Settings for mobile devices
+          $ref: '#/components/schemas/MobileSettings'
+      description: Settings for a chat user
     MobileSettings:
       type: object
       required:
@@ -4957,21 +4966,223 @@ components:
           description: Settings for a user's mobile notifications
           $ref: '#/components/schemas/MobileNotificationSettings'
       description: Settings for mobile devices
-    Entity:
+    ChatSendMessageResponse:
       type: object
+      required:
+      - id
       properties:
         id:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-    RoomParticipant:
+          description: The id of the created message
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ChatSettings:
+      type: object
+      properties:
+        messageRetentionPeriodDays:
+          type: integer
+          format: int32
+          description: Retention time for messages in days, expressed as int in the range [10,3650]
+        reactionsEnabled:
+          type: boolean
+          description: Reactions enabled for org
+    PinnedMessageRequest:
       type: object
       required:
-      - participantJid
+      - pinnedMessageIds
       properties:
-        participantJid:
+        pinnedMessageIds:
+          type: array
+          description: Ids of the messages to pin
+          items:
+            type: string
+    MobileNotificationSettings:
+      type: object
+      required:
+      - when
+      properties:
+        when:
           type: string
-          description: participantJid
+          description: When the user should receive notifications
+          enum:
+          - Always
+          - OnlyWhenInactive
+      description: Settings for a user's mobile notifications
+    ChatMessageResponse:
+      type: object
+      required:
+      - body
+      - dateCreated
+      - id
+      - jid
+      - thread
+      - toJid
+      properties:
+        id:
+          type: string
+          description: The id of the message
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Message''s created time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Message''s last updated time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        toJid:
+          type: string
+          description: Jid of message's recipient (roomJid or userJid)
+        jid:
+          type: string
+          description: Jid of message's sender (userJid)
+        body:
+          type: string
+          description: Message's body
+        mentions:
+          type: object
+          description: Message's mentions
+          additionalProperties:
+            type: string
+        edited:
+          type: boolean
+          description: If message was edited
+        attachmentDeleted:
+          type: boolean
+          description: If message's attachment was deleted
+        fileUri:
+          type: string
+          description: URI of file attachment
+        thread:
+          description: The id for a thread this message corresponds to
+          $ref: '#/components/schemas/Entity'
+        parentThread:
+          description: Parent thread id for thread replies
+          $ref: '#/components/schemas/Entity'
+        user:
+          description: The user who sent the message
+          $ref: '#/components/schemas/AddressableEntityRef'
+        toUser:
+          description: The receiving user of the message
+          $ref: '#/components/schemas/AddressableEntityRef'
+        reactions:
+          type: array
+          description: The emoji reactions to this message
+          items:
+            $ref: '#/components/schemas/ChatReaction'
+    CreateRoomRequest:
+      type: object
+      required:
+      - subject
+      properties:
+        description:
+          type: string
+          description: Room's description
+        subject:
+          type: string
+          description: Room's subject
+        userIds:
+          type: array
+          description: Users to add to the room, limit of 25
+          items:
+            type: string
+          maxItems: 25
+          minItems: 0
+    OneOnOne:
+      type: object
+      properties:
+        pinnedMessages:
+          type: array
+          description: Room's pinned messages
+          items:
+            $ref: '#/components/schemas/AddressableEntityRef'
+    RoomParticipantResponse:
+      type: object
+      properties:
+        jid:
+          type: string
+          description: jid of the participant
+        user:
+          description: User id of the participant
+          $ref: '#/components/schemas/AddressableEntityRef'
+    ChatReactionUpdate:
+      type: object
+      required:
+      - reactions
+      properties:
+        reactions:
+          type: array
+          description: Reactions to update
+          items:
+            type: string
+    RoomUpdateRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Room's description
+        subject:
+          type: string
+          description: Room's subject
+        pinnedMessageIds:
+          type: array
+          description: Room's pinned messages
+          items:
+            type: string
+        ownerIds:
+          type: array
+          description: Room's owners
+          items:
+            type: string
+    UserSettingsForChat:
+      type: object
+      required:
+      - mobile
+      properties:
+        muted:
+          type: boolean
+          description: Whether or not to enable muting notifications
+        mentionsOnly:
+          type: boolean
+          description: Whether or not to enable notifications for mentions only
+        notifyOnReactions:
+          type: boolean
+          description: Whether or not to enable notifications for reactions on a user's own messages
+        mobile:
+          description: Settings for mobile devices
+          $ref: '#/components/schemas/MobileSettings'
+    CreateRoomResponse:
+      type: object
+      required:
+      - jid
+      properties:
+        jid:
+          type: string
+          description: The jid of the room
+    SendMessageBody:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: The body of the message
+        mentions:
+          type: array
+          description: user ids to be notified
+          items:
+            type: string
+        threadId:
+          type: string
+          description: The thread id of the message
     Room:
       type: object
       properties:
@@ -5022,6 +5233,46 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
     UserChatSettingsPost:
       type: object
       required:
@@ -5036,6 +5287,29 @@ components:
         notifyOnReactions:
           type: boolean
           description: Whether or not to enable notifications for reactions on a user's own messages
+    ChatMessageEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessageResponse'
+    RoomParticipant:
+      type: object
+      required:
+      - participantJid
+      properties:
+        participantJid:
+          type: string
+          description: participantJid
+    RoomParticipantsResponse:
+      type: object
+      properties:
+        participants:
+          type: array
+          description: list of room participants
+          items:
+            $ref: '#/components/schemas/RoomParticipantResponse'
     ChatReaction:
       type: object
       required:
@@ -5050,15 +5324,13 @@ components:
           description: The users that reacted with an emoji
           items:
             $ref: '#/components/schemas/AddressableEntityRef'
-    ChatUserSettings:
+    Entity:
       type: object
-      required:
-      - mobile
       properties:
-        mobile:
-          description: Settings for mobile devices
-          $ref: '#/components/schemas/MobileSettings'
-      description: Settings for a chat user
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
     Limit:
       type: object
       properties:
@@ -5163,156 +5435,6 @@ components:
         value:
           type: integer
           format: int64
-    UserSettingsForChat:
-      type: object
-      required:
-      - mobile
-      properties:
-        muted:
-          type: boolean
-          description: Whether or not to enable muting notifications
-        mentionsOnly:
-          type: boolean
-          description: Whether or not to enable notifications for mentions only
-        notifyOnReactions:
-          type: boolean
-          description: Whether or not to enable notifications for reactions on a user's own messages
-        mobile:
-          description: Settings for mobile devices
-          $ref: '#/components/schemas/MobileSettings'
-    SendMessageBody:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          type: string
-          description: The body of the message
-        mentions:
-          type: array
-          description: user ids to be notified
-          items:
-            type: string
-        threadId:
-          type: string
-          description: The thread id of the message
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    RoomUpdateRequest:
-      type: object
-      properties:
-        description:
-          type: string
-          description: Room's description
-        subject:
-          type: string
-          description: Room's subject
-        pinnedMessageIds:
-          type: array
-          description: Room's pinned messages
-          items:
-            type: string
-        ownerIds:
-          type: array
-          description: Room's owners
-          items:
-            type: string
-    PinnedMessageRequest:
-      type: object
-      required:
-      - pinnedMessageIds
-      properties:
-        pinnedMessageIds:
-          type: array
-          description: Ids of the messages to pin
-          items:
-            type: string
-    RoomParticipantsResponse:
-      type: object
-      properties:
-        participants:
-          type: array
-          description: list of room participants
-          items:
-            $ref: '#/components/schemas/RoomParticipantResponse'
-    OneOnOne:
-      type: object
-      properties:
-        pinnedMessages:
-          type: array
-          description: Room's pinned messages
-          items:
-            $ref: '#/components/schemas/AddressableEntityRef'
-    RoomParticipantResponse:
-      type: object
-      properties:
-        jid:
-          type: string
-          description: jid of the participant
-        user:
-          description: User id of the participant
-          $ref: '#/components/schemas/AddressableEntityRef'
-    CreateRoomRequest:
-      type: object
-      required:
-      - subject
-      properties:
-        description:
-          type: string
-          description: Room's description
-        subject:
-          type: string
-          description: Room's subject
-        userIds:
-          type: array
-          description: Users to add to the room, limit of 25
-          items:
-            type: string
-          maxItems: 25
-          minItems: 0
-    ChatMessageEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChatMessageResponse'
-    ChatSendMessageResponse:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The id of the created message
-    ChatReactionUpdate:
-      type: object
-      required:
-      - reactions
-      properties:
-        reactions:
-          type: array
-          description: Reactions to update
-          items:
-            type: string
-    MobileNotificationSettings:
-      type: object
-      required:
-      - when
-      properties:
-        when:
-          type: string
-          description: When the user should receive notifications
-          enum:
-          - Always
-          - OnlyWhenInactive
-      description: Settings for a user's mobile notifications
     UserReference:
       type: object
       properties:
@@ -5324,128 +5446,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    ChatMessageResponse:
-      type: object
-      required:
-      - body
-      - dateCreated
-      - id
-      - jid
-      - thread
-      - toJid
-      properties:
-        id:
-          type: string
-          description: The id of the message
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Message''s created time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Message''s last updated time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        toJid:
-          type: string
-          description: Jid of message's recipient (roomJid or userJid)
-        jid:
-          type: string
-          description: Jid of message's sender (userJid)
-        body:
-          type: string
-          description: Message's body
-        mentions:
-          type: object
-          description: Message's mentions
-          additionalProperties:
-            type: string
-        edited:
-          type: boolean
-          description: If message was edited
-        attachmentDeleted:
-          type: boolean
-          description: If message's attachment was deleted
-        fileUri:
-          type: string
-          description: URI of file attachment
-        thread:
-          description: The id for a thread this message corresponds to
-          $ref: '#/components/schemas/Entity'
-        parentThread:
-          description: Parent thread id for thread replies
-          $ref: '#/components/schemas/Entity'
-        user:
-          description: The user who sent the message
-          $ref: '#/components/schemas/AddressableEntityRef'
-        toUser:
-          description: The receiving user of the message
-          $ref: '#/components/schemas/AddressableEntityRef'
-        reactions:
-          type: array
-          description: The emoji reactions to this message
-          items:
-            $ref: '#/components/schemas/ChatReaction'
-    ChatSettings:
-      type: object
-      properties:
-        messageRetentionPeriodDays:
-          type: integer
-          format: int32
-          description: Retention time for messages in days, expressed as int in the range [10,3650]
-        reactionsEnabled:
-          type: boolean
-          description: Reactions enabled for org
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    CreateRoomResponse:
-      type: object
-      required:
-      - jid
-      properties:
-        jid:
-          type: string
-          description: The jid of the room
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

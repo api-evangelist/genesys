@@ -1163,13 +1163,50 @@ paths:
       x-purecloud-method-name: deleteNotificationsChannelSubscriptions
 components:
   schemas:
-    ChannelEntityListing:
+    ErrorBody:
       type: object
       properties:
-        entities:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
           type: array
           items:
-            $ref: '#/components/schemas/Channel'
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    Channel:
+      type: object
+      properties:
+        connectUri:
+          type: string
+          format: uri
+        id:
+          type: string
+        expires:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
     Limit:
       type: object
       properties:
@@ -1274,6 +1311,47 @@ components:
         value:
           type: integer
           format: int64
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    PermissionDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of permission requirement
+          enum:
+          - requiresCurrentUser
+          - requiresPermissions
+          - requiresDivisionPermissions
+          - requiresAnyDivisionPermissions
+          - requiresUserBeConversationParticipant
+        permissions:
+          type: array
+          description: List of required permissions
+          items:
+            type: string
+        allowsCurrentUser:
+          type: boolean
+          description: Whether the current user can subscribe, when division permissions are otherwise required
+        enforced:
+          type: boolean
+          description: Whether or not this permission requirement is enforced
+    ChannelEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
     AvailableTopic:
       type: object
       properties:
@@ -1342,36 +1420,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChannelTopic'
-    AvailableTopicEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/AvailableTopic'
-    PermissionDetails:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of permission requirement
-          enum:
-          - requiresCurrentUser
-          - requiresPermissions
-          - requiresDivisionPermissions
-          - requiresAnyDivisionPermissions
-          - requiresUserBeConversationParticipant
-        permissions:
-          type: array
-          description: List of required permissions
-          items:
-            type: string
-        allowsCurrentUser:
-          type: boolean
-          description: Whether the current user can subscribe, when division permissions are otherwise required
-        enforced:
-          type: boolean
-          description: Whether or not this permission requirement is enforced
     ChannelTopic:
       type: object
       properties:
@@ -1393,61 +1441,13 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Channel:
+    AvailableTopicEntityListing:
       type: object
       properties:
-        connectUri:
-          type: string
-          format: uri
-        id:
-          type: string
-        expires:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
+        entities:
           type: array
           items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
+            $ref: '#/components/schemas/AvailableTopic'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

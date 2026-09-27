@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   description: With the PureCloud Platform API, you can control all aspects of your PureCloud environment. With the APIs you can access the system configuration, manage conversations and more.
   version: v2
-  title: PureCloud Platform O Auth API
+  title: PureCloud Platform OAuth API
   termsOfService: https://help.genesys.cloud/articles/terms-and-conditions/
   contact:
     name: PureCloud Developer Evangelists
@@ -1926,40 +1926,6 @@ paths:
         required: true
 components:
   schemas:
-    OAuthClientEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/OAuthClient'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
     ApiUsageRow:
       type: object
       properties:
@@ -2009,6 +1975,294 @@ components:
           type: string
           format: date-time
           description: 'Date of requests, based on granularity. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    OAuthClient:
+      type: object
+      required:
+      - authorizedGrantType
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the OAuth client.
+        accessTokenValiditySeconds:
+          type: integer
+          format: int64
+          description: The number of seconds, between 5mins and 48hrs, until tokens created with this client expire. If this field is omitted, a default of 24 hours will be applied.
+        description:
+          type: string
+        registeredRedirectUri:
+          type: array
+          description: 'List of allowed callbacks for this client. For example: https://myap.example.com/auth/callback'
+          items:
+            type: string
+            format: uri
+        secret:
+          type: string
+          description: System created secret assigned to this client. Secrets are required for code authorization and client credential grants.
+        roleIds:
+          type: array
+          description: Deprecated. Use roleDivisions instead.
+          uniqueItems: true
+          items:
+            type: string
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date this client was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date this client was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        createdBy:
+          description: User that created this client
+          $ref: '#/components/schemas/DomainEntityRef'
+        modifiedBy:
+          description: User that last modified this client
+          $ref: '#/components/schemas/DomainEntityRef'
+        authorizedGrantType:
+          type: string
+          description: 'The OAuth Grant/Client type supported by this client.
+
+            Code Authorization Grant/Client type - Preferred client type where the Client ID and Secret are required to create tokens. Used where the secret can be secured.
+
+            PKCE-Enabled Code Authorization grant type - Code grant type which requires PKCE challenge and verifier to create tokens. Used in public clients for increased security.
+
+            Implicit grant type - Client ID only is required to create tokens. Used in browser and mobile apps where the secret can not be secured.
+
+            SAML2-Bearer extension grant type - SAML2 assertion provider for user authentication at the token endpoint.
+
+            Client Credential grant type - Used to created access tokens that are tied only to the client.
+
+            '
+          enum:
+          - CODE
+          - TOKEN
+          - SAML2-BEARER
+          - PASSWORD
+          - CLIENT-CREDENTIALS
+        scope:
+          type: array
+          description: The scope requested by this client. Scopes only apply to clients not using the client_credential grant
+          items:
+            type: string
+        roleDivisions:
+          type: array
+          description: Set of roles and their corresponding divisions associated with this client. Roles and divisions only apply to clients using the client_credential grant
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/RoleDivision'
+        state:
+          type: string
+          description: 'The state of the OAuth client.
+
+            Active: The OAuth client can be used to create access tokens. This is the default state.
+
+            Disabled: Access tokens created by the client are invalid and new ones cannot be created.
+
+            Inactive: Access tokens cannot be created with this OAuth client and it will be deleted.'
+          enum:
+          - active
+          - disabled
+          - inactive
+        dateToDelete:
+          type: string
+          format: date-time
+          description: 'The time at which this client will be deleted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    OAuthAuthorization:
+      type: object
+      properties:
+        client:
+          $ref: '#/components/schemas/OAuthClient'
+        scope:
+          type: array
+          items:
+            type: string
+        roles:
+          type: array
+          items:
+            type: string
+        resourceOwner:
+          $ref: '#/components/schemas/DomainEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        createdBy:
+          $ref: '#/components/schemas/DomainEntityRef'
+        modifiedBy:
+          $ref: '#/components/schemas/DomainEntityRef'
+        pending:
+          type: boolean
+        state:
+          type: string
+          enum:
+          - Unauthorized
+          - Requested
+          - Authorized
+          - Revoked
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    ApiUsageClientQuery:
+      type: object
+      required:
+      - interval
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Behaves like one clause in a SQL WHERE. Specifies the date and time range of data being queried. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        granularity:
+          type: string
+          description: Date granularity of the results
+          enum:
+          - Day
+          - Week
+          - Month
+        metrics:
+          type: array
+          description: Behaves like a SQL SELECT clause. Enables retrieving only named metrics. If omitted, all metrics that are available will be returned (like SELECT *).
+          items:
+            type: string
+            enum:
+            - Status200
+            - Status300
+            - Status400
+            - Status500
+            - Status429
+            - Requests
+        groupBy:
+          type: array
+          description: Behaves like a SQL GROUPBY. Allows for multiple levels of grouping as a list of dimensions. Partitions resulting aggregate computations into distinct named subgroups rather than across the entire result set as if it were one group.
+          items:
+            type: string
+            enum:
+            - OAuthClientId
+            - OrganizationId
+            - TemplateUri
+            - HttpMethod
+    OAuthAuthorizationListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthAuthorization'
+        selfUri:
+          type: string
+          format: uri
+    ApiUsageQueryResult:
+      type: object
+      properties:
+        results:
+          type: array
+          description: Query results
+          items:
+            $ref: '#/components/schemas/ApiUsageRow'
+        queryStatus:
+          type: string
+          description: Query status
+          enum:
+          - Complete
+          - Failed
+          - Running
+        cursors:
+          description: Cursor tokens to be used for navigating paginated results
+          $ref: '#/components/schemas/Cursors'
+    OAuthScopeListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthScope'
+        selfUri:
+          type: string
+          format: uri
+    RoleDivision:
+      type: object
+      required:
+      - divisionId
+      - roleId
+      properties:
+        roleId:
+          type: string
+          description: Role to be associated with the given division which forms a grant
+        divisionId:
+          type: string
+          description: Division associated with the given role which forms a grant
+    UsageExecutionResult:
+      type: object
+      properties:
+        executionId:
+          type: string
+          description: The id of the query execution
+        resultsUri:
+          type: string
+          description: URI where the query results can be retrieved
     Limit:
       type: object
       properties:
@@ -2113,81 +2367,72 @@ components:
         value:
           type: integer
           format: int64
-    ApiUsageClientQuery:
-      type: object
-      required:
-      - interval
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Behaves like one clause in a SQL WHERE. Specifies the date and time range of data being queried. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        granularity:
-          type: string
-          description: Date granularity of the results
-          enum:
-          - Day
-          - Week
-          - Month
-        metrics:
-          type: array
-          description: Behaves like a SQL SELECT clause. Enables retrieving only named metrics. If omitted, all metrics that are available will be returned (like SELECT *).
-          items:
-            type: string
-            enum:
-            - Status200
-            - Status300
-            - Status400
-            - Status500
-            - Status429
-            - Requests
-        groupBy:
-          type: array
-          description: Behaves like a SQL GROUPBY. Allows for multiple levels of grouping as a list of dimensions. Partitions resulting aggregate computations into distinct named subgroups rather than across the entire result set as if it were one group.
-          items:
-            type: string
-            enum:
-            - OAuthClientId
-            - OrganizationId
-            - TemplateUri
-            - HttpMethod
-    ApiUsageQueryResult:
+    Detail:
       type: object
       properties:
-        results:
-          type: array
-          description: Query results
-          items:
-            $ref: '#/components/schemas/ApiUsageRow'
-        queryStatus:
+        errorCode:
           type: string
-          description: Query status
-          enum:
-          - Complete
-          - Failed
-          - Running
-        cursors:
-          description: Cursor tokens to be used for navigating paginated results
-          $ref: '#/components/schemas/Cursors'
-    DomainEntityRef:
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    OAuthClientEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthClient'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    Cursors:
+      type: object
+      properties:
+        before:
+          type: string
+        after:
+          type: string
+    OAuthScope:
       type: object
       properties:
         id:
           type: string
-        name:
+          description: The globally unique identifier for the object.
+          readOnly: true
+        description:
           type: string
         selfUri:
           type: string
           format: uri
-    UsageExecutionResult:
-      type: object
-      properties:
-        executionId:
-          type: string
-          description: The id of the query execution
-        resultsUri:
-          type: string
-          description: URI where the query results can be retrieved
+          description: The URI for this object
+          readOnly: true
     OAuthClientRequest:
       type: object
       required:
@@ -2264,251 +2509,6 @@ components:
           type: string
           format: date-time
           description: 'The time at which this client will be deleted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    OAuthScope:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        description:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    RoleDivision:
-      type: object
-      required:
-      - divisionId
-      - roleId
-      properties:
-        roleId:
-          type: string
-          description: Role to be associated with the given division which forms a grant
-        divisionId:
-          type: string
-          description: Division associated with the given role which forms a grant
-    OAuthAuthorizationListing:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/OAuthAuthorization'
-        selfUri:
-          type: string
-          format: uri
-    OAuthAuthorization:
-      type: object
-      properties:
-        client:
-          $ref: '#/components/schemas/OAuthClient'
-        scope:
-          type: array
-          items:
-            type: string
-        roles:
-          type: array
-          items:
-            type: string
-        resourceOwner:
-          $ref: '#/components/schemas/DomainEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        createdBy:
-          $ref: '#/components/schemas/DomainEntityRef'
-        modifiedBy:
-          $ref: '#/components/schemas/DomainEntityRef'
-        pending:
-          type: boolean
-        state:
-          type: string
-          enum:
-          - Unauthorized
-          - Requested
-          - Authorized
-          - Revoked
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    OAuthClient:
-      type: object
-      required:
-      - authorizedGrantType
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the OAuth client.
-        accessTokenValiditySeconds:
-          type: integer
-          format: int64
-          description: The number of seconds, between 5mins and 48hrs, until tokens created with this client expire. If this field is omitted, a default of 24 hours will be applied.
-        description:
-          type: string
-        registeredRedirectUri:
-          type: array
-          description: 'List of allowed callbacks for this client. For example: https://myap.example.com/auth/callback'
-          items:
-            type: string
-            format: uri
-        secret:
-          type: string
-          description: System created secret assigned to this client. Secrets are required for code authorization and client credential grants.
-        roleIds:
-          type: array
-          description: Deprecated. Use roleDivisions instead.
-          uniqueItems: true
-          items:
-            type: string
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date this client was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date this client was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        createdBy:
-          description: User that created this client
-          $ref: '#/components/schemas/DomainEntityRef'
-        modifiedBy:
-          description: User that last modified this client
-          $ref: '#/components/schemas/DomainEntityRef'
-        authorizedGrantType:
-          type: string
-          description: 'The OAuth Grant/Client type supported by this client.
-
-            Code Authorization Grant/Client type - Preferred client type where the Client ID and Secret are required to create tokens. Used where the secret can be secured.
-
-            PKCE-Enabled Code Authorization grant type - Code grant type which requires PKCE challenge and verifier to create tokens. Used in public clients for increased security.
-
-            Implicit grant type - Client ID only is required to create tokens. Used in browser and mobile apps where the secret can not be secured.
-
-            SAML2-Bearer extension grant type - SAML2 assertion provider for user authentication at the token endpoint.
-
-            Client Credential grant type - Used to created access tokens that are tied only to the client.
-
-            '
-          enum:
-          - CODE
-          - TOKEN
-          - SAML2-BEARER
-          - PASSWORD
-          - CLIENT-CREDENTIALS
-        scope:
-          type: array
-          description: The scope requested by this client. Scopes only apply to clients not using the client_credential grant
-          items:
-            type: string
-        roleDivisions:
-          type: array
-          description: Set of roles and their corresponding divisions associated with this client. Roles and divisions only apply to clients using the client_credential grant
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/RoleDivision'
-        state:
-          type: string
-          description: 'The state of the OAuth client.
-
-            Active: The OAuth client can be used to create access tokens. This is the default state.
-
-            Disabled: Access tokens created by the client are invalid and new ones cannot be created.
-
-            Inactive: Access tokens cannot be created with this OAuth client and it will be deleted.'
-          enum:
-          - active
-          - disabled
-          - inactive
-        dateToDelete:
-          type: string
-          format: date-time
-          description: 'The time at which this client will be deleted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Cursors:
-      type: object
-      properties:
-        before:
-          type: string
-        after:
-          type: string
-    OAuthScopeListing:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/OAuthScope'
-        selfUri:
-          type: string
-          format: uri
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

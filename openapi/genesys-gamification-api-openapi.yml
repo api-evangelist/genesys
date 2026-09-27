@@ -12379,599 +12379,6 @@ paths:
       x-purecloud-method-name: getGamificationScorecardsUsersValuesTrends
 components:
   schemas:
-    OtherProfileAssignment:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        currentProfile:
-          description: The current performance profile that this user belongs to
-          $ref: '#/components/schemas/DomainEntityRef'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Member:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The user's id
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: The associated user reference as a member of a performance profile
-    AssignUsers:
-      type: object
-      required:
-      - membersToAssign
-      - membersToRemove
-      properties:
-        membersToAssign:
-          type: array
-          description: List of user ids to assign to a performance profile
-          items:
-            type: string
-        membersToRemove:
-          type: array
-          description: List of user ids to remove from a performance profile
-          items:
-            type: string
-    InsightsDetailsOverallItem:
-      type: object
-      properties:
-        comparativePeriod:
-          description: Insights data in the comparative period
-          $ref: '#/components/schemas/InsightsDetailsOverallPeriodPoints'
-        primaryPeriod:
-          description: Insights data in the primary period
-          $ref: '#/components/schemas/InsightsDetailsOverallPeriodPoints'
-        percentOfGoalChange:
-          type: number
-          format: double
-          description: Percent of goal change
-    ProfileWithDateRange:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Profile ID
-        name:
-          type: string
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/Division'
-        dateStartWorkday:
-          type: string
-          format: date
-          description: 'Start workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    InsightsSummaryMetricItem:
-      type: object
-      properties:
-        metric:
-          description: The gamification metric for the data
-          $ref: '#/components/schemas/AddressableEntityRef'
-        comparativePeriod:
-          description: Insights data in the comparative period
-          $ref: '#/components/schemas/InsightsSummaryMetricPeriodPoints'
-        primaryPeriod:
-          description: Insights data in the primary period
-          $ref: '#/components/schemas/InsightsSummaryMetricPeriodPoints'
-        percentOfGoalChange:
-          type: number
-          format: double
-          description: Percent of goal change
-        valueChange:
-          type: number
-          format: double
-          description: Value change
-    ContestsFinalizeRequest:
-      type: object
-      required:
-      - status
-      properties:
-        status:
-          type: string
-          description: The Contest finalization status
-          enum:
-          - Completed
-          - Cancelled
-        winners:
-          type: array
-          description: The Contest finalization winners
-          items:
-            $ref: '#/components/schemas/ContestWinnersRequest'
-        disqualifiedAgents:
-          type: array
-          description: The Contest finalization disqualified agents
-          items:
-            $ref: '#/components/schemas/ContestDisqualifiedAgents'
-    ContestUserRank:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        rank:
-          type: integer
-          format: int32
-          description: The user's rank in contest, a lower rank is better (1 is the best)
-        score:
-          type: number
-          format: double
-          description: The user's contest score
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    PrizeImages:
-      type: object
-      properties:
-        imageUrl:
-          type: string
-          description: The Contest Prize image url
-          readOnly: true
-    InsightsSummary:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/InsightsSummaryUserItem'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        performanceProfile:
-          description: The performance profile
-          $ref: '#/components/schemas/AddressableEntityRef'
-        division:
-          description: The division
-          $ref: '#/components/schemas/DivisionReference'
-        granularity:
-          type: string
-          description: Granularity
-          enum:
-          - Daily
-          - Weekly
-          - Monthly
-        comparativePeriod:
-          description: The comparative period work day date range
-          $ref: '#/components/schemas/WorkdayPeriod'
-        primaryPeriod:
-          description: The primary period work day date range
-          $ref: '#/components/schemas/WorkdayPeriod'
-        pageCount:
-          type: integer
-          format: int32
-    AllTimePoints:
-      type: object
-      properties:
-        user:
-          description: Queried user
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'Queried end workday for all time points to be collected. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        allTimePoints:
-          type: integer
-          format: int64
-          description: All time point collected bt the user
-          readOnly: true
-    AttendanceStatus:
-      type: object
-      properties:
-        dateWorkday:
-          type: string
-          format: date
-          description: 'the workday date of this attendance status. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        attendanceStatusType:
-          type: string
-          description: the attendance status
-          readOnly: true
-          enum:
-          - HasData
-          - Scheduled
-          - Absent
-          - Present
-          - NoSchedule
-        hasEvaluation:
-          type: string
-          description: the quality evaluation score status
-          readOnly: true
-          enum:
-          - HasQualityEvaluation
-          - NoQualityEvaluation
-    CreateMetric:
-      type: object
-      required:
-      - name
-      properties:
-        metricDefinitionId:
-          type: string
-          description: The id of associated metric definition
-        externalMetricDefinitionId:
-          type: string
-          description: The id of associated external metric definition
-        objective:
-          description: Associated objective for this metric
-          $ref: '#/components/schemas/CreateObjective'
-        performanceProfileId:
-          type: string
-          description: Performance profile id of this metric
-        name:
-          type: string
-          description: The name of this metric
-        precision:
-          type: integer
-          format: int32
-          description: The precision of the metric, must be between 0 and 5
-        timeDisplayUnit:
-          type: string
-          description: The time unit in which the metric should be displayed -- this parameter is ignored when displaying non-time values
-          enum:
-          - None
-          - Seconds
-          - Minutes
-          - Hours
-    InsightsSummaryOverallItem:
-      type: object
-      properties:
-        comparativePeriod:
-          description: Insights data in the comparative period
-          $ref: '#/components/schemas/InsightsSummaryOverallPeriodPoints'
-        primaryPeriod:
-          description: Insights data in the primary period
-          $ref: '#/components/schemas/InsightsSummaryOverallPeriodPoints'
-        percentOfGoalChange:
-          type: number
-          format: double
-          description: Percent of goal change
-    GetProfilesResponse:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/PerformanceProfile'
-        selfUri:
-          type: string
-          format: uri
-    InsightsTrends:
-      type: object
-      properties:
-        comparativePeriod:
-          type: array
-          description: List of trend data in the comparative period
-          items:
-            $ref: '#/components/schemas/TrendData'
-        primaryPeriod:
-          type: array
-          description: List of trend data in the primary period
-          items:
-            $ref: '#/components/schemas/TrendData'
-    WorkdayMetric:
-      type: object
-      properties:
-        metric:
-          description: Gamification metric
-          readOnly: true
-          $ref: '#/components/schemas/Metric'
-        objective:
-          description: Current objective for this metric
-          readOnly: true
-          $ref: '#/components/schemas/Objective'
-        points:
-          type: integer
-          format: int32
-          description: Gamification points earned for this metric
-          readOnly: true
-        maxPoints:
-          type: integer
-          format: int32
-          description: The maximum Gamification points a user may earn for this metric
-          readOnly: true
-        value:
-          type: number
-          format: double
-          description: Value of this metric
-          readOnly: true
-        punctualityEvents:
-          type: array
-          description: List of schedule activity events for punctuality metrics
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/PunctualityEvent'
-        businessUnitId:
-          type: string
-          description: The id of the business unit associated with this metric, only returned for metrics with punctuality events
-          readOnly: true
-        evaluationDetails:
-          type: array
-          description: List of evaluations for quality evaluation score metrics
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/QualityEvaluationScoreItem'
-    InsightsDetailsOverallPeriodPoints:
-      type: object
-      properties:
-        points:
-          type: integer
-          format: int32
-          description: Points scored
-        maxPoints:
-          type: integer
-          format: int32
-          description: Max possible points
-        dataPointCount:
-          type: integer
-          format: int32
-          description: Number of data points
-        percentOfGoal:
-          type: number
-          format: double
-          description: Percentage of the goal
-        rankTotalPoints:
-          type: integer
-          format: int32
-          description: The agent's rank in leader board for points on this metric
-        rankPercentagePoints:
-          type: integer
-          format: int32
-          description: The agent's rank in leader board for percentage on this metric
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    SingleWorkdayAveragePoints:
-      type: object
-      properties:
-        dateWorkday:
-          type: string
-          format: date
-          description: 'Queried target workday. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        division:
-          description: The targeted division for the average points
-          readOnly: true
-          $ref: '#/components/schemas/Division'
-        averagePoints:
-          type: number
-          format: double
-          description: The average points per agent earned within the division
-          readOnly: true
-        performanceProfile:
-          description: The targeted performance profile for the average points
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-    WritableDivision:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    OverallBestPointsItem:
-      type: object
-      properties:
-        granularityType:
-          type: string
-          description: Best points aggregation interval granularity
-          readOnly: true
-          enum:
-          - Daily
-          - Weekly
-          - Monthly
-        users:
-          type: array
-          description: List of associated users with the equal points.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/UserReference'
-        count:
-          type: integer
-          format: int32
-          description: The count of the user IDs in the list
-          readOnly: true
-        points:
-          type: integer
-          format: int32
-          description: Gamification points
-          readOnly: true
-        dateStartWorkday:
-          type: string
-          format: date
-          description: 'Start workday of the best points aggregation interval. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'End workday of the best points aggregation interval. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-    UserProfilesInDateRangeRequest:
-      type: object
-      required:
-      - endWorkday
-      - startWorkday
-      properties:
-        startWorkday:
-          type: string
-          example: '2022-11-07'
-          description: Start work day in ISO-8601 format used in the date range.
-        endWorkday:
-          type: string
-          example: '2022-11-11'
-          description: End work day in ISO-8601 format used in the date range.
-    Metrics:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        order:
-          type: integer
-          format: int32
-          description: The order of metric within a performance profile
-        metricDefinitionName:
-          type: string
-          description: The name of associated metric definition
-        metricDefinitionId:
-          type: string
-          description: The id of associated metric definition
-        externalMetricDefinitionId:
-          type: string
-          description: The id of associated external metric definition
-        unitType:
-          type: string
-          description: Corresponding unit type for this metric
-          enum:
-          - None
-          - Percent
-          - Currency
-          - Seconds
-          - Number
-          - AttendanceStatus
-          - Unit
-        enabled:
-          type: boolean
-          description: A flag for whether this metric is enabled for a performance profile
-        templateName:
-          type: string
-          description: The name of associated objective template
-        maxPoints:
-          type: integer
-          format: int32
-          description: Achievable maximum points for this metric
-        performanceProfileId:
-          type: string
-          description: Performance profile id of this metric
-        linkedMetric:
-          description: The linked metric entity reference
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The created date of this metric. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateUnlinked:
-          type: string
-          format: date
-          description: 'The unlinked workday for this metric if this metric was ever unlinked. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        sourcePerformanceProfile:
-          description: The source performance profile when this metric is linked
-          readOnly: true
-          $ref: '#/components/schemas/PerformanceProfile'
-        unitDefinition:
-          type: string
-          description: Unit definition of linked external metric
-          readOnly: true
-        precision:
-          type: integer
-          format: int32
-          description: Precision of linked external metric
-          readOnly: true
-        timeDisplayUnit:
-          type: string
-          description: The time unit in which the metric should be displayed -- this parameter is ignored when displaying non-time values
-          enum:
-          - None
-          - Seconds
-          - Minutes
-          - Hours
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ContestMetricScore:
-      type: object
-      properties:
-        metric:
-          description: The gamification metric for the data
-          $ref: '#/components/schemas/AddressableEntityRef'
-        score:
-          type: number
-          format: double
-          description: The Contest Metric score
-        totalPoints:
-          type: number
-          format: double
-          description: The Contest Metric totalPoints
-        percentOfGoal:
-          type: number
-          format: double
-          description: The Contest Metric percentOfGoal
-    DivisionReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ContestWinners:
-      type: object
-      properties:
-        tier:
-          type: integer
-          format: int32
-          description: The Contest Winner tier
-        winnersCount:
-          type: integer
-          format: int32
-          description: The number of Contest Winners in a tier
-        users:
-          type: array
-          description: The Contest Winner users at the tier
-          items:
-            $ref: '#/components/schemas/ContestUserRank'
     WorkdayPointsTrendItem:
       type: object
       properties:
@@ -12985,1630 +12392,6 @@ components:
           format: double
           description: workday points for the date
           readOnly: true
-    ContestWinnersRequest:
-      type: object
-      properties:
-        tier:
-          type: integer
-          format: int32
-          description: The Contest Winner tier
-        userIds:
-          type: array
-          description: The Contest Winner users at the tier
-          items:
-            type: string
-    WorkdayMetricListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkdayMetric'
-    ExternalMetricDefinitionListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExternalMetricDefinition'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    ContestPrizes:
-      type: object
-      required:
-      - description
-      - imageId
-      - name
-      - tier
-      - winnersCount
-      properties:
-        tier:
-          type: integer
-          format: int32
-          description: The Contest Prize tier
-        name:
-          type: string
-          description: The Contest Prize name
-        description:
-          type: string
-          description: The Contest Prize description
-        imageId:
-          type: string
-          description: The Contest Prize image id
-        imageUrl:
-          type: string
-          description: The Contest Prize image url
-          readOnly: true
-        winnersCount:
-          type: integer
-          format: int32
-          description: The Contest Prize winner Count
-    CreatePerformanceProfile:
-      type: object
-      required:
-      - active
-      - description
-      - division
-      - maxLeaderboardRankSize
-      - name
-      - reportingIntervals
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: A name for this performance profile
-        division:
-          description: The associated division for this Performance Profile
-          $ref: '#/components/schemas/WritableDivision'
-        description:
-          type: string
-          description: A description about this performance profile
-        metricOrders:
-          type: array
-          description: Order of the associated metrics. The list should contain valid ids for metrics
-          readOnly: true
-          items:
-            type: string
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Creation date for this performance profile. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        reportingIntervals:
-          type: array
-          description: The reporting interval periods for this performance profile
-          items:
-            $ref: '#/components/schemas/ReportingInterval'
-        active:
-          type: boolean
-          description: The flag for active profiles
-        memberCount:
-          type: integer
-          format: int32
-          description: The number of members in this performance profile
-          readOnly: true
-        maxLeaderboardRankSize:
-          type: integer
-          format: int32
-          description: The maximum rank size for the leaderboard. This counts the number of ranks can be retrieved in a leaderboard queries
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    InsightsRankings:
-      type: object
-      properties:
-        performanceProfile:
-          description: The performance profile
-          $ref: '#/components/schemas/AddressableEntityRef'
-        division:
-          description: The division
-          $ref: '#/components/schemas/DivisionReference'
-        granularity:
-          type: string
-          description: Granularity
-          enum:
-          - Daily
-          - Weekly
-          - Monthly
-        comparativePeriod:
-          description: The comparative period work day date range
-          $ref: '#/components/schemas/WorkdayPeriod'
-        primaryPeriod:
-          description: The primary period work day date range
-          $ref: '#/components/schemas/WorkdayPeriod'
-        leaders:
-          type: array
-          description: The leaders users
-          items:
-            $ref: '#/components/schemas/InsightsSummaryUserItem'
-        trailers:
-          type: array
-          description: The trailing users
-          items:
-            $ref: '#/components/schemas/InsightsSummaryUserItem'
-    UserBestPointsItem:
-      type: object
-      properties:
-        granularityType:
-          type: string
-          description: Best points aggregation interval granularity
-          readOnly: true
-          enum:
-          - Daily
-          - Weekly
-          - Monthly
-        points:
-          type: integer
-          format: int32
-          description: Gamification points
-          readOnly: true
-        dateStartWorkday:
-          type: string
-          format: date
-          description: 'Start workday of the best points aggregation interval. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'End workday of the best points aggregation interval. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        rank:
-          type: integer
-          format: int32
-          description: The rank of this user
-          readOnly: true
-    PunctualityEvent:
-      type: object
-      properties:
-        dateScheduleStart:
-          type: string
-          format: date-time
-          description: 'The scheduled activity start time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateStart:
-          type: string
-          format: date-time
-          description: 'The time the user started the activity. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        lengthMinutes:
-          type: integer
-          format: int32
-          description: The length of the activity in minutes
-          readOnly: true
-        description:
-          type: string
-          description: The description of the activity
-          readOnly: true
-        activityCodeId:
-          type: string
-          description: The ID of the activity code associated with this activity
-          readOnly: true
-        activityCode:
-          type: string
-          description: The activity code
-          readOnly: true
-        activityName:
-          type: string
-          description: The activity name
-          readOnly: true
-        category:
-          type: string
-          description: The category for the activity
-          readOnly: true
-        points:
-          type: integer
-          format: int32
-          description: The points earned for this activity
-          readOnly: true
-        delta:
-          type: number
-          format: double
-          description: Difference between this activity and the last activity in seconds
-          readOnly: true
-        bullseye:
-          type: boolean
-    QualityEvaluationScoreItem:
-      type: object
-      properties:
-        evaluationId:
-          type: string
-          description: The id of evaluation
-          readOnly: true
-        conversationId:
-          type: string
-          description: The id of conversation
-          readOnly: true
-        conversationDate:
-          type: string
-          format: date-time
-          description: 'The date of conversation. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        conversationEndDate:
-          type: string
-          format: date-time
-          description: 'The end date of conversation. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        formName:
-          type: string
-          description: The name of form
-          readOnly: true
-        points:
-          type: integer
-          format: int32
-          description: Gamification points earned for this metric
-          readOnly: true
-        evaluationScore:
-          type: number
-          format: double
-          description: The quality score of evaluation as a percentage
-          readOnly: true
-        maxPoints:
-          type: integer
-          format: int32
-          description: The maximum Gamification points a user may earn for this metric
-          readOnly: true
-        mediaTypes:
-          type: array
-          description: A list of media types for the metric
-          items:
-            type: string
-            enum:
-            - callback
-            - chat
-            - cobrowse
-            - email
-            - internalmessage
-            - message
-            - screenmonitoring
-            - screenshare
-            - unknown
-            - video
-            - voice
-    UserBestPoints:
-      type: object
-      properties:
-        user:
-          description: The requested user for the best points
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        bestPoints:
-          type: array
-          description: List of best point for the requested user
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/UserBestPointsItem'
-    Metric:
-      type: object
-      required:
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of this metric
-        metricDefinitionId:
-          type: string
-          description: The id of associated metric definition
-        externalMetricDefinitionId:
-          type: string
-          description: The id of associated external metric definition
-        objective:
-          description: Associated objective for this metric
-          $ref: '#/components/schemas/Objective'
-        performanceProfileId:
-          type: string
-          description: Performance profile id of this metric
-        linkedMetric:
-          description: The linked metric entity reference
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The created date of this metric. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateUnlinked:
-          type: string
-          format: date
-          description: 'The unlinked workday for this metric if this metric was ever unlinked. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        precision:
-          type: integer
-          format: int32
-          description: The precision of the metric, must be between 0 and 5
-          readOnly: true
-        timeDisplayUnit:
-          type: string
-          description: The time unit in which the metric should be displayed -- this parameter is ignored when displaying non-time values
-          enum:
-          - None
-          - Seconds
-          - Minutes
-          - Hours
-        sourcePerformanceProfile:
-          description: The source performance profile when this metric is linked
-          readOnly: true
-          $ref: '#/components/schemas/PerformanceProfile'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ContestScoresAgentTrend:
-      type: object
-      properties:
-        contestScore:
-          description: The Contest score
-          $ref: '#/components/schemas/ContestScoreRanked'
-        metricScores:
-          type: array
-          description: The Contest metric scores
-          items:
-            $ref: '#/components/schemas/ContestMetricScoreRanked'
-        disqualified:
-          type: boolean
-          description: Indicates whether an agent is disqualified or not
-        dateWorkday:
-          type: string
-          format: date
-          example: '2024-01-12'
-          description: 'Workday of the contest scores leaderboard. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-    WorkdayPointsTrend:
-      type: object
-      properties:
-        dateStartWorkday:
-          type: string
-          format: date
-          description: 'The start workday for the query range for the gamification points trend. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'The end workday for the query range for the gamification points trend. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        user:
-          description: The targeted user for the query
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        dayOfWeek:
-          type: string
-          description: Aggregated for same day comparison
-          readOnly: true
-          enum:
-          - Sunday
-          - Monday
-          - Tuesday
-          - Wednesday
-          - Thursday
-          - Friday
-          - Saturday
-        averagePoints:
-          type: number
-          format: double
-          description: The total average points
-          readOnly: true
-        trend:
-          type: array
-          description: Daily points trends
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/WorkdayPointsTrendItem'
-    UserProfilesInDateRange:
-      type: object
-      properties:
-        user:
-          description: The query agent
-          $ref: '#/components/schemas/UserReference'
-        dateStartWorkday:
-          type: string
-          format: date
-          description: 'Start workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        profiles:
-          type: array
-          description: The list of profiles of the agent
-          items:
-            $ref: '#/components/schemas/ProfileWithDateRange'
-    MetricValueTrendAverage:
-      type: object
-      properties:
-        dateStartWorkday:
-          type: string
-          format: date
-          description: 'The targeted start workday. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'The targeted end workday. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        dateReferenceWorkday:
-          type: string
-          format: date
-          description: 'The targeted reference workday. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        division:
-          description: The targeted division for the metrics
-          readOnly: true
-          $ref: '#/components/schemas/Division'
-        user:
-          description: The targeted user for the metrics
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        timezone:
-          type: string
-          description: The time zone used for aggregating metric values
-          readOnly: true
-        result:
-          description: The metric value trend and average
-          readOnly: true
-          $ref: '#/components/schemas/WorkdayValuesMetricItem'
-        performanceProfile:
-          description: The targeted performance profile for the average points
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        metric:
-          description: The targeted performance profile for the average points
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-    InvalidAssignment:
-      type: object
-      properties:
-        user:
-          description: Invalid user for validation
-          $ref: '#/components/schemas/UserReference'
-        message:
-          type: string
-          description: The reason for the invalid input for validation
-    AssignmentError:
-      type: object
-      properties:
-        user:
-          description: A user that is failed to be removed from the performance profile
-          $ref: '#/components/schemas/UserReference'
-        message:
-          type: string
-          description: Error message from membership assignment
-    InsightsSummaryMetricPeriodPoints:
-      type: object
-      properties:
-        points:
-          type: integer
-          format: int32
-          description: Points scored
-        maxPoints:
-          type: integer
-          format: int32
-          description: Max possible points
-        dataPointCount:
-          type: integer
-          format: int32
-          description: Number of data points
-        percentOfGoal:
-          type: number
-          format: double
-          description: Percentage of the goal
-        value:
-          type: number
-          format: double
-          description: Average value
-    ContestScoresGroupTrendList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContestScoresGroupTrend'
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    ContestsCreateRequest:
-      type: object
-      required:
-      - announcementTimezone
-      - anonymization
-      - dateAnnounced
-      - dateEnd
-      - dateStart
-      - description
-      - metrics
-      - participantIds
-      - prizes
-      - profileId
-      - title
-      - winningCriteria
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        division:
-          description: The division for this performance profile associate to. Only set for DEFAULT profile.
-          $ref: '#/components/schemas/WritableDivision'
-        title:
-          type: string
-          description: The Contest title
-        description:
-          type: string
-          description: The Contest description
-        dateStart:
-          type: string
-          format: date
-          example: '2024-01-12'
-          description: 'Start date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEnd:
-          type: string
-          format: date
-          example: '2024-01-12'
-          description: 'End date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        winningCriteria:
-          type: string
-          description: The Contest winning criteria
-          enum:
-          - HighestOverallScore
-          - HighestOverallPercentOfGoal
-        dateAnnounced:
-          type: string
-          format: date-time
-          description: 'The Contest''s Announcement Datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        announcementTimezone:
-          type: string
-          example: Europe/London
-          description: 'The Contest''s Announcement Timezone. Valid values are strings of the zone name as found in the IANA time zone database. For example: UTC, Etc/UTC, or Europe/London'
-        anonymization:
-          type: string
-          description: The Contest anonymization
-          enum:
-          - NoAnonymization
-          - All
-          - AllExceptTop
-        metrics:
-          type: array
-          description: The Contest's Metrics
-          items:
-            $ref: '#/components/schemas/ContestMetrics'
-        prizes:
-          type: array
-          description: The Contest Prizes
-          items:
-            $ref: '#/components/schemas/ContestPrizes'
-        profileId:
-          type: string
-          description: The Contest profile
-        participantIds:
-          type: array
-          description: The Contest's participants
-          items:
-            type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UserInsightsTrendTotalItem:
-      type: object
-      properties:
-        trends:
-          description: Trends for the metric
-          $ref: '#/components/schemas/UserInsightsTrends'
-    LeaderboardItem:
-      type: object
-      properties:
-        user:
-          description: The user object for this leaderboard rank
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        rank:
-          type: integer
-          format: int32
-          description: The rank of the user
-          readOnly: true
-        points:
-          type: integer
-          format: int64
-          description: The points collected by the user
-          readOnly: true
-    TargetPerformanceProfile:
-      type: object
-      required:
-      - targetPerformanceProfileId
-      properties:
-        targetPerformanceProfileId:
-          type: string
-          description: The target destination performanceProfileId for the linked metric.
-    GetContestsEssentialsListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContestsEssentials'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    GetTemplatesResponse:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectiveTemplate'
-        selfUri:
-          type: string
-          format: uri
-    AttendanceStatusListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/AttendanceStatus'
-    ObjectiveTemplate:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        zones:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectiveZone'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ExternalMetricDataItem:
-      type: object
-      required:
-      - dateOccurred
-      - metricId
-      - value
-      properties:
-        userId:
-          type: string
-          description: The user ID. Must provide either userId or userEmail, but not both.
-        userEmail:
-          type: string
-          description: The user main email used in user's GenesysCloud account. Must provide either userId or userEmail, but not both.
-        metricId:
-          type: string
-          description: The ID of the external metric definition
-        dateOccurred:
-          type: string
-          format: date
-          description: 'The date of the metric data. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        value:
-          type: number
-          description: The value of the metric data. When value is null, the metric data will be deleted.
-        count:
-          type: integer
-          format: int32
-          description: The number of data points. The default value is 0 when type is Cumulative and the metric data already exists, otherwise 1. When total count reaches 0, the metric data will be deleted.
-        type:
-          type: string
-          description: The type of the metric data. The default value is Total.
-          enum:
-          - Total
-          - Cumulative
-    MemberListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Member'
-    GetMetricResponse:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Metric'
-        selfUri:
-          type: string
-          format: uri
-    ContestScore:
-      type: object
-      properties:
-        score:
-          type: number
-          format: double
-          description: The Contest score
-        totalPoints:
-          type: number
-          format: double
-          description: The Contest totalPoints
-        percentOfGoal:
-          type: number
-          format: double
-          description: The Contest percentOfGoal
-    ExternalMetricDataWriteResponse:
-      type: object
-      properties:
-        processedEntities:
-          type: array
-          description: The list of processed entities
-          items:
-            $ref: '#/components/schemas/ExternalMetricDataProcessedItem'
-        unprocessedEntities:
-          type: array
-          description: The list of unprocessed entities
-          items:
-            $ref: '#/components/schemas/ExternalMetricDataUnprocessedItem'
-      description: External metric data write response
-    ExternalMetricDataUnprocessedItem:
-      type: object
-      required:
-      - dateOccurred
-      - metricId
-      - value
-      properties:
-        userId:
-          type: string
-          description: The user ID. Must provide either userId or userEmail, but not both.
-        userEmail:
-          type: string
-          description: The user main email used in user's GenesysCloud account. Must provide either userId or userEmail, but not both.
-        metricId:
-          type: string
-          description: The ID of the external metric definition
-        dateOccurred:
-          type: string
-          format: date
-          description: 'The date of the metric data. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        value:
-          type: number
-          description: The value of the metric data. When value is null, the metric data will be deleted.
-        count:
-          type: integer
-          format: int32
-          description: The number of data points. The default value is 0 when type is Cumulative and the metric data already exists, otherwise 1. When total count reaches 0, the metric data will be deleted.
-        type:
-          type: string
-          description: The type of the metric data. The default value is Total.
-          enum:
-          - Total
-          - Cumulative
-        message:
-          type: string
-          description: The error message
-        code:
-          type: string
-          description: The error code
-    ExternalMetricDefinitionCreateRequest:
-      type: object
-      required:
-      - defaultObjectiveType
-      - enabled
-      - name
-      - precision
-      - unit
-      properties:
-        name:
-          type: string
-          description: The name of the External Metric Definition
-        unit:
-          type: string
-          description: The unit of the External Metric Definition
-          enum:
-          - Seconds
-          - Percent
-          - Number
-          - Currency
-        unitDefinition:
-          type: string
-          description: The unit definition of the External Metric Definition
-        precision:
-          type: integer
-          format: int32
-          description: The decimal precision of the External Metric Definition. Must be at least 0 and at most 5
-          minimum: 0
-          maximum: 5
-        defaultObjectiveType:
-          type: string
-          description: The default objective type of the External Metric Definition
-          enum:
-          - HigherIsBetter
-          - LowerIsBetter
-          - TargetArea
-        enabled:
-          type: boolean
-          description: True if the External Metric Definition is enabled
-    ContestScoresAgentTrendList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContestScoresAgentTrend'
-        user:
-          description: The Contest Scores Leaderboard user
-          $ref: '#/components/schemas/UserReference'
-    GetMetricsResponse:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Metrics'
-        selfUri:
-          type: string
-          format: uri
-    ExternalMetricDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the External Metric Definition
-        unit:
-          type: string
-          description: The unit of the External Metric Definition
-          enum:
-          - Seconds
-          - Percent
-          - Number
-          - Currency
-        unitDefinition:
-          type: string
-          description: The unit definition of the External Metric Definition
-        precision:
-          type: integer
-          format: int32
-          description: The decimal precision of the External Metric Definition
-        defaultObjectiveType:
-          type: string
-          description: The default objective type of the External Metric Definition
-          enum:
-          - HigherIsBetter
-          - LowerIsBetter
-          - TargetArea
-        retentionMonths:
-          type: integer
-          format: int32
-          description: The retention in months of the External Metric Definition
-        enabled:
-          type: boolean
-          description: True if the External Metric Definition is enabled
-        inUse:
-          type: boolean
-          description: True if the External Metric Definition is in use
-          readOnly: true
-        dateLastRefreshed:
-          type: string
-          format: date-time
-          description: 'The last date and time that the metric data was refreshed. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    InsightsDetails:
-      type: object
-      properties:
-        performanceProfile:
-          description: The performance profile
-          $ref: '#/components/schemas/AddressableEntityRef'
-        division:
-          description: The division
-          $ref: '#/components/schemas/DivisionReference'
-        granularity:
-          type: string
-          description: Granularity
-          enum:
-          - Daily
-          - Weekly
-          - Monthly
-        comparativePeriod:
-          description: The comparative period work day date range
-          $ref: '#/components/schemas/WorkdayPeriod'
-        primaryPeriod:
-          description: The primary period work day date range
-          $ref: '#/components/schemas/WorkdayPeriod'
-        user:
-          description: The query user
-          $ref: '#/components/schemas/UserReference'
-        metricData:
-          type: array
-          description: The list of insights data for each metric of the user
-          items:
-            $ref: '#/components/schemas/InsightsDetailsMetricItem'
-        overallData:
-          description: Overall insights data of the user
-          $ref: '#/components/schemas/InsightsDetailsOverallItem'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    InsightsTrendTotalItem:
-      type: object
-      properties:
-        trends:
-          description: Trends for the metric
-          $ref: '#/components/schemas/InsightsTrends'
-    InsightsDetailsMetricPeriodPoints:
-      type: object
-      properties:
-        points:
-          type: integer
-          format: int32
-          description: Points scored
-        maxPoints:
-          type: integer
-          format: int32
-          description: Max possible points
-        dataPointCount:
-          type: integer
-          format: int32
-          description: Number of data points
-        percentOfGoal:
-          type: number
-          format: double
-          description: Percentage of the goal
-        rankTotalPoints:
-          type: integer
-          format: int32
-          description: The agent's rank in leader board for points on this metric
-        rankPercentagePoints:
-          type: integer
-          format: int32
-          description: The agent's rank in leader board for percentage on this metric
-        value:
-          type: number
-          format: double
-          description: Average value
-    ContestScoreRanked:
-      type: object
-      properties:
-        score:
-          type: number
-          format: double
-          description: The Contest score
-        totalPoints:
-          type: number
-          format: double
-          description: The Contest totalPoints
-        percentOfGoal:
-          type: number
-          format: double
-          description: The Contest percentOfGoal
-        rank:
-          type: integer
-          format: int32
-          description: The Contest Score rank
-        tier:
-          type: integer
-          format: int32
-          description: The Contest Score tier
-    MetricDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        unitType:
-          type: string
-          description: The type of associated metric unit
-          enum:
-          - None
-          - Percent
-          - Currency
-          - Seconds
-          - Number
-          - AttendanceStatus
-          - Unit
-        shortName:
-          type: string
-          description: An alternate name for this metric definition, often abbreviation
-        dividendMetrics:
-          type: array
-          description: Metric names used as dividend
-          items:
-            type: string
-        divisorMetrics:
-          type: array
-          description: Metric names used as divisor
-          items:
-            type: string
-        defaultObjective:
-          description: A predefined default objective for this metric
-          $ref: '#/components/schemas/DefaultObjective'
-        lockTemplateId:
-          type: string
-          description: An optional field to specify if this metric definition is locked to certain template. e.g. punctuality
-        mediaTypeFilteringAllowed:
-          type: boolean
-          description: Flag to indicate if this metricDefinition allows filter based on media types
-        initialDirectionFilteringAllowed:
-          type: boolean
-          description: Flag to indicate if this metricDefinition allows filter based on initial direction
-        queueFilteringAllowed:
-          type: boolean
-          description: Flag to indicate if this metricDefinition allows filter based on queues
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    InsightsSummaryUserItem:
-      type: object
-      properties:
-        user:
-          description: Queried user
-          $ref: '#/components/schemas/UserReference'
-        metricData:
-          type: array
-          description: The list of insights data for each metric of the user
-          items:
-            $ref: '#/components/schemas/InsightsSummaryMetricItem'
-        overallData:
-          description: Overall insights data of the user
-          $ref: '#/components/schemas/InsightsSummaryOverallItem'
-        ranking:
-          type: integer
-          format: int32
-          description: Ranking of the user
-    ExternalMetricDataProcessedItem:
-      type: object
-      required:
-      - dateOccurred
-      - metricId
-      - value
-      properties:
-        userId:
-          type: string
-          description: The user ID. Must provide either userId or userEmail, but not both.
-        userEmail:
-          type: string
-          description: The user main email used in user's GenesysCloud account. Must provide either userId or userEmail, but not both.
-        metricId:
-          type: string
-          description: The ID of the external metric definition
-        dateOccurred:
-          type: string
-          format: date
-          description: 'The date of the metric data. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        value:
-          type: number
-          description: The value of the metric data. When value is null, the metric data will be deleted.
-        count:
-          type: integer
-          format: int32
-          description: The number of data points. The default value is 0 when type is Cumulative and the metric data already exists, otherwise 1. When total count reaches 0, the metric data will be deleted.
-        type:
-          type: string
-          description: The type of the metric data. The default value is Total.
-          enum:
-          - Total
-          - Cumulative
-        totalValue:
-          type: number
-          description: The total value of the metric data.
-        totalCount:
-          type: integer
-          format: int32
-          description: The total number of data points.
-    UserInsightsTrendMetricItem:
-      type: object
-      properties:
-        metric:
-          description: The gamification metric for the trend
-          $ref: '#/components/schemas/AddressableEntityRef'
-        trends:
-          description: Trends for the metric
-          $ref: '#/components/schemas/UserInsightsTrends'
-    PerformanceProfile:
-      type: object
-      required:
-      - description
-      - metricOrders
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: A name for this performance profile
-        division:
-          description: The division for this performance profile associate to
-          readOnly: true
-          $ref: '#/components/schemas/Division'
-        description:
-          type: string
-          description: A description about this performance profile
-        metricOrders:
-          type: array
-          description: Order of the associated metrics. The list should contain valid ids for metrics
-          items:
-            type: string
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Creation date for this performance profile. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        reportingIntervals:
-          type: array
-          description: The reporting interval periods for this performance profile
-          items:
-            $ref: '#/components/schemas/ReportingInterval'
-        active:
-          type: boolean
-          description: The flag for active profiles
-          readOnly: true
-        memberCount:
-          type: integer
-          format: int32
-          description: The number of members in this performance profile
-          readOnly: true
-        maxLeaderboardRankSize:
-          type: integer
-          format: int32
-          description: The maximum rank size for the leaderboard. This counts the number of ranks can be retrieved in a leaderboard queries
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ExternalMetricDefinitionUpdateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the External Metric Definition
-        precision:
-          type: integer
-          format: int32
-          description: The decimal precision of the External Metric Definition. Must be at least 0 and at most 5
-          minimum: 0
-          maximum: 5
-        defaultObjectiveType:
-          type: string
-          description: The default objective type of the External Metric Definition
-          enum:
-          - HigherIsBetter
-          - LowerIsBetter
-          - TargetArea
-        enabled:
-          type: boolean
-          description: True if the External Metric Definition is enabled
-    CreateObjective:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        templateId:
-          type: string
-          description: The id of this objective's base template
-        zones:
-          type: array
-          description: Objective zone specifies min,max points and values for the associated metric
-          items:
-            $ref: '#/components/schemas/ObjectiveZone'
-        enabled:
-          type: boolean
-          description: A flag for whether this objective is enabled for the related metric
-        topicIds:
-          type: array
-          description: A list of topic ids for detected topic metrics
-          items:
-            type: string
-        mediaTypes:
-          type: array
-          description: A list of media types for the metric
-          items:
-            type: string
-            enum:
-            - callback
-            - chat
-            - cobrowse
-            - email
-            - internalmessage
-            - message
-            - screenmonitoring
-            - screenshare
-            - unknown
-            - video
-            - voice
-        queueIds:
-          type: array
-          description: A list of queue ids for the metric
-          items:
-            type: string
-        topicIdsFilterType:
-          type: string
-          description: A filter type for topic Ids. It's only used for objectives with topicIds. Default filter behavior is "or".
-          enum:
-          - and
-          - or
-        evaluationFormContextIds:
-          type: array
-          description: The ids of associated evaluation form context, for Quality Evaluation Score metrics
-          items:
-            type: string
-        initialDirection:
-          type: string
-          description: The initial direction to filter on
-          enum:
-          - inbound
-          - outbound
-        dateStart:
-          type: string
-          format: date
-          description: 'start date of the objective. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-    WorkdayValuesTrendItem:
-      type: object
-      properties:
-        dateWorkday:
-          type: string
-          format: date
-          description: 'The workday for the metric value. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        value:
-          type: number
-          format: double
-          description: The metric value
-          readOnly: true
-    Limit:
-      type: object
-      properties:
-        key:
-          type: string
-        namespace:
-          type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
-    ContestMetrics:
-      type: object
-      required:
-      - id
-      - minimumQualifier
-      - weight
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        weight:
-          type: integer
-          format: int32
-          description: The Contest Metrics weight, allowed values are 1-100
-        minimumQualifier:
-          type: integer
-          format: int32
-          description: The Contest Metrics minimum qualifier. Min value is 0, no Max value
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Objective:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        templateId:
-          type: string
-          description: The id of this objective's base template
-        zones:
-          type: array
-          description: Objective zone specifies min,max points and values for the associated metric
-          items:
-            $ref: '#/components/schemas/ObjectiveZone'
-        enabled:
-          type: boolean
-          description: A flag for whether this objective is enabled for the related metric
-        mediaTypes:
-          type: array
-          description: A list of media types for the metric
-          items:
-            type: string
-            enum:
-            - callback
-            - chat
-            - cobrowse
-            - email
-            - internalmessage
-            - message
-            - screenmonitoring
-            - screenshare
-            - unknown
-            - video
-            - voice
-        queues:
-          type: array
-          description: A list of queues for the metric
-          items:
-            $ref: '#/components/schemas/AddressableEntityRef'
-        topics:
-          type: array
-          description: A list of topic ids for detected topic metrics
-          items:
-            $ref: '#/components/schemas/AddressableEntityRef'
-        topicIdsFilterType:
-          type: string
-          description: A filter type for topic Ids. It's only used for objectives with topicIds. Default filter behavior is "or".
-          enum:
-          - and
-          - or
-        evaluationFormContextIds:
-          type: array
-          description: The ids of associated evaluation form context, for Quality Evaluation Score metrics
-          items:
-            type: string
-        initialDirection:
-          type: string
-          description: The initial direction to filter on
-          enum:
-          - inbound
-          - outbound
-        dateStart:
-          type: string
-          format: date
-          description: 'start date of the objective. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-    ContestMetricScoreRanked:
-      type: object
-      properties:
-        metric:
-          description: The gamification metric for the data
-          $ref: '#/components/schemas/AddressableEntityRef'
-        score:
-          type: number
-          format: double
-          description: The Contest Metric score
-        totalPoints:
-          type: number
-          format: double
-          description: The Contest Metric totalPoints
-        percentOfGoal:
-          type: number
-          format: double
-          description: The Contest Metric percentOfGoal
-        rank:
-          type: integer
-          format: int32
-          description: The Contest Score rank, a lower rank is better (1 is the best)
-    GamificationStatus:
-      type: object
-      properties:
-        isActive:
-          type: boolean
-          description: Gamification status of the organization.
-        dateStart:
-          type: string
-          format: date
-          description: 'Gamification start date. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        automaticUserAssignment:
-          type: boolean
-          description: Automatic assignment of users to the default profile
-        dateStartPersonalBest:
-          type: string
-          format: date
-          description: 'Personal best aggregation starting date. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-    ContestDisqualifiedAgents:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        note:
-          type: string
-          description: The disqualification explanation
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ContestScoresGroupTrend:
-      type: object
-      properties:
-        dateWorkday:
-          type: string
-          format: date
-          example: '2024-01-12'
-          description: 'Workday of the contest score. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        contestScore:
-          description: The Contest score
-          $ref: '#/components/schemas/ContestScore'
-        metricScores:
-          type: array
-          description: The Contest metric scores
-          items:
-            $ref: '#/components/schemas/ContestMetricScore'
     ContestRequesingParticipantDailyInfo:
       type: object
       properties:
@@ -14620,515 +12403,6 @@ components:
         contestScore:
           description: The Contest score
           $ref: '#/components/schemas/ContestScoreRanked'
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    InsightsSummaryOverallPeriodPoints:
-      type: object
-      properties:
-        points:
-          type: integer
-          format: int32
-          description: Points scored
-        maxPoints:
-          type: integer
-          format: int32
-          description: Max possible points
-        dataPointCount:
-          type: integer
-          format: int32
-          description: Number of data points
-        percentOfGoal:
-          type: number
-          format: double
-          description: Percentage of the goal
-    ContestScoresAgentsPagedList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContestScoresAgents'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        dateWorkday:
-          type: string
-          format: date
-          example: '2024-01-12'
-          description: 'Workday of the contest scores leaderboard. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        pageCount:
-          type: integer
-          format: int32
-    ContestScoresAgents:
-      type: object
-      properties:
-        contestScore:
-          description: The Contest score
-          $ref: '#/components/schemas/ContestScoreRanked'
-        metricScores:
-          type: array
-          description: The Contest metric scores
-          items:
-            $ref: '#/components/schemas/ContestMetricScoreRanked'
-        disqualified:
-          type: boolean
-          description: Indicates whether an agent is disqualified or not
-        user:
-          description: The Contest Scores Leaderboard user
-          $ref: '#/components/schemas/UserReference'
-    InsightsAgentItem:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        manager:
-          description: This user's manager.
-          $ref: '#/components/schemas/DomainEntityRef'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ContestsEssentials:
-      type: object
-      required:
-      - dateAnnounced
-      - dateEnd
-      - dateStart
-      - metrics
-      - title
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        title:
-          type: string
-          description: The Contest title
-        status:
-          type: string
-          description: The Contest status
-          enum:
-          - Upcoming
-          - Ongoing
-          - Pending
-          - RecentlyCompleted
-          - Completed
-          - Cancelled
-        dateStart:
-          type: string
-          format: date
-          example: '2024-01-12'
-          description: 'Start date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEnd:
-          type: string
-          format: date
-          example: '2024-01-12'
-          description: 'End date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        profile:
-          description: The performance profile
-          $ref: '#/components/schemas/ContestProfile'
-        participantCount:
-          type: integer
-          format: int32
-          description: The Number of participants in the contest
-        dateAnnounced:
-          type: string
-          format: date-time
-          description: 'The Contest''s Announcement datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateFinalized:
-          type: string
-          format: date-time
-          description: 'The Contest''s finalize datetime, returned when a contest is complete. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateCancelled:
-          type: string
-          format: date-time
-          description: 'The Contest''s cancelled datetime, returned when a contest is complete. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The Contest''s last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateScoresModified:
-          type: string
-          format: date-time
-          description: 'The datetime the contest scores were last updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        metrics:
-          type: array
-          description: The Contest's Metrics
-          items:
-            $ref: '#/components/schemas/ContestMetrics'
-        requestingParticipantContestInfo:
-          description: The Most Recent Contest Info for the requesting participant
-          $ref: '#/components/schemas/ContestRequesingParticipantDailyInfo'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Assignment:
-      type: object
-      properties:
-        assignedMembers:
-          type: array
-          description: The list of users successfully assigned to the custom performance profile
-          items:
-            $ref: '#/components/schemas/UserReference'
-        removedMembers:
-          type: array
-          description: The list of users successfully removed from the custom performance profile
-          items:
-            $ref: '#/components/schemas/UserReference'
-        assignmentErrors:
-          type: array
-          description: The list of users failed assignment or removal for the custom performance profile
-          items:
-            $ref: '#/components/schemas/AssignmentError'
-    AssignmentValidation:
-      type: object
-      properties:
-        membersNotAssigned:
-          type: array
-          description: The list of users that are not assigned to any custom performance profile
-          items:
-            $ref: '#/components/schemas/UserReference'
-        membersAlreadyAssigned:
-          type: array
-          description: The list of users that are already assigned to the requesting custom performance profile
-          items:
-            $ref: '#/components/schemas/UserReference'
-        membersAlreadyAssignedToOther:
-          type: array
-          description: The list of users that are already assigned to other custom performance profiles
-          items:
-            $ref: '#/components/schemas/OtherProfileAssignment'
-        invalidMemberAssignments:
-          type: array
-          description: The list of user id that are invalid for the gamfication service to handle
-          items:
-            $ref: '#/components/schemas/InvalidAssignment'
-    UserInsightsTrends:
-      type: object
-      properties:
-        comparativePeriod:
-          type: array
-          description: List of trend data in the comparative period
-          items:
-            $ref: '#/components/schemas/UserTrendData'
-        primaryPeriod:
-          type: array
-          description: List of trend data in the primary period
-          items:
-            $ref: '#/components/schemas/UserTrendData'
-    UserInsightsTrend:
-      type: object
-      properties:
-        performanceProfile:
-          description: The performance profile
-          $ref: '#/components/schemas/AddressableEntityRef'
-        division:
-          description: The division
-          $ref: '#/components/schemas/DivisionReference'
-        granularity:
-          type: string
-          description: Granularity
-          enum:
-          - Daily
-          - Weekly
-          - Monthly
-        comparativePeriod:
-          description: The comparative period work day date range
-          $ref: '#/components/schemas/WorkdayPeriod'
-        primaryPeriod:
-          description: The primary period work day date range
-          $ref: '#/components/schemas/WorkdayPeriod'
-        user:
-          description: The query user
-          $ref: '#/components/schemas/UserReference'
-        entities:
-          type: array
-          description: The list of insights trend for each metric
-          items:
-            $ref: '#/components/schemas/UserInsightsTrendMetricItem'
-        total:
-          description: The insights trend in total
-          $ref: '#/components/schemas/UserInsightsTrendTotalItem'
-    WorkdayValuesMetricItem:
-      type: object
-      properties:
-        metric:
-          description: Gamification metric for the average and the trend
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        metricDefinition:
-          description: Gamification metric definition for the average and the trend
-          readOnly: true
-          $ref: '#/components/schemas/DomainEntityRef'
-        average:
-          type: number
-          format: double
-          description: The average value of the metric
-          readOnly: true
-        unitType:
-          type: string
-          description: The unit type of the metric value
-          readOnly: true
-          enum:
-          - None
-          - Percent
-          - Currency
-          - Seconds
-          - Number
-          - AttendanceStatus
-          - Unit
-        trend:
-          type: array
-          description: The metric value trend
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/WorkdayValuesTrendItem'
-    ContestProfile:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    GetMetricDefinitionsResponse:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetricDefinition'
-        selfUri:
-          type: string
-          format: uri
-    UploadUrlResponse:
-      type: object
-      properties:
-        url:
-          type: string
-          description: Presigned URL to PUT the file to
-          readOnly: true
-        uploadKey:
-          type: string
-          description: Key that identifies the file in the storage including the file name
-          readOnly: true
-        headers:
-          type: object
-          description: Required headers when uploading a file through PUT request to the URL
-          readOnly: true
-          additionalProperties:
-            type: string
-    SingleWorkdayAverageValues:
-      type: object
-      properties:
-        dateWorkday:
-          type: string
-          format: date
-          description: 'The targeted workday for average value query. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        division:
-          description: The targeted division for the metrics
-          readOnly: true
-          $ref: '#/components/schemas/Division'
-        user:
-          description: The targeted user for the metrics
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        timezone:
-          type: string
-          description: The time zone used for aggregating metric values
-          readOnly: true
-        results:
-          type: array
-          description: The metric value averages
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/WorkdayValuesMetricItem'
-        performanceProfile:
-          description: The targeted performance profile for the average points
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-    Division:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ExternalMetricDataWriteRequest:
-      type: object
-      required:
-      - items
-      properties:
-        items:
-          type: array
-          description: A list of external metric data items. A maximum of 100 items are allowed.
-          items:
-            $ref: '#/components/schemas/ExternalMetricDataItem'
-    Leaderboard:
-      type: object
-      properties:
-        division:
-          description: The targeted division for this leaderboard
-          readOnly: true
-          $ref: '#/components/schemas/Division'
-        metric:
-          description: The metric id if the leaderboard is about a specific metric
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateStartWorkday:
-          type: string
-          format: date
-          description: 'Start workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        leaders:
-          type: array
-          description: The list of leaders generated.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LeaderboardItem'
-        userRank:
-          description: The requesting user's rank
-          readOnly: true
-          $ref: '#/components/schemas/LeaderboardItem'
-        performanceProfile:
-          description: The targeted performance profile for the average points
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-    ObjectiveZone:
-      type: object
-      required:
-      - directionType
-      - label
-      - lowerLimitPoints
-      - upperLimitPoints
-      - zoneType
-      properties:
-        label:
-          type: string
-          description: label
-        directionType:
-          type: string
-          description: direction type
-          enum:
-          - Up
-          - Down
-          - Flat
-        zoneType:
-          type: string
-          description: zone type
-          enum:
-          - Good
-          - Target
-          - Great
-          - Out
-        upperLimitPoints:
-          type: integer
-          format: int32
-          description: upper limit points
-        lowerLimitPoints:
-          type: integer
-          format: int32
-          description: lower limit points
-        upperLimitValue:
-          type: integer
-          format: int32
-          description: upper limit value
-        lowerLimitValue:
-          type: integer
-          format: int32
-          description: lower limit value
-    InsightsTrend:
-      type: object
-      properties:
-        performanceProfile:
-          description: The performance profile
-          $ref: '#/components/schemas/AddressableEntityRef'
-        division:
-          description: The division
-          $ref: '#/components/schemas/DivisionReference'
-        granularity:
-          type: string
-          description: Granularity
-          enum:
-          - Daily
-          - Weekly
-          - Monthly
-        comparativePeriod:
-          description: The comparative period work day date range
-          $ref: '#/components/schemas/WorkdayPeriod'
-        primaryPeriod:
-          description: The primary period work day date range
-          $ref: '#/components/schemas/WorkdayPeriod'
-        entities:
-          type: array
-          description: The list of insights trend for each metric
-          items:
-            $ref: '#/components/schemas/InsightsTrendMetricItem'
-        total:
-          description: The insights trend in total
-          $ref: '#/components/schemas/InsightsTrendTotalItem'
-    OverallBestPoints:
-      type: object
-      properties:
-        division:
-          description: The requested division
-          readOnly: true
-          $ref: '#/components/schemas/Division'
-        bestPoints:
-          type: array
-          description: List of gamification best point items
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/OverallBestPointsItem'
-        performanceProfile:
-          description: The targeted performance profile for the average points
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
     InsightsTrendMetricItem:
       type: object
       properties:
@@ -15138,126 +12412,6 @@ components:
         trends:
           description: Trends for the metric
           $ref: '#/components/schemas/InsightsTrends'
-    TrendData:
-      type: object
-      properties:
-        dateStartWorkday:
-          type: string
-          format: date
-          description: 'Start workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        percentOfGoal:
-          type: number
-          format: double
-          description: Percent of goal
-        averageValue:
-          type: number
-          format: double
-          description: Average metric value
-    UserTrendData:
-      type: object
-      properties:
-        dateStartWorkday:
-          type: string
-          format: date
-          description: 'Start workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        percentOfGoal:
-          type: number
-          format: double
-          description: Percent of goal
-        averageValue:
-          type: number
-          format: double
-          description: Average metric value
-        rankTotalPoints:
-          type: integer
-          format: int32
-          description: Rank, ordered by total points
-        rankPercentagePoints:
-          type: integer
-          format: int32
-          description: Rank, ordered by percentage of points
-    WorkdayValuesTrend:
-      type: object
-      properties:
-        dateStartWorkday:
-          type: string
-          format: date
-          description: 'The start workday for the query range for the metric value trend. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        dateEndWorkday:
-          type: string
-          format: date
-          description: 'The end workday for the query range for the metric value trend. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        dateReferenceWorkday:
-          type: string
-          format: date
-          description: 'The reference workday used to determine the metric definition. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-          readOnly: true
-        division:
-          description: The targeted division for the query
-          readOnly: true
-          $ref: '#/components/schemas/Division'
-        user:
-          description: The targeted user for the query
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        timezone:
-          type: string
-          description: The time zone used for aggregating metric values
-          readOnly: true
-        results:
-          type: array
-          description: The metric value trends
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/WorkdayValuesMetricItem'
-        performanceProfile:
-          description: The targeted performance profile for the average points
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        metric:
-          description: The targeted metric for the average points
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-    InsightsDetailsMetricItem:
-      type: object
-      properties:
-        metric:
-          description: The gamification metric for the data
-          $ref: '#/components/schemas/AddressableEntityRef'
-        comparativePeriod:
-          description: Insights data in the comparative period
-          $ref: '#/components/schemas/InsightsDetailsMetricPeriodPoints'
-        primaryPeriod:
-          description: Insights data in the primary period
-          $ref: '#/components/schemas/InsightsDetailsMetricPeriodPoints'
-        percentOfGoalChange:
-          type: number
-          format: double
-          description: Percent of goal change
-        valueChange:
-          type: number
-          format: double
-          description: Value change
-    ValidateAssignUsers:
-      type: object
-      required:
-      - membersToAssign
-      properties:
-        membersToAssign:
-          type: array
-          description: List of user ids to assign to a performance profile
-          items:
-            type: string
     ContestsResponse:
       type: object
       required:
@@ -15386,6 +12540,661 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    UserInsightsTrendTotalItem:
+      type: object
+      properties:
+        trends:
+          description: Trends for the metric
+          $ref: '#/components/schemas/UserInsightsTrends'
+    ContestWinners:
+      type: object
+      properties:
+        tier:
+          type: integer
+          format: int32
+          description: The Contest Winner tier
+        winnersCount:
+          type: integer
+          format: int32
+          description: The number of Contest Winners in a tier
+        users:
+          type: array
+          description: The Contest Winner users at the tier
+          items:
+            $ref: '#/components/schemas/ContestUserRank'
+    InsightsDetailsOverallItem:
+      type: object
+      properties:
+        comparativePeriod:
+          description: Insights data in the comparative period
+          $ref: '#/components/schemas/InsightsDetailsOverallPeriodPoints'
+        primaryPeriod:
+          description: Insights data in the primary period
+          $ref: '#/components/schemas/InsightsDetailsOverallPeriodPoints'
+        percentOfGoalChange:
+          type: number
+          format: double
+          description: Percent of goal change
+    GamificationContestPrizeImageUploadUrlRequest:
+      type: object
+      required:
+      - contentLength
+      - contentType
+      properties:
+        fileName:
+          type: string
+          description: 'Name of the file to upload. It must not start with a dot and not end with a forward slash. Whitespace and the following characters are not allowed: \{^}%`]">[~<#|'
+        contentMd5:
+          type: string
+          description: Content MD5 of the file to upload
+        signedUrlTimeoutSeconds:
+          type: integer
+          format: int32
+          description: The number of seconds the presigned URL is valid for (from 1 to 604800 seconds). If none provided, defaults to 600 seconds
+        contentType:
+          type: string
+          description: The content type of the file to upload.
+          enum:
+          - image/jpeg
+          - image/jpg
+          - image/png
+        contentLength:
+          type: integer
+          format: int64
+          description: The size of the file to upload.
+        serverSideEncryption:
+          type: string
+          enum:
+          - AES256
+    PunctualityEvent:
+      type: object
+      properties:
+        dateScheduleStart:
+          type: string
+          format: date-time
+          description: 'The scheduled activity start time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateStart:
+          type: string
+          format: date-time
+          description: 'The time the user started the activity. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        lengthMinutes:
+          type: integer
+          format: int32
+          description: The length of the activity in minutes
+          readOnly: true
+        description:
+          type: string
+          description: The description of the activity
+          readOnly: true
+        activityCodeId:
+          type: string
+          description: The ID of the activity code associated with this activity
+          readOnly: true
+        activityCode:
+          type: string
+          description: The activity code
+          readOnly: true
+        activityName:
+          type: string
+          description: The activity name
+          readOnly: true
+        category:
+          type: string
+          description: The category for the activity
+          readOnly: true
+        points:
+          type: integer
+          format: int32
+          description: The points earned for this activity
+          readOnly: true
+        delta:
+          type: number
+          format: double
+          description: Difference between this activity and the last activity in seconds
+          readOnly: true
+        bullseye:
+          type: boolean
+    AssignUsers:
+      type: object
+      required:
+      - membersToAssign
+      - membersToRemove
+      properties:
+        membersToAssign:
+          type: array
+          description: List of user ids to assign to a performance profile
+          items:
+            type: string
+        membersToRemove:
+          type: array
+          description: List of user ids to remove from a performance profile
+          items:
+            type: string
+    Leaderboard:
+      type: object
+      properties:
+        division:
+          description: The targeted division for this leaderboard
+          readOnly: true
+          $ref: '#/components/schemas/Division'
+        metric:
+          description: The metric id if the leaderboard is about a specific metric
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateStartWorkday:
+          type: string
+          format: date
+          description: 'Start workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        dateEndWorkday:
+          type: string
+          format: date
+          description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        leaders:
+          type: array
+          description: The list of leaders generated.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LeaderboardItem'
+        userRank:
+          description: The requesting user's rank
+          readOnly: true
+          $ref: '#/components/schemas/LeaderboardItem'
+        performanceProfile:
+          description: The targeted performance profile for the average points
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+    ContestScoresAgentTrend:
+      type: object
+      properties:
+        contestScore:
+          description: The Contest score
+          $ref: '#/components/schemas/ContestScoreRanked'
+        metricScores:
+          type: array
+          description: The Contest metric scores
+          items:
+            $ref: '#/components/schemas/ContestMetricScoreRanked'
+        disqualified:
+          type: boolean
+          description: Indicates whether an agent is disqualified or not
+        dateWorkday:
+          type: string
+          format: date
+          example: '2024-01-12'
+          description: 'Workday of the contest scores leaderboard. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+    UserInsightsTrends:
+      type: object
+      properties:
+        comparativePeriod:
+          type: array
+          description: List of trend data in the comparative period
+          items:
+            $ref: '#/components/schemas/UserTrendData'
+        primaryPeriod:
+          type: array
+          description: List of trend data in the primary period
+          items:
+            $ref: '#/components/schemas/UserTrendData'
+    Metric:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of this metric
+        metricDefinitionId:
+          type: string
+          description: The id of associated metric definition
+        externalMetricDefinitionId:
+          type: string
+          description: The id of associated external metric definition
+        objective:
+          description: Associated objective for this metric
+          $ref: '#/components/schemas/Objective'
+        performanceProfileId:
+          type: string
+          description: Performance profile id of this metric
+        linkedMetric:
+          description: The linked metric entity reference
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The created date of this metric. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateUnlinked:
+          type: string
+          format: date
+          description: 'The unlinked workday for this metric if this metric was ever unlinked. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        precision:
+          type: integer
+          format: int32
+          description: The precision of the metric, must be between 0 and 5
+          readOnly: true
+        timeDisplayUnit:
+          type: string
+          description: The time unit in which the metric should be displayed -- this parameter is ignored when displaying non-time values
+          enum:
+          - None
+          - Seconds
+          - Minutes
+          - Hours
+        sourcePerformanceProfile:
+          description: The source performance profile when this metric is linked
+          readOnly: true
+          $ref: '#/components/schemas/PerformanceProfile'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    PrizeImages:
+      type: object
+      properties:
+        imageUrl:
+          type: string
+          description: The Contest Prize image url
+          readOnly: true
+    InsightsTrend:
+      type: object
+      properties:
+        performanceProfile:
+          description: The performance profile
+          $ref: '#/components/schemas/AddressableEntityRef'
+        division:
+          description: The division
+          $ref: '#/components/schemas/DivisionReference'
+        granularity:
+          type: string
+          description: Granularity
+          enum:
+          - Daily
+          - Weekly
+          - Monthly
+        comparativePeriod:
+          description: The comparative period work day date range
+          $ref: '#/components/schemas/WorkdayPeriod'
+        primaryPeriod:
+          description: The primary period work day date range
+          $ref: '#/components/schemas/WorkdayPeriod'
+        entities:
+          type: array
+          description: The list of insights trend for each metric
+          items:
+            $ref: '#/components/schemas/InsightsTrendMetricItem'
+        total:
+          description: The insights trend in total
+          $ref: '#/components/schemas/InsightsTrendTotalItem'
+    ExternalMetricDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the External Metric Definition
+        unit:
+          type: string
+          description: The unit of the External Metric Definition
+          enum:
+          - Seconds
+          - Percent
+          - Number
+          - Currency
+        unitDefinition:
+          type: string
+          description: The unit definition of the External Metric Definition
+        precision:
+          type: integer
+          format: int32
+          description: The decimal precision of the External Metric Definition
+        defaultObjectiveType:
+          type: string
+          description: The default objective type of the External Metric Definition
+          enum:
+          - HigherIsBetter
+          - LowerIsBetter
+          - TargetArea
+        retentionMonths:
+          type: integer
+          format: int32
+          description: The retention in months of the External Metric Definition
+        enabled:
+          type: boolean
+          description: True if the External Metric Definition is enabled
+        inUse:
+          type: boolean
+          description: True if the External Metric Definition is in use
+          readOnly: true
+        dateLastRefreshed:
+          type: string
+          format: date-time
+          description: 'The last date and time that the metric data was refreshed. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ExternalMetricDataUnprocessedItem:
+      type: object
+      required:
+      - dateOccurred
+      - metricId
+      - value
+      properties:
+        userId:
+          type: string
+          description: The user ID. Must provide either userId or userEmail, but not both.
+        userEmail:
+          type: string
+          description: The user main email used in user's GenesysCloud account. Must provide either userId or userEmail, but not both.
+        metricId:
+          type: string
+          description: The ID of the external metric definition
+        dateOccurred:
+          type: string
+          format: date
+          description: 'The date of the metric data. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        value:
+          type: number
+          description: The value of the metric data. When value is null, the metric data will be deleted.
+        count:
+          type: integer
+          format: int32
+          description: The number of data points. The default value is 0 when type is Cumulative and the metric data already exists, otherwise 1. When total count reaches 0, the metric data will be deleted.
+        type:
+          type: string
+          description: The type of the metric data. The default value is Total.
+          enum:
+          - Total
+          - Cumulative
+        message:
+          type: string
+          description: The error message
+        code:
+          type: string
+          description: The error code
+    WorkdayValuesTrend:
+      type: object
+      properties:
+        dateStartWorkday:
+          type: string
+          format: date
+          description: 'The start workday for the query range for the metric value trend. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        dateEndWorkday:
+          type: string
+          format: date
+          description: 'The end workday for the query range for the metric value trend. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        dateReferenceWorkday:
+          type: string
+          format: date
+          description: 'The reference workday used to determine the metric definition. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        division:
+          description: The targeted division for the query
+          readOnly: true
+          $ref: '#/components/schemas/Division'
+        user:
+          description: The targeted user for the query
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        timezone:
+          type: string
+          description: The time zone used for aggregating metric values
+          readOnly: true
+        results:
+          type: array
+          description: The metric value trends
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/WorkdayValuesMetricItem'
+        performanceProfile:
+          description: The targeted performance profile for the average points
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        metric:
+          description: The targeted metric for the average points
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+    DivisionReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ReportingInterval:
+      type: object
+      required:
+      - intervalType
+      - intervalValue
+      properties:
+        intervalType:
+          type: string
+          description: The granularity of the reporting interval period
+          enum:
+          - Day
+          - Week
+          - Month
+        intervalValue:
+          type: integer
+          format: int32
+          description: The value of the reporting interval period for a given interval type
+    AttendanceStatusListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttendanceStatus'
+    ValidateAssignUsers:
+      type: object
+      required:
+      - membersToAssign
+      properties:
+        membersToAssign:
+          type: array
+          description: List of user ids to assign to a performance profile
+          items:
+            type: string
+    CreatePerformanceProfile:
+      type: object
+      required:
+      - active
+      - description
+      - division
+      - maxLeaderboardRankSize
+      - name
+      - reportingIntervals
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: A name for this performance profile
+        division:
+          description: The associated division for this Performance Profile
+          $ref: '#/components/schemas/WritableDivision'
+        description:
+          type: string
+          description: A description about this performance profile
+        metricOrders:
+          type: array
+          description: Order of the associated metrics. The list should contain valid ids for metrics
+          readOnly: true
+          items:
+            type: string
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Creation date for this performance profile. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        reportingIntervals:
+          type: array
+          description: The reporting interval periods for this performance profile
+          items:
+            $ref: '#/components/schemas/ReportingInterval'
+        active:
+          type: boolean
+          description: The flag for active profiles
+        memberCount:
+          type: integer
+          format: int32
+          description: The number of members in this performance profile
+          readOnly: true
+        maxLeaderboardRankSize:
+          type: integer
+          format: int32
+          description: The maximum rank size for the leaderboard. This counts the number of ranks can be retrieved in a leaderboard queries
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    InsightsSummaryOverallItem:
+      type: object
+      properties:
+        comparativePeriod:
+          description: Insights data in the comparative period
+          $ref: '#/components/schemas/InsightsSummaryOverallPeriodPoints'
+        primaryPeriod:
+          description: Insights data in the primary period
+          $ref: '#/components/schemas/InsightsSummaryOverallPeriodPoints'
+        percentOfGoalChange:
+          type: number
+          format: double
+          description: Percent of goal change
+    MetricDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        unitType:
+          type: string
+          description: The type of associated metric unit
+          enum:
+          - None
+          - Percent
+          - Currency
+          - Seconds
+          - Number
+          - AttendanceStatus
+          - Unit
+        shortName:
+          type: string
+          description: An alternate name for this metric definition, often abbreviation
+        dividendMetrics:
+          type: array
+          description: Metric names used as dividend
+          items:
+            type: string
+        divisorMetrics:
+          type: array
+          description: Metric names used as divisor
+          items:
+            type: string
+        defaultObjective:
+          description: A predefined default objective for this metric
+          $ref: '#/components/schemas/DefaultObjective'
+        lockTemplateId:
+          type: string
+          description: An optional field to specify if this metric definition is locked to certain template. e.g. punctuality
+        mediaTypeFilteringAllowed:
+          type: boolean
+          description: Flag to indicate if this metricDefinition allows filter based on media types
+        initialDirectionFilteringAllowed:
+          type: boolean
+          description: Flag to indicate if this metricDefinition allows filter based on initial direction
+        queueFilteringAllowed:
+          type: boolean
+          description: Flag to indicate if this metricDefinition allows filter based on queues
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    MetricValueTrendAverage:
+      type: object
+      properties:
+        dateStartWorkday:
+          type: string
+          format: date
+          description: 'The targeted start workday. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        dateEndWorkday:
+          type: string
+          format: date
+          description: 'The targeted end workday. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        dateReferenceWorkday:
+          type: string
+          format: date
+          description: 'The targeted reference workday. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        division:
+          description: The targeted division for the metrics
+          readOnly: true
+          $ref: '#/components/schemas/Division'
+        user:
+          description: The targeted user for the metrics
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        timezone:
+          type: string
+          description: The time zone used for aggregating metric values
+          readOnly: true
+        result:
+          description: The metric value trend and average
+          readOnly: true
+          $ref: '#/components/schemas/WorkdayValuesMetricItem'
+        performanceProfile:
+          description: The targeted performance profile for the average points
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        metric:
+          description: The targeted performance profile for the average points
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+    OtherProfileAssignment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        currentProfile:
+          description: The current performance profile that this user belongs to
+          $ref: '#/components/schemas/DomainEntityRef'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     WorkdayPeriod:
       type: object
       properties:
@@ -15397,6 +13206,1688 @@ components:
           type: string
           format: date
           description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+    WorkdayMetricListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkdayMetric'
+    TargetPerformanceProfile:
+      type: object
+      required:
+      - targetPerformanceProfileId
+      properties:
+        targetPerformanceProfileId:
+          type: string
+          description: The target destination performanceProfileId for the linked metric.
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    WorkdayValuesTrendItem:
+      type: object
+      properties:
+        dateWorkday:
+          type: string
+          format: date
+          description: 'The workday for the metric value. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        value:
+          type: number
+          format: double
+          description: The metric value
+          readOnly: true
+    ExternalMetricDataWriteRequest:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          description: A list of external metric data items. A maximum of 100 items are allowed.
+          items:
+            $ref: '#/components/schemas/ExternalMetricDataItem'
+    UserInsightsTrendMetricItem:
+      type: object
+      properties:
+        metric:
+          description: The gamification metric for the trend
+          $ref: '#/components/schemas/AddressableEntityRef'
+        trends:
+          description: Trends for the metric
+          $ref: '#/components/schemas/UserInsightsTrends'
+    ContestPrizes:
+      type: object
+      required:
+      - description
+      - imageId
+      - name
+      - tier
+      - winnersCount
+      properties:
+        tier:
+          type: integer
+          format: int32
+          description: The Contest Prize tier
+        name:
+          type: string
+          description: The Contest Prize name
+        description:
+          type: string
+          description: The Contest Prize description
+        imageId:
+          type: string
+          description: The Contest Prize image id
+        imageUrl:
+          type: string
+          description: The Contest Prize image url
+          readOnly: true
+        winnersCount:
+          type: integer
+          format: int32
+          description: The Contest Prize winner Count
+    InsightsTrends:
+      type: object
+      properties:
+        comparativePeriod:
+          type: array
+          description: List of trend data in the comparative period
+          items:
+            $ref: '#/components/schemas/TrendData'
+        primaryPeriod:
+          type: array
+          description: List of trend data in the primary period
+          items:
+            $ref: '#/components/schemas/TrendData'
+    GamificationStatus:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+          description: Gamification status of the organization.
+        dateStart:
+          type: string
+          format: date
+          description: 'Gamification start date. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        automaticUserAssignment:
+          type: boolean
+          description: Automatic assignment of users to the default profile
+        dateStartPersonalBest:
+          type: string
+          format: date
+          description: 'Personal best aggregation starting date. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+    InvalidAssignment:
+      type: object
+      properties:
+        user:
+          description: Invalid user for validation
+          $ref: '#/components/schemas/UserReference'
+        message:
+          type: string
+          description: The reason for the invalid input for validation
+    ContestWinnersRequest:
+      type: object
+      properties:
+        tier:
+          type: integer
+          format: int32
+          description: The Contest Winner tier
+        userIds:
+          type: array
+          description: The Contest Winner users at the tier
+          items:
+            type: string
+    GetMetricResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Metric'
+        selfUri:
+          type: string
+          format: uri
+    MemberListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+    Metrics:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        order:
+          type: integer
+          format: int32
+          description: The order of metric within a performance profile
+        metricDefinitionName:
+          type: string
+          description: The name of associated metric definition
+        metricDefinitionId:
+          type: string
+          description: The id of associated metric definition
+        externalMetricDefinitionId:
+          type: string
+          description: The id of associated external metric definition
+        unitType:
+          type: string
+          description: Corresponding unit type for this metric
+          enum:
+          - None
+          - Percent
+          - Currency
+          - Seconds
+          - Number
+          - AttendanceStatus
+          - Unit
+        enabled:
+          type: boolean
+          description: A flag for whether this metric is enabled for a performance profile
+        templateName:
+          type: string
+          description: The name of associated objective template
+        maxPoints:
+          type: integer
+          format: int32
+          description: Achievable maximum points for this metric
+        performanceProfileId:
+          type: string
+          description: Performance profile id of this metric
+        linkedMetric:
+          description: The linked metric entity reference
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The created date of this metric. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateUnlinked:
+          type: string
+          format: date
+          description: 'The unlinked workday for this metric if this metric was ever unlinked. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        sourcePerformanceProfile:
+          description: The source performance profile when this metric is linked
+          readOnly: true
+          $ref: '#/components/schemas/PerformanceProfile'
+        unitDefinition:
+          type: string
+          description: Unit definition of linked external metric
+          readOnly: true
+        precision:
+          type: integer
+          format: int32
+          description: Precision of linked external metric
+          readOnly: true
+        timeDisplayUnit:
+          type: string
+          description: The time unit in which the metric should be displayed -- this parameter is ignored when displaying non-time values
+          enum:
+          - None
+          - Seconds
+          - Minutes
+          - Hours
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CreateObjective:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        templateId:
+          type: string
+          description: The id of this objective's base template
+        zones:
+          type: array
+          description: Objective zone specifies min,max points and values for the associated metric
+          items:
+            $ref: '#/components/schemas/ObjectiveZone'
+        enabled:
+          type: boolean
+          description: A flag for whether this objective is enabled for the related metric
+        topicIds:
+          type: array
+          description: A list of topic ids for detected topic metrics
+          items:
+            type: string
+        mediaTypes:
+          type: array
+          description: A list of media types for the metric
+          items:
+            type: string
+            enum:
+            - callback
+            - chat
+            - cobrowse
+            - email
+            - internalmessage
+            - message
+            - screenmonitoring
+            - screenshare
+            - unknown
+            - video
+            - voice
+        queueIds:
+          type: array
+          description: A list of queue ids for the metric
+          items:
+            type: string
+        topicIdsFilterType:
+          type: string
+          description: A filter type for topic Ids. It's only used for objectives with topicIds. Default filter behavior is "or".
+          enum:
+          - and
+          - or
+        evaluationFormContextIds:
+          type: array
+          description: The ids of associated evaluation form context, for Quality Evaluation Score metrics
+          items:
+            type: string
+        initialDirection:
+          type: string
+          description: The initial direction to filter on
+          enum:
+          - inbound
+          - outbound
+        dateStart:
+          type: string
+          format: date
+          description: 'start date of the objective. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+    ContestScoresGroupTrend:
+      type: object
+      properties:
+        dateWorkday:
+          type: string
+          format: date
+          example: '2024-01-12'
+          description: 'Workday of the contest score. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        contestScore:
+          description: The Contest score
+          $ref: '#/components/schemas/ContestScore'
+        metricScores:
+          type: array
+          description: The Contest metric scores
+          items:
+            $ref: '#/components/schemas/ContestMetricScore'
+    SingleWorkdayAverageValues:
+      type: object
+      properties:
+        dateWorkday:
+          type: string
+          format: date
+          description: 'The targeted workday for average value query. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        division:
+          description: The targeted division for the metrics
+          readOnly: true
+          $ref: '#/components/schemas/Division'
+        user:
+          description: The targeted user for the metrics
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        timezone:
+          type: string
+          description: The time zone used for aggregating metric values
+          readOnly: true
+        results:
+          type: array
+          description: The metric value averages
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/WorkdayValuesMetricItem'
+        performanceProfile:
+          description: The targeted performance profile for the average points
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+    CreateMetric:
+      type: object
+      required:
+      - name
+      properties:
+        metricDefinitionId:
+          type: string
+          description: The id of associated metric definition
+        externalMetricDefinitionId:
+          type: string
+          description: The id of associated external metric definition
+        objective:
+          description: Associated objective for this metric
+          $ref: '#/components/schemas/CreateObjective'
+        performanceProfileId:
+          type: string
+          description: Performance profile id of this metric
+        name:
+          type: string
+          description: The name of this metric
+        precision:
+          type: integer
+          format: int32
+          description: The precision of the metric, must be between 0 and 5
+        timeDisplayUnit:
+          type: string
+          description: The time unit in which the metric should be displayed -- this parameter is ignored when displaying non-time values
+          enum:
+          - None
+          - Seconds
+          - Minutes
+          - Hours
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    OverallBestPoints:
+      type: object
+      properties:
+        division:
+          description: The requested division
+          readOnly: true
+          $ref: '#/components/schemas/Division'
+        bestPoints:
+          type: array
+          description: List of gamification best point items
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/OverallBestPointsItem'
+        performanceProfile:
+          description: The targeted performance profile for the average points
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+    ContestProfile:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UserBestPointsItem:
+      type: object
+      properties:
+        granularityType:
+          type: string
+          description: Best points aggregation interval granularity
+          readOnly: true
+          enum:
+          - Daily
+          - Weekly
+          - Monthly
+        points:
+          type: integer
+          format: int32
+          description: Gamification points
+          readOnly: true
+        dateStartWorkday:
+          type: string
+          format: date
+          description: 'Start workday of the best points aggregation interval. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        dateEndWorkday:
+          type: string
+          format: date
+          description: 'End workday of the best points aggregation interval. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        rank:
+          type: integer
+          format: int32
+          description: The rank of this user
+          readOnly: true
+    AssignmentError:
+      type: object
+      properties:
+        user:
+          description: A user that is failed to be removed from the performance profile
+          $ref: '#/components/schemas/UserReference'
+        message:
+          type: string
+          description: Error message from membership assignment
+    InsightsDetailsMetricItem:
+      type: object
+      properties:
+        metric:
+          description: The gamification metric for the data
+          $ref: '#/components/schemas/AddressableEntityRef'
+        comparativePeriod:
+          description: Insights data in the comparative period
+          $ref: '#/components/schemas/InsightsDetailsMetricPeriodPoints'
+        primaryPeriod:
+          description: Insights data in the primary period
+          $ref: '#/components/schemas/InsightsDetailsMetricPeriodPoints'
+        percentOfGoalChange:
+          type: number
+          format: double
+          description: Percent of goal change
+        valueChange:
+          type: number
+          format: double
+          description: Value change
+    Objective:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        templateId:
+          type: string
+          description: The id of this objective's base template
+        zones:
+          type: array
+          description: Objective zone specifies min,max points and values for the associated metric
+          items:
+            $ref: '#/components/schemas/ObjectiveZone'
+        enabled:
+          type: boolean
+          description: A flag for whether this objective is enabled for the related metric
+        mediaTypes:
+          type: array
+          description: A list of media types for the metric
+          items:
+            type: string
+            enum:
+            - callback
+            - chat
+            - cobrowse
+            - email
+            - internalmessage
+            - message
+            - screenmonitoring
+            - screenshare
+            - unknown
+            - video
+            - voice
+        queues:
+          type: array
+          description: A list of queues for the metric
+          items:
+            $ref: '#/components/schemas/AddressableEntityRef'
+        topics:
+          type: array
+          description: A list of topic ids for detected topic metrics
+          items:
+            $ref: '#/components/schemas/AddressableEntityRef'
+        topicIdsFilterType:
+          type: string
+          description: A filter type for topic Ids. It's only used for objectives with topicIds. Default filter behavior is "or".
+          enum:
+          - and
+          - or
+        evaluationFormContextIds:
+          type: array
+          description: The ids of associated evaluation form context, for Quality Evaluation Score metrics
+          items:
+            type: string
+        initialDirection:
+          type: string
+          description: The initial direction to filter on
+          enum:
+          - inbound
+          - outbound
+        dateStart:
+          type: string
+          format: date
+          description: 'start date of the objective. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+    ContestScoresAgentTrendList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContestScoresAgentTrend'
+        user:
+          description: The Contest Scores Leaderboard user
+          $ref: '#/components/schemas/UserReference'
+    GetMetricDefinitionsResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDefinition'
+        selfUri:
+          type: string
+          format: uri
+    InsightsSummaryMetricPeriodPoints:
+      type: object
+      properties:
+        points:
+          type: integer
+          format: int32
+          description: Points scored
+        maxPoints:
+          type: integer
+          format: int32
+          description: Max possible points
+        dataPointCount:
+          type: integer
+          format: int32
+          description: Number of data points
+        percentOfGoal:
+          type: number
+          format: double
+          description: Percentage of the goal
+        value:
+          type: number
+          format: double
+          description: Average value
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    Member:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: The user's id
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: The associated user reference as a member of a performance profile
+    ContestScoresAgentsPagedList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContestScoresAgents'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        dateWorkday:
+          type: string
+          format: date
+          example: '2024-01-12'
+          description: 'Workday of the contest scores leaderboard. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        pageCount:
+          type: integer
+          format: int32
+    ObjectiveTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        zones:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectiveZone'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    InsightsSummaryMetricItem:
+      type: object
+      properties:
+        metric:
+          description: The gamification metric for the data
+          $ref: '#/components/schemas/AddressableEntityRef'
+        comparativePeriod:
+          description: Insights data in the comparative period
+          $ref: '#/components/schemas/InsightsSummaryMetricPeriodPoints'
+        primaryPeriod:
+          description: Insights data in the primary period
+          $ref: '#/components/schemas/InsightsSummaryMetricPeriodPoints'
+        percentOfGoalChange:
+          type: number
+          format: double
+          description: Percent of goal change
+        valueChange:
+          type: number
+          format: double
+          description: Value change
+    ExternalMetricDefinitionUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the External Metric Definition
+        precision:
+          type: integer
+          format: int32
+          description: The decimal precision of the External Metric Definition. Must be at least 0 and at most 5
+          minimum: 0
+          maximum: 5
+        defaultObjectiveType:
+          type: string
+          description: The default objective type of the External Metric Definition
+          enum:
+          - HigherIsBetter
+          - LowerIsBetter
+          - TargetArea
+        enabled:
+          type: boolean
+          description: True if the External Metric Definition is enabled
+    UserTrendData:
+      type: object
+      properties:
+        dateStartWorkday:
+          type: string
+          format: date
+          description: 'Start workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEndWorkday:
+          type: string
+          format: date
+          description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        percentOfGoal:
+          type: number
+          format: double
+          description: Percent of goal
+        averageValue:
+          type: number
+          format: double
+          description: Average metric value
+        rankTotalPoints:
+          type: integer
+          format: int32
+          description: Rank, ordered by total points
+        rankPercentagePoints:
+          type: integer
+          format: int32
+          description: Rank, ordered by percentage of points
+    ExternalMetricDataItem:
+      type: object
+      required:
+      - dateOccurred
+      - metricId
+      - value
+      properties:
+        userId:
+          type: string
+          description: The user ID. Must provide either userId or userEmail, but not both.
+        userEmail:
+          type: string
+          description: The user main email used in user's GenesysCloud account. Must provide either userId or userEmail, but not both.
+        metricId:
+          type: string
+          description: The ID of the external metric definition
+        dateOccurred:
+          type: string
+          format: date
+          description: 'The date of the metric data. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        value:
+          type: number
+          description: The value of the metric data. When value is null, the metric data will be deleted.
+        count:
+          type: integer
+          format: int32
+          description: The number of data points. The default value is 0 when type is Cumulative and the metric data already exists, otherwise 1. When total count reaches 0, the metric data will be deleted.
+        type:
+          type: string
+          description: The type of the metric data. The default value is Total.
+          enum:
+          - Total
+          - Cumulative
+    UserInsightsTrend:
+      type: object
+      properties:
+        performanceProfile:
+          description: The performance profile
+          $ref: '#/components/schemas/AddressableEntityRef'
+        division:
+          description: The division
+          $ref: '#/components/schemas/DivisionReference'
+        granularity:
+          type: string
+          description: Granularity
+          enum:
+          - Daily
+          - Weekly
+          - Monthly
+        comparativePeriod:
+          description: The comparative period work day date range
+          $ref: '#/components/schemas/WorkdayPeriod'
+        primaryPeriod:
+          description: The primary period work day date range
+          $ref: '#/components/schemas/WorkdayPeriod'
+        user:
+          description: The query user
+          $ref: '#/components/schemas/UserReference'
+        entities:
+          type: array
+          description: The list of insights trend for each metric
+          items:
+            $ref: '#/components/schemas/UserInsightsTrendMetricItem'
+        total:
+          description: The insights trend in total
+          $ref: '#/components/schemas/UserInsightsTrendTotalItem'
+    ContestDisqualifiedAgents:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        note:
+          type: string
+          description: The disqualification explanation
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UserBestPoints:
+      type: object
+      properties:
+        user:
+          description: The requested user for the best points
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        bestPoints:
+          type: array
+          description: List of best point for the requested user
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/UserBestPointsItem'
+    ContestMetricScore:
+      type: object
+      properties:
+        metric:
+          description: The gamification metric for the data
+          $ref: '#/components/schemas/AddressableEntityRef'
+        score:
+          type: number
+          format: double
+          description: The Contest Metric score
+        totalPoints:
+          type: number
+          format: double
+          description: The Contest Metric totalPoints
+        percentOfGoal:
+          type: number
+          format: double
+          description: The Contest Metric percentOfGoal
+    ContestScoreRanked:
+      type: object
+      properties:
+        score:
+          type: number
+          format: double
+          description: The Contest score
+        totalPoints:
+          type: number
+          format: double
+          description: The Contest totalPoints
+        percentOfGoal:
+          type: number
+          format: double
+          description: The Contest percentOfGoal
+        rank:
+          type: integer
+          format: int32
+          description: The Contest Score rank
+        tier:
+          type: integer
+          format: int32
+          description: The Contest Score tier
+    ContestMetrics:
+      type: object
+      required:
+      - id
+      - minimumQualifier
+      - weight
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        weight:
+          type: integer
+          format: int32
+          description: The Contest Metrics weight, allowed values are 1-100
+        minimumQualifier:
+          type: integer
+          format: int32
+          description: The Contest Metrics minimum qualifier. Min value is 0, no Max value
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ContestsEssentials:
+      type: object
+      required:
+      - dateAnnounced
+      - dateEnd
+      - dateStart
+      - metrics
+      - title
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        title:
+          type: string
+          description: The Contest title
+        status:
+          type: string
+          description: The Contest status
+          enum:
+          - Upcoming
+          - Ongoing
+          - Pending
+          - RecentlyCompleted
+          - Completed
+          - Cancelled
+        dateStart:
+          type: string
+          format: date
+          example: '2024-01-12'
+          description: 'Start date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEnd:
+          type: string
+          format: date
+          example: '2024-01-12'
+          description: 'End date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        profile:
+          description: The performance profile
+          $ref: '#/components/schemas/ContestProfile'
+        participantCount:
+          type: integer
+          format: int32
+          description: The Number of participants in the contest
+        dateAnnounced:
+          type: string
+          format: date-time
+          description: 'The Contest''s Announcement datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateFinalized:
+          type: string
+          format: date-time
+          description: 'The Contest''s finalize datetime, returned when a contest is complete. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateCancelled:
+          type: string
+          format: date-time
+          description: 'The Contest''s cancelled datetime, returned when a contest is complete. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The Contest''s last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateScoresModified:
+          type: string
+          format: date-time
+          description: 'The datetime the contest scores were last updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        metrics:
+          type: array
+          description: The Contest's Metrics
+          items:
+            $ref: '#/components/schemas/ContestMetrics'
+        requestingParticipantContestInfo:
+          description: The Most Recent Contest Info for the requesting participant
+          $ref: '#/components/schemas/ContestRequesingParticipantDailyInfo'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    InsightsRankings:
+      type: object
+      properties:
+        performanceProfile:
+          description: The performance profile
+          $ref: '#/components/schemas/AddressableEntityRef'
+        division:
+          description: The division
+          $ref: '#/components/schemas/DivisionReference'
+        granularity:
+          type: string
+          description: Granularity
+          enum:
+          - Daily
+          - Weekly
+          - Monthly
+        comparativePeriod:
+          description: The comparative period work day date range
+          $ref: '#/components/schemas/WorkdayPeriod'
+        primaryPeriod:
+          description: The primary period work day date range
+          $ref: '#/components/schemas/WorkdayPeriod'
+        leaders:
+          type: array
+          description: The leaders users
+          items:
+            $ref: '#/components/schemas/InsightsSummaryUserItem'
+        trailers:
+          type: array
+          description: The trailing users
+          items:
+            $ref: '#/components/schemas/InsightsSummaryUserItem'
+    ContestsFinalizeRequest:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          description: The Contest finalization status
+          enum:
+          - Completed
+          - Cancelled
+        winners:
+          type: array
+          description: The Contest finalization winners
+          items:
+            $ref: '#/components/schemas/ContestWinnersRequest'
+        disqualifiedAgents:
+          type: array
+          description: The Contest finalization disqualified agents
+          items:
+            $ref: '#/components/schemas/ContestDisqualifiedAgents'
+    ExternalMetricDataWriteResponse:
+      type: object
+      properties:
+        processedEntities:
+          type: array
+          description: The list of processed entities
+          items:
+            $ref: '#/components/schemas/ExternalMetricDataProcessedItem'
+        unprocessedEntities:
+          type: array
+          description: The list of unprocessed entities
+          items:
+            $ref: '#/components/schemas/ExternalMetricDataUnprocessedItem'
+      description: External metric data write response
+    InsightsTrendTotalItem:
+      type: object
+      properties:
+        trends:
+          description: Trends for the metric
+          $ref: '#/components/schemas/InsightsTrends'
+    WorkdayMetric:
+      type: object
+      properties:
+        metric:
+          description: Gamification metric
+          readOnly: true
+          $ref: '#/components/schemas/Metric'
+        objective:
+          description: Current objective for this metric
+          readOnly: true
+          $ref: '#/components/schemas/Objective'
+        points:
+          type: integer
+          format: int32
+          description: Gamification points earned for this metric
+          readOnly: true
+        maxPoints:
+          type: integer
+          format: int32
+          description: The maximum Gamification points a user may earn for this metric
+          readOnly: true
+        value:
+          type: number
+          format: double
+          description: Value of this metric
+          readOnly: true
+        punctualityEvents:
+          type: array
+          description: List of schedule activity events for punctuality metrics
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/PunctualityEvent'
+        businessUnitId:
+          type: string
+          description: The id of the business unit associated with this metric, only returned for metrics with punctuality events
+          readOnly: true
+        evaluationDetails:
+          type: array
+          description: List of evaluations for quality evaluation score metrics
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/QualityEvaluationScoreItem'
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    InsightsDetails:
+      type: object
+      properties:
+        performanceProfile:
+          description: The performance profile
+          $ref: '#/components/schemas/AddressableEntityRef'
+        division:
+          description: The division
+          $ref: '#/components/schemas/DivisionReference'
+        granularity:
+          type: string
+          description: Granularity
+          enum:
+          - Daily
+          - Weekly
+          - Monthly
+        comparativePeriod:
+          description: The comparative period work day date range
+          $ref: '#/components/schemas/WorkdayPeriod'
+        primaryPeriod:
+          description: The primary period work day date range
+          $ref: '#/components/schemas/WorkdayPeriod'
+        user:
+          description: The query user
+          $ref: '#/components/schemas/UserReference'
+        metricData:
+          type: array
+          description: The list of insights data for each metric of the user
+          items:
+            $ref: '#/components/schemas/InsightsDetailsMetricItem'
+        overallData:
+          description: Overall insights data of the user
+          $ref: '#/components/schemas/InsightsDetailsOverallItem'
+    InsightsAgentItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        manager:
+          description: This user's manager.
+          $ref: '#/components/schemas/DomainEntityRef'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LeaderboardItem:
+      type: object
+      properties:
+        user:
+          description: The user object for this leaderboard rank
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        rank:
+          type: integer
+          format: int32
+          description: The rank of the user
+          readOnly: true
+        points:
+          type: integer
+          format: int64
+          description: The points collected by the user
+          readOnly: true
+    SingleWorkdayAveragePoints:
+      type: object
+      properties:
+        dateWorkday:
+          type: string
+          format: date
+          description: 'Queried target workday. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        division:
+          description: The targeted division for the average points
+          readOnly: true
+          $ref: '#/components/schemas/Division'
+        averagePoints:
+          type: number
+          format: double
+          description: The average points per agent earned within the division
+          readOnly: true
+        performanceProfile:
+          description: The targeted performance profile for the average points
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+    ContestScore:
+      type: object
+      properties:
+        score:
+          type: number
+          format: double
+          description: The Contest score
+        totalPoints:
+          type: number
+          format: double
+          description: The Contest totalPoints
+        percentOfGoal:
+          type: number
+          format: double
+          description: The Contest percentOfGoal
+    ExternalMetricDataProcessedItem:
+      type: object
+      required:
+      - dateOccurred
+      - metricId
+      - value
+      properties:
+        userId:
+          type: string
+          description: The user ID. Must provide either userId or userEmail, but not both.
+        userEmail:
+          type: string
+          description: The user main email used in user's GenesysCloud account. Must provide either userId or userEmail, but not both.
+        metricId:
+          type: string
+          description: The ID of the external metric definition
+        dateOccurred:
+          type: string
+          format: date
+          description: 'The date of the metric data. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        value:
+          type: number
+          description: The value of the metric data. When value is null, the metric data will be deleted.
+        count:
+          type: integer
+          format: int32
+          description: The number of data points. The default value is 0 when type is Cumulative and the metric data already exists, otherwise 1. When total count reaches 0, the metric data will be deleted.
+        type:
+          type: string
+          description: The type of the metric data. The default value is Total.
+          enum:
+          - Total
+          - Cumulative
+        totalValue:
+          type: number
+          description: The total value of the metric data.
+        totalCount:
+          type: integer
+          format: int32
+          description: The total number of data points.
+    UploadUrlResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Presigned URL to PUT the file to
+          readOnly: true
+        uploadKey:
+          type: string
+          description: Key that identifies the file in the storage including the file name
+          readOnly: true
+        headers:
+          type: object
+          description: Required headers when uploading a file through PUT request to the URL
+          readOnly: true
+          additionalProperties:
+            type: string
+    ObjectiveZone:
+      type: object
+      required:
+      - directionType
+      - label
+      - lowerLimitPoints
+      - upperLimitPoints
+      - zoneType
+      properties:
+        label:
+          type: string
+          description: label
+        directionType:
+          type: string
+          description: direction type
+          enum:
+          - Up
+          - Down
+          - Flat
+        zoneType:
+          type: string
+          description: zone type
+          enum:
+          - Good
+          - Target
+          - Great
+          - Out
+        upperLimitPoints:
+          type: integer
+          format: int32
+          description: upper limit points
+        lowerLimitPoints:
+          type: integer
+          format: int32
+          description: lower limit points
+        upperLimitValue:
+          type: integer
+          format: int32
+          description: upper limit value
+        lowerLimitValue:
+          type: integer
+          format: int32
+          description: lower limit value
+    InsightsSummaryOverallPeriodPoints:
+      type: object
+      properties:
+        points:
+          type: integer
+          format: int32
+          description: Points scored
+        maxPoints:
+          type: integer
+          format: int32
+          description: Max possible points
+        dataPointCount:
+          type: integer
+          format: int32
+          description: Number of data points
+        percentOfGoal:
+          type: number
+          format: double
+          description: Percentage of the goal
+    Assignment:
+      type: object
+      properties:
+        assignedMembers:
+          type: array
+          description: The list of users successfully assigned to the custom performance profile
+          items:
+            $ref: '#/components/schemas/UserReference'
+        removedMembers:
+          type: array
+          description: The list of users successfully removed from the custom performance profile
+          items:
+            $ref: '#/components/schemas/UserReference'
+        assignmentErrors:
+          type: array
+          description: The list of users failed assignment or removal for the custom performance profile
+          items:
+            $ref: '#/components/schemas/AssignmentError'
+    OverallBestPointsItem:
+      type: object
+      properties:
+        granularityType:
+          type: string
+          description: Best points aggregation interval granularity
+          readOnly: true
+          enum:
+          - Daily
+          - Weekly
+          - Monthly
+        users:
+          type: array
+          description: List of associated users with the equal points.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/UserReference'
+        count:
+          type: integer
+          format: int32
+          description: The count of the user IDs in the list
+          readOnly: true
+        points:
+          type: integer
+          format: int32
+          description: Gamification points
+          readOnly: true
+        dateStartWorkday:
+          type: string
+          format: date
+          description: 'Start workday of the best points aggregation interval. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        dateEndWorkday:
+          type: string
+          format: date
+          description: 'End workday of the best points aggregation interval. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+    GetMetricsResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Metrics'
+        selfUri:
+          type: string
+          format: uri
+    InsightsAgents:
+      type: object
+      properties:
+        performanceProfile:
+          description: The performance profile
+          $ref: '#/components/schemas/AddressableEntityRef'
+        division:
+          description: The division
+          $ref: '#/components/schemas/DivisionReference'
+        granularity:
+          type: string
+          description: Granularity
+          enum:
+          - Daily
+          - Weekly
+          - Monthly
+        dateStartWorkday:
+          type: string
+          format: date
+          description: 'Start workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEndWorkday:
+          type: string
+          format: date
+          description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        entities:
+          type: array
+          description: The list of insights agents
+          items:
+            $ref: '#/components/schemas/InsightsAgentItem'
+    ExternalMetricDefinitionListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalMetricDefinition'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    QualityEvaluationScoreItem:
+      type: object
+      properties:
+        evaluationId:
+          type: string
+          description: The id of evaluation
+          readOnly: true
+        conversationId:
+          type: string
+          description: The id of conversation
+          readOnly: true
+        conversationDate:
+          type: string
+          format: date-time
+          description: 'The date of conversation. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        conversationEndDate:
+          type: string
+          format: date-time
+          description: 'The end date of conversation. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        formName:
+          type: string
+          description: The name of form
+          readOnly: true
+        points:
+          type: integer
+          format: int32
+          description: Gamification points earned for this metric
+          readOnly: true
+        evaluationScore:
+          type: number
+          format: double
+          description: The quality score of evaluation as a percentage
+          readOnly: true
+        maxPoints:
+          type: integer
+          format: int32
+          description: The maximum Gamification points a user may earn for this metric
+          readOnly: true
+        mediaTypes:
+          type: array
+          description: A list of media types for the metric
+          items:
+            type: string
+            enum:
+            - callback
+            - chat
+            - cobrowse
+            - email
+            - internalmessage
+            - message
+            - screenmonitoring
+            - screenshare
+            - unknown
+            - video
+            - voice
+    InsightsDetailsOverallPeriodPoints:
+      type: object
+      properties:
+        points:
+          type: integer
+          format: int32
+          description: Points scored
+        maxPoints:
+          type: integer
+          format: int32
+          description: Max possible points
+        dataPointCount:
+          type: integer
+          format: int32
+          description: Number of data points
+        percentOfGoal:
+          type: number
+          format: double
+          description: Percentage of the goal
+        rankTotalPoints:
+          type: integer
+          format: int32
+          description: The agent's rank in leader board for points on this metric
+        rankPercentagePoints:
+          type: integer
+          format: int32
+          description: The agent's rank in leader board for percentage on this metric
+    GetContestsEssentialsListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContestsEssentials'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
     DefaultObjective:
       type: object
       properties:
@@ -15459,57 +14950,291 @@ components:
           enum:
           - inbound
           - outbound
-    GamificationContestPrizeImageUploadUrlRequest:
+    UserProfilesInDateRange:
       type: object
-      required:
-      - contentLength
-      - contentType
       properties:
-        fileName:
+        user:
+          description: The query agent
+          $ref: '#/components/schemas/UserReference'
+        dateStartWorkday:
           type: string
-          description: 'Name of the file to upload. It must not start with a dot and not end with a forward slash. Whitespace and the following characters are not allowed: \{^}%`]">[~<#|'
-        contentMd5:
+          format: date
+          description: 'Start workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEndWorkday:
           type: string
-          description: Content MD5 of the file to upload
-        signedUrlTimeoutSeconds:
+          format: date
+          description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        profiles:
+          type: array
+          description: The list of profiles of the agent
+          items:
+            $ref: '#/components/schemas/ProfileWithDateRange'
+    InsightsSummaryUserItem:
+      type: object
+      properties:
+        user:
+          description: Queried user
+          $ref: '#/components/schemas/UserReference'
+        metricData:
+          type: array
+          description: The list of insights data for each metric of the user
+          items:
+            $ref: '#/components/schemas/InsightsSummaryMetricItem'
+        overallData:
+          description: Overall insights data of the user
+          $ref: '#/components/schemas/InsightsSummaryOverallItem'
+        ranking:
           type: integer
           format: int32
-          description: The number of seconds the presigned URL is valid for (from 1 to 604800 seconds). If none provided, defaults to 600 seconds
-        contentType:
+          description: Ranking of the user
+    TrendData:
+      type: object
+      properties:
+        dateStartWorkday:
           type: string
-          description: The content type of the file to upload.
+          format: date
+          description: 'Start workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEndWorkday:
+          type: string
+          format: date
+          description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        percentOfGoal:
+          type: number
+          format: double
+          description: Percent of goal
+        averageValue:
+          type: number
+          format: double
+          description: Average metric value
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    WorkdayPointsTrend:
+      type: object
+      properties:
+        dateStartWorkday:
+          type: string
+          format: date
+          description: 'The start workday for the query range for the gamification points trend. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        dateEndWorkday:
+          type: string
+          format: date
+          description: 'The end workday for the query range for the gamification points trend. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        user:
+          description: The targeted user for the query
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        dayOfWeek:
+          type: string
+          description: Aggregated for same day comparison
+          readOnly: true
           enum:
-          - image/jpeg
-          - image/jpg
-          - image/png
-        contentLength:
+          - Sunday
+          - Monday
+          - Tuesday
+          - Wednesday
+          - Thursday
+          - Friday
+          - Saturday
+        averagePoints:
+          type: number
+          format: double
+          description: The total average points
+          readOnly: true
+        trend:
+          type: array
+          description: Daily points trends
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/WorkdayPointsTrendItem'
+    ContestScoresAgents:
+      type: object
+      properties:
+        contestScore:
+          description: The Contest score
+          $ref: '#/components/schemas/ContestScoreRanked'
+        metricScores:
+          type: array
+          description: The Contest metric scores
+          items:
+            $ref: '#/components/schemas/ContestMetricScoreRanked'
+        disqualified:
+          type: boolean
+          description: Indicates whether an agent is disqualified or not
+        user:
+          description: The Contest Scores Leaderboard user
+          $ref: '#/components/schemas/UserReference'
+    AssignmentValidation:
+      type: object
+      properties:
+        membersNotAssigned:
+          type: array
+          description: The list of users that are not assigned to any custom performance profile
+          items:
+            $ref: '#/components/schemas/UserReference'
+        membersAlreadyAssigned:
+          type: array
+          description: The list of users that are already assigned to the requesting custom performance profile
+          items:
+            $ref: '#/components/schemas/UserReference'
+        membersAlreadyAssignedToOther:
+          type: array
+          description: The list of users that are already assigned to other custom performance profiles
+          items:
+            $ref: '#/components/schemas/OtherProfileAssignment'
+        invalidMemberAssignments:
+          type: array
+          description: The list of user id that are invalid for the gamfication service to handle
+          items:
+            $ref: '#/components/schemas/InvalidAssignment'
+    ContestsCreateRequest:
+      type: object
+      required:
+      - announcementTimezone
+      - anonymization
+      - dateAnnounced
+      - dateEnd
+      - dateStart
+      - description
+      - metrics
+      - participantIds
+      - prizes
+      - profileId
+      - title
+      - winningCriteria
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        division:
+          description: The division for this performance profile associate to. Only set for DEFAULT profile.
+          $ref: '#/components/schemas/WritableDivision'
+        title:
+          type: string
+          description: The Contest title
+        description:
+          type: string
+          description: The Contest description
+        dateStart:
+          type: string
+          format: date
+          example: '2024-01-12'
+          description: 'Start date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEnd:
+          type: string
+          format: date
+          example: '2024-01-12'
+          description: 'End date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        winningCriteria:
+          type: string
+          description: The Contest winning criteria
+          enum:
+          - HighestOverallScore
+          - HighestOverallPercentOfGoal
+        dateAnnounced:
+          type: string
+          format: date-time
+          description: 'The Contest''s Announcement Datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        announcementTimezone:
+          type: string
+          example: Europe/London
+          description: 'The Contest''s Announcement Timezone. Valid values are strings of the zone name as found in the IANA time zone database. For example: UTC, Etc/UTC, or Europe/London'
+        anonymization:
+          type: string
+          description: The Contest anonymization
+          enum:
+          - NoAnonymization
+          - All
+          - AllExceptTop
+        metrics:
+          type: array
+          description: The Contest's Metrics
+          items:
+            $ref: '#/components/schemas/ContestMetrics'
+        prizes:
+          type: array
+          description: The Contest Prizes
+          items:
+            $ref: '#/components/schemas/ContestPrizes'
+        profileId:
+          type: string
+          description: The Contest profile
+        participantIds:
+          type: array
+          description: The Contest's participants
+          items:
+            type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    AttendanceStatus:
+      type: object
+      properties:
+        dateWorkday:
+          type: string
+          format: date
+          description: 'the workday date of this attendance status. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        attendanceStatusType:
+          type: string
+          description: the attendance status
+          readOnly: true
+          enum:
+          - HasData
+          - Scheduled
+          - Absent
+          - Present
+          - NoSchedule
+        hasEvaluation:
+          type: string
+          description: the quality evaluation score status
+          readOnly: true
+          enum:
+          - HasQualityEvaluation
+          - NoQualityEvaluation
+    Division:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    InsightsSummary:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsightsSummaryUserItem'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
           type: integer
           format: int64
-          description: The size of the file to upload.
-        serverSideEncryption:
-          type: string
-          enum:
-          - AES256
-    ReportingInterval:
-      type: object
-      required:
-      - intervalType
-      - intervalValue
-      properties:
-        intervalType:
-          type: string
-          description: The granularity of the reporting interval period
-          enum:
-          - Day
-          - Week
-          - Month
-        intervalValue:
-          type: integer
-          format: int32
-          description: The value of the reporting interval period for a given interval type
-    InsightsAgents:
-      type: object
-      properties:
         performanceProfile:
           description: The performance profile
           $ref: '#/components/schemas/AddressableEntityRef'
@@ -15523,6 +15248,257 @@ components:
           - Daily
           - Weekly
           - Monthly
+        comparativePeriod:
+          description: The comparative period work day date range
+          $ref: '#/components/schemas/WorkdayPeriod'
+        primaryPeriod:
+          description: The primary period work day date range
+          $ref: '#/components/schemas/WorkdayPeriod'
+        pageCount:
+          type: integer
+          format: int32
+    GetTemplatesResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectiveTemplate'
+        selfUri:
+          type: string
+          format: uri
+    ContestMetricScoreRanked:
+      type: object
+      properties:
+        metric:
+          description: The gamification metric for the data
+          $ref: '#/components/schemas/AddressableEntityRef'
+        score:
+          type: number
+          format: double
+          description: The Contest Metric score
+        totalPoints:
+          type: number
+          format: double
+          description: The Contest Metric totalPoints
+        percentOfGoal:
+          type: number
+          format: double
+          description: The Contest Metric percentOfGoal
+        rank:
+          type: integer
+          format: int32
+          description: The Contest Score rank, a lower rank is better (1 is the best)
+    ContestUserRank:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        rank:
+          type: integer
+          format: int32
+          description: The user's rank in contest, a lower rank is better (1 is the best)
+        score:
+          type: number
+          format: double
+          description: The user's contest score
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    AllTimePoints:
+      type: object
+      properties:
+        user:
+          description: Queried user
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        dateEndWorkday:
+          type: string
+          format: date
+          description: 'Queried end workday for all time points to be collected. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+          readOnly: true
+        allTimePoints:
+          type: integer
+          format: int64
+          description: All time point collected bt the user
+          readOnly: true
+    ExternalMetricDefinitionCreateRequest:
+      type: object
+      required:
+      - defaultObjectiveType
+      - enabled
+      - name
+      - precision
+      - unit
+      properties:
+        name:
+          type: string
+          description: The name of the External Metric Definition
+        unit:
+          type: string
+          description: The unit of the External Metric Definition
+          enum:
+          - Seconds
+          - Percent
+          - Number
+          - Currency
+        unitDefinition:
+          type: string
+          description: The unit definition of the External Metric Definition
+        precision:
+          type: integer
+          format: int32
+          description: The decimal precision of the External Metric Definition. Must be at least 0 and at most 5
+          minimum: 0
+          maximum: 5
+        defaultObjectiveType:
+          type: string
+          description: The default objective type of the External Metric Definition
+          enum:
+          - HigherIsBetter
+          - LowerIsBetter
+          - TargetArea
+        enabled:
+          type: boolean
+          description: True if the External Metric Definition is enabled
+    PerformanceProfile:
+      type: object
+      required:
+      - description
+      - metricOrders
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: A name for this performance profile
+        division:
+          description: The division for this performance profile associate to
+          readOnly: true
+          $ref: '#/components/schemas/Division'
+        description:
+          type: string
+          description: A description about this performance profile
+        metricOrders:
+          type: array
+          description: Order of the associated metrics. The list should contain valid ids for metrics
+          items:
+            type: string
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Creation date for this performance profile. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        reportingIntervals:
+          type: array
+          description: The reporting interval periods for this performance profile
+          items:
+            $ref: '#/components/schemas/ReportingInterval'
+        active:
+          type: boolean
+          description: The flag for active profiles
+          readOnly: true
+        memberCount:
+          type: integer
+          format: int32
+          description: The number of members in this performance profile
+          readOnly: true
+        maxLeaderboardRankSize:
+          type: integer
+          format: int32
+          description: The maximum rank size for the leaderboard. This counts the number of ranks can be retrieved in a leaderboard queries
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    GetProfilesResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerformanceProfile'
+        selfUri:
+          type: string
+          format: uri
+    WorkdayValuesMetricItem:
+      type: object
+      properties:
+        metric:
+          description: Gamification metric for the average and the trend
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        metricDefinition:
+          description: Gamification metric definition for the average and the trend
+          readOnly: true
+          $ref: '#/components/schemas/DomainEntityRef'
+        average:
+          type: number
+          format: double
+          description: The average value of the metric
+          readOnly: true
+        unitType:
+          type: string
+          description: The unit type of the metric value
+          readOnly: true
+          enum:
+          - None
+          - Percent
+          - Currency
+          - Seconds
+          - Number
+          - AttendanceStatus
+          - Unit
+        trend:
+          type: array
+          description: The metric value trend
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/WorkdayValuesTrendItem'
+    ContestScoresGroupTrendList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContestScoresGroupTrend'
+    WritableDivision:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ProfileWithDateRange:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Profile ID
+        name:
+          type: string
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/Division'
         dateStartWorkday:
           type: string
           format: date
@@ -15531,43 +15507,67 @@ components:
           type: string
           format: date
           description: 'End workday used as the date range. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        entities:
-          type: array
-          description: The list of insights agents
-          items:
-            $ref: '#/components/schemas/InsightsAgentItem'
-    ErrorBody:
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UserProfilesInDateRangeRequest:
+      type: object
+      required:
+      - endWorkday
+      - startWorkday
+      properties:
+        startWorkday:
+          type: string
+          example: '2022-11-07'
+          description: Start work day in ISO-8601 format used in the date range.
+        endWorkday:
+          type: string
+          example: '2022-11-11'
+          description: End work day in ISO-8601 format used in the date range.
+    UserReference:
       type: object
       properties:
-        message:
+        id:
           type: string
-        code:
+          description: The globally unique identifier for the object.
+        selfUri:
           type: string
-        status:
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    InsightsDetailsMetricPeriodPoints:
+      type: object
+      properties:
+        points:
           type: integer
           format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
+          description: Points scored
+        maxPoints:
+          type: integer
+          format: int32
+          description: Max possible points
+        dataPointCount:
+          type: integer
+          format: int32
+          description: Number of data points
+        percentOfGoal:
+          type: number
+          format: double
+          description: Percentage of the goal
+        rankTotalPoints:
+          type: integer
+          format: int32
+          description: The agent's rank in leader board for points on this metric
+        rankPercentagePoints:
+          type: integer
+          format: int32
+          description: The agent's rank in leader board for percentage on this metric
+        value:
+          type: number
+          format: double
+          description: Average value
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

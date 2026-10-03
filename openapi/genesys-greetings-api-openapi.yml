@@ -2792,205 +2792,6 @@ paths:
         required: true
 components:
   schemas:
-    GreetingOwner:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    DefaultGreetingList:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        owner:
-          $ref: '#/components/schemas/GreetingOwner'
-        ownerType:
-          type: string
-          enum:
-          - USER
-          - ORGANIZATION
-          - GROUP
-        greetings:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Greeting'
-        createdDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        createdBy:
-          type: string
-          format: uri
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    GreetingListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Greeting'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    DomainEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    GreetingAudioFile:
-      type: object
-      properties:
-        durationMilliseconds:
-          type: integer
-          format: int64
-        sizeBytes:
-          type: integer
-          format: int64
-        selfUri:
-          type: string
-          format: uri
-    Greeting:
-      type: object
-      required:
-      - owner
-      - ownerType
-      - type
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        type:
-          type: string
-          description: Greeting type
-          enum:
-          - STATION
-          - VOICEMAIL
-          - NAME
-        ownerType:
-          type: string
-          description: Greeting owner type
-          enum:
-          - USER
-          - ORGANIZATION
-          - GROUP
-        owner:
-          description: Greeting owner
-          $ref: '#/components/schemas/DomainEntity'
-        audioFile:
-          $ref: '#/components/schemas/GreetingAudioFile'
-        audioTTS:
-          type: string
-        createdDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        createdBy:
-          type: string
-          format: uri
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     Limit:
       type: object
       properties:
@@ -3095,30 +2896,205 @@ components:
         value:
           type: integer
           format: int64
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    GreetingMediaInfo:
+    DomainEntity:
       type: object
       properties:
         id:
           type: string
           description: The globally unique identifier for the object.
           readOnly: true
-        mediaFileUri:
+        name:
+          type: string
+        selfUri:
           type: string
           format: uri
-        mediaImageUri:
+          description: The URI for this object
+          readOnly: true
+    GreetingListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Greeting'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
           type: string
           format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    Greeting:
+      type: object
+      required:
+      - owner
+      - ownerType
+      - type
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        type:
+          type: string
+          description: Greeting type
+          enum:
+          - STATION
+          - VOICEMAIL
+          - NAME
+        ownerType:
+          type: string
+          description: Greeting owner type
+          enum:
+          - USER
+          - ORGANIZATION
+          - GROUP
+        owner:
+          description: Greeting owner
+          $ref: '#/components/schemas/DomainEntity'
+        audioFile:
+          $ref: '#/components/schemas/GreetingAudioFile'
+        audioTTS:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        createdBy:
+          type: string
+          format: uri
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    GreetingOwner:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    GreetingAudioFile:
+      type: object
+      properties:
+        durationMilliseconds:
+          type: integer
+          format: int64
+        sizeBytes:
+          type: integer
+          format: int64
+        selfUri:
+          type: string
+          format: uri
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    DefaultGreetingList:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        owner:
+          $ref: '#/components/schemas/GreetingOwner'
+        ownerType:
+          type: string
+          enum:
+          - USER
+          - ORGANIZATION
+          - GROUP
+        greetings:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Greeting'
+        createdDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        createdBy:
+          type: string
+          format: uri
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     DomainEntityListing:
       type: object
       properties:
@@ -3153,6 +3129,30 @@ components:
         pageCount:
           type: integer
           format: int32
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    GreetingMediaInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        mediaFileUri:
+          type: string
+          format: uri
+        mediaImageUri:
+          type: string
+          format: uri
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

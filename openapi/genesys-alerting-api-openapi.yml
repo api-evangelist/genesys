@@ -2133,709 +2133,6 @@ paths:
         required: true
 components:
   schemas:
-    CommonAlertBulkUpdateRequest:
-      type: object
-      required:
-      - alertIds
-      - type
-      properties:
-        type:
-          type: string
-          description: The action to take
-          enum:
-          - Mute
-          - Snooze
-          - Unread
-          - Close
-        alertIds:
-          type: array
-          description: The user supplied alert ids to be muted
-          uniqueItems: true
-          items:
-            type: string
-        muteSnooze:
-          description: The fields need for a mute or snooze requests
-          $ref: '#/components/schemas/MuteSnoozeFields'
-        unread:
-          description: The fields need for an unread update requests
-          $ref: '#/components/schemas/UnreadFields'
-    ModifiableRuleProperties:
-      type: object
-      required:
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: Name of the rule
-        description:
-          type: string
-          description: The description of the rule.
-        enabled:
-          type: boolean
-          description: Indicates if the rule is enabled.
-        notifications:
-          type: array
-          description: The alert notification types to trigger when alarm state changes as well as the users they will be sent to.
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/AlertNotification'
-        sendExitingAlarmNotifications:
-          type: boolean
-          description: Indicates if the alert will send a notification when it is closed.
-        waitBetweenNotificationMs:
-          type: integer
-          format: int64
-          description: The amount of time in milliseconds to wait between notification.
-        conditions:
-          description: The set of metric conditions that would trigger an alert.
-          $ref: '#/components/schemas/CommonRuleConditions'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CommonAllAlertUpdateRequest:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          description: The action to take
-          enum:
-          - Mute
-          - Snooze
-          - Unread
-          - Close
-        unread:
-          description: The fields need for an unread update requests
-          $ref: '#/components/schemas/UnreadFields'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    BulkResult:
-      type: object
-      properties:
-        error:
-          description: Error details if the operation failed.
-          $ref: '#/components/schemas/BulkError'
-        entity:
-          type: object
-          description: The result of the operation if it succeeded.
-    CommonRuleBulkUpdateNotificationsRequest:
-      type: object
-      required:
-      - ruleIds
-      properties:
-        ruleIds:
-          type: array
-          description: The user supplied rules ids to be updated
-          uniqueItems: true
-          items:
-            type: string
-        properties:
-          description: The rule properties to be updated
-          $ref: '#/components/schemas/ModifiableRuleProperties'
-        typesToAdd:
-          type: array
-          description: Collection of alerting notification types to add for all entities in the rules
-          uniqueItems: true
-          items:
-            type: string
-            enum:
-            - Sms
-            - Device
-            - Email
-            - Push
-        typesToRemove:
-          type: array
-          description: Collection of alerting notification types to remove for all entities in the rules
-          uniqueItems: true
-          items:
-            type: string
-            enum:
-            - Sms
-            - Device
-            - Email
-            - Push
-    CommonRuleConditions:
-      type: object
-      required:
-      - predicates
-      - type
-      properties:
-        clauses:
-          type: array
-          description: The list of predicates groups to be evaluated
-          items:
-            $ref: '#/components/schemas/CommonRuleConditions'
-        predicates:
-          type: array
-          description: The list of rule metric predicates to be evaluated.
-          items:
-            $ref: '#/components/schemas/CommonRulePredicate'
-        type:
-          type: string
-          description: the logic operator performed.
-          enum:
-          - And
-          - Or
-          - Not
-        id:
-          type: string
-          description: The id.
-    AlertNotification:
-      type: object
-      required:
-      - notificationTypes
-      - recipient
-      properties:
-        recipient:
-          type: string
-          description: The entity to receive the notification.
-        notificationTypes:
-          type: array
-          description: The notification types the user will receive.
-          uniqueItems: true
-          items:
-            type: string
-            enum:
-            - Sms
-            - Device
-            - Email
-            - Push
-        locale:
-          type: string
-          description: The locale whose language will be used when sending alerts.  Locale should be in theformat language_COUNTRY where language is always lower case and country is always upper case.
-    CommonRulePredicateEntity:
-      type: object
-      required:
-      - entityType
-      properties:
-        entityType:
-          type: string
-          description: Specifies the type of entity being evaluated
-          enum:
-          - User
-          - Group
-          - Queue
-          - Team
-          - TeamMembers
-          - Organization
-        user:
-          description: User id of the entity being monitored
-          $ref: '#/components/schemas/AddressableEntityRef'
-        group:
-          description: Group id of the entity being monitored
-          $ref: '#/components/schemas/AddressableEntityRef'
-        queue:
-          description: Queue id of the entity being monitored
-          $ref: '#/components/schemas/AddressableEntityRef'
-        team:
-          description: Team id of the entity being monitored
-          $ref: '#/components/schemas/AddressableEntityRef'
-    AlertRuleProperties:
-      type: object
-      required:
-      - type
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the object.
-          readOnly: true
-        type:
-          type: string
-          description: The type of rule being alerted.
-          readOnly: true
-          enum:
-          - ConversationMetrics
-          - UserPresence
-          - WorkforceManagement
-          - OperationalConsole
-          - Unknown
-    AlertSummaryEntity:
-      type: object
-      required:
-      - alerting
-      - entityType
-      properties:
-        entityType:
-          type: string
-          description: Specifies the type of entity being evaluated
-          enum:
-          - User
-          - Group
-          - Queue
-          - Team
-          - TeamMembers
-          - Organization
-        user:
-          description: User id of the entity being monitored
-          $ref: '#/components/schemas/AddressableEntityRef'
-        group:
-          description: Group id of the entity being monitored
-          $ref: '#/components/schemas/AddressableEntityRef'
-        queue:
-          description: Queue id of the entity being monitored
-          $ref: '#/components/schemas/AddressableEntityRef'
-        team:
-          description: Team id of the entity being monitored
-          $ref: '#/components/schemas/AddressableEntityRef'
-        alerting:
-          type: boolean
-          description: Flag that indicated if the entity is current causing the alert to be triggered
-    AlertingUnreadStatus:
-      type: object
-      required:
-      - unread
-      properties:
-        unread:
-          type: boolean
-          description: True is alert is unread, false if it has not been.
-    AlertSummary:
-      type: object
-      required:
-      - entities
-      - entitiesAreTeamMembers
-      - metricType
-      properties:
-        entities:
-          type: array
-          description: The entities who violated the rule condition over the duration of the alert.
-          items:
-            $ref: '#/components/schemas/AlertSummaryEntity'
-        conversation:
-          description: The id of the conversation that triggered the alert.  Only used for alerts based on instance-based conversation metrics.
-          $ref: '#/components/schemas/AddressableEntityRef'
-        metricType:
-          type: string
-          description: The metric type that is monitored.
-          enum:
-          - Interval
-          - Instance
-        entitiesAreTeamMembers:
-          type: boolean
-          description: Flag that indicated whether or not the alert is for a rule with a condition for all members of a team.
-    Empty:
-      type: object
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    UnreadFields:
-      type: object
-      required:
-      - state
-      properties:
-        state:
-          type: boolean
-          description: The new unread state of the alert
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    AlertListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CommonAlert'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    AlertRequest:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          description: The action being taken on the alert.
-          enum:
-          - Mute
-          - Snooze
-          - Unread
-          - Close
-        dateStart:
-          type: string
-          format: date-time
-          description: 'The start date of the mute/snooze period. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateEnd:
-          type: string
-          format: date-time
-          description: 'The end date of the mute/snooze period. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        unread:
-          description: The fields need for an unread update requests
-          $ref: '#/components/schemas/UnreadFields'
-        validRequest:
-          type: boolean
-    CommonRulePredicate:
-      type: object
-      required:
-      - comparisonOperator
-      - entity
-      - metric
-      - metricType
-      - metricValueType
-      - value
-      properties:
-        metricType:
-          type: string
-          description: The type of metric being evaluated.
-          enum:
-          - Interval
-          - Instance
-        metricValueType:
-          type: string
-          description: The type of metric value being evaluated.
-          enum:
-          - Count
-          - Min
-          - Timer
-          - Max
-          - Percentage
-          - Average
-          - Observation
-        comparisonOperator:
-          type: string
-          description: The comparison operator being performed on the metric.
-          enum:
-          - Gt
-          - Gte
-          - Lt
-          - Lte
-          - Eq
-          - Ne
-        value:
-          type: number
-          format: double
-          description: The value the metric will be compared to.
-        status:
-          type: string
-          description: The status of the entity corresponding to the metric.
-        topic:
-          type: string
-          description: The operational console topic corresponding to the metric.
-        entity:
-          description: The entity whose metric is being represented.
-          $ref: '#/components/schemas/CommonRulePredicateEntity'
-        mediaType:
-          type: string
-          description: The media type of the conversation the metric describes.
-          enum:
-          - Voice
-          - Chat
-          - Email
-          - Callback
-          - Message
-        metric:
-          type: string
-          description: The metric being evaluated.
-          enum:
-          - nAbandon
-          - nConnected
-          - nInteractions
-          - nOffered
-          - nOutbound
-          - nTransferred
-          - serviceLevel
-          - oServiceLevel
-          - oWaiting
-          - tAbandon
-          - tAcw
-          - tAlert
-          - tAnswered
-          - tHandle
-          - tHeldComplete
-          - tTalkComplete
-          - tWait
-          - tTalk
-          - tHeld
-          - tOrganizationPresence
-          - tSystemPresence
-          - tAgentRoutingStatus
-          - oUserRoutingStatuses
-          - oUserPresences
-          - oInteracting
-          - tFlowOut
-          - tAdherenceStatus
-          - nEvents
-    GetAlertQuery:
-      type: object
-      required:
-      - queryType
-      - ruleType
-      properties:
-        ruleType:
-          type: string
-          description: The rule type of the alerts the query will return
-          enum:
-          - Conversation
-          - Presence
-          - All
-        queryType:
-          type: string
-          description: The type of query being performed.
-          enum:
-          - Info
-          - Count
-        alertStatus:
-          type: string
-          description: The status of the alerts the query will return.
-          enum:
-          - Active
-          - Inactive
-          - All
-        viewedStatus:
-          type: string
-          description: The view status of the alerts the query will return.
-          enum:
-          - Unread
-          - Read
-          - All
-        pageNumber:
-          type: integer
-          format: int32
-          description: The page number of the queried response
-        pageSize:
-          type: integer
-          format: int32
-          description: The number of entities to return of the queried response.  The max is 25
-        sortBy:
-          type: string
-          description: The field to sort responses by.  The accepted choices are Name and DateStart
-          enum:
-          - Name
-          - DateStart
-        sortOrder:
-          type: string
-          description: The order in which response will be sorted.  The accepted choices are Asc and Desc
-          enum:
-          - Asc
-          - Desc
-    GetRulesQuery:
-      type: object
-      required:
-      - queryType
-      - ruleType
-      properties:
-        ruleType:
-          type: string
-          description: The rule type of the alerts the query will return
-          enum:
-          - Conversation
-          - Presence
-          - All
-        queryType:
-          type: string
-          description: The type of query being performed.
-          enum:
-          - Info
-          - Count
-        enabledType:
-          type: string
-          description: The state of the rule the query will return.  The accepted choices are Enabled, Disabled, or All
-          enum:
-          - Enabled
-          - Disabled
-          - All
-        pageNumber:
-          type: integer
-          format: int32
-          description: The page number of the queried response
-        pageSize:
-          type: integer
-          format: int32
-          description: The number of entities to return of the queried response.  The max is 25
-        sortBy:
-          type: string
-          description: The field to sort responses by.  The accepted choices are Name and DateStart
-          enum:
-          - Name
-          - DateCreated
-        sortOrder:
-          type: string
-          description: The order in which response will be sorted.  The accepted choices are Asc and Desc
-          enum:
-          - Asc
-          - Desc
-        ruleName:
-          type: string
-          description: The name of the rule being queries.
-        nameSearchType:
-          type: string
-          description: Specifies how strict the name search needs to be. Expected values are Exact and Contains if querying by name.
-          enum:
-          - Exact
-          - Contains
-          - Unknown
-    BulkError:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message of the bulk operation result.
-        code:
-          type: string
-          description: Error code of the bulk operation result.
-    CommonRule:
-      type: object
-      required:
-      - name
-      - type
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: Name of the rule
-        description:
-          type: string
-          description: The description of the rule.
-        enabled:
-          type: boolean
-          description: Indicates if the rule is enabled.
-        notifications:
-          type: array
-          description: The alert notification types to trigger when alarm state changes as well as the users they will be sent to.
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/AlertNotification'
-        sendExitingAlarmNotifications:
-          type: boolean
-          description: Indicates if the alert will send a notification when it is closed.
-        waitBetweenNotificationMs:
-          type: integer
-          format: int64
-          description: The amount of time in milliseconds to wait between notification.
-        conditions:
-          description: The set of metric conditions that would trigger an alert.
-          $ref: '#/components/schemas/CommonRuleConditions'
-        type:
-          type: string
-          description: The type of the rule.
-          enum:
-          - ConversationMetrics
-          - UserPresence
-          - WorkforceManagement
-          - OperationalConsole
-          - Unknown
-        inAlarm:
-          type: boolean
-          description: Indicates if the rule is in alarm state.
-        user:
-          description: The entity that created the rule.
-          $ref: '#/components/schemas/UserReference'
-        version:
-          type: integer
-          format: int32
-          description: The current version number of the rule.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The creation date of the rule when the rule was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateLastModified:
-          type: string
-          format: date-time
-          description: 'The timestamp of the last update to the rule. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    BulkResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          description: A list of the results from the bulk operation.
-          items:
-            $ref: '#/components/schemas/BulkResult'
-        errorCount:
-          type: integer
-          format: int32
-          description: The number of errors from the bulk operation.
-        errorIndexes:
-          type: array
-          description: An index of where the errors are in the listing.
-          items:
-            type: integer
-            format: int32
     Limit:
       type: object
       properties:
@@ -2940,27 +2237,6 @@ components:
         value:
           type: integer
           format: int64
-    CommonRuleBulkDeleteRequest:
-      type: object
-      required:
-      - ruleIds
-      properties:
-        ruleIds:
-          type: array
-          description: The user supplied rule ids to be deleted
-          items:
-            type: string
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     CommonAlert:
       type: object
       required:
@@ -3044,6 +2320,623 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    BulkError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message of the bulk operation result.
+        code:
+          type: string
+          description: Error code of the bulk operation result.
+    GetRulesQuery:
+      type: object
+      required:
+      - queryType
+      - ruleType
+      properties:
+        ruleType:
+          type: string
+          description: The rule type of the alerts the query will return
+          enum:
+          - Conversation
+          - Presence
+          - All
+        queryType:
+          type: string
+          description: The type of query being performed.
+          enum:
+          - Info
+          - Count
+        enabledType:
+          type: string
+          description: The state of the rule the query will return.  The accepted choices are Enabled, Disabled, or All
+          enum:
+          - Enabled
+          - Disabled
+          - All
+        pageNumber:
+          type: integer
+          format: int32
+          description: The page number of the queried response
+        pageSize:
+          type: integer
+          format: int32
+          description: The number of entities to return of the queried response.  The max is 25
+        sortBy:
+          type: string
+          description: The field to sort responses by.  The accepted choices are Name and DateStart
+          enum:
+          - Name
+          - DateCreated
+        sortOrder:
+          type: string
+          description: The order in which response will be sorted.  The accepted choices are Asc and Desc
+          enum:
+          - Asc
+          - Desc
+        ruleName:
+          type: string
+          description: The name of the rule being queries.
+        nameSearchType:
+          type: string
+          description: Specifies how strict the name search needs to be. Expected values are Exact and Contains if querying by name.
+          enum:
+          - Exact
+          - Contains
+          - Unknown
+    CommonRule:
+      type: object
+      required:
+      - name
+      - type
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: Name of the rule
+        description:
+          type: string
+          description: The description of the rule.
+        enabled:
+          type: boolean
+          description: Indicates if the rule is enabled.
+        notifications:
+          type: array
+          description: The alert notification types to trigger when alarm state changes as well as the users they will be sent to.
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AlertNotification'
+        sendExitingAlarmNotifications:
+          type: boolean
+          description: Indicates if the alert will send a notification when it is closed.
+        waitBetweenNotificationMs:
+          type: integer
+          format: int64
+          description: The amount of time in milliseconds to wait between notification.
+        conditions:
+          description: The set of metric conditions that would trigger an alert.
+          $ref: '#/components/schemas/CommonRuleConditions'
+        type:
+          type: string
+          description: The type of the rule.
+          enum:
+          - ConversationMetrics
+          - UserPresence
+          - WorkforceManagement
+          - OperationalConsole
+          - Unknown
+        inAlarm:
+          type: boolean
+          description: Indicates if the rule is in alarm state.
+        user:
+          description: The entity that created the rule.
+          $ref: '#/components/schemas/UserReference'
+        version:
+          type: integer
+          format: int32
+          description: The current version number of the rule.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The creation date of the rule when the rule was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateLastModified:
+          type: string
+          format: date-time
+          description: 'The timestamp of the last update to the rule. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    AlertingUnreadStatus:
+      type: object
+      required:
+      - unread
+      properties:
+        unread:
+          type: boolean
+          description: True is alert is unread, false if it has not been.
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    CommonRulePredicateEntity:
+      type: object
+      required:
+      - entityType
+      properties:
+        entityType:
+          type: string
+          description: Specifies the type of entity being evaluated
+          enum:
+          - User
+          - Group
+          - Queue
+          - Team
+          - TeamMembers
+          - Organization
+        user:
+          description: User id of the entity being monitored
+          $ref: '#/components/schemas/AddressableEntityRef'
+        group:
+          description: Group id of the entity being monitored
+          $ref: '#/components/schemas/AddressableEntityRef'
+        queue:
+          description: Queue id of the entity being monitored
+          $ref: '#/components/schemas/AddressableEntityRef'
+        team:
+          description: Team id of the entity being monitored
+          $ref: '#/components/schemas/AddressableEntityRef'
+    AlertSummary:
+      type: object
+      required:
+      - entities
+      - entitiesAreTeamMembers
+      - metricType
+      properties:
+        entities:
+          type: array
+          description: The entities who violated the rule condition over the duration of the alert.
+          items:
+            $ref: '#/components/schemas/AlertSummaryEntity'
+        conversation:
+          description: The id of the conversation that triggered the alert.  Only used for alerts based on instance-based conversation metrics.
+          $ref: '#/components/schemas/AddressableEntityRef'
+        metricType:
+          type: string
+          description: The metric type that is monitored.
+          enum:
+          - Interval
+          - Instance
+        entitiesAreTeamMembers:
+          type: boolean
+          description: Flag that indicated whether or not the alert is for a rule with a condition for all members of a team.
+    CommonRulePredicate:
+      type: object
+      required:
+      - comparisonOperator
+      - entity
+      - metric
+      - metricType
+      - metricValueType
+      - value
+      properties:
+        metricType:
+          type: string
+          description: The type of metric being evaluated.
+          enum:
+          - Interval
+          - Instance
+        metricValueType:
+          type: string
+          description: The type of metric value being evaluated.
+          enum:
+          - Count
+          - Min
+          - Timer
+          - Max
+          - Percentage
+          - Average
+          - Observation
+        comparisonOperator:
+          type: string
+          description: The comparison operator being performed on the metric.
+          enum:
+          - Gt
+          - Gte
+          - Lt
+          - Lte
+          - Eq
+          - Ne
+        value:
+          type: number
+          format: double
+          description: The value the metric will be compared to.
+        status:
+          type: string
+          description: The status of the entity corresponding to the metric.
+        topic:
+          type: string
+          description: The operational console topic corresponding to the metric.
+        entity:
+          description: The entity whose metric is being represented.
+          $ref: '#/components/schemas/CommonRulePredicateEntity'
+        mediaType:
+          type: string
+          description: The media type of the conversation the metric describes.
+          enum:
+          - Voice
+          - Chat
+          - Email
+          - Callback
+          - Message
+        metric:
+          type: string
+          description: The metric being evaluated.
+          enum:
+          - nAbandon
+          - nConnected
+          - nInteractions
+          - nOffered
+          - nOutbound
+          - nTransferred
+          - serviceLevel
+          - oServiceLevel
+          - oWaiting
+          - tAbandon
+          - tAcw
+          - tAlert
+          - tAnswered
+          - tHandle
+          - tHeldComplete
+          - tTalkComplete
+          - tWait
+          - tTalk
+          - tHeld
+          - tOrganizationPresence
+          - tSystemPresence
+          - tAgentRoutingStatus
+          - oUserRoutingStatuses
+          - oUserPresences
+          - oInteracting
+          - tFlowOut
+          - tAdherenceStatus
+          - nEvents
+    CommonAllAlertUpdateRequest:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: The action to take
+          enum:
+          - Mute
+          - Snooze
+          - Unread
+          - Close
+        unread:
+          description: The fields need for an unread update requests
+          $ref: '#/components/schemas/UnreadFields'
+    CommonAlertBulkUpdateRequest:
+      type: object
+      required:
+      - alertIds
+      - type
+      properties:
+        type:
+          type: string
+          description: The action to take
+          enum:
+          - Mute
+          - Snooze
+          - Unread
+          - Close
+        alertIds:
+          type: array
+          description: The user supplied alert ids to be muted
+          uniqueItems: true
+          items:
+            type: string
+        muteSnooze:
+          description: The fields need for a mute or snooze requests
+          $ref: '#/components/schemas/MuteSnoozeFields'
+        unread:
+          description: The fields need for an unread update requests
+          $ref: '#/components/schemas/UnreadFields'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    CommonRuleBulkDeleteRequest:
+      type: object
+      required:
+      - ruleIds
+      properties:
+        ruleIds:
+          type: array
+          description: The user supplied rule ids to be deleted
+          items:
+            type: string
+    AlertRuleProperties:
+      type: object
+      required:
+      - type
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the object.
+          readOnly: true
+        type:
+          type: string
+          description: The type of rule being alerted.
+          readOnly: true
+          enum:
+          - ConversationMetrics
+          - UserPresence
+          - WorkforceManagement
+          - OperationalConsole
+          - Unknown
+    BulkResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          description: A list of the results from the bulk operation.
+          items:
+            $ref: '#/components/schemas/BulkResult'
+        errorCount:
+          type: integer
+          format: int32
+          description: The number of errors from the bulk operation.
+        errorIndexes:
+          type: array
+          description: An index of where the errors are in the listing.
+          items:
+            type: integer
+            format: int32
+    AlertListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommonAlert'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CommonRuleConditions:
+      type: object
+      required:
+      - predicates
+      - type
+      properties:
+        clauses:
+          type: array
+          description: The list of predicates groups to be evaluated
+          items:
+            $ref: '#/components/schemas/CommonRuleConditions'
+        predicates:
+          type: array
+          description: The list of rule metric predicates to be evaluated.
+          items:
+            $ref: '#/components/schemas/CommonRulePredicate'
+        type:
+          type: string
+          description: the logic operator performed.
+          enum:
+          - And
+          - Or
+          - Not
+        id:
+          type: string
+          description: The id.
+    BulkResult:
+      type: object
+      properties:
+        error:
+          description: Error details if the operation failed.
+          $ref: '#/components/schemas/BulkError'
+        entity:
+          type: object
+          description: The result of the operation if it succeeded.
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    CommonRuleBulkUpdateNotificationsRequest:
+      type: object
+      required:
+      - ruleIds
+      properties:
+        ruleIds:
+          type: array
+          description: The user supplied rules ids to be updated
+          uniqueItems: true
+          items:
+            type: string
+        properties:
+          description: The rule properties to be updated
+          $ref: '#/components/schemas/ModifiableRuleProperties'
+        typesToAdd:
+          type: array
+          description: Collection of alerting notification types to add for all entities in the rules
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - Sms
+            - Device
+            - Email
+            - Push
+        typesToRemove:
+          type: array
+          description: Collection of alerting notification types to remove for all entities in the rules
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - Sms
+            - Device
+            - Email
+            - Push
+    UnreadFields:
+      type: object
+      required:
+      - state
+      properties:
+        state:
+          type: boolean
+          description: The new unread state of the alert
+    ModifiableRuleProperties:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: Name of the rule
+        description:
+          type: string
+          description: The description of the rule.
+        enabled:
+          type: boolean
+          description: Indicates if the rule is enabled.
+        notifications:
+          type: array
+          description: The alert notification types to trigger when alarm state changes as well as the users they will be sent to.
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/AlertNotification'
+        sendExitingAlarmNotifications:
+          type: boolean
+          description: Indicates if the alert will send a notification when it is closed.
+        waitBetweenNotificationMs:
+          type: integer
+          format: int64
+          description: The amount of time in milliseconds to wait between notification.
+        conditions:
+          description: The set of metric conditions that would trigger an alert.
+          $ref: '#/components/schemas/CommonRuleConditions'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    AlertRequest:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: The action being taken on the alert.
+          enum:
+          - Mute
+          - Snooze
+          - Unread
+          - Close
+        dateStart:
+          type: string
+          format: date-time
+          description: 'The start date of the mute/snooze period. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateEnd:
+          type: string
+          format: date-time
+          description: 'The end date of the mute/snooze period. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        unread:
+          description: The fields need for an unread update requests
+          $ref: '#/components/schemas/UnreadFields'
+        validRequest:
+          type: boolean
+    Empty:
+      type: object
     MuteSnoozeFields:
       type: object
       required:
@@ -3058,6 +2951,59 @@ components:
           type: string
           format: date-time
           description: 'The end date of the mute/snooze period. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    GetAlertQuery:
+      type: object
+      required:
+      - queryType
+      - ruleType
+      properties:
+        ruleType:
+          type: string
+          description: The rule type of the alerts the query will return
+          enum:
+          - Conversation
+          - Presence
+          - All
+        queryType:
+          type: string
+          description: The type of query being performed.
+          enum:
+          - Info
+          - Count
+        alertStatus:
+          type: string
+          description: The status of the alerts the query will return.
+          enum:
+          - Active
+          - Inactive
+          - All
+        viewedStatus:
+          type: string
+          description: The view status of the alerts the query will return.
+          enum:
+          - Unread
+          - Read
+          - All
+        pageNumber:
+          type: integer
+          format: int32
+          description: The page number of the queried response
+        pageSize:
+          type: integer
+          format: int32
+          description: The number of entities to return of the queried response.  The max is 25
+        sortBy:
+          type: string
+          description: The field to sort responses by.  The accepted choices are Name and DateStart
+          enum:
+          - Name
+          - DateStart
+        sortOrder:
+          type: string
+          description: The order in which response will be sorted.  The accepted choices are Asc and Desc
+          enum:
+          - Asc
+          - Desc
     CommonRuleContainer:
       type: object
       properties:
@@ -3092,6 +3038,60 @@ components:
         pageCount:
           type: integer
           format: int32
+    AlertNotification:
+      type: object
+      required:
+      - notificationTypes
+      - recipient
+      properties:
+        recipient:
+          type: string
+          description: The entity to receive the notification.
+        notificationTypes:
+          type: array
+          description: The notification types the user will receive.
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - Sms
+            - Device
+            - Email
+            - Push
+        locale:
+          type: string
+          description: The locale whose language will be used when sending alerts.  Locale should be in theformat language_COUNTRY where language is always lower case and country is always upper case.
+    AlertSummaryEntity:
+      type: object
+      required:
+      - alerting
+      - entityType
+      properties:
+        entityType:
+          type: string
+          description: Specifies the type of entity being evaluated
+          enum:
+          - User
+          - Group
+          - Queue
+          - Team
+          - TeamMembers
+          - Organization
+        user:
+          description: User id of the entity being monitored
+          $ref: '#/components/schemas/AddressableEntityRef'
+        group:
+          description: Group id of the entity being monitored
+          $ref: '#/components/schemas/AddressableEntityRef'
+        queue:
+          description: Queue id of the entity being monitored
+          $ref: '#/components/schemas/AddressableEntityRef'
+        team:
+          description: Team id of the entity being monitored
+          $ref: '#/components/schemas/AddressableEntityRef'
+        alerting:
+          type: boolean
+          description: Flag that indicated if the entity is current causing the alert to be triggered
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

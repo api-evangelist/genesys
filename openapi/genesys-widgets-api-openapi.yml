@@ -733,6 +733,16 @@ paths:
         required: true
 components:
   schemas:
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
     WidgetDeploymentEntityListing:
       type: object
       properties:
@@ -743,16 +753,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WidgetDeployment'
-        selfUri:
-          type: string
-          format: uri
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
         selfUri:
           type: string
           format: uri
@@ -767,49 +767,6 @@ components:
           $ref: '#/components/schemas/WidgetClientConfigV1Http'
         third-party:
           $ref: '#/components/schemas/WidgetClientConfigThirdParty'
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    WidgetClientConfigV1Http:
-      type: object
-      properties:
-        webChatSkin:
-          type: string
-          enum:
-          - basic
-          - modern-caret-skin
-        authenticationUrl:
-          type: string
-          format: uri
     Limit:
       type: object
       properties:
@@ -914,6 +871,53 @@ components:
         value:
           type: integer
           format: int64
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    WidgetClientConfigV2:
+      type: object
+    WidgetClientConfigThirdParty:
+      type: object
+    WidgetClientConfigV1Http:
+      type: object
+      properties:
+        webChatSkin:
+          type: string
+          enum:
+          - basic
+          - modern-caret-skin
+        authenticationUrl:
+          type: string
+          format: uri
     Detail:
       type: object
       properties:
@@ -925,10 +929,6 @@ components:
           type: string
         entityName:
           type: string
-    WidgetClientConfigV2:
-      type: object
-    WidgetClientConfigThirdParty:
-      type: object
     WidgetDeployment:
       type: object
       properties:

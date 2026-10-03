@@ -8952,8 +8952,40 @@ paths:
       x-purecloud-method-name: getSpeechandtextanalyticsTranslationsLanguageConversation
 components:
   schemas:
-    Topic:
+    ProgramTranscriptionEngine:
       type: object
+      properties:
+        engine:
+          type: string
+          enum:
+          - Genesys
+          - GenesysExtended
+          - TranscriptionConnector
+        dialects:
+          type: array
+          items:
+            type: string
+        engineIntegration:
+          $ref: '#/components/schemas/EngineIntegration'
+    CommunicationTranslation:
+      type: object
+      required:
+      - communicationId
+      - transcripts
+      properties:
+        communicationId:
+          type: string
+          description: Communication Id
+        transcripts:
+          type: array
+          description: List of translated transcripts
+          items:
+            $ref: '#/components/schemas/TranscriptTranslation'
+    StaCategory:
+      type: object
+      required:
+      - criteria
+      - interactionType
       properties:
         id:
           type: string
@@ -8963,10 +8995,47 @@ components:
           type: string
         description:
           type: string
-        published:
-          type: boolean
+          description: The description of the category
+        interactionType:
+          type: string
+          description: The type of interaction the category will apply to
+          enum:
+          - Voice
+          - Digital
+          - All
+        criteria:
+          description: A collection of conditions joined together by logical operation to provide more refined filtering of conversations
+          $ref: '#/components/schemas/Operand'
+        createdBy:
+          description: The user who created the record
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The creation date of the record. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          description: The user who last modified the record
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The last modified date of the record. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TestTopicPhrasePhrase:
+      type: object
+      required:
+      - text
+      properties:
+        text:
+          type: string
+          description: The phrase text
         strictness:
           type: string
+          description: The phrase strictness, default value is null
           enum:
           - '1'
           - '55'
@@ -8974,49 +9043,95 @@ components:
           - '72'
           - '85'
           - '90'
-        matchingType:
+    ErrorBody:
+      type: object
+      properties:
+        message:
           type: string
-          enum:
-          - Lexical
-          - Semantic
-        programs:
-          type: array
-          items:
-            $ref: '#/components/schemas/BaseProgramEntity'
-        tags:
-          type: array
-          items:
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
             type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    GeneralProgramJobRequest:
+      type: object
+      required:
+      - dialect
+      properties:
         dialect:
           type: string
-        participants:
-          type: string
+          description: The dialect of the topics to link with the general program, dialect format is {language}-{country} where language follows ISO 639-1 standard and country follows ISO 3166-1 alpha 2 standard
           enum:
-          - External
-          - Internal
-          - All
-        phrases:
-          type: array
-          items:
-            $ref: '#/components/schemas/Phrase'
-        modifiedBy:
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateModified:
+          - ar-001
+          - ar-AE
+          - ar-BH
+          - ar-EG
+          - ar-IL
+          - ar-SA
+          - ar-TN
+          - da-DK
+          - de-CH
+          - de-DE
+          - en-AU
+          - en-GB
+          - en-HK
+          - en-IE
+          - en-IN
+          - en-NZ
+          - en-SG
+          - en-US
+          - en-ZA
+          - es-ES
+          - es-US
+          - fi-FI
+          - fr-CA
+          - fr-FR
+          - he-IL
+          - hi-IN
+          - it-IT
+          - ja-JP
+          - ko-KR
+          - nb-NO
+          - nl-NL
+          - pl-PL
+          - pt-BR
+          - pt-PT
+          - sv-SE
+          - tr-TR
+          - zh-CN
+          - zh-HK
+          - zh-TW
+          - zu-ZA
+        mode:
           type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        publishedBy:
-          $ref: '#/components/schemas/AddressableEntityRef'
-        datePublished:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Program:
+          description: The mode to use for the general program job, default value is Skip
+          enum:
+          - Skip
+          - Merge
+          - ReplaceMerge
+    BaseTopicEntitiy:
       type: object
       properties:
         id:
@@ -9025,45 +9140,96 @@ components:
           readOnly: true
         name:
           type: string
-        description:
-          type: string
-        published:
-          type: boolean
-        topics:
-          type: array
-          items:
-            $ref: '#/components/schemas/BaseTopicEntitiy'
-        tags:
-          type: array
-          items:
-            type: string
-        modifiedBy:
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        publishedBy:
-          $ref: '#/components/schemas/AddressableEntityRef'
-        datePublished:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        topicLinksJob:
-          $ref: '#/components/schemas/AddressableEntityRef'
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-    SpeechTextAnalyticsConversationSummaryListing:
+    UnpublishedProgramsEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/SpeechTextAnalyticsConversationSummary'
-    GeneralProgramJob:
+            $ref: '#/components/schemas/Program'
+        pageSize:
+          type: integer
+          format: int32
+        pageCount:
+          type: integer
+          format: int32
+        nextUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+    CategoryRequest:
+      type: object
+      required:
+      - criteria
+      - interactionType
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the category
+        description:
+          type: string
+          description: The description of the category
+        interactionType:
+          type: string
+          description: The type of interaction the category will apply to
+          enum:
+          - Voice
+          - Digital
+          - All
+        criteria:
+          description: A collection of conditions joined together by logical operation to provide more refined filtering of conversations
+          $ref: '#/components/schemas/Operand'
+    ParticipantMetrics:
+      type: object
+      properties:
+        agentDurationPercentage:
+          type: number
+          format: double
+          description: Percentage of Agent duration in the conversation
+        customerDurationPercentage:
+          type: number
+          format: double
+          description: Percentage of Customer duration in the conversation
+        silenceDurationPercentage:
+          type: number
+          format: double
+          description: Percentage of Silence duration in the conversation
+        ivrDurationPercentage:
+          type: number
+          format: double
+          description: Percentage of IVR duration in the conversation
+        acdDurationPercentage:
+          type: number
+          format: double
+          description: Percentage of ACD duration in the conversation
+        overtalkDurationPercentage:
+          type: number
+          format: double
+          description: Percentage of Overtalk duration in the conversation
+        otherDurationPercentage:
+          type: number
+          format: double
+          description: Percentage of Other events duration in the conversation
+        overtalkCount:
+          type: integer
+          format: int32
+          description: Number of Overtalks in the conversation
+    SentimentFeedbackEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SentimentFeedback'
+    TestTopicPhraseJob:
       type: object
       properties:
         id:
@@ -9086,11 +9252,26 @@ components:
           type: string
           format: date-time
           description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        processedTranscriptsCount:
+          type: integer
+          format: int32
+        matchedTranscriptsCount:
+          type: integer
+          format: int32
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
+    ProgramInsightsSettings:
+      type: object
+      properties:
+        program:
+          description: The ID of the program
+          $ref: '#/components/schemas/BaseProgramEntity'
+        enabled:
+          type: boolean
+          description: The program AI Insights settings
     ProgramTopicLinksJob:
       type: object
       properties:
@@ -9121,6 +9302,177 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    TranscriptionEnginesRequest:
+      type: object
+      required:
+      - transcriptionEngines
+      properties:
+        transcriptionEngines:
+          type: array
+          description: The transcription engine setting
+          items:
+            $ref: '#/components/schemas/ProgramTranscriptionEngine'
+    TopicsDefinitionsProgramMappings:
+      type: object
+      properties:
+        program:
+          $ref: '#/components/schemas/BaseProgramEntity'
+        queues:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressableEntityRef'
+        flows:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressableEntityRef'
+        modifiedBy:
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    TopicRequest:
+      type: object
+      required:
+      - dialect
+      - name
+      properties:
+        name:
+          type: string
+          description: The topic name
+        description:
+          type: string
+          description: The topic description
+        strictness:
+          type: string
+          description: The topic strictness, default value is 72
+          enum:
+          - '1'
+          - '55'
+          - '65'
+          - '72'
+          - '85'
+          - '90'
+        programIds:
+          type: array
+          description: The ids of programs associated to the topic
+          items:
+            type: string
+        tags:
+          type: array
+          description: The topic tags
+          items:
+            type: string
+        dialect:
+          type: string
+          description: The topic dialect
+        participants:
+          type: string
+          description: The topic participants, default value is All
+          enum:
+          - External
+          - Internal
+          - All
+        phrases:
+          type: array
+          description: The topic phrases
+          items:
+            $ref: '#/components/schemas/Phrase'
+    EngineIntegration:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ConversationCategoriesEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationCategory'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TestTopicPhraseJobRequest:
+      type: object
+      required:
+      - topic
+      properties:
+        topic:
+          description: The topic to test
+          $ref: '#/components/schemas/TestTopicPhraseTopic'
+        transcriptsFilters:
+          description: The transcripts filters
+          $ref: '#/components/schemas/TranscriptsFilters'
+    PhraseTranslation:
+      type: object
+      required:
+      - participantPurpose
+      - startTimeMs
+      - translatedText
+      properties:
+        startTimeMs:
+          type: integer
+          format: int64
+          description: Epoch start time of the phrase
+        participantPurpose:
+          type: string
+          description: Purpose of the participant associated with the phrase
+        translatedText:
+          type: string
+          description: Translation of the phrase
     SpeechTextAnalyticsConversationSummary:
       type: object
       properties:
@@ -9166,99 +9518,204 @@ components:
           description: Insights of the conversation
           items:
             $ref: '#/components/schemas/ConversationInsight'
-    TranscriptSearchCriteria:
+    ProgramJob:
       type: object
       properties:
-        endValue:
+        id:
           type: string
-          description: The end value of the range. This field is used for range search types.
-        values:
-          type: array
-          description: A list of values for the search to match against
-          items:
-            type: string
-        startValue:
-          type: string
-          description: The start value of the range. This field is used for range search types.
-        value:
-          type: string
-          description: A value for the search to match against
-        operator:
-          type: string
-          description: How to apply this search criteria against other criteria
-          enum:
-          - AND
-          - OR
-          - NOT
-        group:
-          type: array
-          description: Groups multiple conditions
-          items:
-            $ref: '#/components/schemas/TranscriptSearchCriteria'
-        dateFormat:
-          type: string
-          description: Set date format for criteria values when using date range search type.  Supports Java date format syntax, example yyyy-MM-dd'T'HH:mm:ss.SSSX.
-        type:
+          description: The globally unique identifier for the object.
+          readOnly: true
+        state:
           type: string
           enum:
-          - EXACT
-          - EXACT_PHRASE
-          - PHRASE
-          - DATE_RANGE
-          - RANGE
-          - GREATER_THAN
-          - LESS_THAN
-          - REQUIRED_FIELDS
-        fields:
+          - Running
+          - Completed
+          - Failed
+        programs:
           type: array
-          description: Field names to search against
+          items:
+            $ref: '#/components/schemas/BaseProgramEntity'
+        createdBy:
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ProgramMappingsRequest:
+      type: object
+      required:
+      - flowIds
+      - queueIds
+      properties:
+        queueIds:
+          type: array
+          description: The program queues
           items:
             type: string
-          x-genesys-search-fields:
-            value:
-            - transcript.content
-            - language
-            - mediaType
-            - divisionId
-            - communicationId
-            - conversationId
-            - conversationSentimentScore
-            - conversationSentimentTrend
-            - participants.initialDirection
-            - participants.participantPurpose
-            - participants.queueId
-            - participants.userId
-            - topic
-            - transcriptId
-    SentimentFeedbackEntityListing:
+        flowIds:
+          type: array
+          description: The program flows
+          items:
+            type: string
+    ProgramTranscriptionEngines:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        program:
+          description: The ID of the program
+          $ref: '#/components/schemas/BaseProgramEntity'
+        transcriptionEngines:
+          type: array
+          description: The program transcription engine settings
+          items:
+            $ref: '#/components/schemas/ProgramTranscriptionEngine'
+        modifiedBy:
+          description: The user last modified the record
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The last modified date of the record. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    OperandPosition:
+      type: object
+      properties:
+        startingPositionValue:
+          type: integer
+          format: int32
+          description: Defines starting point of a position range - number of seconds or words from the start or from the end of the interaction
+        startingPositionDirection:
+          type: string
+          description: Dictates starting position directionality
+          enum:
+          - FromStart
+          - FromEnd
+        endingPositionValue:
+          type: integer
+          format: int32
+          description: Defines ending point of a position range - number of seconds or words from the start or from the end of the interaction
+        endingPositionDirection:
+          type: string
+          description: Dictates ending position directionality
+          enum:
+          - FromStart
+          - FromEnd
+    CategoriesEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/SentimentFeedback'
-    ConversationCategory:
+            $ref: '#/components/schemas/StaCategory'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    Operand:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: The Operand type of the category
+          enum:
+          - Term
+          - Topic
+          - OperandGroup
+        occurrence:
+          type: integer
+          format: int32
+          description: The minimum number of occurrences of the defined operand type
+        inverted:
+          type: boolean
+          description: Applies a NOT modifier to the operand group
+        term:
+          description: Filter interaction by word(s)
+          $ref: '#/components/schemas/Term'
+        topicId:
+          type: string
+          description: Filter interaction by topic ID
+        voiceSecondsPosition:
+          description: Dictates when the operand must occur in a voice interaction
+          $ref: '#/components/schemas/OperandPosition'
+        digitalWordsPosition:
+          description: Dictates when the operand must occur in a digital interaction
+          $ref: '#/components/schemas/OperandPosition'
+        infixOperator:
+          description: Defines a logical operation that is applied on the current operand, against the following operand
+          $ref: '#/components/schemas/InfixOperator'
+        operands:
+          type: array
+          description: Contains a new level of operands
+          items:
+            $ref: '#/components/schemas/Operand'
+    BaseProgramEntity:
       type: object
       properties:
         id:
           type: string
-          description: The id of the category
+          description: The globally unique identifier for the object.
+          readOnly: true
         name:
           type: string
-          description: The name of the category
-        description:
+        selfUri:
           type: string
-          description: The description of the category
-        interactionType:
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    SearchSort:
+      type: object
+      properties:
+        sortOrder:
           type: string
-          description: The type of interaction the category will apply to
+          description: The sort order for results
           enum:
-          - Voice
-          - Digital
-          - All
-        criteria:
-          description: A collection of conditions joined together by logical operation to provide more refined filtering of conversations
-          $ref: '#/components/schemas/Operand'
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
     DeleteProgramResponse:
       type: object
       properties:
@@ -9273,25 +9730,49 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    TopicJobRequest:
+    ListedProgram:
       type: object
-      required:
-      - topicIds
       properties:
-        topicIds:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+        published:
+          type: boolean
+        topicsCount:
+          type: integer
+          format: int32
+        tags:
           type: array
-          description: The ids of the topics used for this job
           items:
             type: string
-    SegmentUrl:
-      type: object
-      properties:
-        recording:
-          description: The Recording Reference
+        modifiedBy:
           $ref: '#/components/schemas/AddressableEntityRef'
-        url:
+        dateModified:
           type: string
-          description: The pre-signed S3 URL of the transcript
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    SentimentInsightEntry:
+      type: object
+      required:
+      - description
+      - title
+      properties:
+        title:
+          type: string
+          description: The title given to the insight
+        description:
+          type: string
+          description: A short description of the insight
     TranscriptSearchRequest:
       type: object
       required:
@@ -9334,6 +9815,276 @@ components:
           description: The search criteria
           items:
             $ref: '#/components/schemas/TranscriptSearchCriteria'
+    ProgramRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The program name
+        description:
+          type: string
+          description: The program description
+        topicIds:
+          type: array
+          description: The ids of topics associated to the program
+          items:
+            type: string
+        tags:
+          type: array
+          description: The program tags
+          items:
+            type: string
+    ConversationCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the category
+        name:
+          type: string
+          description: The name of the category
+        description:
+          type: string
+          description: The description of the category
+        interactionType:
+          type: string
+          description: The type of interaction the category will apply to
+          enum:
+          - Voice
+          - Digital
+          - All
+        criteria:
+          description: A collection of conditions joined together by logical operation to provide more refined filtering of conversations
+          $ref: '#/components/schemas/Operand'
+    TopicJob:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        state:
+          type: string
+          enum:
+          - Running
+          - Completed
+          - Failed
+        topics:
+          type: array
+          items:
+            $ref: '#/components/schemas/BaseTopicEntitiy'
+        createdBy:
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    SupportedDialectsTranscriptionEngine:
+      type: object
+      properties:
+        engine:
+          type: string
+          enum:
+          - Genesys
+          - GenesysExtended
+          - TranscriptionConnector
+        dialects:
+          type: array
+          items:
+            type: string
+        engineIntegration:
+          $ref: '#/components/schemas/EngineIntegration'
+    InfixOperator:
+      type: object
+      required:
+      - operatorType
+      properties:
+        operatorType:
+          type: string
+          description: The logical operation that is applied on the operand against the following operand
+          enum:
+          - Or
+          - And
+          - Near
+        operatorPosition:
+          description: Dictates when the following operand should occur relative to current operand
+          $ref: '#/components/schemas/OperatorPosition'
+    OperatorPosition:
+      type: object
+      properties:
+        voiceSecondsPosition:
+          type: integer
+          format: int32
+          description: Number of seconds (for voice interactions) from operand match
+        digitalWordsPosition:
+          type: integer
+          format: int32
+          description: Number of words (for digital interactions) from operand match
+    DictionaryFeedbackEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListedDictionaryFeedback'
+        pageSize:
+          type: integer
+          format: int32
+        pageCount:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int32
+        selfUri:
+          type: string
+        nextUri:
+          type: string
+    TopicJobRequest:
+      type: object
+      required:
+      - topicIds
+      properties:
+        topicIds:
+          type: array
+          description: The ids of the topics used for this job
+          items:
+            type: string
+    ProgramsEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListedProgram'
+        pageSize:
+          type: integer
+          format: int32
+        nextUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    ListedDictionaryFeedback:
+      type: object
+      required:
+      - dialect
+      - term
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        term:
+          type: string
+          description: The dictionary term which needs to be added to dictionary feedback system
+        dialect:
+          type: string
+          example: en-US
+          description: The dialect for the given term, dialect format is {language}-{country} where language follows ISO 639-1 standard and country follows ISO 3166-1 alpha 2 standard
+        boostValue:
+          type: number
+          format: float
+          description: A weighted value assigned to a phrase. The higher the value, the higher the likelihood that the system will choose the word or phrase from the possible alternatives. Boost range is from 1.0 to 10.0. Default is 2.0
+        source:
+          type: string
+          description: The source of the given dictionary feedback
+          readOnly: true
+          enum:
+          - Manual
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The Timestamp when dictionary feedback created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        createdBy:
+          description: The Id of the user who created the dictionary feedback
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The Timestamp when dictionary feedback modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        modifiedBy:
+          description: The Id of the user who modified the dictionary feedback
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        transcriptionEngine:
+          type: string
+          description: The transcription engine for the dictionary feedback. Only returned when GenesysExtended feature is enabled.
+          enum:
+          - Genesys
+          - GenesysExtended
+        status:
+          type: string
+          description: The status of the dictionary feedback
+          readOnly: true
+          enum:
+          - Active
+          - Pending
+          - Failed
+          - Saved
+          - Invalid
+        invalidReason:
+          type: string
+          description: The reason the dictionary feedback is invalid
+          readOnly: true
+        displayAs:
+          type: string
+          description: The display name for the dictionary feedback.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    SentimentData:
+      type: object
+      properties:
+        insights:
+          description: The sentiment insights extracted from the conversation
+          $ref: '#/components/schemas/SentimentInsights'
+    TranscriptUrl:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The pre-signed S3 URL of the transcript
+    SentimentInsights:
+      type: object
+      properties:
+        positiveSentimentReasons:
+          type: array
+          description: The reasons for positive sentiment found in the conversation
+          items:
+            $ref: '#/components/schemas/SentimentInsightEntry'
+        negativeSentimentReasons:
+          type: array
+          description: The reasons for negative sentiment found in the conversation
+          items:
+            $ref: '#/components/schemas/SentimentInsightEntry'
+    UnifiedGeneralTopicEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnifiedGeneralTopic'
     DictionaryFeedback:
       type: object
       required:
@@ -9417,254 +10168,182 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    InfixOperator:
+    ConversationInsight:
       type: object
-      required:
-      - operatorType
       properties:
-        operatorType:
+        type:
           type: string
-          description: The logical operation that is applied on the operand against the following operand
+          description: The type of insight
           enum:
-          - Or
-          - And
-          - Near
-        operatorPosition:
-          description: Dictates when the following operand should occur relative to current operand
-          $ref: '#/components/schemas/OperatorPosition'
-    GeneralProgramJobRequest:
-      type: object
-      required:
-      - dialect
-      properties:
-        dialect:
+          - Reason
+          - Resolution
+          - ActionItem
+        title:
           type: string
-          description: The dialect of the topics to link with the general program, dialect format is {language}-{country} where language follows ISO 639-1 standard and country follows ISO 3166-1 alpha 2 standard
-          enum:
-          - ar-001
-          - ar-AE
-          - ar-BH
-          - ar-EG
-          - ar-IL
-          - ar-SA
-          - ar-TN
-          - da-DK
-          - de-CH
-          - de-DE
-          - en-AU
-          - en-GB
-          - en-HK
-          - en-IE
-          - en-IN
-          - en-NZ
-          - en-SG
-          - en-US
-          - en-ZA
-          - es-ES
-          - es-US
-          - fi-FI
-          - fr-CA
-          - fr-FR
-          - he-IL
-          - hi-IN
-          - it-IT
-          - ja-JP
-          - ko-KR
-          - nb-NO
-          - nl-NL
-          - pl-PL
-          - pt-BR
-          - pt-PT
-          - sv-SE
-          - tr-TR
-          - zh-CN
-          - zh-HK
-          - zh-TW
-          - zu-ZA
-        mode:
+          description: The reason for contact, resolution for the interaction, or follow-up action item
+        description:
           type: string
-          description: The mode to use for the general program job, default value is Skip
-          enum:
-          - Skip
-          - Merge
-          - ReplaceMerge
-    PhraseTranslation:
-      type: object
-      required:
-      - participantPurpose
-      - startTimeMs
-      - translatedText
-      properties:
-        startTimeMs:
-          type: integer
-          format: int64
-          description: Epoch start time of the phrase
-        participantPurpose:
+          description: Reasoning for the given insight
+        outcome:
           type: string
-          description: Purpose of the participant associated with the phrase
-        translatedText:
-          type: string
-          description: Translation of the phrase
-    ConversationCategoriesEntityListing:
+          description: The outcome of a given resolution insight
+    TranslateSupportedLanguageList:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/ConversationCategory'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
+            $ref: '#/components/schemas/TranslateSupportedLanguage'
+    DictionaryFeedbackExamplePhrase:
+      type: object
+      required:
+      - phrase
+      properties:
+        phrase:
+          type: string
+          description: The Example Phrase text. At least 3 words and up to 20 words
+        source:
+          type: string
+          description: The source of the given Example Phrase
+          enum:
+          - Manual
+    JsonSearchResponse:
+      type: object
+      required:
+      - pageCount
+      - pageNumber
+      - pageSize
+      - results
+      - total
+      - types
+      properties:
         total:
           type: integer
           format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
+          description: The total number of results found
         pageCount:
           type: integer
           format: int32
-    TranslateSupportedLanguage:
-      type: object
-      required:
-      - languageCode
-      - languageName
-      properties:
-        languageName:
-          type: string
-          description: Supported translation language name, natively spelled (ex. Español)
-        languageCode:
-          type: string
-          description: Supported translation language code. See - https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html#what-is-languages-supported
-    TestTopicPhraseJobs:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        state:
-          type: string
-          enum:
-          - Running
-          - Completed
-          - Failed
-        createdBy:
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        action:
-          type: string
-        entityType:
-          type: string
-          enum:
-          - TOPIC
-          - PROGRAM
-          - PROGRAM_TOPIC_LINK
-          - TOPIC_PHRASE
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UnifiedGeneralTopicEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/UnifiedGeneralTopic'
-    SupportedDialectsTranscriptionEngine:
-      type: object
-      properties:
-        engine:
-          type: string
-          enum:
-          - Genesys
-          - GenesysExtended
-          - TranscriptionConnector
-        dialects:
-          type: array
-          items:
-            type: string
-        engineIntegration:
-          $ref: '#/components/schemas/EngineIntegration'
-    TestTopicPhraseJobRequest:
-      type: object
-      required:
-      - topic
-      properties:
-        topic:
-          description: The topic to test
-          $ref: '#/components/schemas/TestTopicPhraseTopic'
-        transcriptsFilters:
-          description: The transcripts filters
-          $ref: '#/components/schemas/TranscriptsFilters'
-    TestTopicPhrasePhrase:
-      type: object
-      required:
-      - text
-      properties:
-        text:
-          type: string
-          description: The phrase text
-        strictness:
-          type: string
-          description: The phrase strictness, default value is null
-          enum:
-          - '1'
-          - '55'
-          - '65'
-          - '72'
-          - '85'
-          - '90'
-    ProgramInsightsSettingsEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProgramInsightsSettings'
+          description: The total number of pages
         pageSize:
           type: integer
           format: int32
+          description: The current page size
         pageNumber:
+          type: integer
+          format: int32
+          description: The current page number
+        types:
+          type: array
+          description: Resource types the search was performed against
+          items:
+            type: string
+        results:
+          description: Search results
+          $ref: '#/components/schemas/ArrayNode'
+        aggregations:
+          $ref: '#/components/schemas/ArrayNode'
+    TranscriptTranslation:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: Transcript Id
+        phrases:
+          type: array
+          description: List of translated phrases, if translation succeeded
+          items:
+            $ref: '#/components/schemas/PhraseTranslation'
+        translateError:
+          type: string
+          description: Translation error, if translation failed
+    CommunicationTranslationList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommunicationTranslation'
+    TranscriptSearchCriteria:
+      type: object
+      properties:
+        endValue:
+          type: string
+          description: The end value of the range. This field is used for range search types.
+        values:
+          type: array
+          description: A list of values for the search to match against
+          items:
+            type: string
+        startValue:
+          type: string
+          description: The start value of the range. This field is used for range search types.
+        value:
+          type: string
+          description: A value for the search to match against
+        operator:
+          type: string
+          description: How to apply this search criteria against other criteria
+          enum:
+          - AND
+          - OR
+          - NOT
+        group:
+          type: array
+          description: Groups multiple conditions
+          items:
+            $ref: '#/components/schemas/TranscriptSearchCriteria'
+        dateFormat:
+          type: string
+          description: Set date format for criteria values when using date range search type.  Supports Java date format syntax, example yyyy-MM-dd'T'HH:mm:ss.SSSX.
+        type:
+          type: string
+          enum:
+          - EXACT
+          - EXACT_PHRASE
+          - PHRASE
+          - DATE_RANGE
+          - RANGE
+          - GREATER_THAN
+          - LESS_THAN
+          - REQUIRED_FIELDS
+        fields:
+          type: array
+          description: Field names to search against
+          items:
+            type: string
+          x-genesys-search-fields:
+            value:
+            - transcript.content
+            - language
+            - mediaType
+            - divisionId
+            - communicationId
+            - conversationId
+            - conversationSentimentScore
+            - conversationSentimentTrend
+            - participants.initialDirection
+            - participants.participantPurpose
+            - participants.queueId
+            - participants.userId
+            - topic
+            - transcriptId
+    TopicsEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListedTopic'
+        pageSize:
           type: integer
           format: int32
         total:
           type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
+          format: int32
         nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
           type: string
           format: uri
         selfUri:
@@ -9707,149 +10386,46 @@ components:
           description: The Id of user who created the sentiment feedback
           readOnly: true
           $ref: '#/components/schemas/AddressableEntityRef'
-    GeneralTopic:
+    Program:
       type: object
       properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
         name:
           type: string
-    DictionaryFeedbackEntityListing:
-      type: object
-      properties:
-        entities:
+        description:
+          type: string
+        published:
+          type: boolean
+        topics:
           type: array
           items:
-            $ref: '#/components/schemas/ListedDictionaryFeedback'
-        pageSize:
-          type: integer
-          format: int32
-        pageCount:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int32
-        selfUri:
-          type: string
-        nextUri:
-          type: string
-    EmpathyScore:
-      type: object
-      properties:
-        score:
-          type: number
-          format: double
-          description: Empathy score of the agent involved in the conversation
-        userId:
-          type: string
-          description: UserId of the agent involved in the conversation
-    CommunicationTranslationList:
-      type: object
-      properties:
-        entities:
+            $ref: '#/components/schemas/BaseTopicEntitiy'
+        tags:
           type: array
           items:
-            $ref: '#/components/schemas/CommunicationTranslation'
-    ProgramJob:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        state:
-          type: string
-          enum:
-          - Running
-          - Completed
-          - Failed
-        programs:
-          type: array
-          items:
-            $ref: '#/components/schemas/BaseProgramEntity'
-        createdBy:
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ProgramTranscriptionEngines:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        program:
-          description: The ID of the program
-          $ref: '#/components/schemas/BaseProgramEntity'
-        transcriptionEngines:
-          type: array
-          description: The program transcription engine settings
-          items:
-            $ref: '#/components/schemas/ProgramTranscriptionEngine'
-        modifiedBy:
-          description: The user last modified the record
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The last modified date of the record. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
             type: string
-        contextId:
+        modifiedBy:
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateModified:
           type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    TranscriptionEnginesRequest:
-      type: object
-      required:
-      - transcriptionEngines
-      properties:
-        transcriptionEngines:
-          type: array
-          description: The transcription engine setting
-          items:
-            $ref: '#/components/schemas/ProgramTranscriptionEngine'
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        publishedBy:
+          $ref: '#/components/schemas/AddressableEntityRef'
+        datePublished:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        topicLinksJob:
+          $ref: '#/components/schemas/AddressableEntityRef'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     ProgramJobRequest:
       type: object
       required:
@@ -9860,21 +10436,18 @@ components:
           description: The ids of the programs used for this job
           items:
             type: string
-    SentimentData:
+    TranslateSupportedLanguage:
       type: object
+      required:
+      - languageCode
+      - languageName
       properties:
-        insights:
-          description: The sentiment insights extracted from the conversation
-          $ref: '#/components/schemas/SentimentInsights'
-    ProgramInsightsSettings:
-      type: object
-      properties:
-        program:
-          description: The ID of the program
-          $ref: '#/components/schemas/BaseProgramEntity'
-        enabled:
-          type: boolean
-          description: The program AI Insights settings
+        languageName:
+          type: string
+          description: Supported translation language name, natively spelled (ex. Español)
+        languageCode:
+          type: string
+          description: Supported translation language code. See - https://docs.aws.amazon.com/translate/latest/dg/what-is-languages.html#what-is-languages-supported
     Limit:
       type: object
       properties:
@@ -9979,127 +10552,23 @@ components:
         value:
           type: integer
           format: int64
-    TopicsDefinitionsProgramMappings:
+    SpeechTextAnalyticsSettingsRequest:
       type: object
       properties:
-        program:
-          $ref: '#/components/schemas/BaseProgramEntity'
-        queues:
+        defaultProgramId:
+          type: string
+          description: Setting to choose name for the default program for topic detection
+        expectedDialects:
           type: array
+          description: Setting to choose expected dialects
           items:
-            $ref: '#/components/schemas/AddressableEntityRef'
-        flows:
-          type: array
-          items:
-            $ref: '#/components/schemas/AddressableEntityRef'
-        modifiedBy:
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    SentimentInsightEntry:
-      type: object
-      required:
-      - description
-      - title
-      properties:
-        title:
-          type: string
-          description: The title given to the insight
-        description:
-          type: string
-          description: A short description of the insight
-    TestTopicPhraseTopic:
-      type: object
-      required:
-      - dialect
-      - phrase
-      properties:
-        phrase:
-          description: The topic phrase to test
-          $ref: '#/components/schemas/TestTopicPhrasePhrase'
-        strictness:
-          type: string
-          description: The topic strictness, default value is 72
-          enum:
-          - '1'
-          - '55'
-          - '65'
-          - '72'
-          - '85'
-          - '90'
-        dialect:
-          type: string
-          description: The topic dialect, default value is en-US
-        participants:
-          type: string
-          description: The topic participants, default value is both
-          enum:
-          - External
-          - Internal
-          - All
-    TranscriptTranslation:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: Transcript Id
-        phrases:
-          type: array
-          description: List of translated phrases, if translation succeeded
-          items:
-            $ref: '#/components/schemas/PhraseTranslation'
-        translateError:
-          type: string
-          description: Translation error, if translation failed
-    OperandPosition:
-      type: object
-      properties:
-        startingPositionValue:
-          type: integer
-          format: int32
-          description: Defines starting point of a position range - number of seconds or words from the start or from the end of the interaction
-        startingPositionDirection:
-          type: string
-          description: Dictates starting position directionality
-          enum:
-          - FromStart
-          - FromEnd
-        endingPositionValue:
-          type: integer
-          format: int32
-          description: Defines ending point of a position range - number of seconds or words from the start or from the end of the interaction
-        endingPositionDirection:
-          type: string
-          description: Dictates ending position directionality
-          enum:
-          - FromStart
-          - FromEnd
-    DictionaryFeedbackExamplePhrase:
-      type: object
-      required:
-      - phrase
-      properties:
-        phrase:
-          type: string
-          description: The Example Phrase text. At least 3 words and up to 20 words
-        source:
-          type: string
-          description: The source of the given Example Phrase
-          enum:
-          - Manual
-    EntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            type: object
-    ArrayNode:
-      type: object
+            type: string
+        textAnalyticsEnabled:
+          type: boolean
+          description: Setting to enable/disable text analytics
+        agentEmpathyEnabled:
+          type: boolean
+          description: Setting to enable/disable Agent Empathy setting
     SpeechTextAnalyticsSettingsResponse:
       type: object
       properties:
@@ -10117,34 +10586,13 @@ components:
         agentEmpathyEnabled:
           type: boolean
           description: Setting to enable/disable Agent Empathy setting
-    TranslateSupportedLanguageList:
+    TopicsDefinitionsProgramsMappingsEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/TranslateSupportedLanguage'
-    BaseTopicEntitiy:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UnpublishedProgramsEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Program'
+            $ref: '#/components/schemas/TopicsDefinitionsProgramMappings'
         pageSize:
           type: integer
           format: int32
@@ -10157,20 +10605,6 @@ components:
         selfUri:
           type: string
           format: uri
-    SupportedDialectsEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/SupportedDialectsTranscriptionEngine'
-    GeneralTopicsEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/GeneralTopic'
     InsightsSettingsRequest:
       type: object
       required:
@@ -10179,6 +10613,96 @@ components:
         enabled:
           type: boolean
           description: The AI Insights setting
+    EmpathyScore:
+      type: object
+      properties:
+        score:
+          type: number
+          format: double
+          description: Empathy score of the agent involved in the conversation
+        userId:
+          type: string
+          description: UserId of the agent involved in the conversation
+    TestTopicPhraseJobs:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        state:
+          type: string
+          enum:
+          - Running
+          - Completed
+          - Failed
+        createdBy:
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        action:
+          type: string
+        entityType:
+          type: string
+          enum:
+          - TOPIC
+          - PROGRAM
+          - PROGRAM_TOPIC_LINK
+          - TOPIC_PHRASE
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Phrase:
+      type: object
+      required:
+      - text
+      properties:
+        text:
+          type: string
+          description: The phrase text
+        strictness:
+          type: string
+          description: The phrase strictness, default value is null
+          enum:
+          - '1'
+          - '55'
+          - '65'
+          - '72'
+          - '85'
+          - '90'
+        sentiment:
+          type: string
+          description: 'The phrase sentiment, default value is Unspecified. Note: Sentiment value for phrases is currently not in use and has no impact to the system.'
+          enum:
+          - Unspecified
+          - Positive
+          - Neutral
+          - Negative
+        isAIGenerated:
+          type: boolean
+          description: Indicates whether the phrase is AI generated
+    SpeechTextAnalyticsConversationSummaryListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeechTextAnalyticsConversationSummary'
+    SupportedDialectsEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportedDialectsTranscriptionEngine'
     ListedTopic:
       type: object
       properties:
@@ -10235,25 +10759,88 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    AddressableEntityRef:
+    ConversationMetrics:
+      type: object
+      properties:
+        conversation:
+          description: The Conversation Reference
+          $ref: '#/components/schemas/AddressableEntityRef'
+        sentimentScore:
+          type: number
+          format: double
+          description: The Sentiment Score
+        sentimentTrend:
+          type: number
+          format: double
+          description: The Sentiment Trend
+        sentimentTrendClass:
+          type: string
+          description: The Sentiment Trend Class
+          enum:
+          - NotCalculated
+          - Declining
+          - SlightlyDeclining
+          - NoChange
+          - SlightlyImproving
+          - Improving
+        empathyScores:
+          type: array
+          description: The Empathy Scores
+          items:
+            $ref: '#/components/schemas/EmpathyScore'
+        participantMetrics:
+          description: The Participant Metrics
+          $ref: '#/components/schemas/ParticipantMetrics'
+    GeneralProgramJob:
       type: object
       properties:
         id:
           type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        state:
+          type: string
+          enum:
+          - Running
+          - Completed
+          - Failed
+        createdBy:
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
         selfUri:
           type: string
           format: uri
-    Phrase:
+          description: The URI for this object
+          readOnly: true
+    GeneralTopicsEntityListing:
       type: object
-      required:
-      - text
       properties:
-        text:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeneralTopic'
+    Topic:
+      type: object
+      properties:
+        id:
           type: string
-          description: The phrase text
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+        published:
+          type: boolean
         strictness:
           type: string
-          description: The phrase strictness, default value is null
           enum:
           - '1'
           - '55'
@@ -10261,36 +10848,77 @@ components:
           - '72'
           - '85'
           - '90'
-        sentiment:
+        matchingType:
           type: string
-          description: 'The phrase sentiment, default value is Unspecified. Note: Sentiment value for phrases is currently not in use and has no impact to the system.'
           enum:
-          - Unspecified
-          - Positive
-          - Neutral
-          - Negative
-        isAIGenerated:
-          type: boolean
-          description: Indicates whether the phrase is AI generated
-    ConversationInsight:
+          - Lexical
+          - Semantic
+        programs:
+          type: array
+          items:
+            $ref: '#/components/schemas/BaseProgramEntity'
+        tags:
+          type: array
+          items:
+            type: string
+        dialect:
+          type: string
+        participants:
+          type: string
+          enum:
+          - External
+          - Internal
+          - All
+        phrases:
+          type: array
+          items:
+            $ref: '#/components/schemas/Phrase'
+        modifiedBy:
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        publishedBy:
+          $ref: '#/components/schemas/AddressableEntityRef'
+        datePublished:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TestTopicPhraseTopic:
       type: object
+      required:
+      - dialect
+      - phrase
       properties:
-        type:
+        phrase:
+          description: The topic phrase to test
+          $ref: '#/components/schemas/TestTopicPhrasePhrase'
+        strictness:
           type: string
-          description: The type of insight
+          description: The topic strictness, default value is 72
           enum:
-          - Reason
-          - Resolution
-          - ActionItem
-        title:
+          - '1'
+          - '55'
+          - '65'
+          - '72'
+          - '85'
+          - '90'
+        dialect:
           type: string
-          description: The reason for contact, resolution for the interaction, or follow-up action item
-        description:
+          description: The topic dialect, default value is en-US
+        participants:
           type: string
-          description: Reasoning for the given insight
-        outcome:
-          type: string
-          description: The outcome of a given resolution insight
+          description: The topic participants, default value is both
+          enum:
+          - External
+          - Internal
+          - All
     TranscriptsFilters:
       type: object
       properties:
@@ -10327,716 +10955,13 @@ components:
           description: list of flows ids to filter by
           items:
             type: string
-    StaCategory:
-      type: object
-      required:
-      - criteria
-      - interactionType
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        description:
-          type: string
-          description: The description of the category
-        interactionType:
-          type: string
-          description: The type of interaction the category will apply to
-          enum:
-          - Voice
-          - Digital
-          - All
-        criteria:
-          description: A collection of conditions joined together by logical operation to provide more refined filtering of conversations
-          $ref: '#/components/schemas/Operand'
-        createdBy:
-          description: The user who created the record
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The creation date of the record. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          description: The user who last modified the record
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The last modified date of the record. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ProgramsEntityListing:
+    ProgramInsightsSettingsEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/ListedProgram'
-        pageSize:
-          type: integer
-          format: int32
-        nextUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    SpeechTextAnalyticsSettingsRequest:
-      type: object
-      properties:
-        defaultProgramId:
-          type: string
-          description: Setting to choose name for the default program for topic detection
-        expectedDialects:
-          type: array
-          description: Setting to choose expected dialects
-          items:
-            type: string
-        textAnalyticsEnabled:
-          type: boolean
-          description: Setting to enable/disable text analytics
-        agentEmpathyEnabled:
-          type: boolean
-          description: Setting to enable/disable Agent Empathy setting
-    ListedDictionaryFeedback:
-      type: object
-      required:
-      - dialect
-      - term
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        term:
-          type: string
-          description: The dictionary term which needs to be added to dictionary feedback system
-        dialect:
-          type: string
-          example: en-US
-          description: The dialect for the given term, dialect format is {language}-{country} where language follows ISO 639-1 standard and country follows ISO 3166-1 alpha 2 standard
-        boostValue:
-          type: number
-          format: float
-          description: A weighted value assigned to a phrase. The higher the value, the higher the likelihood that the system will choose the word or phrase from the possible alternatives. Boost range is from 1.0 to 10.0. Default is 2.0
-        source:
-          type: string
-          description: The source of the given dictionary feedback
-          readOnly: true
-          enum:
-          - Manual
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The Timestamp when dictionary feedback created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        createdBy:
-          description: The Id of the user who created the dictionary feedback
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The Timestamp when dictionary feedback modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        modifiedBy:
-          description: The Id of the user who modified the dictionary feedback
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        transcriptionEngine:
-          type: string
-          description: The transcription engine for the dictionary feedback. Only returned when GenesysExtended feature is enabled.
-          enum:
-          - Genesys
-          - GenesysExtended
-        status:
-          type: string
-          description: The status of the dictionary feedback
-          readOnly: true
-          enum:
-          - Active
-          - Pending
-          - Failed
-          - Saved
-          - Invalid
-        invalidReason:
-          type: string
-          description: The reason the dictionary feedback is invalid
-          readOnly: true
-        displayAs:
-          type: string
-          description: The display name for the dictionary feedback.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    TestTopicPhraseJob:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        state:
-          type: string
-          enum:
-          - Running
-          - Completed
-          - Failed
-        createdBy:
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        processedTranscriptsCount:
-          type: integer
-          format: int32
-        matchedTranscriptsCount:
-          type: integer
-          format: int32
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UnifiedGeneralTopic:
-      type: object
-      properties:
-        name:
-          type: string
-        status:
-          type: string
-          enum:
-          - Deprecated
-          - Outdated
-          - Modified
-          - UpToDate
-          - ToBeCreated
-          - CreatedByUser
-    TopicJob:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        state:
-          type: string
-          enum:
-          - Running
-          - Completed
-          - Failed
-        topics:
-          type: array
-          items:
-            $ref: '#/components/schemas/BaseTopicEntitiy'
-        createdBy:
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    BaseProgramEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    TranscriptUrls:
-      type: object
-      properties:
-        conversation:
-          description: The Conversation Reference
-          $ref: '#/components/schemas/AddressableEntityRef'
-        communicationId:
-          type: string
-          description: The Communication ID
-        urls:
-          type: array
-          description: List of Transcript URLs
-          items:
-            $ref: '#/components/schemas/SegmentUrl'
-    ListedProgram:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        description:
-          type: string
-        published:
-          type: boolean
-        topicsCount:
-          type: integer
-          format: int32
-        tags:
-          type: array
-          items:
-            type: string
-        modifiedBy:
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    SentimentInsights:
-      type: object
-      properties:
-        positiveSentimentReasons:
-          type: array
-          description: The reasons for positive sentiment found in the conversation
-          items:
-            $ref: '#/components/schemas/SentimentInsightEntry'
-        negativeSentimentReasons:
-          type: array
-          description: The reasons for negative sentiment found in the conversation
-          items:
-            $ref: '#/components/schemas/SentimentInsightEntry'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    SearchSort:
-      type: object
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-    JsonSearchResponse:
-      type: object
-      required:
-      - pageCount
-      - pageNumber
-      - pageSize
-      - results
-      - total
-      - types
-      properties:
-        total:
-          type: integer
-          format: int64
-          description: The total number of results found
-        pageCount:
-          type: integer
-          format: int32
-          description: The total number of pages
-        pageSize:
-          type: integer
-          format: int32
-          description: The current page size
-        pageNumber:
-          type: integer
-          format: int32
-          description: The current page number
-        types:
-          type: array
-          description: Resource types the search was performed against
-          items:
-            type: string
-        results:
-          description: Search results
-          $ref: '#/components/schemas/ArrayNode'
-        aggregations:
-          $ref: '#/components/schemas/ArrayNode'
-    Term:
-      type: object
-      required:
-      - participantType
-      - word
-      properties:
-        word:
-          type: string
-          description: Find term in interaction
-        participantType:
-          type: string
-          description: Dictates if term operand must come from the internal, external or both participants
-          enum:
-          - Internal
-          - External
-          - Both
-    ProgramTranscriptionEngine:
-      type: object
-      properties:
-        engine:
-          type: string
-          enum:
-          - Genesys
-          - GenesysExtended
-          - TranscriptionConnector
-        dialects:
-          type: array
-          items:
-            type: string
-        engineIntegration:
-          $ref: '#/components/schemas/EngineIntegration'
-    EngineIntegration:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CommunicationTranslation:
-      type: object
-      required:
-      - communicationId
-      - transcripts
-      properties:
-        communicationId:
-          type: string
-          description: Communication Id
-        transcripts:
-          type: array
-          description: List of translated transcripts
-          items:
-            $ref: '#/components/schemas/TranscriptTranslation'
-    TopicsEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ListedTopic'
-        pageSize:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int32
-        nextUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    TopicsDefinitionsProgramsMappingsEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/TopicsDefinitionsProgramMappings'
-        pageSize:
-          type: integer
-          format: int32
-        pageCount:
-          type: integer
-          format: int32
-        nextUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-    ConversationMetrics:
-      type: object
-      properties:
-        conversation:
-          description: The Conversation Reference
-          $ref: '#/components/schemas/AddressableEntityRef'
-        sentimentScore:
-          type: number
-          format: double
-          description: The Sentiment Score
-        sentimentTrend:
-          type: number
-          format: double
-          description: The Sentiment Trend
-        sentimentTrendClass:
-          type: string
-          description: The Sentiment Trend Class
-          enum:
-          - NotCalculated
-          - Declining
-          - SlightlyDeclining
-          - NoChange
-          - SlightlyImproving
-          - Improving
-        empathyScores:
-          type: array
-          description: The Empathy Scores
-          items:
-            $ref: '#/components/schemas/EmpathyScore'
-        participantMetrics:
-          description: The Participant Metrics
-          $ref: '#/components/schemas/ParticipantMetrics'
-    Operand:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          description: The Operand type of the category
-          enum:
-          - Term
-          - Topic
-          - OperandGroup
-        occurrence:
-          type: integer
-          format: int32
-          description: The minimum number of occurrences of the defined operand type
-        inverted:
-          type: boolean
-          description: Applies a NOT modifier to the operand group
-        term:
-          description: Filter interaction by word(s)
-          $ref: '#/components/schemas/Term'
-        topicId:
-          type: string
-          description: Filter interaction by topic ID
-        voiceSecondsPosition:
-          description: Dictates when the operand must occur in a voice interaction
-          $ref: '#/components/schemas/OperandPosition'
-        digitalWordsPosition:
-          description: Dictates when the operand must occur in a digital interaction
-          $ref: '#/components/schemas/OperandPosition'
-        infixOperator:
-          description: Defines a logical operation that is applied on the current operand, against the following operand
-          $ref: '#/components/schemas/InfixOperator'
-        operands:
-          type: array
-          description: Contains a new level of operands
-          items:
-            $ref: '#/components/schemas/Operand'
-    CategoryRequest:
-      type: object
-      required:
-      - criteria
-      - interactionType
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the category
-        description:
-          type: string
-          description: The description of the category
-        interactionType:
-          type: string
-          description: The type of interaction the category will apply to
-          enum:
-          - Voice
-          - Digital
-          - All
-        criteria:
-          description: A collection of conditions joined together by logical operation to provide more refined filtering of conversations
-          $ref: '#/components/schemas/Operand'
-    ProgramRequest:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The program name
-        description:
-          type: string
-          description: The program description
-        topicIds:
-          type: array
-          description: The ids of topics associated to the program
-          items:
-            type: string
-        tags:
-          type: array
-          description: The program tags
-          items:
-            type: string
-    ProgramMappingsRequest:
-      type: object
-      required:
-      - flowIds
-      - queueIds
-      properties:
-        queueIds:
-          type: array
-          description: The program queues
-          items:
-            type: string
-        flowIds:
-          type: array
-          description: The program flows
-          items:
-            type: string
-    TranscriptUrl:
-      type: object
-      properties:
-        url:
-          type: string
-          description: The pre-signed S3 URL of the transcript
-    OperatorPosition:
-      type: object
-      properties:
-        voiceSecondsPosition:
-          type: integer
-          format: int32
-          description: Number of seconds (for voice interactions) from operand match
-        digitalWordsPosition:
-          type: integer
-          format: int32
-          description: Number of words (for digital interactions) from operand match
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ParticipantMetrics:
-      type: object
-      properties:
-        agentDurationPercentage:
-          type: number
-          format: double
-          description: Percentage of Agent duration in the conversation
-        customerDurationPercentage:
-          type: number
-          format: double
-          description: Percentage of Customer duration in the conversation
-        silenceDurationPercentage:
-          type: number
-          format: double
-          description: Percentage of Silence duration in the conversation
-        ivrDurationPercentage:
-          type: number
-          format: double
-          description: Percentage of IVR duration in the conversation
-        acdDurationPercentage:
-          type: number
-          format: double
-          description: Percentage of ACD duration in the conversation
-        overtalkDurationPercentage:
-          type: number
-          format: double
-          description: Percentage of Overtalk duration in the conversation
-        otherDurationPercentage:
-          type: number
-          format: double
-          description: Percentage of Other events duration in the conversation
-        overtalkCount:
-          type: integer
-          format: int32
-          description: Number of Overtalks in the conversation
-    TopicRequest:
-      type: object
-      required:
-      - dialect
-      - name
-      properties:
-        name:
-          type: string
-          description: The topic name
-        description:
-          type: string
-          description: The topic description
-        strictness:
-          type: string
-          description: The topic strictness, default value is 72
-          enum:
-          - '1'
-          - '55'
-          - '65'
-          - '72'
-          - '85'
-          - '90'
-        programIds:
-          type: array
-          description: The ids of programs associated to the topic
-          items:
-            type: string
-        tags:
-          type: array
-          description: The topic tags
-          items:
-            type: string
-        dialect:
-          type: string
-          description: The topic dialect
-        participants:
-          type: string
-          description: The topic participants, default value is All
-          enum:
-          - External
-          - Internal
-          - All
-        phrases:
-          type: array
-          description: The topic phrases
-          items:
-            $ref: '#/components/schemas/Phrase'
-    CategoriesEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/StaCategory'
+            $ref: '#/components/schemas/ProgramInsightsSettings'
         pageSize:
           type: integer
           format: int32
@@ -11064,6 +10989,81 @@ components:
         pageCount:
           type: integer
           format: int32
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    SegmentUrl:
+      type: object
+      properties:
+        recording:
+          description: The Recording Reference
+          $ref: '#/components/schemas/AddressableEntityRef'
+        url:
+          type: string
+          description: The pre-signed S3 URL of the transcript
+    Term:
+      type: object
+      required:
+      - participantType
+      - word
+      properties:
+        word:
+          type: string
+          description: Find term in interaction
+        participantType:
+          type: string
+          description: Dictates if term operand must come from the internal, external or both participants
+          enum:
+          - Internal
+          - External
+          - Both
+    TranscriptUrls:
+      type: object
+      properties:
+        conversation:
+          description: The Conversation Reference
+          $ref: '#/components/schemas/AddressableEntityRef'
+        communicationId:
+          type: string
+          description: The Communication ID
+        urls:
+          type: array
+          description: List of Transcript URLs
+          items:
+            $ref: '#/components/schemas/SegmentUrl'
+    EntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            type: object
+    ArrayNode:
+      type: object
+    UnifiedGeneralTopic:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+          - Deprecated
+          - Outdated
+          - Modified
+          - UpToDate
+          - ToBeCreated
+          - CreatedByUser
+    GeneralTopic:
+      type: object
+      properties:
+        name:
+          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

@@ -609,510 +609,27 @@ paths:
       x-purecloud-method-name: getWebmessagingMessages
 components:
   schemas:
-    ContentCardAction:
+    WebMessagingQuickReply:
       type: object
+      required:
+      - payload
+      - text
       properties:
-        type:
-          type: string
-          description: Describes the type of action.
-          enum:
-          - Link
-          - Postback
         text:
           type: string
-          description: The response text from the button click.
+          description: Text to show inside the quick reply. This is also used as the response text after clicking on the quick reply.
         payload:
           type: string
-          description: Text to be returned as the payload from a ButtonResponse when a button is clicked. The payload and text are a combination which will have to be unique across each card and carousel in order to determine which button was clicked in that card or carousel.
-        url:
-          type: string
-          description: A URL of a web page to direct the user to.
-      description: A card action that a user can take.
-    WebMessagingEventVideo:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          description: Describes the type of Video event.
-          enum:
-          - Offering
-          - OfferingExpired
-          - OfferingAccepted
-          - OfferingRejected
-        offeringId:
-          type: string
-          description: The Video offering ID.
-        jwt:
-          type: string
-          description: The Video offering JWT token.
-      description: A Video event.
-    ConversationContentListPickerItem:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the list picker item
-        title:
-          type: string
-          description: The main text displayed for the item.
-        subtitle:
-          type: string
-          description: Additional text providing more details about the item.
-        imageUrl:
-          type: string
-          description: URL of an image to be displayed alongside the item.
-      description: Represents a selectable item in a list picker.
-    ButtonComponent:
-      type: object
-      properties:
-        title:
-          type: string
-          description: Text to show inside the button.
-        actions:
-          description: The button actions (Deprecated).
-          $ref: '#/components/schemas/ContentActions'
-      description: Structured template button object.
-    ConversationContentIntroduction:
-      type: object
-      required:
-      - buttonText
-      - title
-      properties:
-        title:
-          type: string
-          description: Text to show in the title.
-        subtitle:
-          type: string
-          description: Text to show in the subtitle.
-        imageUrl:
-          type: string
-          description: URL of an image.
-        buttonText:
-          type: string
-          description: Text to show on the button.
-      description: Introduction content object.
-    WebMessagingRecipient:
-      type: object
-      properties:
-        firstName:
-          type: string
-          description: First name of the recipient.
-          readOnly: true
-        lastName:
-          type: string
-          description: Last name of the recipient.
-          readOnly: true
-        nickname:
-          type: string
-          description: Nickname or display name of the recipient.
-          readOnly: true
+          description: Content of the payload included in the quick reply response. Could be an ID identifying the quick reply response.
         image:
           type: string
-          description: URL of an image that represents the recipient.
-          readOnly: true
-        additionalIds:
-          type: array
-          description: List of recipient additional identifiers
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/RecipientAdditionalIdentifier'
-      description: Information about the recipient the message is sent to or received from.
-    ConversationFormPageComponent:
-      type: object
-      properties:
-        formComponentType:
+          description: URL of an image associated with the quick reply.
+        action:
           type: string
-          description: Type of this form component element
+          description: Specifies the type of action that is triggered upon clicking the quick reply.
           enum:
-          - ListPicker
-          - DatePicker
-          - WheelPicker
-          - Input
-        datePicker:
-          description: Date Picker content.
-          $ref: '#/components/schemas/ConversationContentDatePicker'
-        wheelPicker:
-          description: Wheel Picker content.
-          $ref: '#/components/schemas/ConversationContentWheelPicker'
-        listPicker:
-          description: List Picker content.
-          $ref: '#/components/schemas/ConversationContentListPicker'
-        input:
-          description: Input content.
-          $ref: '#/components/schemas/ConversationContentInput'
-      description: 'Form component element. Examples include: List Picker, Date Picker, Wheel Picker and Input text.'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    Reason:
-      type: object
-      required:
-      - message
-      properties:
-        code:
-          type: string
-          description: The reason code for the failed message receipt.
-          enum:
-          - MessageExpired
-          - RateLimited
-          - MessageNotAllowed
-          - GeneralError
-          - UnsupportedMessage
-          - UnknownMessage
-          - InvalidMessageStructure
-          - InvalidDestination
-          - ServerError
-          - MediaTypeNotAllowed
-          - InvalidMediaContentLength
-          - RecipientOptedOut
-          - DataFiltered
-        message:
-          type: string
-          description: Description of the reason for the failed message receipt.
-      description: Reasons for a failed message receipt.
-    ConversationContentReceivedReplyMessage:
-      type: object
-      properties:
-        header:
-          type: string
-          description: Text to show in the header.
-        title:
-          type: string
-          description: Text to show in the title.
-        subtitle:
-          type: string
-          description: Text to show in the subtitle.
-        buttonLabel:
-          type: string
-          description: Text to show on the button label.
-        imageUrl:
-          type: string
-          description: URL of an image.
-      description: ReceivedReplyMessage content object.
-    ConversationContentListPicker:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Optional unique identifier to help map component replies to form messages where multiple ListPickers can be present.
-        sections:
-          type: array
-          description: An array of sections in the List Picker.
-          items:
-            $ref: '#/components/schemas/ConversationContentListPickerSection'
-        replyMessage:
-          description: The reply message after the user has selected the options from the List Picker.
-          $ref: '#/components/schemas/ConversationContentReceivedReplyMessage'
-        receivedMessage:
-          description: The message prompt to select options in the List Picker sections.
-          $ref: '#/components/schemas/ConversationContentReceivedReplyMessage'
-      description: List Picker object for presenting multiple sections of selectable items.
-    WebMessagingButtonResponse:
-      type: object
-      required:
-      - originatingMessageId
-      - payload
-      - text
-      properties:
-        id:
-          type: string
-          description: An ID assigned to the button response (Deprecated).
-        type:
-          type: string
-          description: Describes the button that resulted in the Button Response.
-          enum:
-          - Button
-          - QuickReply
-          - DatePicker
-          - ListPicker
-          - Form
-        text:
-          type: string
-          description: The response text from the button click.
-        payload:
-          type: string
-          description: The response payload associated with the clicked button.
-        originatingMessageId:
-          type: string
-          description: Id of original structured message that this message responds to.
-      description: Button response object representing the click of a structured message button, such as a quick reply.
-    ConversationContentForm:
-      type: object
-      required:
-      - cannedResponseId
-      properties:
-        introduction:
-          description: The intro component, used to give an intro into what the form entails
-          $ref: '#/components/schemas/ConversationContentIntroduction'
-        formPages:
-          type: array
-          description: Form pages
-          items:
-            $ref: '#/components/schemas/ConversationFormPage'
-        receivedMessage:
-          description: The message prompt to fill out the form received.
-          $ref: '#/components/schemas/ConversationContentReceivedReplyMessage'
-        replyMessage:
-          description: The reply message after the user has filled out the form received.
-          $ref: '#/components/schemas/ConversationContentReceivedReplyMessage'
-        showSummary:
-          type: boolean
-          description: Show summary at end of form submission.
-        response:
-          type: array
-          description: Content of the payload included in the Form response.
-          items:
-            $ref: '#/components/schemas/ConversationFormResponseComponent'
-        originatingMessageId:
-          type: string
-          description: Reference to the ID of the original message.
-        cannedResponseId:
-          type: string
-          description: The id of the canned response which was used to create the form.
-      description: Form content object.
-    PushDeviceUpdateRequest:
-      type: object
-      properties:
-        language:
-          type: string
-          description: The preferred language of the user (eg. en-us, de, fr)
-        deviceToken:
-          type: string
-          description: The device token generated by the network providers
-    ContentCarousel:
-      type: object
-      required:
-      - cards
-      properties:
-        cards:
-          type: array
-          description: An array of card objects.
-          items:
-            $ref: '#/components/schemas/ContentCard'
-      description: Carousel content object.
-    WebMessagingContent:
-      type: object
-      properties:
-        contentType:
-          type: string
-          description: Type of this content element. If contentType = "Attachment" only one item is allowed.
-          readOnly: true
-          enum:
-          - Attachment
-          - QuickReply
-          - ButtonResponse
-          - GenericTemplate
-          - Card
-          - Carousel
-          - DatePicker
-          - ListPicker
-          - Form
-        attachment:
-          description: Attachment content.
-          readOnly: true
-          $ref: '#/components/schemas/WebMessagingAttachment'
-        quickReply:
-          description: Quick reply content.
-          $ref: '#/components/schemas/WebMessagingQuickReply'
-        buttonResponse:
-          description: Button response content.
-          $ref: '#/components/schemas/WebMessagingButtonResponse'
-        generic:
-          description: Generic content (Deprecated).
-          $ref: '#/components/schemas/WebMessagingGeneric'
-        card:
-          description: Card content
-          $ref: '#/components/schemas/ContentCard'
-        carousel:
-          description: Carousel content
-          $ref: '#/components/schemas/ContentCarousel'
-        datePicker:
-          description: DatePicker content
-          $ref: '#/components/schemas/ContentDatePicker'
-        listPicker:
-          description: ListPicker content
-          $ref: '#/components/schemas/ConversationContentListPicker'
-        form:
-          description: Form content
-          $ref: '#/components/schemas/ConversationContentForm'
-      description: Message content element.
-    ConversationContentListPickerSection:
-      type: object
-      properties:
-        title:
-          type: string
-          description: Required title for the section.
-        multipleSelection:
-          type: boolean
-          description: Whether multiple items can be selected in this section.
-        items:
-          type: array
-          description: List of items to choice from in the section
-          items:
-            $ref: '#/components/schemas/ConversationContentListPickerItem'
-      description: List Picker object for presenting a section of selectable items.
-    ConversationFormResponseComponent:
-      type: object
-      required:
-      - component
-      - id
-      properties:
-        id:
-          type: string
-          description: The id of the component in the original message.
-        component:
-          description: The content object capturing component response from the original message.
-          $ref: '#/components/schemas/ConversationFormResponseContent'
-      description: A response component from a form
-    PushDeviceInsertRequest:
-      type: object
-      required:
-      - deviceToken
-      - deviceType
-      - language
-      - notificationProvider
-      properties:
-        deviceToken:
-          type: string
-          description: The device token generated by the network providers
-        notificationProvider:
-          type: string
-          description: The notification provider for the device (FCM / APNS)
-          enum:
-          - FCM
-          - APNS
-        language:
-          type: string
-          description: The preferred language of the user (eg. en-us, de, fr)
-        deviceType:
-          type: string
-          description: The type of the device (Android / IoS)
-          enum:
-          - android
-          - ios
-    WebMessagingChannel:
-      type: object
-      properties:
-        from:
-          description: Information about the recipient the message is received from.
-          readOnly: true
-          $ref: '#/components/schemas/WebMessagingRecipient'
-        to:
-          description: Information about the recipient the message is sent to.
-          readOnly: true
-          $ref: '#/components/schemas/WebMessagingRecipient'
-        time:
-          type: string
-          format: date-time
-          description: 'When the message was processed by Genesys Cloud. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        messageId:
-          type: string
-          description: Unique provider ID of the message.
-          readOnly: true
-      description: Channel-specific information that describes the message and the message channel/provider.
-    WebMessagingEventCoBrowse:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          description: Describes the type of Cobrowse event.
-          enum:
-          - Offering
-          - OfferingExpired
-          - OfferingAccepted
-          - OfferingRejected
-        sessionId:
-          type: string
-          description: The Cobrowse session ID.
-        sessionJoinToken:
-          type: string
-          description: The Cobrowse session join token.
-      description: A Cobrowse event.
-    WebMessagingEventPresence:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          description: Describes the type of Presence event.
-          enum:
-          - Join
-          - Disconnect
-          - Clear
-          - SignIn
-          - SessionExpired
-      description: A Presence event.
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    ConversationContentButtonResponse:
-      type: object
-      required:
-      - payload
-      - text
-      properties:
-        originatingMessageId:
-          type: string
-          description: Reference to the ID of the original message (e.g., list picker) this button response is replying to.
-        type:
-          type: string
-          description: Describes the button that resulted in the Button Response.
-          enum:
-          - Button
-          - QuickReply
-          - DatePicker
-          - ListPicker
-          - Form
-        text:
-          type: string
-          description: The response text from the button click.
-        payload:
-          type: string
-          description: The response payload associated with the clicked button.
-      description: Button response object representing the click of a structured message button, such as a quick reply.
+          - Message
+      description: Quick reply object
     ConversationContentDatePicker:
       type: object
       properties:
@@ -1152,182 +669,6 @@ components:
           - monthDayYear
           - yearMonthDay
       description: DateTimePicker content object.
-    WebMessagingMessageEntityList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebMessagingMessage'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        pageCount:
-          type: integer
-          format: int32
-    ConversationContentWheelPickerItem:
-      type: object
-      required:
-      - id
-      - title
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the wheel picker item
-        title:
-          type: string
-          description: The main text displayed for the item.
-        value:
-          type: string
-          description: The value of the item.
-      description: Represents a selectable item in a Wheel Picker
-    ContentDatePickerAvailableTime:
-      type: object
-      properties:
-        duration:
-          type: integer
-          format: int64
-          description: The duration of the scheduling event in seconds.
-        dateTime:
-          type: string
-          format: date-time
-          description: 'The date and times of the event being scheduled. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-      description: A datepicker available time that a user can take.
-    WebMessagingMessage:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique ID of the message. This ID is generated by Messaging Platform. Message receipts will have the same ID as the message they reference.
-        channel:
-          description: Channel-specific information that describes the message and the message channel/provider.
-          $ref: '#/components/schemas/WebMessagingChannel'
-        type:
-          type: string
-          description: Message type.
-          enum:
-          - Text
-          - Structured
-          - Receipt
-          - Event
-        text:
-          type: string
-          description: Message text.
-        content:
-          type: array
-          description: List of content elements.
-          items:
-            $ref: '#/components/schemas/WebMessagingContent'
-        status:
-          type: string
-          description: Message receipt status, only used with type Receipt.
-          readOnly: true
-          enum:
-          - Sent
-          - Delivered
-          - Read
-          - Failed
-          - Published
-          - Removed
-        reasons:
-          type: array
-          description: List of reasons for a message receipt that indicates the message has failed. Only used with Failed status.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/Reason'
-        events:
-          type: array
-          description: List of event elements.
-          items:
-            $ref: '#/components/schemas/WebMessagingEvent'
-        direction:
-          type: string
-          description: The direction of the message.  Direction is always from the perspective of the Genesys Cloud platform.  An Inbound message is one sent from a guest to the Genesys Cloud Platform.  An Outbound message is one sent from the Genesys Cloud Platform to a guest.
-          enum:
-          - Inbound
-          - Outbound
-        originatingEntity:
-          type: string
-          description: Specifies if this message was sent by a human agent or bot. The platform may use this to apply appropriate provider policies.
-          enum:
-          - Human
-          - Bot
-        metadata:
-          type: object
-          description: Additional metadata about this message.
-          additionalProperties:
-            type: string
-      description: A web messaging message
-    ConversationContentLocation:
-      type: object
-      properties:
-        url:
-          type: string
-          description: URL of the Location.
-        address:
-          type: string
-          description: Location postal address.
-        text:
-          type: string
-          description: Location name.
-        latitude:
-          type: number
-          format: double
-          description: Latitude of the location.
-        longitude:
-          type: number
-          format: double
-          description: Longitude of the location.
-      description: Location object.
-    WebMessagingAttachment:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        mediaType:
-          type: string
-          description: The type of attachment this instance represents.
-          readOnly: true
-          enum:
-          - Image
-          - Video
-          - Audio
-          - File
-          - Link
-        url:
-          type: string
-          description: URL of the attachment.
-          readOnly: true
-        mime:
-          type: string
-          description: Attachment mime type (https://www.iana.org/assignments/media-types/media-types.xhtml).
-          readOnly: true
-        text:
-          type: string
-          description: Text associated with attachment such as an image caption.
-          readOnly: true
-        sha256:
-          type: string
-          description: Secure hash of the attachment content.
-          readOnly: true
-        filename:
-          type: string
-          description: Suggested file name for attachment.
-          readOnly: true
-        fileSize:
-          type: integer
-          format: int32
-          description: The file size associated with the file
-          readOnly: true
-      description: Attachment object.
     ConversationContentDatePickerAvailableTime:
       type: object
       properties:
@@ -1340,118 +681,6 @@ components:
           format: date-time
           description: 'The date and time of the event being scheduled. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
       description: A datetimepicker available time that a user can take.
-    ConversationFormPage:
-      type: object
-      required:
-      - subtitle
-      - title
-      properties:
-        title:
-          type: string
-          description: Text to show in the title.
-        subtitle:
-          type: string
-          description: Text to show in the subtitle.
-        pageComponents:
-          type: array
-          description: Page components in this form page.
-          items:
-            $ref: '#/components/schemas/ConversationFormPageComponent'
-      description: Form page object.
-    WebMessagingGeneric:
-      type: object
-      properties:
-        title:
-          type: string
-          description: Text to show in the title.
-        description:
-          type: string
-          description: Text to show in the description.
-        image:
-          type: string
-          description: URL of an image.
-        actions:
-          description: Actions to be taken.
-          $ref: '#/components/schemas/ContentActions'
-        components:
-          type: array
-          description: An array of component objects.
-          items:
-            $ref: '#/components/schemas/ButtonComponent'
-      description: Generic content object. (Deprecated
-    WebMessagingQuickReply:
-      type: object
-      required:
-      - payload
-      - text
-      properties:
-        text:
-          type: string
-          description: Text to show inside the quick reply. This is also used as the response text after clicking on the quick reply.
-        payload:
-          type: string
-          description: Content of the payload included in the quick reply response. Could be an ID identifying the quick reply response.
-        image:
-          type: string
-          description: URL of an image associated with the quick reply.
-        action:
-          type: string
-          description: Specifies the type of action that is triggered upon clicking the quick reply.
-          enum:
-          - Message
-      description: Quick reply object
-    ContentCard:
-      type: object
-      required:
-      - actions
-      - title
-      properties:
-        title:
-          type: string
-          description: Text to show in the title.
-        description:
-          type: string
-          description: Text to show in the description.
-        image:
-          type: string
-          description: URL of an image.
-        video:
-          type: string
-          description: URL of a video.
-        defaultAction:
-          description: The default button action.
-          $ref: '#/components/schemas/ContentCardAction'
-        actions:
-          type: array
-          description: An array of action objects.
-          items:
-            $ref: '#/components/schemas/ContentCardAction'
-      description: Card content object.
-    ContentActions:
-      type: object
-      properties:
-        url:
-          type: string
-          description: A URL of a web page to direct the user to.
-        urlTarget:
-          type: string
-          description: The target window in which to open the URL. If empty will open a blank page or tab.
-        textback:
-          type: string
-          description: Text to be returned as the payload from a ButtonResponse when a button is clicked. The textback and title are a combination which will have to be unique across each card and carousel in order to determine which button was clicked in that card or carousel.
-      description: User actions available on the content. All actions are optional and all actions are executed simultaneously.
-    ConversationFormResponseContent:
-      type: object
-      properties:
-        contentType:
-          type: string
-          description: Type of this content element.
-          enum:
-          - ButtonResponse
-        buttonResponse:
-          description: Button response content.
-          $ref: '#/components/schemas/ConversationContentButtonResponse'
-      description: Message content element for form responses
     Limit:
       type: object
       properties:
@@ -1556,6 +785,243 @@ components:
         value:
           type: integer
           format: int64
+    WebMessagingAttachment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        mediaType:
+          type: string
+          description: The type of attachment this instance represents.
+          readOnly: true
+          enum:
+          - Image
+          - Video
+          - Audio
+          - File
+          - Link
+        url:
+          type: string
+          description: URL of the attachment.
+          readOnly: true
+        mime:
+          type: string
+          description: Attachment mime type (https://www.iana.org/assignments/media-types/media-types.xhtml).
+          readOnly: true
+        text:
+          type: string
+          description: Text associated with attachment such as an image caption.
+          readOnly: true
+        sha256:
+          type: string
+          description: Secure hash of the attachment content.
+          readOnly: true
+        filename:
+          type: string
+          description: Suggested file name for attachment.
+          readOnly: true
+        fileSize:
+          type: integer
+          format: int32
+          description: The file size associated with the file
+          readOnly: true
+      description: Attachment object.
+    WebMessagingMessageEntityList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebMessagingMessage'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        pageCount:
+          type: integer
+          format: int32
+    WebMessagingEvent:
+      type: object
+      required:
+      - eventType
+      properties:
+        eventType:
+          type: string
+          description: Type of this event element
+          enum:
+          - CoBrowse
+          - Presence
+          - Video
+        coBrowse:
+          description: Cobrowse event.
+          $ref: '#/components/schemas/WebMessagingEventCoBrowse'
+        presence:
+          description: Presence event.
+          $ref: '#/components/schemas/WebMessagingEventPresence'
+        video:
+          description: Video event.
+          $ref: '#/components/schemas/WebMessagingEventVideo'
+      description: 'Message event element.  Examples include: system messages, typing indicators, cobrowse offerings.'
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    ButtonComponent:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Text to show inside the button.
+        actions:
+          description: The button actions (Deprecated).
+          $ref: '#/components/schemas/ContentActions'
+      description: Structured template button object.
+    ContentDatePickerAvailableTime:
+      type: object
+      properties:
+        duration:
+          type: integer
+          format: int64
+          description: The duration of the scheduling event in seconds.
+        dateTime:
+          type: string
+          format: date-time
+          description: 'The date and times of the event being scheduled. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+      description: A datepicker available time that a user can take.
+    WebMessagingEventVideo:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: Describes the type of Video event.
+          enum:
+          - Offering
+          - OfferingExpired
+          - OfferingAccepted
+          - OfferingRejected
+        offeringId:
+          type: string
+          description: The Video offering ID.
+        jwt:
+          type: string
+          description: The Video offering JWT token.
+      description: A Video event.
+    WebMessagingContent:
+      type: object
+      properties:
+        contentType:
+          type: string
+          description: Type of this content element. If contentType = "Attachment" only one item is allowed.
+          readOnly: true
+          enum:
+          - Attachment
+          - QuickReply
+          - ButtonResponse
+          - GenericTemplate
+          - Card
+          - Carousel
+          - DatePicker
+          - ListPicker
+          - Form
+        attachment:
+          description: Attachment content.
+          readOnly: true
+          $ref: '#/components/schemas/WebMessagingAttachment'
+        quickReply:
+          description: Quick reply content.
+          $ref: '#/components/schemas/WebMessagingQuickReply'
+        buttonResponse:
+          description: Button response content.
+          $ref: '#/components/schemas/WebMessagingButtonResponse'
+        generic:
+          description: Generic content (Deprecated).
+          $ref: '#/components/schemas/WebMessagingGeneric'
+        card:
+          description: Card content
+          $ref: '#/components/schemas/ContentCard'
+        carousel:
+          description: Carousel content
+          $ref: '#/components/schemas/ContentCarousel'
+        datePicker:
+          description: DatePicker content
+          $ref: '#/components/schemas/ContentDatePicker'
+        listPicker:
+          description: ListPicker content
+          $ref: '#/components/schemas/ConversationContentListPicker'
+        form:
+          description: Form content
+          $ref: '#/components/schemas/ConversationContentForm'
+      description: Message content element.
+    ContentCardAction:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Describes the type of action.
+          enum:
+          - Link
+          - Postback
+        text:
+          type: string
+          description: The response text from the button click.
+        payload:
+          type: string
+          description: Text to be returned as the payload from a ButtonResponse when a button is clicked. The payload and text are a combination which will have to be unique across each card and carousel in order to determine which button was clicked in that card or carousel.
+        url:
+          type: string
+          description: A URL of a web page to direct the user to.
+      description: A card action that a user can take.
+    ConversationContentWheelPicker:
+      type: object
+      required:
+      - items
+      properties:
+        id:
+          type: string
+          description: Optional unique identifier to help map component replies to form messages where multiple Wheel Pickers can be present.
+        items:
+          type: array
+          description: The main text displayed for the item.
+          items:
+            $ref: '#/components/schemas/ConversationContentWheelPickerItem'
+      description: Wheel Picker object for representing single selection of selectable items.
     RecipientAdditionalIdentifier:
       type: object
       required:
@@ -1577,6 +1043,460 @@ components:
           description: The Identifier value.
           readOnly: true
       description: Additional identifiers for describing messaging recipient.
+    PushDeviceUpdateRequest:
+      type: object
+      properties:
+        language:
+          type: string
+          description: The preferred language of the user (eg. en-us, de, fr)
+        deviceToken:
+          type: string
+          description: The device token generated by the network providers
+    WebMessagingRecipient:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: First name of the recipient.
+          readOnly: true
+        lastName:
+          type: string
+          description: Last name of the recipient.
+          readOnly: true
+        nickname:
+          type: string
+          description: Nickname or display name of the recipient.
+          readOnly: true
+        image:
+          type: string
+          description: URL of an image that represents the recipient.
+          readOnly: true
+        additionalIds:
+          type: array
+          description: List of recipient additional identifiers
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/RecipientAdditionalIdentifier'
+      description: Information about the recipient the message is sent to or received from.
+    ContentCard:
+      type: object
+      required:
+      - actions
+      - title
+      properties:
+        title:
+          type: string
+          description: Text to show in the title.
+        description:
+          type: string
+          description: Text to show in the description.
+        image:
+          type: string
+          description: URL of an image.
+        video:
+          type: string
+          description: URL of a video.
+        defaultAction:
+          description: The default button action.
+          $ref: '#/components/schemas/ContentCardAction'
+        actions:
+          type: array
+          description: An array of action objects.
+          items:
+            $ref: '#/components/schemas/ContentCardAction'
+      description: Card content object.
+    PushDeviceInsertRequest:
+      type: object
+      required:
+      - deviceToken
+      - deviceType
+      - language
+      - notificationProvider
+      properties:
+        deviceToken:
+          type: string
+          description: The device token generated by the network providers
+        notificationProvider:
+          type: string
+          description: The notification provider for the device (FCM / APNS)
+          enum:
+          - FCM
+          - APNS
+        language:
+          type: string
+          description: The preferred language of the user (eg. en-us, de, fr)
+        deviceType:
+          type: string
+          description: The type of the device (Android / IoS)
+          enum:
+          - android
+          - ios
+    WebMessagingButtonResponse:
+      type: object
+      required:
+      - originatingMessageId
+      - payload
+      - text
+      properties:
+        id:
+          type: string
+          description: An ID assigned to the button response (Deprecated).
+        type:
+          type: string
+          description: Describes the button that resulted in the Button Response.
+          enum:
+          - Button
+          - QuickReply
+          - DatePicker
+          - ListPicker
+          - Form
+        text:
+          type: string
+          description: The response text from the button click.
+        payload:
+          type: string
+          description: The response payload associated with the clicked button.
+        originatingMessageId:
+          type: string
+          description: Id of original structured message that this message responds to.
+      description: Button response object representing the click of a structured message button, such as a quick reply.
+    ConversationContentReceivedReplyMessage:
+      type: object
+      properties:
+        header:
+          type: string
+          description: Text to show in the header.
+        title:
+          type: string
+          description: Text to show in the title.
+        subtitle:
+          type: string
+          description: Text to show in the subtitle.
+        buttonLabel:
+          type: string
+          description: Text to show on the button label.
+        imageUrl:
+          type: string
+          description: URL of an image.
+      description: ReceivedReplyMessage content object.
+    ConversationContentForm:
+      type: object
+      required:
+      - cannedResponseId
+      properties:
+        introduction:
+          description: The intro component, used to give an intro into what the form entails
+          $ref: '#/components/schemas/ConversationContentIntroduction'
+        formPages:
+          type: array
+          description: Form pages
+          items:
+            $ref: '#/components/schemas/ConversationFormPage'
+        receivedMessage:
+          description: The message prompt to fill out the form received.
+          $ref: '#/components/schemas/ConversationContentReceivedReplyMessage'
+        replyMessage:
+          description: The reply message after the user has filled out the form received.
+          $ref: '#/components/schemas/ConversationContentReceivedReplyMessage'
+        showSummary:
+          type: boolean
+          description: Show summary at end of form submission.
+        response:
+          type: array
+          description: Content of the payload included in the Form response.
+          items:
+            $ref: '#/components/schemas/ConversationFormResponseComponent'
+        originatingMessageId:
+          type: string
+          description: Reference to the ID of the original message.
+        cannedResponseId:
+          type: string
+          description: The id of the canned response which was used to create the form.
+      description: Form content object.
+    WebMessagingEventPresence:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: Describes the type of Presence event.
+          enum:
+          - Join
+          - Disconnect
+          - Clear
+          - SignIn
+          - SessionExpired
+      description: A Presence event.
+    ConversationFormResponseContent:
+      type: object
+      properties:
+        contentType:
+          type: string
+          description: Type of this content element.
+          enum:
+          - ButtonResponse
+        buttonResponse:
+          description: Button response content.
+          $ref: '#/components/schemas/ConversationContentButtonResponse'
+      description: Message content element for form responses
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    WebMessagingChannel:
+      type: object
+      properties:
+        from:
+          description: Information about the recipient the message is received from.
+          readOnly: true
+          $ref: '#/components/schemas/WebMessagingRecipient'
+        to:
+          description: Information about the recipient the message is sent to.
+          readOnly: true
+          $ref: '#/components/schemas/WebMessagingRecipient'
+        time:
+          type: string
+          format: date-time
+          description: 'When the message was processed by Genesys Cloud. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        messageId:
+          type: string
+          description: Unique provider ID of the message.
+          readOnly: true
+      description: Channel-specific information that describes the message and the message channel/provider.
+    ConversationContentListPickerSection:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Required title for the section.
+        multipleSelection:
+          type: boolean
+          description: Whether multiple items can be selected in this section.
+        items:
+          type: array
+          description: List of items to choice from in the section
+          items:
+            $ref: '#/components/schemas/ConversationContentListPickerItem'
+      description: List Picker object for presenting a section of selectable items.
+    ConversationFormResponseComponent:
+      type: object
+      required:
+      - component
+      - id
+      properties:
+        id:
+          type: string
+          description: The id of the component in the original message.
+        component:
+          description: The content object capturing component response from the original message.
+          $ref: '#/components/schemas/ConversationFormResponseContent'
+      description: A response component from a form
+    ConversationFormPageComponent:
+      type: object
+      properties:
+        formComponentType:
+          type: string
+          description: Type of this form component element
+          enum:
+          - ListPicker
+          - DatePicker
+          - WheelPicker
+          - Input
+        datePicker:
+          description: Date Picker content.
+          $ref: '#/components/schemas/ConversationContentDatePicker'
+        wheelPicker:
+          description: Wheel Picker content.
+          $ref: '#/components/schemas/ConversationContentWheelPicker'
+        listPicker:
+          description: List Picker content.
+          $ref: '#/components/schemas/ConversationContentListPicker'
+        input:
+          description: Input content.
+          $ref: '#/components/schemas/ConversationContentInput'
+      description: 'Form component element. Examples include: List Picker, Date Picker, Wheel Picker and Input text.'
+    ConversationContentButtonResponse:
+      type: object
+      required:
+      - payload
+      - text
+      properties:
+        originatingMessageId:
+          type: string
+          description: Reference to the ID of the original message (e.g., list picker) this button response is replying to.
+        type:
+          type: string
+          description: Describes the button that resulted in the Button Response.
+          enum:
+          - Button
+          - QuickReply
+          - DatePicker
+          - ListPicker
+          - Form
+        text:
+          type: string
+          description: The response text from the button click.
+        payload:
+          type: string
+          description: The response payload associated with the clicked button.
+      description: Button response object representing the click of a structured message button, such as a quick reply.
+    Reason:
+      type: object
+      required:
+      - message
+      properties:
+        code:
+          type: string
+          description: The reason code for the failed message receipt.
+          enum:
+          - MessageExpired
+          - RateLimited
+          - MessageNotAllowed
+          - GeneralError
+          - UnsupportedMessage
+          - UnknownMessage
+          - InvalidMessageStructure
+          - InvalidDestination
+          - ServerError
+          - MediaTypeNotAllowed
+          - InvalidMediaContentLength
+          - RecipientOptedOut
+          - DataFiltered
+        message:
+          type: string
+          description: Description of the reason for the failed message receipt.
+      description: Reasons for a failed message receipt.
+    ConversationFormPage:
+      type: object
+      required:
+      - subtitle
+      - title
+      properties:
+        title:
+          type: string
+          description: Text to show in the title.
+        subtitle:
+          type: string
+          description: Text to show in the subtitle.
+        pageComponents:
+          type: array
+          description: Page components in this form page.
+          items:
+            $ref: '#/components/schemas/ConversationFormPageComponent'
+      description: Form page object.
+    WebMessagingGeneric:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Text to show in the title.
+        description:
+          type: string
+          description: Text to show in the description.
+        image:
+          type: string
+          description: URL of an image.
+        actions:
+          description: Actions to be taken.
+          $ref: '#/components/schemas/ContentActions'
+        components:
+          type: array
+          description: An array of component objects.
+          items:
+            $ref: '#/components/schemas/ButtonComponent'
+      description: Generic content object. (Deprecated
+    ConversationContentListPicker:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Optional unique identifier to help map component replies to form messages where multiple ListPickers can be present.
+        sections:
+          type: array
+          description: An array of sections in the List Picker.
+          items:
+            $ref: '#/components/schemas/ConversationContentListPickerSection'
+        replyMessage:
+          description: The reply message after the user has selected the options from the List Picker.
+          $ref: '#/components/schemas/ConversationContentReceivedReplyMessage'
+        receivedMessage:
+          description: The message prompt to select options in the List Picker sections.
+          $ref: '#/components/schemas/ConversationContentReceivedReplyMessage'
+      description: List Picker object for presenting multiple sections of selectable items.
+    ConversationContentListPickerItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the list picker item
+        title:
+          type: string
+          description: The main text displayed for the item.
+        subtitle:
+          type: string
+          description: Additional text providing more details about the item.
+        imageUrl:
+          type: string
+          description: URL of an image to be displayed alongside the item.
+      description: Represents a selectable item in a list picker.
+    WebMessagingEventCoBrowse:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: Describes the type of Cobrowse event.
+          enum:
+          - Offering
+          - OfferingExpired
+          - OfferingAccepted
+          - OfferingRejected
+        sessionId:
+          type: string
+          description: The Cobrowse session ID.
+        sessionJoinToken:
+          type: string
+          description: The Cobrowse session join token.
+      description: A Cobrowse event.
+    ConversationContentWheelPickerItem:
+      type: object
+      required:
+      - id
+      - title
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the wheel picker item
+        title:
+          type: string
+          description: The main text displayed for the item.
+        value:
+          type: string
+          description: The value of the item.
+      description: Represents a selectable item in a Wheel Picker
+    ContentActions:
+      type: object
+      properties:
+        url:
+          type: string
+          description: A URL of a web page to direct the user to.
+        urlTarget:
+          type: string
+          description: The target window in which to open the URL. If empty will open a blank page or tab.
+        textback:
+          type: string
+          description: Text to be returned as the payload from a ButtonResponse when a button is clicked. The textback and title are a combination which will have to be unique across each card and carousel in order to determine which button was clicked in that card or carousel.
+      description: User actions available on the content. All actions are optional and all actions are executed simultaneously.
     ConversationContentInput:
       type: object
       required:
@@ -1656,42 +1576,82 @@ components:
           - FlightNumber
           - Url
       description: Single or multiline text input component.
-    ConversationContentWheelPicker:
+    WebMessagingMessage:
       type: object
-      required:
-      - items
       properties:
         id:
           type: string
-          description: Optional unique identifier to help map component replies to form messages where multiple Wheel Pickers can be present.
-        items:
+          description: Unique ID of the message. This ID is generated by Messaging Platform. Message receipts will have the same ID as the message they reference.
+        channel:
+          description: Channel-specific information that describes the message and the message channel/provider.
+          $ref: '#/components/schemas/WebMessagingChannel'
+        type:
+          type: string
+          description: Message type.
+          enum:
+          - Text
+          - Structured
+          - Receipt
+          - Event
+        text:
+          type: string
+          description: Message text.
+        content:
           type: array
-          description: The main text displayed for the item.
+          description: List of content elements.
           items:
-            $ref: '#/components/schemas/ConversationContentWheelPickerItem'
-      description: Wheel Picker object for representing single selection of selectable items.
-    WebMessagingEvent:
+            $ref: '#/components/schemas/WebMessagingContent'
+        status:
+          type: string
+          description: Message receipt status, only used with type Receipt.
+          readOnly: true
+          enum:
+          - Sent
+          - Delivered
+          - Read
+          - Failed
+          - Published
+          - Removed
+        reasons:
+          type: array
+          description: List of reasons for a message receipt that indicates the message has failed. Only used with Failed status.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/Reason'
+        events:
+          type: array
+          description: List of event elements.
+          items:
+            $ref: '#/components/schemas/WebMessagingEvent'
+        direction:
+          type: string
+          description: The direction of the message.  Direction is always from the perspective of the Genesys Cloud platform.  An Inbound message is one sent from a guest to the Genesys Cloud Platform.  An Outbound message is one sent from the Genesys Cloud Platform to a guest.
+          enum:
+          - Inbound
+          - Outbound
+        originatingEntity:
+          type: string
+          description: Specifies if this message was sent by a human agent or bot. The platform may use this to apply appropriate provider policies.
+          enum:
+          - Human
+          - Bot
+        metadata:
+          type: object
+          description: Additional metadata about this message.
+          additionalProperties:
+            type: string
+      description: A web messaging message
+    ContentCarousel:
       type: object
       required:
-      - eventType
+      - cards
       properties:
-        eventType:
-          type: string
-          description: Type of this event element
-          enum:
-          - CoBrowse
-          - Presence
-          - Video
-        coBrowse:
-          description: Cobrowse event.
-          $ref: '#/components/schemas/WebMessagingEventCoBrowse'
-        presence:
-          description: Presence event.
-          $ref: '#/components/schemas/WebMessagingEventPresence'
-        video:
-          description: Video event.
-          $ref: '#/components/schemas/WebMessagingEventVideo'
-      description: 'Message event element.  Examples include: system messages, typing indicators, cobrowse offerings.'
+        cards:
+          type: array
+          description: An array of card objects.
+          items:
+            $ref: '#/components/schemas/ContentCard'
+      description: Carousel content object.
     ContentDatePicker:
       type: object
       required:
@@ -1720,6 +1680,46 @@ components:
           items:
             $ref: '#/components/schemas/ContentDatePickerAvailableTime'
       description: DatePicker content object.
+    ConversationContentLocation:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL of the Location.
+        address:
+          type: string
+          description: Location postal address.
+        text:
+          type: string
+          description: Location name.
+        latitude:
+          type: number
+          format: double
+          description: Latitude of the location.
+        longitude:
+          type: number
+          format: double
+          description: Longitude of the location.
+      description: Location object.
+    ConversationContentIntroduction:
+      type: object
+      required:
+      - buttonText
+      - title
+      properties:
+        title:
+          type: string
+          description: Text to show in the title.
+        subtitle:
+          type: string
+          description: Text to show in the subtitle.
+        imageUrl:
+          type: string
+          description: URL of an image.
+        buttonText:
+          type: string
+          description: Text to show on the button.
+      description: Introduction content object.
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

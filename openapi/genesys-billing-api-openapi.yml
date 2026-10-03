@@ -323,198 +323,6 @@ paths:
       x-purecloud-method-name: getBillingTrusteebillingoverviewTrustorOrgId
 components:
   schemas:
-    BillingUsageReport:
-      type: object
-      required:
-      - endDate
-      - startDate
-      - usages
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        startDate:
-          type: string
-          format: date-time
-          description: 'The period start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        endDate:
-          type: string
-          format: date-time
-          description: 'The period end date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        status:
-          type: string
-          description: Generation status of report
-          enum:
-          - InProgress
-          - Complete
-        usages:
-          type: array
-          description: The usages for the given period.
-          items:
-            $ref: '#/components/schemas/BillingUsage'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    BillingUsage:
-      type: object
-      required:
-      - name
-      - resources
-      - totalUsage
-      properties:
-        name:
-          type: string
-          description: Identifies the billable usage.
-        totalUsage:
-          type: string
-          description: The total amount of usage, expressed as a decimal number in string format.
-        resources:
-          type: array
-          description: The resources for which usage was observed (e.g. license users, devices).
-          items:
-            $ref: '#/components/schemas/BillingUsageResource'
-    BillingUsageResource:
-      type: object
-      required:
-      - date
-      - name
-      properties:
-        name:
-          type: string
-          description: Identifies the resource (e.g. license user, device).
-        date:
-          type: string
-          format: date-time
-          description: 'The date that the usage was first observed by the billing subsystem. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    NamedEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the object.
-          readOnly: true
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    TrusteeBillingOverview:
-      type: object
-      required:
-      - currency
-      - enabledProducts
-      - organization
-      - subscriptionType
-      - usages
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        organization:
-          description: Organization
-          $ref: '#/components/schemas/NamedEntity'
-        currency:
-          type: string
-          description: The currency type.
-        enabledProducts:
-          type: array
-          description: The charge short names for products enabled during the specified period.
-          items:
-            type: string
-        subscriptionType:
-          type: string
-          description: The subscription type.
-          enum:
-          - ININ
-          - MONTH_TO_MONTH
-          - FREE_TRIAL_MONTH_TO_MONTH
-          - PREPAY_MONTHLY_COMMITMENT
-          - PREPAY
-          - DEV_ORG_MONTH_TO_MONTH
-          - DEV_ORG_PREPAY_MONTHLY_COMMITMENT
-          - DEV_ORG_PREPAY
-        rampPeriodStartDate:
-          type: string
-          format: date-time
-          description: 'Date-time the ramp period starts. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        rampPeriodEndDate:
-          type: string
-          format: date-time
-          description: 'Date-time the ramp period ends. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        billingPeriodStartDate:
-          type: string
-          format: date-time
-          description: 'Date-time the billing period started. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        billingPeriodEndDate:
-          type: string
-          format: date-time
-          description: 'Date-time the billing period ended. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        usages:
-          type: array
-          description: Usages for the specified period.
-          items:
-            $ref: '#/components/schemas/SubscriptionOverviewUsage'
-        contractAmendmentDate:
-          type: string
-          format: date-time
-          description: 'Date-time the contract was last amended. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        contractEffectiveDate:
-          type: string
-          format: date-time
-          description: 'Date-time the contract became effective. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        contractEndDate:
-          type: string
-          format: date-time
-          description: 'Date-time the contract ends. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        minimumMonthlyAmount:
-          type: string
-          description: Minimum amount that will be charged for the month
-        inRampPeriod:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     Limit:
       type: object
       properties:
@@ -619,17 +427,198 @@ components:
         value:
           type: integer
           format: int64
-    Detail:
+    BillingUsageReport:
+      type: object
+      required:
+      - endDate
+      - startDate
+      - usages
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+          description: 'The period start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        endDate:
+          type: string
+          format: date-time
+          description: 'The period end date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        status:
+          type: string
+          description: Generation status of report
+          enum:
+          - InProgress
+          - Complete
+        usages:
+          type: array
+          description: The usages for the given period.
+          items:
+            $ref: '#/components/schemas/BillingUsage'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    BillingUsage:
+      type: object
+      required:
+      - name
+      - resources
+      - totalUsage
+      properties:
+        name:
+          type: string
+          description: Identifies the billable usage.
+        totalUsage:
+          type: string
+          description: The total amount of usage, expressed as a decimal number in string format.
+        resources:
+          type: array
+          description: The resources for which usage was observed (e.g. license users, devices).
+          items:
+            $ref: '#/components/schemas/BillingUsageResource'
+    ErrorBody:
       type: object
       properties:
-        errorCode:
+        message:
           type: string
-        fieldName:
+        code:
           type: string
+        status:
+          type: integer
+          format: int32
         entityId:
           type: string
         entityName:
           type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    NamedEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the object.
+          readOnly: true
+    BillingUsageResource:
+      type: object
+      required:
+      - date
+      - name
+      properties:
+        name:
+          type: string
+          description: Identifies the resource (e.g. license user, device).
+        date:
+          type: string
+          format: date-time
+          description: 'The date that the usage was first observed by the billing subsystem. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    TrusteeBillingOverview:
+      type: object
+      required:
+      - currency
+      - enabledProducts
+      - organization
+      - subscriptionType
+      - usages
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        organization:
+          description: Organization
+          $ref: '#/components/schemas/NamedEntity'
+        currency:
+          type: string
+          description: The currency type.
+        enabledProducts:
+          type: array
+          description: The charge short names for products enabled during the specified period.
+          items:
+            type: string
+        subscriptionType:
+          type: string
+          description: The subscription type.
+          enum:
+          - ININ
+          - MONTH_TO_MONTH
+          - FREE_TRIAL_MONTH_TO_MONTH
+          - PREPAY_MONTHLY_COMMITMENT
+          - PREPAY
+          - DEV_ORG_MONTH_TO_MONTH
+          - DEV_ORG_PREPAY_MONTHLY_COMMITMENT
+          - DEV_ORG_PREPAY
+        rampPeriodStartDate:
+          type: string
+          format: date-time
+          description: 'Date-time the ramp period starts. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        rampPeriodEndDate:
+          type: string
+          format: date-time
+          description: 'Date-time the ramp period ends. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        billingPeriodStartDate:
+          type: string
+          format: date-time
+          description: 'Date-time the billing period started. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        billingPeriodEndDate:
+          type: string
+          format: date-time
+          description: 'Date-time the billing period ended. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        usages:
+          type: array
+          description: Usages for the specified period.
+          items:
+            $ref: '#/components/schemas/SubscriptionOverviewUsage'
+        contractAmendmentDate:
+          type: string
+          format: date-time
+          description: 'Date-time the contract was last amended. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        contractEffectiveDate:
+          type: string
+          format: date-time
+          description: 'Date-time the contract became effective. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        contractEndDate:
+          type: string
+          format: date-time
+          description: 'Date-time the contract ends. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        minimumMonthlyAmount:
+          type: string
+          description: Minimum amount that will be charged for the month
+        inRampPeriod:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     SubscriptionOverviewUsage:
       type: object
       required:
@@ -676,6 +665,17 @@ components:
         isThirdParty:
           type: boolean
           description: A charge from a third party entity
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

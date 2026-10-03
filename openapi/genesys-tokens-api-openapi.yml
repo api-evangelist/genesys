@@ -817,93 +817,6 @@ components:
         selfUri:
           type: string
           format: uri
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    NamedEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the object.
-          readOnly: true
-    RoleDivision:
-      type: object
-      required:
-      - divisionId
-      - roleId
-      properties:
-        roleId:
-          type: string
-          description: Role to be associated with the given division which forms a grant
-        divisionId:
-          type: string
-          description: Division associated with the given role which forms a grant
-    IdleTokenTimeout:
-      type: object
-      properties:
-        idleTokenTimeoutSeconds:
-          type: integer
-          format: int32
-          description: Token timeout length in seconds. Must be at least 5 minutes and at most 8 hours. HIPAA-enabled organizations may be subject to a stricter 15-minute maximum during rollout.
-          minimum: 300
-        enableIdleTokenTimeout:
-          type: boolean
-          description: Indicates whether the Token Timeout should be enabled or disabled.
-        inactivityTimeoutUnit:
-          type: string
-          description: The unit for the inactivity timeout (MINUTES or HOURS).
-          enum:
-          - Minutes
-          - Hours
-        inactivityTimeoutGroupsEnabled:
-          type: boolean
-          description: Indicates whether inactivity timeout groups are enabled.
-        inactivityTimeoutGroupBundles:
-          type: array
-          description: Group bundle configuration for inactivity timeout.
-          items:
-            $ref: '#/components/schemas/InactivityTimeoutGroupBundle'
-    Entity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
     TokenInfo:
       type: object
       properties:
@@ -932,6 +845,32 @@ components:
           readOnly: true
         OAuthClient:
           $ref: '#/components/schemas/OrgOAuthClient'
+    InactivityTimeoutGroupBundle:
+      type: object
+      required:
+      - groups
+      - priority
+      - timeoutSeconds
+      properties:
+        priority:
+          type: integer
+          format: int32
+          description: The priority of the group bundle (1-5).
+        timeoutSeconds:
+          type: integer
+          format: int32
+          description: The timeout value in seconds (300 to 28800, representing 5 to 480 minutes).
+        inactivityTimeoutUnit:
+          type: string
+          description: The unit for the timeout (MINUTES or HOURS).
+          enum:
+          - Minutes
+          - Hours
+        groups:
+          type: array
+          description: The list of group IDs to select.
+          items:
+            type: string
     Limit:
       type: object
       properties:
@@ -1036,17 +975,6 @@ components:
         value:
           type: integer
           format: int64
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
     OrgOAuthClient:
       type: object
       required:
@@ -1127,32 +1055,93 @@ components:
           description: The  oauth client's organization.
           readOnly: true
           $ref: '#/components/schemas/NamedEntity'
-    InactivityTimeoutGroupBundle:
+    Entity:
       type: object
-      required:
-      - groups
-      - priority
-      - timeoutSeconds
       properties:
-        priority:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
           type: integer
           format: int32
-          description: The priority of the group bundle (1-5).
-        timeoutSeconds:
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    NamedEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the object.
+          readOnly: true
+    IdleTokenTimeout:
+      type: object
+      properties:
+        idleTokenTimeoutSeconds:
           type: integer
           format: int32
-          description: The timeout value in seconds (300 to 28800, representing 5 to 480 minutes).
+          description: Token timeout length in seconds. Must be at least 5 minutes and at most 8 hours. HIPAA-enabled organizations may be subject to a stricter 15-minute maximum during rollout.
+          minimum: 300
+        enableIdleTokenTimeout:
+          type: boolean
+          description: Indicates whether the Token Timeout should be enabled or disabled.
         inactivityTimeoutUnit:
           type: string
-          description: The unit for the timeout (MINUTES or HOURS).
+          description: The unit for the inactivity timeout (MINUTES or HOURS).
           enum:
           - Minutes
           - Hours
-        groups:
+        inactivityTimeoutGroupsEnabled:
+          type: boolean
+          description: Indicates whether inactivity timeout groups are enabled.
+        inactivityTimeoutGroupBundles:
           type: array
-          description: The list of group IDs to select.
+          description: Group bundle configuration for inactivity timeout.
           items:
-            type: string
+            $ref: '#/components/schemas/InactivityTimeoutGroupBundle'
+    RoleDivision:
+      type: object
+      required:
+      - divisionId
+      - roleId
+      properties:
+        roleId:
+          type: string
+          description: Role to be associated with the given division which forms a grant
+        divisionId:
+          type: string
+          description: Division associated with the given role which forms a grant
     TokenInfoClonedUser:
       type: object
       properties:
@@ -1164,6 +1153,17 @@ components:
           description: Organization of the original native user
           readOnly: true
           $ref: '#/components/schemas/Entity'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

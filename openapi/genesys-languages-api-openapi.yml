@@ -1159,49 +1159,6 @@ paths:
       x-purecloud-method-name: getLanguagesTranslationsUser
 components:
   schemas:
-    AvailableTranslations:
-      type: object
-      properties:
-        orgSpecific:
-          type: array
-          items:
-            type: string
-        builtin:
-          type: array
-          items:
-            type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -1306,17 +1263,78 @@ components:
         value:
           type: integer
           format: int64
-    Detail:
+    Language:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The language name.
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        state:
+          type: string
+          enum:
+          - active
+          - inactive
+          - deleted
+        version:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ErrorBody:
       type: object
       properties:
-        errorCode:
+        message:
           type: string
-        fieldName:
+        code:
           type: string
+        status:
+          type: integer
+          format: int32
         entityId:
           type: string
         entityName:
           type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    AvailableTranslations:
+      type: object
+      properties:
+        orgSpecific:
+          type: array
+          items:
+            type: string
+        builtin:
+          type: array
+          items:
+            type: string
     LanguageEntityListing:
       type: object
       properties:
@@ -1351,35 +1369,17 @@ components:
         pageCount:
           type: integer
           format: int32
-    Language:
+    Detail:
       type: object
-      required:
-      - name
       properties:
-        id:
+        errorCode:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
+        fieldName:
           type: string
-          description: The language name.
-        dateModified:
+        entityId:
           type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        state:
+        entityName:
           type: string
-          enum:
-          - active
-          - inactive
-          - deleted
-        version:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

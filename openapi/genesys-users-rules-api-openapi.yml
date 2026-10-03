@@ -1419,376 +1419,6 @@ paths:
       x-purecloud-method-name: getUsersRulesSetting
 components:
   schemas:
-    UsersRulesRuleSettings:
-      type: object
-      properties:
-        allowedContainers:
-          type: array
-          description: The allowed containers for the rule
-          readOnly: true
-          items:
-            type: string
-            enum:
-            - AcdSkill
-            - BusinessUnit
-            - DirectoryGroup
-            - Division
-            - Language
-            - Location
-            - ManagementUnit
-            - Queue
-            - ReportsTo
-            - Team
-            - User
-        lockedCriteria:
-          type: array
-          description: The locked criteria settings for the rule
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/UsersRulesLockedCriteriaSettingsCriteria'
-      description: Users rule type-specific settings response
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    UsersRulesValue:
-      type: object
-      required:
-      - ids
-      properties:
-        contextId:
-          type: string
-          description: The contextId for this group
-        ids:
-          type: array
-          description: The ids to select for this group
-          items:
-            type: string
-    UsersRulesQueryResponse:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserReference'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-    UsersRulesLockedCriteriaSettingsGroup:
-      type: object
-      required:
-      - container
-      - operators
-      properties:
-        operators:
-          type: array
-          description: The allowed operators for this criteria
-          items:
-            type: string
-            enum:
-            - And
-            - Not
-        container:
-          type: string
-          description: The container that the ids belong to
-          enum:
-          - AcdSkill
-          - BusinessUnit
-          - DirectoryGroup
-          - Division
-          - Language
-          - Location
-          - ManagementUnit
-          - Queue
-          - ReportsTo
-          - Team
-          - User
-        maxIdCount:
-          type: integer
-          format: int64
-          description: Maximum number of ids that can be specified in this container
-    UsersRulesCreateRuleRequest:
-      type: object
-      required:
-      - criteria
-      - name
-      - type
-      properties:
-        name:
-          type: string
-          description: The name of the rule
-        description:
-          type: string
-          description: The description of the rule
-        type:
-          type: string
-          description: The type of the rule
-          enum:
-          - Learning
-          - ActivityPlan
-        criteria:
-          type: array
-          description: The criteria of the rule
-          items:
-            $ref: '#/components/schemas/UsersRulesCriteria'
-      description: Create users rule request
-    UsersRulesRule:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        description:
-          type: string
-          description: The description of the rule
-          readOnly: true
-        type:
-          type: string
-          description: The type of the rule
-          readOnly: true
-          enum:
-          - Learning
-          - ActivityPlan
-        criteria:
-          type: array
-          description: The criteria of the rule
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/UsersRulesCriteria'
-        createdDate:
-          type: string
-          format: date-time
-          description: 'The date/time the rule was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        createdBy:
-          description: The user who created the rule
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'The date/time the rule was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        modifiedBy:
-          description: The last user to modify the rule
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        lastRun:
-          description: Information on the last run of the rule
-          readOnly: true
-          $ref: '#/components/schemas/UsersRulesLastRunMetadata'
-        recentRunCount:
-          type: integer
-          format: int64
-          description: The number of times the rule has run
-          readOnly: true
-        dependentCount:
-          type: integer
-          format: int64
-          description: The number of dependents this rule has
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Users rule response
-    UsersRulesQueryRuleRequest:
-      type: object
-      required:
-      - criteria
-      - type
-      - userIds
-      properties:
-        type:
-          type: string
-          description: The type of the rule
-          enum:
-          - Learning
-          - ActivityPlan
-        criteria:
-          type: array
-          description: The criteria of the rule
-          items:
-            $ref: '#/components/schemas/UsersRulesCriteria'
-        userIds:
-          type: array
-          description: The user ids to query
-          items:
-            type: string
-      description: Users query rule request
-    UsersRulesGroupItem:
-      type: object
-      required:
-      - container
-      - operator
-      - values
-      properties:
-        id:
-          type: string
-          description: The internal ID for this group
-        operator:
-          type: string
-          description: The operator for this group
-          enum:
-          - And
-          - Not
-        container:
-          type: string
-          description: The container that the ids belong to
-          enum:
-          - AcdSkill
-          - BusinessUnit
-          - DirectoryGroup
-          - Division
-          - Language
-          - Location
-          - ManagementUnit
-          - Queue
-          - ReportsTo
-          - Team
-          - User
-        values:
-          type: array
-          description: The ids and contextIds to select for this group
-          items:
-            $ref: '#/components/schemas/UsersRulesValue'
-    UsersRulesLockedCriteriaSettingsCriteria:
-      type: object
-      required:
-      - group
-      - operator
-      properties:
-        operator:
-          type: string
-          description: The operator for this criteria
-          enum:
-          - Or
-        group:
-          type: array
-          description: The user selection groups for this criteria
-          items:
-            $ref: '#/components/schemas/UsersRulesLockedCriteriaSettingsGroup'
-    UsersRulesDependentRule:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Users rule response
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    UsersRulesUpdateRuleRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the rule
-        description:
-          type: string
-          description: The description of the rule
-        criteria:
-          type: array
-          description: The criteria of the rule
-          items:
-            $ref: '#/components/schemas/UsersRulesCriteria'
-        lockedCriteria:
-          type: array
-          items:
-            $ref: '#/components/schemas/UsersRulesCriteria'
-      description: Update users rule request
-    UsersRulesDependentList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/UsersRulesDependent'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
     UsersRulesLastRunMetadata:
       type: object
       properties:
@@ -1806,67 +1436,6 @@ components:
           type: integer
           format: int64
           description: The number of users returned by the run
-    UsersRulesDependent:
-      type: object
-      properties:
-        rule:
-          description: The rule associated with this dependent
-          readOnly: true
-          $ref: '#/components/schemas/UsersRulesDependentRule'
-        typeId:
-          type: string
-          description: The type id of the dependent
-          readOnly: true
-        type:
-          type: string
-          description: The type of the dependent
-          readOnly: true
-          enum:
-          - Learning
-          - ActivityPlan
-        createdDate:
-          type: string
-          format: date-time
-          description: 'The date/time the dependent was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        createdBy:
-          description: The user who created the dependent
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        lastRun:
-          description: Information on the last run of the dependent
-          readOnly: true
-          $ref: '#/components/schemas/UsersRulesLastRunMetadata'
-        recentRunCount:
-          type: integer
-          format: int64
-          description: The number of times the rule has run
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Users rule dependent response
-    UsersRulesCriteria:
-      type: object
-      required:
-      - group
-      - operator
-      properties:
-        id:
-          type: string
-          description: The internal ID for this criteria
-        operator:
-          type: string
-          description: The operator for this criteria
-          enum:
-          - Or
-        group:
-          type: array
-          description: The user selection groups for this criteria
-          items:
-            $ref: '#/components/schemas/UsersRulesGroupItem'
     Limit:
       type: object
       properties:
@@ -1971,17 +1540,182 @@ components:
         value:
           type: integer
           format: int64
-    UserReference:
+    UsersRulesCreateRuleRequest:
+      type: object
+      required:
+      - criteria
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: The name of the rule
+        description:
+          type: string
+          description: The description of the rule
+        type:
+          type: string
+          description: The type of the rule
+          enum:
+          - Learning
+          - ActivityPlan
+        criteria:
+          type: array
+          description: The criteria of the rule
+          items:
+            $ref: '#/components/schemas/UsersRulesCriteria'
+      description: Create users rule request
+    UsersRulesValue:
+      type: object
+      required:
+      - ids
+      properties:
+        contextId:
+          type: string
+          description: The contextId for this group
+        ids:
+          type: array
+          description: The ids to select for this group
+          items:
+            type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    UsersRulesRule:
       type: object
       properties:
         id:
           type: string
           description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+          description: The description of the rule
+          readOnly: true
+        type:
+          type: string
+          description: The type of the rule
+          readOnly: true
+          enum:
+          - Learning
+          - ActivityPlan
+        criteria:
+          type: array
+          description: The criteria of the rule
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/UsersRulesCriteria'
+        createdDate:
+          type: string
+          format: date-time
+          description: 'The date/time the rule was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        createdBy:
+          description: The user who created the rule
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'The date/time the rule was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        modifiedBy:
+          description: The last user to modify the rule
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        lastRun:
+          description: Information on the last run of the rule
+          readOnly: true
+          $ref: '#/components/schemas/UsersRulesLastRunMetadata'
+        recentRunCount:
+          type: integer
+          format: int64
+          description: The number of times the rule has run
+          readOnly: true
+        dependentCount:
+          type: integer
+          format: int64
+          description: The number of dependents this rule has
+          readOnly: true
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
+      description: Users rule response
+    UsersRulesDependent:
+      type: object
+      properties:
+        rule:
+          description: The rule associated with this dependent
+          readOnly: true
+          $ref: '#/components/schemas/UsersRulesDependentRule'
+        typeId:
+          type: string
+          description: The type id of the dependent
+          readOnly: true
+        type:
+          type: string
+          description: The type of the dependent
+          readOnly: true
+          enum:
+          - Learning
+          - ActivityPlan
+        createdDate:
+          type: string
+          format: date-time
+          description: 'The date/time the dependent was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        createdBy:
+          description: The user who created the dependent
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        lastRun:
+          description: Information on the last run of the dependent
+          readOnly: true
+          $ref: '#/components/schemas/UsersRulesLastRunMetadata'
+        recentRunCount:
+          type: integer
+          format: int64
+          description: The number of times the rule has run
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Users rule dependent response
     UsersRulesRuleList:
       type: object
       properties:
@@ -2016,6 +1750,272 @@ components:
         pageCount:
           type: integer
           format: int32
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    UsersRulesRuleSettings:
+      type: object
+      properties:
+        allowedContainers:
+          type: array
+          description: The allowed containers for the rule
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - AcdSkill
+            - BusinessUnit
+            - DirectoryGroup
+            - Division
+            - Language
+            - Location
+            - ManagementUnit
+            - Queue
+            - ReportsTo
+            - Team
+            - User
+        lockedCriteria:
+          type: array
+          description: The locked criteria settings for the rule
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/UsersRulesLockedCriteriaSettingsCriteria'
+      description: Users rule type-specific settings response
+    UsersRulesQueryResponse:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserReference'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+    UsersRulesUpdateRuleRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the rule
+        description:
+          type: string
+          description: The description of the rule
+        criteria:
+          type: array
+          description: The criteria of the rule
+          items:
+            $ref: '#/components/schemas/UsersRulesCriteria'
+        lockedCriteria:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersRulesCriteria'
+      description: Update users rule request
+    UsersRulesQueryRuleRequest:
+      type: object
+      required:
+      - criteria
+      - type
+      - userIds
+      properties:
+        type:
+          type: string
+          description: The type of the rule
+          enum:
+          - Learning
+          - ActivityPlan
+        criteria:
+          type: array
+          description: The criteria of the rule
+          items:
+            $ref: '#/components/schemas/UsersRulesCriteria'
+        userIds:
+          type: array
+          description: The user ids to query
+          items:
+            type: string
+      description: Users query rule request
+    UsersRulesLockedCriteriaSettingsGroup:
+      type: object
+      required:
+      - container
+      - operators
+      properties:
+        operators:
+          type: array
+          description: The allowed operators for this criteria
+          items:
+            type: string
+            enum:
+            - And
+            - Not
+        container:
+          type: string
+          description: The container that the ids belong to
+          enum:
+          - AcdSkill
+          - BusinessUnit
+          - DirectoryGroup
+          - Division
+          - Language
+          - Location
+          - ManagementUnit
+          - Queue
+          - ReportsTo
+          - Team
+          - User
+        maxIdCount:
+          type: integer
+          format: int64
+          description: Maximum number of ids that can be specified in this container
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UsersRulesDependentRule:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Users rule response
+    UsersRulesGroupItem:
+      type: object
+      required:
+      - container
+      - operator
+      - values
+      properties:
+        id:
+          type: string
+          description: The internal ID for this group
+        operator:
+          type: string
+          description: The operator for this group
+          enum:
+          - And
+          - Not
+        container:
+          type: string
+          description: The container that the ids belong to
+          enum:
+          - AcdSkill
+          - BusinessUnit
+          - DirectoryGroup
+          - Division
+          - Language
+          - Location
+          - ManagementUnit
+          - Queue
+          - ReportsTo
+          - Team
+          - User
+        values:
+          type: array
+          description: The ids and contextIds to select for this group
+          items:
+            $ref: '#/components/schemas/UsersRulesValue'
+    UsersRulesCriteria:
+      type: object
+      required:
+      - group
+      - operator
+      properties:
+        id:
+          type: string
+          description: The internal ID for this criteria
+        operator:
+          type: string
+          description: The operator for this criteria
+          enum:
+          - Or
+        group:
+          type: array
+          description: The user selection groups for this criteria
+          items:
+            $ref: '#/components/schemas/UsersRulesGroupItem'
+    UsersRulesDependentList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersRulesDependent'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    UsersRulesLockedCriteriaSettingsCriteria:
+      type: object
+      required:
+      - group
+      - operator
+      properties:
+        operator:
+          type: string
+          description: The operator for this criteria
+          enum:
+          - Or
+        group:
+          type: array
+          description: The user selection groups for this criteria
+          items:
+            $ref: '#/components/schemas/UsersRulesLockedCriteriaSettingsGroup'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

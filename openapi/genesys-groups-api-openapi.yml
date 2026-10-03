@@ -2139,13 +2139,13 @@ paths:
         required: true
 components:
   schemas:
-    UserEntityListing:
+    GroupProfileEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/User'
+            $ref: '#/components/schemas/GroupProfile'
         pageSize:
           type: integer
           format: int32
@@ -2173,38 +2173,110 @@ components:
         pageCount:
           type: integer
           format: int32
-    UserStations:
+    Limit:
       type: object
       properties:
-        associatedStation:
-          description: Current associated station for this user.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        effectiveStation:
-          description: The station where the user can be reached based on their default and associated station.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        defaultStation:
-          description: Default station to be used if not associated with a station.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        lastAssociatedStation:
-          description: Last associated station for this user.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-    LocationEmergencyNumber:
-      type: object
-      properties:
-        e164:
+        key:
           type: string
-        number:
+        namespace:
           type: string
-        type:
-          type: string
-          description: The type of emergency number.
           enum:
-          - default
-          - elin
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
     UserStation:
       type: object
       properties:
@@ -2234,7 +2306,628 @@ components:
           format: int32
           description: The number of call appearances on the station.
           readOnly: true
-    Group:
+    Education:
+      type: object
+      properties:
+        school:
+          type: string
+        fieldOfStudy:
+          type: string
+        notes:
+          type: string
+          description: Notes about education has a 2000 character limit
+        dateStart:
+          type: string
+          format: date
+          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEnd:
+          type: string
+          format: date
+          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+    UserStations:
+      type: object
+      properties:
+        associatedStation:
+          description: Current associated station for this user.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+        effectiveStation:
+          description: The station where the user can be reached based on their default and associated station.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+        defaultStation:
+          description: Default station to be used if not associated with a station.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+        lastAssociatedStation:
+          description: Last associated station for this user.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+    WritableDivision:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UserConversationSummary:
+      type: object
+      properties:
+        userId:
+          type: string
+        call:
+          $ref: '#/components/schemas/MediaSummary'
+        callback:
+          $ref: '#/components/schemas/MediaSummary'
+        email:
+          $ref: '#/components/schemas/MediaSummary'
+        message:
+          $ref: '#/components/schemas/MediaSummary'
+        chat:
+          $ref: '#/components/schemas/MediaSummary'
+        socialExpression:
+          $ref: '#/components/schemas/MediaSummary'
+        video:
+          $ref: '#/components/schemas/MediaSummary'
+    Contact:
+      type: object
+      properties:
+        address:
+          type: string
+          description: Email address or phone number for this contact type
+        display:
+          type: string
+          description: Formatted version of the address property
+          readOnly: true
+        mediaType:
+          type: string
+          enum:
+          - PHONE
+          - EMAIL
+          - SMS
+        type:
+          type: string
+          enum:
+          - PRIMARY
+          - WORK
+          - WORK2
+          - WORK3
+          - WORK4
+          - HOME
+          - MOBILE
+          - MAIN
+          - OTHER
+        extension:
+          type: string
+          description: Use internal extension instead of address. Mutually exclusive with the address field.
+        countryCode:
+          type: string
+        integration:
+          type: string
+          example: microsoftteams
+          description: Integration tag value if this number is associated with an external integration.
+    GroupsSearchResponse:
+      type: object
+      required:
+      - pageCount
+      - pageNumber
+      - pageSize
+      - results
+      - total
+      - types
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The total number of results found
+        pageCount:
+          type: integer
+          format: int32
+          description: The total number of pages
+        pageSize:
+          type: integer
+          format: int32
+          description: The current page size
+        pageNumber:
+          type: integer
+          format: int32
+          description: The current page number
+        previousPage:
+          type: string
+          description: Q64 value for the previous page of results
+        currentPage:
+          type: string
+          description: Q64 value for the current page of results
+        nextPage:
+          type: string
+          description: Q64 value for the next page of results
+        types:
+          type: array
+          description: Resource types the search was performed against
+          items:
+            type: string
+        results:
+          type: array
+          description: Search results
+          items:
+            $ref: '#/components/schemas/Group'
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    SearchSort:
+      type: object
+      properties:
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
+    LocationAddressVerificationDetails:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of address verification process
+          enum:
+          - Pending
+          - InProgress
+          - Retry
+          - Complete
+          - Failed
+        dateFinished:
+          type: string
+          format: date-time
+          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        service:
+          type: string
+          example: smartystreets-us
+          description: Third party service used for address verification
+    UserRoutingLanguage:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        proficiency:
+          type: number
+          format: double
+          description: A rating from 0.0 to 5.0 that indicates how fluent an agent is in a particular language. ACD interactions are routed to agents with higher proficiency ratings.
+        state:
+          type: string
+          description: Activate or deactivate this routing language.
+          enum:
+          - active
+          - inactive
+          - deleted
+        languageUri:
+          type: string
+          format: uri
+          description: URI to the organization language used by this user language.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Represents an organization language assigned to a user. When assigning to a user specify the organization language id as the id.
+    UserAuthorization:
+      type: object
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DomainRole'
+        unusedRoles:
+          type: array
+          description: A collection of the roles the user is not using
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/DomainRole'
+        permissions:
+          type: array
+          description: A collection of the permissions granted by all assigned roles
+          readOnly: true
+          items:
+            type: string
+        permissionPolicies:
+          type: array
+          description: The policies configured for assigned permissions.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ResourcePermissionPolicy'
+    Chat:
+      type: object
+      properties:
+        jabberId:
+          type: string
+    LocationImage:
+      type: object
+      properties:
+        resolution:
+          type: string
+          description: 'Height and/or width of image. ex: 640x480 or x128'
+        imageUri:
+          type: string
+    OAuthLastTokenIssued:
+      type: object
+      properties:
+        dateIssued:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    ResourcePermissionPolicy:
+      type: object
+      properties:
+        id:
+          type: string
+        domain:
+          type: string
+        entityName:
+          type: string
+        policyName:
+          type: string
+        policyDescription:
+          type: string
+        actionSetKey:
+          type: string
+        allowConditions:
+          type: boolean
+        resourceConditionNode:
+          $ref: '#/components/schemas/ResourceConditionNode'
+        namedResources:
+          type: array
+          items:
+            type: string
+        resourceCondition:
+          type: string
+        actionSet:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    GroupMembersUpdate:
+      type: object
+      required:
+      - memberIds
+      properties:
+        memberIds:
+          type: array
+          description: A list of the ids of the members to add. A maximum of 50 members are allowed per request.
+          items:
+            type: string
+        version:
+          type: integer
+          format: int32
+          description: The current group version.
+    GroupContact:
+      type: object
+      required:
+      - address
+      - mediaType
+      - type
+      properties:
+        address:
+          type: string
+          description: Phone number for this contact type
+        extension:
+          type: string
+          description: Extension is set if the number is e164 valid
+        display:
+          type: string
+          description: Formatted version of the address property
+          readOnly: true
+        type:
+          type: string
+          description: Contact type of the address
+          enum:
+          - GROUPRING
+          - GROUPPHONE
+        mediaType:
+          type: string
+          description: Media type of the address
+          enum:
+          - PHONE
+    ResourceConditionValue:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - SCALAR
+          - VARIABLE
+          - USER
+          - QUEUE
+          - TEAM
+        value:
+          type: string
+    LocationAddress:
+      type: object
+      properties:
+        city:
+          type: string
+        country:
+          type: string
+        countryName:
+          type: string
+        state:
+          type: string
+        street1:
+          type: string
+        street2:
+          type: string
+        zipcode:
+          type: string
+    Team:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The team name
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/WritableDivision'
+        description:
+          type: string
+          description: Team information.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        memberCount:
+          type: integer
+          format: int64
+          description: Number of members in a team
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    EmployerInfo:
+      type: object
+      properties:
+        officialName:
+          type: string
+        employeeId:
+          type: string
+        employeeType:
+          type: string
+        dateHire:
+          type: string
+    Division:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Location:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the location
+        floorplanId:
+          type: string
+          description: Unique identifier for the location floorplan image
+          readOnly: true
+        coordinates:
+          type: object
+          description: Users coordinates on the floorplan. Only used when floorplanImage is set
+          additionalProperties:
+            type: number
+            format: double
+        notes:
+          type: string
+          description: Optional description on the users location
+        locationDefinition:
+          $ref: '#/components/schemas/LocationDefinition'
+    PresenceDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: description
+        systemPresence:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LocationEmergencyNumber:
+      type: object
+      properties:
+        e164:
+          type: string
+        number:
+          type: string
+        type:
+          type: string
+          description: The type of emergency number.
+          enum:
+          - default
+          - elin
+    RoutingStatus:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The userId of the agent
+        status:
+          type: string
+          description: Indicates the Routing State of the agent.  A value of OFF_QUEUE will be returned if the specified user does not exist.
+          enum:
+          - OFF_QUEUE
+          - IDLE
+          - INTERACTING
+          - NOT_RESPONDING
+          - COMMUNICATING
+        startTime:
+          type: string
+          format: date-time
+          description: 'The timestamp when the agent went into this state. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    UserPresence:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        source:
+          type: string
+          description: Deprecated - The sourceID field should be used as a replacement.
+        sourceId:
+          type: string
+          description: Represents the ID of a registered source
+        primary:
+          type: boolean
+          description: A boolean used to tell whether or not to set this presence source as the primary on a PATCH
+        presenceDefinition:
+          $ref: '#/components/schemas/PresenceDefinition'
+        futurePresenceDefinition:
+          description: The definition of the user's desired future presence
+          readOnly: true
+          $ref: '#/components/schemas/PresenceDefinition'
+        message:
+          type: string
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    WorkPlanBidRanks:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the user.
+        workPlanBiddingPerformance:
+          type: integer
+          format: int32
+          description: Work plan bidding agent performance ranking. The range of values is between 0 and 9999.
+        biddingTieBreaker:
+          type: string
+          description: Custom agent ranking metric that some customers can use.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    GroupSearchRequest:
+      type: object
+      properties:
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
+        pageSize:
+          type: integer
+          format: int32
+          description: The number of results per page
+        pageNumber:
+          type: integer
+          format: int32
+          description: The page of resources you want to retrieve
+        sort:
+          type: array
+          description: Multi-value sort order, list of multiple sort values
+          items:
+            $ref: '#/components/schemas/SearchSort'
+        query:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupSearchCriteria'
+    GroupCreate:
       type: object
       required:
       - name
@@ -2307,17 +3000,17 @@ components:
         callsEnabled:
           type: boolean
           description: Allow calls to be placed to this group.
-        owners:
+        ownerIds:
           type: array
           description: Owners of the group
           items:
-            $ref: '#/components/schemas/User'
+            type: string
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-    LocationImage:
+    Image:
       type: object
       properties:
         resolution:
@@ -2325,260 +3018,13 @@ components:
           description: 'Height and/or width of image. ex: 640x480 or x128'
         imageUri:
           type: string
-    PresenceDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: description
-        systemPresence:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    GroupsSearchResponse:
-      type: object
-      required:
-      - pageCount
-      - pageNumber
-      - pageSize
-      - results
-      - total
-      - types
-      properties:
-        total:
-          type: integer
-          format: int64
-          description: The total number of results found
-        pageCount:
-          type: integer
-          format: int32
-          description: The total number of pages
-        pageSize:
-          type: integer
-          format: int32
-          description: The current page size
-        pageNumber:
-          type: integer
-          format: int32
-          description: The current page number
-        previousPage:
-          type: string
-          description: Q64 value for the previous page of results
-        currentPage:
-          type: string
-          description: Q64 value for the current page of results
-        nextPage:
-          type: string
-          description: Q64 value for the next page of results
-        types:
-          type: array
-          description: Resource types the search was performed against
-          items:
-            type: string
-        results:
-          type: array
-          description: Search results
-          items:
-            $ref: '#/components/schemas/Group'
-    FieldList:
-      type: object
-      properties:
-        customLabels:
-          type: boolean
-        instructionText:
-          type: string
-        key:
-          type: string
-        labelKeys:
-          type: array
-          items:
-            type: string
-        params:
-          type: object
-          additionalProperties:
-            type: object
-        repeatable:
-          type: boolean
-        state:
-          type: string
-        type:
-          type: string
-        required:
-          type: boolean
-        gdpr:
-          type: boolean
-    Location:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the location
-        floorplanId:
-          type: string
-          description: Unique identifier for the location floorplan image
-          readOnly: true
-        coordinates:
-          type: object
-          description: Users coordinates on the floorplan. Only used when floorplanImage is set
-          additionalProperties:
-            type: number
-            format: double
-        notes:
-          type: string
-          description: Optional description on the users location
-        locationDefinition:
-          $ref: '#/components/schemas/LocationDefinition'
-    Education:
-      type: object
-      properties:
-        school:
-          type: string
-        fieldOfStudy:
-          type: string
-        notes:
-          type: string
-          description: Notes about education has a 2000 character limit
-        dateStart:
-          type: string
-          format: date
-          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEnd:
-          type: string
-          format: date
-          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-    UserAuthorization:
-      type: object
-      properties:
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/DomainRole'
-        unusedRoles:
-          type: array
-          description: A collection of the roles the user is not using
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/DomainRole'
-        permissions:
-          type: array
-          description: A collection of the permissions granted by all assigned roles
-          readOnly: true
-          items:
-            type: string
-        permissionPolicies:
-          type: array
-          description: The policies configured for assigned permissions.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/ResourcePermissionPolicy'
-    GroupProfile:
-      type: object
-      required:
-      - version
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        state:
-          type: string
-          description: The state of the user resource
-          enum:
-          - active
-          - inactive
-          - deleted
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Datetime of the last modification. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        version:
-          type: integer
-          format: int64
-          description: The version of the group resource
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    OutOfOffice:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        user:
-          $ref: '#/components/schemas/User'
-        startDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        endDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        active:
-          type: boolean
-        indefinite:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    GroupMembersUpdate:
-      type: object
-      required:
-      - memberIds
-      properties:
-        memberIds:
-          type: array
-          description: A list of the ids of the members to add. A maximum of 50 members are allowed per request.
-          items:
-            type: string
-        version:
-          type: integer
-          format: int32
-          description: The current group version.
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    SearchSort:
-      type: object
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-    GroupEntityListing:
+    UserEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/Group'
+            $ref: '#/components/schemas/User'
         pageSize:
           type: integer
           format: int32
@@ -2606,43 +3052,125 @@ components:
         pageCount:
           type: integer
           format: int32
-    Contact:
+    GroupUpdate:
       type: object
+      required:
+      - version
       properties:
-        address:
+        id:
           type: string
-          description: Email address or phone number for this contact type
-        display:
-          type: string
-          description: Formatted version of the address property
+          description: The globally unique identifier for the object.
           readOnly: true
-        mediaType:
+        name:
           type: string
+          description: The group name.
+        description:
+          type: string
+        state:
+          type: string
+          description: State of the group.
           enum:
-          - PHONE
-          - EMAIL
-          - SMS
+          - active
+          - inactive
+          - deleted
+        version:
+          type: integer
+          format: int32
+          description: Current version for this resource.
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupContact'
+        rulesVisible:
+          type: boolean
+          description: Are membership rules visible to the person requesting to view the group
+        visibility:
+          type: string
+          description: Who can view this group
+          enum:
+          - public
+          - ownerIds
+          - members
+        rolesEnabled:
+          type: boolean
+          description: Allow roles to be assigned to this group
+        includeOwners:
+          type: boolean
+          description: Allow owners to be included as members of the group
+        callsEnabled:
+          type: boolean
+          description: Allow calls to be placed to this group.
+        ownerIds:
+          type: array
+          description: Owners of the group
+          items:
+            type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    GroupSearchCriteria:
+      type: object
+      required:
+      - type
+      properties:
+        endValue:
+          type: string
+          description: The end value of the range. This field is used for range search types.
+        values:
+          type: array
+          description: A list of values for the search to match against
+          items:
+            type: string
+        startValue:
+          type: string
+          description: The start value of the range. This field is used for range search types.
+        value:
+          type: string
+          description: A value for the search to match against
+        operator:
+          type: string
+          description: How to apply this search criteria against other criteria
+          enum:
+          - AND
+          - OR
+          - NOT
+        group:
+          type: array
+          description: Groups multiple conditions
+          items:
+            $ref: '#/components/schemas/GroupSearchCriteria'
+        dateFormat:
+          type: string
+          description: Set date format for criteria values when using date range search type.  Supports Java date format syntax, example yyyy-MM-dd'T'HH:mm:ss.SSSX.
         type:
           type: string
+          description: Search Type
           enum:
-          - PRIMARY
-          - WORK
-          - WORK2
-          - WORK3
-          - WORK4
-          - HOME
-          - MOBILE
-          - MAIN
-          - OTHER
-        extension:
-          type: string
-          description: Use internal extension instead of address. Mutually exclusive with the address field.
-        countryCode:
-          type: string
-        integration:
-          type: string
-          example: microsoftteams
-          description: Integration tag value if this number is associated with an external integration.
+          - EXACT
+          - STARTS_WITH
+          - CONTAINS
+          - REGEX
+          - TERM
+          - TERMS
+          - REQUIRED_FIELDS
+          - MATCH_ALL
+        fields:
+          type: array
+          description: Field names to search against
+          items:
+            type: string
+          x-genesys-search-fields:
+            value:
+            - description
+            - id
+            - name
+            - state
     User:
       type: object
       required:
@@ -2801,8 +3329,10 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    UserPresence:
+    GroupProfile:
       type: object
+      required:
+      - version
       properties:
         id:
           type: string
@@ -2810,106 +3340,36 @@ components:
           readOnly: true
         name:
           type: string
-        source:
-          type: string
-          description: Deprecated - The sourceID field should be used as a replacement.
-        sourceId:
-          type: string
-          description: Represents the ID of a registered source
-        primary:
-          type: boolean
-          description: A boolean used to tell whether or not to set this presence source as the primary on a PATCH
-        presenceDefinition:
-          $ref: '#/components/schemas/PresenceDefinition'
-        futurePresenceDefinition:
-          description: The definition of the user's desired future presence
-          readOnly: true
-          $ref: '#/components/schemas/PresenceDefinition'
-        message:
-          type: string
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LocationAddressVerificationDetails:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Status of address verification process
-          enum:
-          - Pending
-          - InProgress
-          - Retry
-          - Complete
-          - Failed
-        dateFinished:
-          type: string
-          format: date-time
-          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        service:
-          type: string
-          example: smartystreets-us
-          description: Third party service used for address verification
-    Empty:
-      type: object
-    Section:
-      type: object
-      properties:
-        fieldList:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldList'
-        instructionText:
-          type: string
-        key:
-          type: string
         state:
           type: string
-    GroupProfileEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupProfile'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
+          description: The state of the user resource
+          enum:
+          - active
+          - inactive
+          - deleted
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Datetime of the last modification. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        version:
           type: integer
           format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
+          description: The version of the group resource
         selfUri:
           type: string
           format: uri
-        pageCount:
-          type: integer
-          format: int32
-    Division:
+          description: The URI for this object
+          readOnly: true
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    UserRoutingSkill:
       type: object
       properties:
         id:
@@ -2918,76 +3378,38 @@ components:
           readOnly: true
         name:
           type: string
+        proficiency:
+          type: number
+          format: double
+          description: A rating from 0.0 to 5.0 that indicates how adept an agent is at a particular skill. When "Best available skills" is enabled for a queue in Genesys Cloud, ACD interactions in that queue are routed to agents with higher proficiency ratings.
+        state:
+          type: string
+          description: Activate or deactivate this routing skill.
+          enum:
+          - active
+          - inactive
+          - deleted
+        skillUri:
+          type: string
+          format: uri
+          description: URI to the organization skill used by this user skill.
+          readOnly: true
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-    LocationAddress:
+      description: Represents an organization skill assigned to a user. When assigning to a user specify the organization skill id as the id.
+    DomainRole:
       type: object
       properties:
-        city:
+        id:
           type: string
-        country:
+          description: The ID of the role
+        name:
           type: string
-        countryName:
-          type: string
-        state:
-          type: string
-        street1:
-          type: string
-        street2:
-          type: string
-        zipcode:
-          type: string
-    OAuthLastTokenIssued:
-      type: object
-      properties:
-        dateIssued:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    Image:
-      type: object
-      properties:
-        resolution:
-          type: string
-          description: 'Height and/or width of image. ex: 640x480 or x128'
-        imageUri:
-          type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    GroupCreate:
+          description: The name of the role
+    Group:
       type: object
       required:
       - name
@@ -3060,41 +3482,61 @@ components:
         callsEnabled:
           type: boolean
           description: Allow calls to be placed to this group.
-        ownerIds:
+        owners:
           type: array
           description: Owners of the group
           items:
-            type: string
+            $ref: '#/components/schemas/User'
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-    AddressableEntityRef:
+    MediaSummaryDetail:
       type: object
       properties:
-        id:
+        active:
+          type: integer
+          format: int32
+        acw:
+          type: integer
+          format: int32
+    GroupEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
           type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
         selfUri:
           type: string
           format: uri
-    ResourceConditionValue:
+        pageCount:
+          type: integer
+          format: int32
+    OutOfOffice:
       type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - SCALAR
-          - VARIABLE
-          - USER
-          - QUEUE
-          - TEAM
-        value:
-          type: string
-    GroupUpdate:
-      type: object
-      required:
-      - version
       properties:
         id:
           type: string
@@ -3102,57 +3544,168 @@ components:
           readOnly: true
         name:
           type: string
-          description: The group name.
-        description:
+        user:
+          $ref: '#/components/schemas/User'
+        startDate:
           type: string
-        state:
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        endDate:
           type: string
-          description: State of the group.
-          enum:
-          - active
-          - inactive
-          - deleted
-        version:
-          type: integer
-          format: int32
-          description: Current version for this resource.
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/Image'
-        addresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupContact'
-        rulesVisible:
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        active:
           type: boolean
-          description: Are membership rules visible to the person requesting to view the group
-        visibility:
-          type: string
-          description: Who can view this group
-          enum:
-          - public
-          - ownerIds
-          - members
-        rolesEnabled:
+        indefinite:
           type: boolean
-          description: Allow roles to be assigned to this group
-        includeOwners:
-          type: boolean
-          description: Allow owners to be included as members of the group
-        callsEnabled:
-          type: boolean
-          description: Allow calls to be placed to this group.
-        ownerIds:
-          type: array
-          description: Owners of the group
-          items:
-            type: string
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
+    FieldList:
+      type: object
+      properties:
+        customLabels:
+          type: boolean
+        instructionText:
+          type: string
+        key:
+          type: string
+        labelKeys:
+          type: array
+          items:
+            type: string
+        params:
+          type: object
+          additionalProperties:
+            type: object
+        repeatable:
+          type: boolean
+        state:
+          type: string
+        type:
+          type: string
+        required:
+          type: boolean
+        gdpr:
+          type: boolean
+    ResourceConditionNode:
+      type: object
+      properties:
+        variableName:
+          type: string
+        conjunction:
+          type: string
+          enum:
+          - AND
+          - OR
+        operator:
+          type: string
+          enum:
+          - EQ
+          - IN
+          - GE
+          - GT
+          - LE
+          - LT
+        operands:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceConditionValue'
+        terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceConditionNode'
+    FieldConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        entityType:
+          type: string
+          enum:
+          - person
+          - group
+          - org
+        state:
+          type: string
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Section'
+        version:
+          type: string
+        schemaVersion:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Geolocation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        type:
+          type: string
+          description: A string used to describe the type of client the geolocation is being updated from e.g. ios, android, web, etc.
+        primary:
+          type: boolean
+          description: A boolean used to tell whether or not to set this geolocation client as the primary on a PATCH
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        country:
+          type: string
+        region:
+          type: string
+        city:
+          type: string
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationDefinition'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Empty:
+      type: object
+    Biography:
+      type: object
+      properties:
+        biography:
+          type: string
+          description: Personal detailed description
+        interests:
+          type: array
+          items:
+            type: string
+        hobbies:
+          type: array
+          items:
+            type: string
+        spouse:
+          type: string
+        education:
+          type: array
+          description: User education details
+          items:
+            $ref: '#/components/schemas/Education'
     LocationDefinition:
       type: object
       properties:
@@ -3220,509 +3773,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Team:
-      type: object
-      required:
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The team name
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/WritableDivision'
-        description:
-          type: string
-          description: Team information.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        memberCount:
-          type: integer
-          format: int64
-          description: Number of members in a team
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Geolocation:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        type:
-          type: string
-          description: A string used to describe the type of client the geolocation is being updated from e.g. ios, android, web, etc.
-        primary:
-          type: boolean
-          description: A boolean used to tell whether or not to set this geolocation client as the primary on a PATCH
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        country:
-          type: string
-        region:
-          type: string
-        city:
-          type: string
-        locations:
-          type: array
-          items:
-            $ref: '#/components/schemas/LocationDefinition'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    GroupContact:
-      type: object
-      required:
-      - address
-      - mediaType
-      - type
-      properties:
-        address:
-          type: string
-          description: Phone number for this contact type
-        extension:
-          type: string
-          description: Extension is set if the number is e164 valid
-        display:
-          type: string
-          description: Formatted version of the address property
-          readOnly: true
-        type:
-          type: string
-          description: Contact type of the address
-          enum:
-          - GROUPRING
-          - GROUPPHONE
-        mediaType:
-          type: string
-          description: Media type of the address
-          enum:
-          - PHONE
-    UserRoutingSkill:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        proficiency:
-          type: number
-          format: double
-          description: A rating from 0.0 to 5.0 that indicates how adept an agent is at a particular skill. When "Best available skills" is enabled for a queue in Genesys Cloud, ACD interactions in that queue are routed to agents with higher proficiency ratings.
-        state:
-          type: string
-          description: Activate or deactivate this routing skill.
-          enum:
-          - active
-          - inactive
-          - deleted
-        skillUri:
-          type: string
-          format: uri
-          description: URI to the organization skill used by this user skill.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Represents an organization skill assigned to a user. When assigning to a user specify the organization skill id as the id.
-    ResourcePermissionPolicy:
-      type: object
-      properties:
-        id:
-          type: string
-        domain:
-          type: string
-        entityName:
-          type: string
-        policyName:
-          type: string
-        policyDescription:
-          type: string
-        actionSetKey:
-          type: string
-        allowConditions:
-          type: boolean
-        resourceConditionNode:
-          $ref: '#/components/schemas/ResourceConditionNode'
-        namedResources:
-          type: array
-          items:
-            type: string
-        resourceCondition:
-          type: string
-        actionSet:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
-    MediaSummaryDetail:
-      type: object
-      properties:
-        active:
-          type: integer
-          format: int32
-        acw:
-          type: integer
-          format: int32
-    Biography:
-      type: object
-      properties:
-        biography:
-          type: string
-          description: Personal detailed description
-        interests:
-          type: array
-          items:
-            type: string
-        hobbies:
-          type: array
-          items:
-            type: string
-        spouse:
-          type: string
-        education:
-          type: array
-          description: User education details
-          items:
-            $ref: '#/components/schemas/Education'
-    RoutingStatus:
-      type: object
-      properties:
-        userId:
-          type: string
-          description: The userId of the agent
-        status:
-          type: string
-          description: Indicates the Routing State of the agent.  A value of OFF_QUEUE will be returned if the specified user does not exist.
-          enum:
-          - OFF_QUEUE
-          - IDLE
-          - INTERACTING
-          - NOT_RESPONDING
-          - COMMUNICATING
-        startTime:
-          type: string
-          format: date-time
-          description: 'The timestamp when the agent went into this state. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    WritableDivision:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkPlanBidRanks:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the user.
-        workPlanBiddingPerformance:
-          type: integer
-          format: int32
-          description: Work plan bidding agent performance ranking. The range of values is between 0 and 9999.
-        biddingTieBreaker:
-          type: string
-          description: Custom agent ranking metric that some customers can use.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UserConversationSummary:
-      type: object
-      properties:
-        userId:
-          type: string
-        call:
-          $ref: '#/components/schemas/MediaSummary'
-        callback:
-          $ref: '#/components/schemas/MediaSummary'
-        email:
-          $ref: '#/components/schemas/MediaSummary'
-        message:
-          $ref: '#/components/schemas/MediaSummary'
-        chat:
-          $ref: '#/components/schemas/MediaSummary'
-        socialExpression:
-          $ref: '#/components/schemas/MediaSummary'
-        video:
-          $ref: '#/components/schemas/MediaSummary'
-    DomainRole:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the role
-        name:
-          type: string
-          description: The name of the role
-    EmployerInfo:
-      type: object
-      properties:
-        officialName:
-          type: string
-        employeeId:
-          type: string
-        employeeType:
-          type: string
-        dateHire:
-          type: string
-    GroupSearchRequest:
-      type: object
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-        pageSize:
-          type: integer
-          format: int32
-          description: The number of results per page
-        pageNumber:
-          type: integer
-          format: int32
-          description: The page of resources you want to retrieve
-        sort:
-          type: array
-          description: Multi-value sort order, list of multiple sort values
-          items:
-            $ref: '#/components/schemas/SearchSort'
-        query:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupSearchCriteria'
-    GroupSearchCriteria:
-      type: object
-      required:
-      - type
-      properties:
-        endValue:
-          type: string
-          description: The end value of the range. This field is used for range search types.
-        values:
-          type: array
-          description: A list of values for the search to match against
-          items:
-            type: string
-        startValue:
-          type: string
-          description: The start value of the range. This field is used for range search types.
-        value:
-          type: string
-          description: A value for the search to match against
-        operator:
-          type: string
-          description: How to apply this search criteria against other criteria
-          enum:
-          - AND
-          - OR
-          - NOT
-        group:
-          type: array
-          description: Groups multiple conditions
-          items:
-            $ref: '#/components/schemas/GroupSearchCriteria'
-        dateFormat:
-          type: string
-          description: Set date format for criteria values when using date range search type.  Supports Java date format syntax, example yyyy-MM-dd'T'HH:mm:ss.SSSX.
-        type:
-          type: string
-          description: Search Type
-          enum:
-          - EXACT
-          - STARTS_WITH
-          - CONTAINS
-          - REGEX
-          - TERM
-          - TERMS
-          - REQUIRED_FIELDS
-          - MATCH_ALL
-        fields:
-          type: array
-          description: Field names to search against
-          items:
-            type: string
-          x-genesys-search-fields:
-            value:
-            - description
-            - id
-            - name
-            - state
-    Limit:
-      type: object
-      properties:
-        key:
-          type: string
-        namespace:
-          type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
-    FieldConfig:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        entityType:
-          type: string
-          enum:
-          - person
-          - group
-          - org
-        state:
-          type: string
-        sections:
-          type: array
-          items:
-            $ref: '#/components/schemas/Section'
-        version:
-          type: string
-        schemaVersion:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     MediaSummary:
       type: object
       properties:
@@ -3730,69 +3780,19 @@ components:
           $ref: '#/components/schemas/MediaSummaryDetail'
         enterprise:
           $ref: '#/components/schemas/MediaSummaryDetail'
-    Chat:
+    Section:
       type: object
       properties:
-        jabberId:
+        fieldList:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldList'
+        instructionText:
           type: string
-    UserRoutingLanguage:
-      type: object
-      properties:
-        id:
+        key:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        proficiency:
-          type: number
-          format: double
-          description: A rating from 0.0 to 5.0 that indicates how fluent an agent is in a particular language. ACD interactions are routed to agents with higher proficiency ratings.
         state:
           type: string
-          description: Activate or deactivate this routing language.
-          enum:
-          - active
-          - inactive
-          - deleted
-        languageUri:
-          type: string
-          format: uri
-          description: URI to the organization language used by this user language.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Represents an organization language assigned to a user. When assigning to a user specify the organization language id as the id.
-    ResourceConditionNode:
-      type: object
-      properties:
-        variableName:
-          type: string
-        conjunction:
-          type: string
-          enum:
-          - AND
-          - OR
-        operator:
-          type: string
-          enum:
-          - EQ
-          - IN
-          - GE
-          - GT
-          - LE
-          - LT
-        operands:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceConditionValue'
-        terms:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceConditionNode'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

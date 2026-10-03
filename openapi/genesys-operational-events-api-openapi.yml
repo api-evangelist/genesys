@@ -613,77 +613,13 @@ components:
           type: string
         previousUri:
           type: string
-    EventAggregatesResponse:
+    EventDefinitionListing:
       type: object
       properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Interval for returned aggregates. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        eventDefinitionAggregates:
-          type: array
-          description: Aggregates by event definition
-          items:
-            $ref: '#/components/schemas/EventDefinitionAggregates'
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
+        entities:
           type: array
           items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    EventAggregatesQueryRequest:
-      type: object
-      required:
-      - interval
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Date and time range to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-    EventDefinitionAggregates:
-      type: object
-      properties:
-        eventDefinition:
-          description: Event definition.
-          $ref: '#/components/schemas/AddressableEntityRef'
-        eventCount:
-          type: integer
-          format: int32
-          description: How many events have occurred.
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
+            $ref: '#/components/schemas/EventDefinition'
     Limit:
       type: object
       properties:
@@ -788,17 +724,16 @@ components:
         value:
           type: integer
           format: int64
-    Detail:
+    EventDefinitionAggregates:
       type: object
       properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
+        eventDefinition:
+          description: Event definition.
+          $ref: '#/components/schemas/AddressableEntityRef'
+        eventCount:
+          type: integer
+          format: int32
+          description: How many events have occurred.
     OperationalEvent:
       type: object
       properties:
@@ -842,6 +777,18 @@ components:
         externalContactId:
           type: string
           description: The external contact ID associated with the event
+    EventAggregatesResponse:
+      type: object
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Interval for returned aggregates. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        eventDefinitionAggregates:
+          type: array
+          description: Aggregates by event definition
+          items:
+            $ref: '#/components/schemas/EventDefinitionAggregates'
     EventQueryRequest:
       type: object
       required:
@@ -865,13 +812,47 @@ components:
           enum:
           - ASC
           - DESC
-    EventDefinitionListing:
+    EventAggregatesQueryRequest:
+      type: object
+      required:
+      - interval
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Date and time range to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+    ErrorBody:
       type: object
       properties:
-        entities:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
           type: array
           items:
-            $ref: '#/components/schemas/EventDefinition'
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     EventDefinition:
       type: object
       properties:
@@ -887,6 +868,25 @@ components:
           type: string
           description: description
           readOnly: true
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

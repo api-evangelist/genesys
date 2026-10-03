@@ -443,120 +443,58 @@ paths:
       x-purecloud-method-name: getDataextensionsLimits
 components:
   schemas:
-    Schema:
+    Coretype:
       type: object
       properties:
-        title:
+        id:
           type: string
-          description: A core type's title
+          description: The globally unique identifier for the object.
           readOnly: true
-        description:
+        name:
           type: string
-          description: A core type's description
-          readOnly: true
-        type:
+        version:
+          type: integer
+          format: int32
+          description: A positive integer denoting the core type's version
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The date the core type was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        schema:
+          description: The core type's built-in schema
+          $ref: '#/components/schemas/Schema'
+        current:
+          type: boolean
+          description: A boolean indicating if the core type's version is the current one in use by the system
+        validationFields:
           type: array
-          example: '["string"] for a text-based core type, ["integer"] for a numeric core type, or ["boolean", "null"] for the checkbox core type'
-          description: An array of fundamental JSON Schema primitive types on which the core type is based
-          readOnly: true
+          description: An array of strings naming the fields of the core type subject to validation.  Validation constraints are specified by a schema author using the core type.
           items:
             type: string
-        items:
-          example: '{
+        validationLimits:
+          example: '"validationLimits": {
 
-            type": "string",
+            "minLength": {"min": 0, "max": 100},
 
-            "pattern": "^[\\S]+$"
+            "maxLength": {"min": 1, "max": 100}
 
             }'
-          description: Denotes the type and pattern of the items in an enum core type
-          readOnly: true
-          $ref: '#/components/schemas/Items'
-        pattern:
-          type: string
-          description: For the "date" and "datetime" core types, denotes the regex prescribing the allowable date/datetime format
-          readOnly: true
-    CoretypeListing:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
+          description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
+          $ref: '#/components/schemas/ValidationLimits'
+        itemValidationFields:
           type: array
+          description: Specific to the "tag" core type, this is an array of strings naming the tag item fields of the core type subject to validation
           items:
-            $ref: '#/components/schemas/Coretype'
+            type: string
+        itemValidationLimits:
+          example: "\"validationLimits\": {\n     \"minLength\": {\"min\": 1, \"max\": 100},\n     \"maxLength\": {\"min\": 1, \"max\": 100}\n}"
+          description: A structure denoting the system-imposed minimum and maximum string length for string-array based core types such as "tag" and "enum".  Forexample, the validationLimits for a schema field using a tag core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schema author on individual tags.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field's tags.
+          $ref: '#/components/schemas/ItemValidationLimits'
         selfUri:
           type: string
           format: uri
-    Items:
-      type: object
-      properties:
-        type:
-          type: string
-        pattern:
-          type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    MaxLength:
-      type: object
-      required:
-      - max
-      - min
-      properties:
-        min:
-          type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the minimum largest length string the field can contain for a schema instance.
-        max:
-          type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the maximum largest string the field can contain for a schema instance.
-    ValidationLimits:
-      type: object
-      properties:
-        minLength:
-          $ref: '#/components/schemas/MinLength'
-        maxLength:
-          $ref: '#/components/schemas/MaxLength'
-        minItems:
-          $ref: '#/components/schemas/MinLength'
-        maxItems:
-          $ref: '#/components/schemas/MaxLength'
-        minimum:
-          $ref: '#/components/schemas/MinLength'
-        maximum:
-          $ref: '#/components/schemas/MaxLength'
+          description: The URI for this object
+          readOnly: true
     Limit:
       type: object
       properties:
@@ -661,17 +599,68 @@ components:
         value:
           type: integer
           format: int64
-    Detail:
+    MaxLength:
+      type: object
+      required:
+      - max
+      - min
+      properties:
+        min:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the minimum largest length string the field can contain for a schema instance.
+        max:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the maximum largest string the field can contain for a schema instance.
+    ValidationLimits:
       type: object
       properties:
-        errorCode:
+        minLength:
+          $ref: '#/components/schemas/MinLength'
+        maxLength:
+          $ref: '#/components/schemas/MaxLength'
+        minItems:
+          $ref: '#/components/schemas/MinLength'
+        maxItems:
+          $ref: '#/components/schemas/MaxLength'
+        minimum:
+          $ref: '#/components/schemas/MinLength'
+        maximum:
+          $ref: '#/components/schemas/MaxLength'
+    Schema:
+      type: object
+      properties:
+        title:
           type: string
-        fieldName:
+          description: A core type's title
+          readOnly: true
+        description:
           type: string
-        entityId:
+          description: A core type's description
+          readOnly: true
+        type:
+          type: array
+          example: '["string"] for a text-based core type, ["integer"] for a numeric core type, or ["boolean", "null"] for the checkbox core type'
+          description: An array of fundamental JSON Schema primitive types on which the core type is based
+          readOnly: true
+          items:
+            type: string
+        items:
+          example: '{
+
+            type": "string",
+
+            "pattern": "^[\\S]+$"
+
+            }'
+          description: Denotes the type and pattern of the items in an enum core type
+          readOnly: true
+          $ref: '#/components/schemas/Items'
+        pattern:
           type: string
-        entityName:
-          type: string
+          description: For the "date" and "datetime" core types, denotes the regex prescribing the allowable date/datetime format
+          readOnly: true
     MinLength:
       type: object
       required:
@@ -686,78 +675,6 @@ components:
           type: integer
           format: int64
           description: A non-negative integer for a text-based schema field denoting the maximum smallest length string the field can contain for a schema instance.
-    Coretype:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        version:
-          type: integer
-          format: int32
-          description: A positive integer denoting the core type's version
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The date the core type was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        schema:
-          description: The core type's built-in schema
-          $ref: '#/components/schemas/Schema'
-        current:
-          type: boolean
-          description: A boolean indicating if the core type's version is the current one in use by the system
-        validationFields:
-          type: array
-          description: An array of strings naming the fields of the core type subject to validation.  Validation constraints are specified by a schema author using the core type.
-          items:
-            type: string
-        validationLimits:
-          example: '"validationLimits": {
-
-            "minLength": {"min": 0, "max": 100},
-
-            "maxLength": {"min": 1, "max": 100}
-
-            }'
-          description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
-          $ref: '#/components/schemas/ValidationLimits'
-        itemValidationFields:
-          type: array
-          description: Specific to the "tag" core type, this is an array of strings naming the tag item fields of the core type subject to validation
-          items:
-            type: string
-        itemValidationLimits:
-          example: "\"validationLimits\": {\n     \"minLength\": {\"min\": 1, \"max\": 100},\n     \"maxLength\": {\"min\": 1, \"max\": 100}\n}"
-          description: A structure denoting the system-imposed minimum and maximum string length for string-array based core types such as "tag" and "enum".  Forexample, the validationLimits for a schema field using a tag core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schema author on individual tags.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field's tags.
-          $ref: '#/components/schemas/ItemValidationLimits'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ItemValidationLimits:
-      type: object
-      required:
-      - maxLength
-      - minLength
-      properties:
-        minLength:
-          example: '"minLength": {"min": 0, "max": 100}'
-          description: A structure denoting the system-imposed minimum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
-          $ref: '#/components/schemas/MinLength'
-        maxLength:
-          example: '"validationLimits": {
-
-            "minLength": {"min": 0, "max": 100},
-
-            "maxLength": {"min": 1, "max": 100}
-
-            }'
-          description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
-          $ref: '#/components/schemas/MaxLength'
     SchemaQuantityLimits:
       type: object
       properties:
@@ -850,6 +767,89 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    Items:
+      type: object
+      properties:
+        type:
+          type: string
+        pattern:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    CoretypeListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coretype'
+        selfUri:
+          type: string
+          format: uri
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ItemValidationLimits:
+      type: object
+      required:
+      - maxLength
+      - minLength
+      properties:
+        minLength:
+          example: '"minLength": {"min": 0, "max": 100}'
+          description: A structure denoting the system-imposed minimum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
+          $ref: '#/components/schemas/MinLength'
+        maxLength:
+          example: '"validationLimits": {
+
+            "minLength": {"min": 0, "max": 100},
+
+            "maxLength": {"min": 1, "max": 100}
+
+            }'
+          description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
+          $ref: '#/components/schemas/MaxLength'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

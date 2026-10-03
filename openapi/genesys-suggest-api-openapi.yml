@@ -718,6 +718,131 @@ paths:
         required: true
 components:
   schemas:
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    SuggestSearchRequest:
+      type: object
+      required:
+      - query
+      - types
+      properties:
+        expand:
+          type: array
+          description: Provides more details about a specified resource
+          items:
+            type: string
+        types:
+          type: array
+          description: Resource domain type to search
+          items:
+            type: string
+        query:
+          type: array
+          description: Suggest query
+          items:
+            $ref: '#/components/schemas/SuggestSearchCriteria'
     SearchCriteria:
       type: object
       properties:
@@ -836,61 +961,6 @@ components:
             - created
             - fromUserJid
             - targetJids
-    ArrayNode:
-      type: object
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    SuggestSearchRequest:
-      type: object
-      required:
-      - query
-      - types
-      properties:
-        expand:
-          type: array
-          description: Provides more details about a specified resource
-          items:
-            type: string
-        types:
-          type: array
-          description: Resource domain type to search
-          items:
-            type: string
-        query:
-          type: array
-          description: Suggest query
-          items:
-            $ref: '#/components/schemas/SuggestSearchCriteria'
     JsonNodeSearchResponse:
       type: object
       required:
@@ -936,174 +1006,8 @@ components:
           $ref: '#/components/schemas/ArrayNode'
         aggregations:
           $ref: '#/components/schemas/ArrayNode'
-    Limit:
+    ArrayNode:
       type: object
-      properties:
-        key:
-          type: string
-        namespace:
-          type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    SearchRequest:
-      type: object
-      required:
-      - types
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-        pageSize:
-          type: integer
-          format: int32
-          description: The number of results per page
-        pageNumber:
-          type: integer
-          format: int32
-          description: The page of resources you want to retrieve
-        sort:
-          type: array
-          description: Multi-value sort order, list of multiple sort values
-          items:
-            $ref: '#/components/schemas/SearchSort'
-        returnFields:
-          type: array
-          description: A List of strings.  Possible values are any field in the resource you are searching on.  The other option is to use ALL_FIELDS, when this is provided all fields in the resource will be returned in the search results.
-          items:
-            type: string
-        expand:
-          type: array
-          description: Provides more details about a specified resource
-          items:
-            type: string
-        types:
-          type: array
-          description: Resource domain type to search
-          items:
-            type: string
-        query:
-          type: array
-          description: The search criteria
-          items:
-            $ref: '#/components/schemas/SearchCriteria'
-        aggregations:
-          type: array
-          description: Aggregation criteria
-          items:
-            $ref: '#/components/schemas/SearchAggregation'
     SearchSort:
       type: object
       properties:
@@ -1117,6 +1021,38 @@ components:
         sortBy:
           type: string
           description: The field in the resource that you want to sort the results by
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     SuggestSearchCriteria:
       type: object
       properties:
@@ -1191,6 +1127,70 @@ components:
             - VALUE_ASC
             - COUNT_DESC
             - COUNT_ASC
+    SearchRequest:
+      type: object
+      required:
+      - types
+      properties:
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
+        pageSize:
+          type: integer
+          format: int32
+          description: The number of results per page
+        pageNumber:
+          type: integer
+          format: int32
+          description: The page of resources you want to retrieve
+        sort:
+          type: array
+          description: Multi-value sort order, list of multiple sort values
+          items:
+            $ref: '#/components/schemas/SearchSort'
+        returnFields:
+          type: array
+          description: A List of strings.  Possible values are any field in the resource you are searching on.  The other option is to use ALL_FIELDS, when this is provided all fields in the resource will be returned in the search results.
+          items:
+            type: string
+        expand:
+          type: array
+          description: Provides more details about a specified resource
+          items:
+            type: string
+        types:
+          type: array
+          description: Resource domain type to search
+          items:
+            type: string
+        query:
+          type: array
+          description: The search criteria
+          items:
+            $ref: '#/components/schemas/SearchCriteria'
+        aggregations:
+          type: array
+          description: Aggregation criteria
+          items:
+            $ref: '#/components/schemas/SearchAggregation'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

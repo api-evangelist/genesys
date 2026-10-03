@@ -177,11 +177,38 @@ paths:
       x-purecloud-method-name: getDownload
 components:
   schemas:
-    UrlResponse:
+    ErrorBody:
       type: object
       properties:
-        url:
+        message:
           type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -286,6 +313,11 @@ components:
         value:
           type: integer
           format: int64
+    UrlResponse:
+      type: object
+      properties:
+        url:
+          type: string
     Detail:
       type: object
       properties:
@@ -297,38 +329,6 @@ components:
           type: string
         entityName:
           type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

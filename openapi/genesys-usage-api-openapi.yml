@@ -1724,6 +1724,208 @@ paths:
       x-purecloud-method-name: getUsageAggregatesQueryJob
 components:
   schemas:
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    UsageQuerySortBy:
+      type: object
+      properties:
+        fieldName:
+          type: string
+          description: The name of the field you want to specify to sort by.
+        order:
+          type: string
+          description: The order to sort by.
+          enum:
+          - Asc
+          - Desc
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    OrganizationUsageQueryResponse:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: The jobId of the query.
+        name:
+          type: string
+        resultsUri:
+          type: string
+          description: The uri to get the results.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ClientUsageQueryResponse:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: The jobId of the query.
+        name:
+          type: string
+        resultsUri:
+          type: string
+          description: The uri to get the results.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ApiUsageQueryResult:
+      type: object
+      properties:
+        results:
+          type: array
+          description: Query results
+          items:
+            $ref: '#/components/schemas/ApiUsageRow'
+        queryStatus:
+          type: string
+          description: Query status
+          enum:
+          - Complete
+          - Failed
+          - Running
+        cursors:
+          description: Cursor tokens to be used for navigating paginated results
+          $ref: '#/components/schemas/Cursors'
     DomainEntityRef:
       type: object
       properties:
@@ -1734,6 +1936,142 @@ components:
         selfUri:
           type: string
           format: uri
+    ApiUsageRow:
+      type: object
+      properties:
+        clientId:
+          type: string
+          description: Client Id associated with this query result
+        clientName:
+          type: string
+          description: Client Name associated with this query result
+        organizationId:
+          type: string
+          description: Organization Id associated with this query result
+        userId:
+          type: string
+          description: User Id associated with this query result
+        templateUri:
+          type: string
+          description: Template Uri associated with this query result
+        httpMethod:
+          type: string
+          description: HTTP Method associated with this query result
+        status200:
+          type: integer
+          format: int64
+          description: Number of requests resulting in a 2xx HTTP status code
+        status300:
+          type: integer
+          format: int64
+          description: Number of requests resulting in a 3xx HTTP status code
+        status400:
+          type: integer
+          format: int64
+          description: Number of requests resulting in a 4xx HTTP status code
+        status500:
+          type: integer
+          format: int64
+          description: Number of requests resulting in a 5xx HTTP status code
+        status429:
+          type: integer
+          format: int64
+          description: Number of requests resulting in a 429 HTTP status code, this is a subset of the count returned with status400
+        requests:
+          type: integer
+          format: int64
+          description: Total number of requests
+        date:
+          type: string
+          format: date-time
+          description: 'Date of requests, based on granularity. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    ApiUsageSimpleSearch:
+      type: object
+      required:
+      - interval
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Behaves like one clause in a SQL WHERE. Specifies the date and time range of data being queried. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        metrics:
+          type: array
+          description: Behaves like a SQL SELECT clause. Enables retrieving only named metrics. If omitted, all metrics that are available will be returned (like SELECT *).
+          items:
+            type: string
+            enum:
+            - Date
+            - ClientName
+            - HttpMethod
+            - TemplateUri
+            - Status200
+            - Status300
+            - Status400
+            - Status500
+            - Status429
+        oauthClientNames:
+          type: array
+          description: Behaves like a SQL WHERE with multiple IN operators. Specifies a list of OAuth client names to be queried.
+          items:
+            type: string
+        httpMethods:
+          type: array
+          description: Behaves like a SQL WHERE with multiple IN operators. Specifies a list of HTTP methods to be queried.
+          items:
+            type: string
+            enum:
+            - GET
+            - POST
+            - DELETE
+            - PATCH
+            - PUT
+            - HEAD
+            - CONNECT
+            - OPTIONS
+            - TRACE
+        templateUris:
+          type: array
+          description: Behaves like a SQL WHERE with multiple IN operators. Specifies a list of Template Uris to be queried.
+          items:
+            type: string
+    ApiUsageClientQuery:
+      type: object
+      required:
+      - interval
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Behaves like one clause in a SQL WHERE. Specifies the date and time range of data being queried. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        granularity:
+          type: string
+          description: Date granularity of the results
+          enum:
+          - Day
+          - Week
+          - Month
+        metrics:
+          type: array
+          description: Behaves like a SQL SELECT clause. Enables retrieving only named metrics. If omitted, all metrics that are available will be returned (like SELECT *).
+          items:
+            type: string
+            enum:
+            - Status200
+            - Status300
+            - Status400
+            - Status500
+            - Status429
+            - Requests
+        groupBy:
+          type: array
+          description: Behaves like a SQL GROUPBY. Allows for multiple levels of grouping as a list of dimensions. Partitions resulting aggregate computations into distinct named subgroups rather than across the entire result set as if it were one group.
+          items:
+            type: string
+            enum:
+            - OAuthClientId
+            - OrganizationId
+            - TemplateUri
+            - HttpMethod
     Detail:
       type: object
       properties:
@@ -1745,38 +2083,6 @@ components:
           type: string
         entityName:
           type: string
-    OrganizationPublicApiUsageResultsResponse:
-      type: object
-      required:
-      - queryStatus
-      properties:
-        name:
-          type: string
-        queryStatus:
-          type: string
-          description: The status of the query.
-          enum:
-          - Queued
-          - Running
-          - Succeeded
-          - Failed
-          - Cancelled
-        errorBody:
-          description: The reason for the failure. This will only be present if the query is in a FAILURE state but may not be included even if the state is FAILURE
-          $ref: '#/components/schemas/ErrorBody'
-        nextUri:
-          type: string
-          description: The uri to get the next set of results. Will only be included if there is another page to retrieve.
-        entities:
-          type: array
-          description: The results of the query.
-          items:
-            $ref: '#/components/schemas/OrganizationPublicApiUsage'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     ClientPublicApiUsage:
       type: object
       properties:
@@ -1913,13 +2219,6 @@ components:
           description: Specify if you only want a subset of oauthClientIds represented in the query.
           items:
             type: string
-    Cursors:
-      type: object
-      properties:
-        before:
-          type: string
-        after:
-          type: string
     ClientPublicApiUsageQueryRequest:
       type: object
       required:
@@ -1990,6 +2289,95 @@ components:
           description: Specify if you only want a subset of organizationIds represented in the query.
           items:
             type: string
+    Cursors:
+      type: object
+      properties:
+        before:
+          type: string
+        after:
+          type: string
+    ApiUsageOrganizationQuery:
+      type: object
+      required:
+      - interval
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Behaves like one clause in a SQL WHERE. Specifies the date and time range of data being queried. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        granularity:
+          type: string
+          description: Date granularity of the results
+          enum:
+          - Day
+          - Week
+          - Month
+        metrics:
+          type: array
+          description: Behaves like a SQL SELECT clause. Enables retrieving only named metrics. If omitted, all metrics that are available will be returned (like SELECT *).
+          items:
+            type: string
+            enum:
+            - Status200
+            - Status300
+            - Status400
+            - Status500
+            - Status429
+            - Requests
+        groupBy:
+          type: array
+          description: Behaves like a SQL GROUPBY. Allows for multiple levels of grouping as a list of dimensions. Partitions resulting aggregate computations into distinct named subgroups rather than across the entire result set as if it were one group.
+          items:
+            type: string
+            enum:
+            - OAuthClientId
+            - OrganizationId
+            - UserId
+            - TemplateUri
+            - HttpMethod
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    OrganizationPublicApiUsageResultsResponse:
+      type: object
+      required:
+      - queryStatus
+      properties:
+        name:
+          type: string
+        queryStatus:
+          type: string
+          description: The status of the query.
+          enum:
+          - Queued
+          - Running
+          - Succeeded
+          - Failed
+          - Cancelled
+        errorBody:
+          description: The reason for the failure. This will only be present if the query is in a FAILURE state but may not be included even if the state is FAILURE
+          $ref: '#/components/schemas/ErrorBody'
+        nextUri:
+          type: string
+          description: The uri to get the next set of results. Will only be included if there is another page to retrieve.
+        entities:
+          type: array
+          description: The results of the query.
+          items:
+            $ref: '#/components/schemas/OrganizationPublicApiUsage'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     OrganizationPublicApiUsage:
       type: object
       properties:
@@ -2043,76 +2431,6 @@ components:
         user:
           description: The id of the user who made the request(s).
           $ref: '#/components/schemas/UserReference'
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    ApiUsageClientQuery:
-      type: object
-      required:
-      - interval
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Behaves like one clause in a SQL WHERE. Specifies the date and time range of data being queried. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        granularity:
-          type: string
-          description: Date granularity of the results
-          enum:
-          - Day
-          - Week
-          - Month
-        metrics:
-          type: array
-          description: Behaves like a SQL SELECT clause. Enables retrieving only named metrics. If omitted, all metrics that are available will be returned (like SELECT *).
-          items:
-            type: string
-            enum:
-            - Status200
-            - Status300
-            - Status400
-            - Status500
-            - Status429
-            - Requests
-        groupBy:
-          type: array
-          description: Behaves like a SQL GROUPBY. Allows for multiple levels of grouping as a list of dimensions. Partitions resulting aggregate computations into distinct named subgroups rather than across the entire result set as if it were one group.
-          items:
-            type: string
-            enum:
-            - OAuthClientId
-            - OrganizationId
-            - TemplateUri
-            - HttpMethod
     ClientPublicApiUsageResultsResponse:
       type: object
       required:
@@ -2140,324 +2458,6 @@ components:
           description: The results of the query.
           items:
             $ref: '#/components/schemas/ClientPublicApiUsage'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ApiUsageOrganizationQuery:
-      type: object
-      required:
-      - interval
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Behaves like one clause in a SQL WHERE. Specifies the date and time range of data being queried. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        granularity:
-          type: string
-          description: Date granularity of the results
-          enum:
-          - Day
-          - Week
-          - Month
-        metrics:
-          type: array
-          description: Behaves like a SQL SELECT clause. Enables retrieving only named metrics. If omitted, all metrics that are available will be returned (like SELECT *).
-          items:
-            type: string
-            enum:
-            - Status200
-            - Status300
-            - Status400
-            - Status500
-            - Status429
-            - Requests
-        groupBy:
-          type: array
-          description: Behaves like a SQL GROUPBY. Allows for multiple levels of grouping as a list of dimensions. Partitions resulting aggregate computations into distinct named subgroups rather than across the entire result set as if it were one group.
-          items:
-            type: string
-            enum:
-            - OAuthClientId
-            - OrganizationId
-            - UserId
-            - TemplateUri
-            - HttpMethod
-    ApiUsageSimpleSearch:
-      type: object
-      required:
-      - interval
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Behaves like one clause in a SQL WHERE. Specifies the date and time range of data being queried. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        metrics:
-          type: array
-          description: Behaves like a SQL SELECT clause. Enables retrieving only named metrics. If omitted, all metrics that are available will be returned (like SELECT *).
-          items:
-            type: string
-            enum:
-            - Date
-            - ClientName
-            - HttpMethod
-            - TemplateUri
-            - Status200
-            - Status300
-            - Status400
-            - Status500
-            - Status429
-        oauthClientNames:
-          type: array
-          description: Behaves like a SQL WHERE with multiple IN operators. Specifies a list of OAuth client names to be queried.
-          items:
-            type: string
-        httpMethods:
-          type: array
-          description: Behaves like a SQL WHERE with multiple IN operators. Specifies a list of HTTP methods to be queried.
-          items:
-            type: string
-            enum:
-            - GET
-            - POST
-            - DELETE
-            - PATCH
-            - PUT
-            - HEAD
-            - CONNECT
-            - OPTIONS
-            - TRACE
-        templateUris:
-          type: array
-          description: Behaves like a SQL WHERE with multiple IN operators. Specifies a list of Template Uris to be queried.
-          items:
-            type: string
-    UsageQuerySortBy:
-      type: object
-      properties:
-        fieldName:
-          type: string
-          description: The name of the field you want to specify to sort by.
-        order:
-          type: string
-          description: The order to sort by.
-          enum:
-          - Asc
-          - Desc
-    ClientUsageQueryResponse:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The jobId of the query.
-        name:
-          type: string
-        resultsUri:
-          type: string
-          description: The uri to get the results.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ApiUsageRow:
-      type: object
-      properties:
-        clientId:
-          type: string
-          description: Client Id associated with this query result
-        clientName:
-          type: string
-          description: Client Name associated with this query result
-        organizationId:
-          type: string
-          description: Organization Id associated with this query result
-        userId:
-          type: string
-          description: User Id associated with this query result
-        templateUri:
-          type: string
-          description: Template Uri associated with this query result
-        httpMethod:
-          type: string
-          description: HTTP Method associated with this query result
-        status200:
-          type: integer
-          format: int64
-          description: Number of requests resulting in a 2xx HTTP status code
-        status300:
-          type: integer
-          format: int64
-          description: Number of requests resulting in a 3xx HTTP status code
-        status400:
-          type: integer
-          format: int64
-          description: Number of requests resulting in a 4xx HTTP status code
-        status500:
-          type: integer
-          format: int64
-          description: Number of requests resulting in a 5xx HTTP status code
-        status429:
-          type: integer
-          format: int64
-          description: Number of requests resulting in a 429 HTTP status code, this is a subset of the count returned with status400
-        requests:
-          type: integer
-          format: int64
-          description: Total number of requests
-        date:
-          type: string
-          format: date-time
-          description: 'Date of requests, based on granularity. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    ApiUsageQueryResult:
-      type: object
-      properties:
-        results:
-          type: array
-          description: Query results
-          items:
-            $ref: '#/components/schemas/ApiUsageRow'
-        queryStatus:
-          type: string
-          description: Query status
-          enum:
-          - Complete
-          - Failed
-          - Running
-        cursors:
-          description: Cursor tokens to be used for navigating paginated results
-          $ref: '#/components/schemas/Cursors'
-    Limit:
-      type: object
-      properties:
-        key:
-          type: string
-        namespace:
-          type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    OrganizationUsageQueryResponse:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The jobId of the query.
-        name:
-          type: string
-        resultsUri:
-          type: string
-          description: The uri to get the results.
         selfUri:
           type: string
           format: uri

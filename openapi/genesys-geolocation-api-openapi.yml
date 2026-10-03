@@ -598,126 +598,6 @@ paths:
         required: true
 components:
   schemas:
-    GeolocationSettings:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        enabled:
-          type: boolean
-        mapboxKey:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LocationEmergencyNumber:
-      type: object
-      properties:
-        e164:
-          type: string
-        number:
-          type: string
-        type:
-          type: string
-          description: The type of emergency number.
-          enum:
-          - default
-          - elin
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    LocationImage:
-      type: object
-      properties:
-        resolution:
-          type: string
-          description: 'Height and/or width of image. ex: 640x480 or x128'
-        imageUri:
-          type: string
-    LocationAddressVerificationDetails:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Status of address verification process
-          enum:
-          - Pending
-          - InProgress
-          - Retry
-          - Complete
-          - Failed
-        dateFinished:
-          type: string
-          format: date-time
-          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        service:
-          type: string
-          example: smartystreets-us
-          description: Third party service used for address verification
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    LocationAddress:
-      type: object
-      properties:
-        city:
-          type: string
-        country:
-          type: string
-        countryName:
-          type: string
-        state:
-          type: string
-        street1:
-          type: string
-        street2:
-          type: string
-        zipcode:
-          type: string
     Limit:
       type: object
       properties:
@@ -822,17 +702,117 @@ components:
         value:
           type: integer
           format: int64
-    Detail:
+    GeolocationSettings:
       type: object
       properties:
-        errorCode:
+        id:
           type: string
-        fieldName:
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
           type: string
+        enabled:
+          type: boolean
+        mapboxKey:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LocationImage:
+      type: object
+      properties:
+        resolution:
+          type: string
+          description: 'Height and/or width of image. ex: 640x480 or x128'
+        imageUri:
+          type: string
+    Geolocation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        type:
+          type: string
+          description: A string used to describe the type of client the geolocation is being updated from e.g. ios, android, web, etc.
+        primary:
+          type: boolean
+          description: A boolean used to tell whether or not to set this geolocation client as the primary on a PATCH
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        country:
+          type: string
+        region:
+          type: string
+        city:
+          type: string
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationDefinition'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LocationAddress:
+      type: object
+      properties:
+        city:
+          type: string
+        country:
+          type: string
+        countryName:
+          type: string
+        state:
+          type: string
+        street1:
+          type: string
+        street2:
+          type: string
+        zipcode:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
         entityId:
           type: string
         entityName:
           type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     LocationDefinition:
       type: object
       properties:
@@ -900,42 +880,62 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Geolocation:
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    AddressableEntityRef:
       type: object
       properties:
         id:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        type:
-          type: string
-          description: A string used to describe the type of client the geolocation is being updated from e.g. ios, android, web, etc.
-        primary:
-          type: boolean
-          description: A boolean used to tell whether or not to set this geolocation client as the primary on a PATCH
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        country:
-          type: string
-        region:
-          type: string
-        city:
-          type: string
-        locations:
-          type: array
-          items:
-            $ref: '#/components/schemas/LocationDefinition'
         selfUri:
           type: string
           format: uri
-          description: The URI for this object
-          readOnly: true
+    LocationAddressVerificationDetails:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of address verification process
+          enum:
+          - Pending
+          - InProgress
+          - Retry
+          - Complete
+          - Failed
+        dateFinished:
+          type: string
+          format: date-time
+          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        service:
+          type: string
+          example: smartystreets-us
+          description: Third party service used for address verification
+    LocationEmergencyNumber:
+      type: object
+      properties:
+        e164:
+          type: string
+        number:
+          type: string
+        type:
+          type: string
+          description: The type of emergency number.
+          enum:
+          - default
+          - elin
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

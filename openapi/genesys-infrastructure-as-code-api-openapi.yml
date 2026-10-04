@@ -906,48 +906,361 @@ paths:
         required: true
 components:
   schemas:
-    MetadataPresentation:
+    MetadataResultEntity:
       type: object
       properties:
-        title:
+        type:
           type: string
-          description: title for a set of data to be gathered
-          readOnly: true
-        schema:
-          description: description of the contents of the data gathering interface
-          readOnly: true
-          $ref: '#/components/schemas/MetadataSchema'
-      description: A representation of data fields to be gathered for installing the accelerator
-    MetadataSchema:
-      type: object
-      properties:
-        title:
-          type: string
-          description: title for the data gathering page
+          description: object type of the modified resource
           readOnly: true
         description:
           type: string
-          description: description of the data being gathered on this page
+          description: description of the modified resource
           readOnly: true
+        visibility:
+          type: string
+          description: whether the modified resource is visible or hidden
+          readOnly: true
+          enum:
+          - Visible
+          - Hidden
+      description: A Genesys Cloud resource created or modified as a result of running an accelerator
+    InfrastructureascodeJob:
+      type: object
+      required:
+      - dryRun
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        dryRun:
+          type: boolean
+          description: Whether or not the job was a dry run
+        acceleratorId:
+          type: string
+          description: Accelerator associated with the job
+          readOnly: true
+        dateSubmitted:
+          type: string
+          format: date-time
+          description: 'Date and time on which job was submitted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        submittedBy:
+          description: User who submitted the job
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        status:
+          type: string
+          description: Job status
+          readOnly: true
+          enum:
+          - Created
+          - Queued
+          - Running
+          - Complete
+          - InternalError
+          - Incomplete
+          - Failed
+          - RollbackFailed
+          - RollbackComplete
+        errorInfo:
+          description: Information about errors, if any
+          readOnly: true
+          $ref: '#/components/schemas/ErrorInfo'
+        results:
+          type: string
+          description: The output results of the terraform job
+          readOnly: true
+        rollbackResults:
+          type: string
+          description: The results of rolling back the job if there were errors.  Not returned if job was successful.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Information about a CX infrastructure as code job
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    AcceleratorList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AcceleratorMetadata'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    AcceleratorSpecification:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: name of this accelerator
+          readOnly: true
+        description:
+          type: string
+          description: a description of the general purpose of this accelerator
+          readOnly: true
+        origin:
+          type: string
+          description: where the accelerator originated
+          readOnly: true
+          enum:
+          - Community
+          - Partner
+          - Genesys
         type:
           type: string
-          description: type of data being gathered
+          description: type of the artifact
           readOnly: true
-        properties:
-          type: array
-          description: list of properties for which input is to be gathered, bother required and optional
+          enum:
+          - Module
+          - Accelerator
+          - Blueprint
+        classification:
+          type: string
+          description: architectural classification into which the accelerator belongs
           readOnly: true
-          items:
-            type: object
-            additionalProperties:
-              $ref: '#/components/schemas/MetadataProperty'
-        required:
+        tags:
           type: array
-          description: list of required properties
+          description: tags
           readOnly: true
           items:
             type: string
-      description: A description of the contents of a data gathering interface for an accelerator
+        permissions:
+          type: array
+          description: Genesys Cloud permissions required to install the accelerator
+          readOnly: true
+          items:
+            type: string
+        products:
+          type: array
+          description: Genesys Cloud products required to install the accelerator
+          readOnly: true
+          items:
+            type: string
+        documentation:
+          type: array
+          description: additional documentation about the artifact
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/MetadataDocumentation'
+        presentation:
+          type: array
+          description: presentation of data fields to be gathered for the accelerator
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/MetadataPresentation'
+        results:
+          description: resources created or modified as a result of running the accelerator
+          readOnly: true
+          $ref: '#/components/schemas/MetadataResults'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Metadata for a CX infrastructure as code accelerator
+    ErrorInfo:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    MetadataProperty:
+      type: object
+      properties:
+        type:
+          type: string
+          description: the data type of the input property
+          readOnly: true
+        displayname:
+          type: string
+          description: user-friendly name of the input property
+          readOnly: true
+        description:
+          type: string
+          description: brief description of the input property
+          readOnly: true
+        sensitive:
+          type: string
+          description: whether the property's value should be hidden from display
+          readOnly: true
+        help:
+          type: string
+          description: optional URL with addition information about the input property
+          readOnly: true
+        default:
+          type: string
+          description: optional default value of the input property
+          readOnly: true
+        enum:
+          type: array
+          description: set of possible values if the input property is an enumeration
+          readOnly: true
+          items:
+            type: string
+      description: Data property required as input for installing an accelerator
+    AcceleratorMetadata:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: name of this accelerator
+          readOnly: true
+        description:
+          type: string
+          description: a description of the general purpose of this accelerator
+          readOnly: true
+        origin:
+          type: string
+          description: where the accelerator originated
+          readOnly: true
+          enum:
+          - Community
+          - Partner
+          - Genesys
+        type:
+          type: string
+          description: type of the artifact
+          readOnly: true
+          enum:
+          - Module
+          - Accelerator
+          - Blueprint
+        classification:
+          type: string
+          description: architectural classification into which the accelerator belongs
+          readOnly: true
+        tags:
+          type: array
+          description: tags
+          readOnly: true
+          items:
+            type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Metadata for a CX infrastructure as code accelerator
+    MetadataDocumentation:
+      type: object
+      properties:
+        description:
+          type: string
+          description: description of the documentation
+          readOnly: true
+        location:
+          type: string
+          description: location where the documentation can be accessed
+          readOnly: true
+      description: Additional documentation about an artifact
+    MetadataResults:
+      type: object
+      properties:
+        entities:
+          type: array
+          description: list of resources
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/MetadataResultEntity'
+      description: List of resources created or modified as a result of running an accelerator
+    AcceleratorInput:
+      type: object
+      required:
+      - acceleratorId
+      properties:
+        dryRun:
+          type: boolean
+          description: Set this true to test the job without making any changes. Defaults to false.
+        acceleratorId:
+          type: string
+          description: Accelerator ID
+        parameters:
+          type: array
+          description: Parameters required for this accelerator
+          items:
+            $ref: '#/components/schemas/AcceleratorParameter'
+      description: Identity of a CX infrastructure as code accelerator to be run and its inputs
     Limit:
       type: object
       properties:
@@ -1052,6 +1365,59 @@ components:
         value:
           type: integer
           format: int64
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    MetadataSchema:
+      type: object
+      properties:
+        title:
+          type: string
+          description: title for the data gathering page
+          readOnly: true
+        description:
+          type: string
+          description: description of the data being gathered on this page
+          readOnly: true
+        type:
+          type: string
+          description: type of data being gathered
+          readOnly: true
+        properties:
+          type: array
+          description: list of properties for which input is to be gathered, bother required and optional
+          readOnly: true
+          items:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/MetadataProperty'
+        required:
+          type: array
+          description: list of required properties
+          readOnly: true
+          items:
+            type: string
+      description: A description of the contents of a data gathering interface for an accelerator
+    MetadataPresentation:
+      type: object
+      properties:
+        title:
+          type: string
+          description: title for a set of data to be gathered
+          readOnly: true
+        schema:
+          description: description of the contents of the data gathering interface
+          readOnly: true
+          $ref: '#/components/schemas/MetadataSchema'
+      description: A representation of data fields to be gathered for installing the accelerator
     AcceleratorParameter:
       type: object
       required:
@@ -1065,372 +1431,6 @@ components:
           type: string
           description: Parameter Value
       description: Input parameter for a CX infrastructure as code accelerator
-    MetadataResultEntity:
-      type: object
-      properties:
-        type:
-          type: string
-          description: object type of the modified resource
-          readOnly: true
-        description:
-          type: string
-          description: description of the modified resource
-          readOnly: true
-        visibility:
-          type: string
-          description: whether the modified resource is visible or hidden
-          readOnly: true
-          enum:
-          - Visible
-          - Hidden
-      description: A Genesys Cloud resource created or modified as a result of running an accelerator
-    MetadataResults:
-      type: object
-      properties:
-        entities:
-          type: array
-          description: list of resources
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/MetadataResultEntity'
-      description: List of resources created or modified as a result of running an accelerator
-    MetadataProperty:
-      type: object
-      properties:
-        type:
-          type: string
-          description: the data type of the input property
-          readOnly: true
-        displayname:
-          type: string
-          description: user-friendly name of the input property
-          readOnly: true
-        description:
-          type: string
-          description: brief description of the input property
-          readOnly: true
-        sensitive:
-          type: string
-          description: whether the property's value should be hidden from display
-          readOnly: true
-        help:
-          type: string
-          description: optional URL with addition information about the input property
-          readOnly: true
-        default:
-          type: string
-          description: optional default value of the input property
-          readOnly: true
-        enum:
-          type: array
-          description: set of possible values if the input property is an enumeration
-          readOnly: true
-          items:
-            type: string
-      description: Data property required as input for installing an accelerator
-    InfrastructureascodeJob:
-      type: object
-      required:
-      - dryRun
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        dryRun:
-          type: boolean
-          description: Whether or not the job was a dry run
-        acceleratorId:
-          type: string
-          description: Accelerator associated with the job
-          readOnly: true
-        dateSubmitted:
-          type: string
-          format: date-time
-          description: 'Date and time on which job was submitted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        submittedBy:
-          description: User who submitted the job
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        status:
-          type: string
-          description: Job status
-          readOnly: true
-          enum:
-          - Created
-          - Queued
-          - Running
-          - Complete
-          - InternalError
-          - Incomplete
-          - Failed
-          - RollbackFailed
-          - RollbackComplete
-        errorInfo:
-          description: Information about errors, if any
-          readOnly: true
-          $ref: '#/components/schemas/ErrorInfo'
-        results:
-          type: string
-          description: The output results of the terraform job
-          readOnly: true
-        rollbackResults:
-          type: string
-          description: The results of rolling back the job if there were errors.  Not returned if job was successful.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Information about a CX infrastructure as code job
-    AcceleratorList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/AcceleratorMetadata'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    AcceleratorInput:
-      type: object
-      required:
-      - acceleratorId
-      properties:
-        dryRun:
-          type: boolean
-          description: Set this true to test the job without making any changes. Defaults to false.
-        acceleratorId:
-          type: string
-          description: Accelerator ID
-        parameters:
-          type: array
-          description: Parameters required for this accelerator
-          items:
-            $ref: '#/components/schemas/AcceleratorParameter'
-      description: Identity of a CX infrastructure as code accelerator to be run and its inputs
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    ErrorInfo:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-    AcceleratorSpecification:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: name of this accelerator
-          readOnly: true
-        description:
-          type: string
-          description: a description of the general purpose of this accelerator
-          readOnly: true
-        origin:
-          type: string
-          description: where the accelerator originated
-          readOnly: true
-          enum:
-          - Community
-          - Partner
-          - Genesys
-        type:
-          type: string
-          description: type of the artifact
-          readOnly: true
-          enum:
-          - Module
-          - Accelerator
-          - Blueprint
-        classification:
-          type: string
-          description: architectural classification into which the accelerator belongs
-          readOnly: true
-        tags:
-          type: array
-          description: tags
-          readOnly: true
-          items:
-            type: string
-        permissions:
-          type: array
-          description: Genesys Cloud permissions required to install the accelerator
-          readOnly: true
-          items:
-            type: string
-        products:
-          type: array
-          description: Genesys Cloud products required to install the accelerator
-          readOnly: true
-          items:
-            type: string
-        documentation:
-          type: array
-          description: additional documentation about the artifact
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/MetadataDocumentation'
-        presentation:
-          type: array
-          description: presentation of data fields to be gathered for the accelerator
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/MetadataPresentation'
-        results:
-          description: resources created or modified as a result of running the accelerator
-          readOnly: true
-          $ref: '#/components/schemas/MetadataResults'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Metadata for a CX infrastructure as code accelerator
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    MetadataDocumentation:
-      type: object
-      properties:
-        description:
-          type: string
-          description: description of the documentation
-          readOnly: true
-        location:
-          type: string
-          description: location where the documentation can be accessed
-          readOnly: true
-      description: Additional documentation about an artifact
-    AcceleratorMetadata:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: name of this accelerator
-          readOnly: true
-        description:
-          type: string
-          description: a description of the general purpose of this accelerator
-          readOnly: true
-        origin:
-          type: string
-          description: where the accelerator originated
-          readOnly: true
-          enum:
-          - Community
-          - Partner
-          - Genesys
-        type:
-          type: string
-          description: type of the artifact
-          readOnly: true
-          enum:
-          - Module
-          - Accelerator
-          - Blueprint
-        classification:
-          type: string
-          description: architectural classification into which the accelerator belongs
-          readOnly: true
-        tags:
-          type: array
-          description: tags
-          readOnly: true
-          items:
-            type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Metadata for a CX infrastructure as code accelerator
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

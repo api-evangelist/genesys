@@ -3377,19 +3377,756 @@ paths:
       x-purecloud-method-name: getCoachingAppointmentsMe
 components:
   schemas:
-    QueryResponseGroupedData:
+    CoachingScheduleSlotsJobRequest:
+      type: object
+      required:
+      - activityCodeId
+      - attendeeIds
+      - intervals
+      - lengthInMinutes
+      - slotsType
+      properties:
+        attendeeIds:
+          type: array
+          description: The attendee IDs to fetch the slots for.
+          items:
+            type: string
+        facilitatorIds:
+          type: array
+          description: The facilitator IDs to fetch the slots for.
+          items:
+            type: string
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The length in minutes of the slots, in 15 minutes granularity.
+        activityCodeId:
+          type: string
+          description: The Activity Code Id of the slots.
+        intervals:
+          type: array
+          description: 'The intervals to fetch the slots for. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+          items:
+            type: string
+            format: interval
+            description: 'Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        slotsType:
+          type: string
+          description: The type of slots to fetch in the job.
+          enum:
+          - BestTime
+    CoachingNotificationList:
       type: object
       properties:
-        group:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoachingNotification'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    WfmScheduleReference:
+      type: object
+      required:
+      - businessUnit
+      - id
+      - weekDate
+      properties:
+        id:
+          type: string
+          description: The ID of the WFM schedule
+        businessUnit:
+          description: A reference to a Workforce Management Business Unit
+          $ref: '#/components/schemas/WfmBusinessUnitReference'
+        weekDate:
+          type: string
+          format: date
+          description: 'The start week date for this schedule. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ScheduleActivity:
+      type: object
+      properties:
+        dateStart:
+          type: string
+          format: date-time
+          description: 'The start date/time of this activity. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        lengthMinutes:
+          type: integer
+          format: int32
+          description: The length of this activity in minutes
+        description:
+          type: string
+          description: The description of this activity
+        activityCodeId:
+          type: string
+          description: The ID of the activity code associated with this activity
+        paid:
+          type: boolean
+          description: Whether this activity is paid
+        timeOffRequestId:
+          type: string
+          description: The ID of the time off request associated with this activity, if applicable
+        externalActivityId:
+          type: string
+          description: The ID of the external activity associated with this activity, if applicable
+        externalActivityType:
+          type: string
+          description: The type of the external activity associated with this activity, if applicable
+          enum:
+          - ActivityPlan
+          - Coaching
+          - Learning
+          - Opportunity
+    CoachingScheduleSlotsJobSlot:
+      type: object
+      properties:
+        dateStart:
+          type: string
+          format: date-time
+          description: 'Start date and time of the slot. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        schedule:
+          description: The schedule information of the slot
+          $ref: '#/components/schemas/CoachingScheduleSlotsJobSchedule'
+    CoachingAppointmentAggregateResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          description: The results of the query
+          items:
+            $ref: '#/components/schemas/QueryResponseGroupedData'
+    QueryResponseStats:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: The count for this metric
+    ConversationReference:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    CoachingScheduleSlotsJobResult:
+      type: object
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'The interval of the job. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        status:
+          type: string
+          description: The status of the job
+          enum:
+          - InProgress
+          - Complete
+          - Error
+        slot:
+          description: The slot found from the job
+          $ref: '#/components/schemas/CoachingScheduleSlotsJobSlot'
+        hasConflict:
+          type: boolean
+          description: True if the slot conflicts with a Coaching Appointment
+    CoachingAppointmentStatusRequest:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          description: The status of the coaching appointment
+          enum:
+          - Scheduled
+          - InProgress
+          - Completed
+    QueryRequestClause:
+      type: object
+      required:
+      - predicates
+      - type
+      properties:
+        type:
+          type: string
+          description: The logic used to combine the predicates
+          enum:
+          - And
+          - Or
+        predicates:
+          type: array
+          description: The list of predicates used to filter the data
+          items:
+            $ref: '#/components/schemas/QueryRequestPredicate'
+    DocumentReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CoachingAppointmentResponseList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoachingAppointmentResponse'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    CoachingAppointmentAggregateRequest:
+      type: object
+      required:
+      - filter
+      - interval
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Interval to aggregate across. End date is not inclusive. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        metrics:
+          type: array
+          description: A list of metrics to aggregate.  If omitted, all metrics are returned.
+          items:
+            type: string
+            enum:
+            - nActivities
+            - nPlannedActivities
+            - nInProgressActivities
+            - nCompleteActivities
+            - nOverdueActivities
+            - nInvalidScheduleActivities
+        groupBy:
+          type: array
+          description: An optional list of items by which to group the result data.
+          items:
+            type: string
+            enum:
+            - attendeeId
+        filter:
+          description: The filter applied to the data
+          $ref: '#/components/schemas/QueryRequestFilter'
+    CoachingAnnotationCreateRequest:
+      type: object
+      required:
+      - accessType
+      - text
+      properties:
+        text:
+          type: string
+          description: The text of the annotation.
+        accessType:
+          type: string
+          description: Determines the permissions required to view this item.
+          enum:
+          - Public
+          - Private
+    WfmScheduleActivity:
+      type: object
+      properties:
+        userReference:
+          description: ID of user that the schedule is for
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        activities:
+          type: array
+          description: List of user's scheduled activities
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ScheduleActivity'
+        fullDayTimeOffMarkers:
+          type: array
+          description: List of user's days off
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/FullDayTimeOffMarker'
+    QueryResponseMetric:
+      type: object
+      properties:
+        metric:
+          type: string
+          description: The metric this applies to
+          enum:
+          - nActivities
+          - nPlannedActivities
+          - nInProgressActivities
+          - nCompleteActivities
+          - nOverdueActivities
+          - nInvalidScheduleActivities
+        stats:
+          description: The aggregated values for this metric
+          $ref: '#/components/schemas/QueryResponseStats'
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CreateCoachingAppointmentRequest:
+      type: object
+      required:
+      - attendeeIds
+      - dateStart
+      - description
+      - lengthInMinutes
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of coaching appointment.
+        description:
+          type: string
+          description: The description of coaching appointment.
+        dateStart:
+          type: string
+          format: date-time
+          description: 'The date/time the coaching appointment starts. Times will be rounded down to the minute. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The duration of coaching appointment in minutes.
+        facilitatorId:
+          type: string
+          description: The facilitator ID of coaching appointment.
+        attendeeIds:
+          type: array
+          description: IDs of attendees in the coaching appointment.
+          uniqueItems: true
+          items:
+            type: string
+        conversationIds:
+          type: array
+          description: IDs of conversations associated with this coaching appointment.
+          uniqueItems: true
+          items:
+            type: string
+        documentIds:
+          type: array
+          description: IDs of documents associated with this coaching appointment.
+          uniqueItems: true
+          items:
+            type: string
+        wfmSchedule:
+          description: The Workforce Management schedule the appointment is associated with.
+          $ref: '#/components/schemas/WfmScheduleReference'
+        externalLinks:
+          type: array
+          description: The list of external links related to the appointment
+          items:
+            type: string
+        location:
+          type: string
+          description: The location of the appointment
+        shareInsightsData:
+          type: boolean
+          description: Whether to share the insight data
+        addToSchedule:
+          type: boolean
+          description: If True, adds the appointment to their schedule
+      description: Create coaching appointment request
+    CoachingNotification:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the appointment for this notification.
+          readOnly: true
+        markedAsRead:
+          type: boolean
+          description: Indicates if notification is read or unread
+        actionType:
+          type: string
+          description: Action causing the notification.
+          readOnly: true
+          enum:
+          - Create
+          - Update
+          - Delete
+          - StatusChange
+        relationship:
+          type: string
+          description: The relationship of this user to this notification's appointment
+          readOnly: true
+          enum:
+          - Attendee
+          - Creator
+          - Facilitator
+        dateStart:
+          type: string
+          format: date-time
+          description: 'The start time of the appointment relating to this notification. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The duration of the appointment on this notification
+          readOnly: true
+        status:
+          type: string
+          description: The status of the appointment for this notification
+          readOnly: true
+          enum:
+          - Scheduled
+          - InProgress
+          - Completed
+          - InvalidSchedule
+        user:
+          description: The user of this notification
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        appointment:
+          description: The appointment
+          readOnly: true
+          $ref: '#/components/schemas/CoachingAppointmentResponse'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    UserAvailableTimes:
+      type: object
+      properties:
+        user:
+          description: User reference
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        availableTimes:
+          type: array
+          description: Periods of availability to schedule coaching appointment for an user
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/AvailableTime'
+    UpdateCoachingAppointmentRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of coaching appointment.
+        description:
+          type: string
+          description: The description of coaching appointment.
+        dateStart:
+          type: string
+          format: date-time
+          description: 'The date/time the coaching appointment starts. Times will be rounded down to the minute. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The duration of coaching appointment in minutes.
+        conversationIds:
+          type: array
+          description: IDs of conversations associated with this coaching appointment.
+          uniqueItems: true
+          items:
+            type: string
+        documentIds:
+          type: array
+          description: IDs of documents associated with this coaching appointment.
+          uniqueItems: true
+          items:
+            type: string
+        status:
+          type: string
+          description: The status of the coaching appointment.
+          enum:
+          - Scheduled
+          - InProgress
+          - Completed
+        wfmSchedule:
+          description: The Workforce Management schedule the appointment is associated with.
+          $ref: '#/components/schemas/WfmScheduleReference'
+        externalLinks:
+          type: array
+          description: The list of external links related to the appointment
+          items:
+            type: string
+        location:
+          type: string
+          description: The location of the appointment
+        shareInsightsData:
+          type: boolean
+          description: Whether to share the insight data
+        addToSchedule:
+          type: boolean
+          description: If True, adds the appointment to their schedule
+      description: Update coaching appointment request
+    WfmBusinessUnitReference:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: The ID of the business unit
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CoachingSlotsResponse:
+      type: object
+      properties:
+        suggestedSlots:
+          type: array
+          description: List of slots where coaching appointment can be scheduled
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/CoachingSlot'
+        attendeeSchedules:
+          type: array
+          description: Periods of availability for attendees to schedule coaching appointment
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/UserAvailableTimes'
+        facilitatorSchedules:
+          type: array
+          description: Periods of availability for facilitators to schedule coaching appointment
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/UserAvailableTimes'
+        wfmScheduleActivities:
+          type: array
+          description: Detailed data for WFM scheduled activities
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/WfmScheduleActivity'
+    AddConversationResponse:
+      type: object
+      properties:
+        conversation:
+          description: The conversation reference
+          readOnly: true
+          $ref: '#/components/schemas/ConversationReference'
+        appointment:
+          description: The appointment reference
+          readOnly: true
+          $ref: '#/components/schemas/CoachingAppointmentReference'
+    CoachingScheduleSlotsJobSchedule:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+        weekDate:
+          type: string
+          format: date
+          description: 'The start week date for this schedule. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        weekCount:
+          type: integer
+          format: int32
+          description: The number of weeks in this schedule
+    CoachingSlotsRequest:
+      type: object
+      required:
+      - attendeeIds
+      - interval
+      - lengthInMinutes
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Range of time to get slots for scheduling coaching appointments. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The duration of coaching appointment to schedule in 15 minutes granularity up to maximum of 60 minutes
+        attendeeIds:
+          type: array
+          description: List of attendees to determine coaching appointment slots
+          uniqueItems: true
+          items:
+            type: string
+        facilitatorIds:
+          type: array
+          description: List of facilitators to determine coaching appointment slots
+          uniqueItems: true
+          items:
+            type: string
+        interruptibleAppointmentIds:
+          type: array
+          description: List of appointment ids to exclude from consideration when determining blocked slots
+          uniqueItems: true
+          items:
+            type: string
+    CoachingAnnotationList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoachingAnnotation'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    FullDayTimeOffMarker:
+      type: object
+      properties:
+        businessUnitDate:
+          type: string
+          format: date
+          description: 'The date of the time off marker, interpreted in the business unit''s time zone. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        lengthMinutes:
+          type: integer
+          format: int32
+          description: The length of the time off marker in minutes
+        description:
+          type: string
+          description: The description of the time off marker
+        activityCodeId:
+          type: string
+          description: The ID of the activity code associated with the time off marker
+        paid:
+          type: boolean
+          description: Whether the time off marker is paid
+        timeOffRequestId:
+          type: string
+          description: The ID of the time off request
+    AddConversationRequest:
+      type: object
+      required:
+      - conversationId
+      properties:
+        conversationId:
+          type: string
+          description: The id of the conversation to add
+      description: Update coaching appointment request
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
           type: object
-          description: The group values for this data
           additionalProperties:
             type: string
-        data:
+        contextId:
+          type: string
+        details:
           type: array
-          description: The metrics in this group
           items:
-            $ref: '#/components/schemas/QueryResponseData'
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -3494,6 +4231,42 @@ components:
         value:
           type: integer
           format: int64
+    CoachingAppointmentReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    QueryResponseData:
+      type: object
+      properties:
+        interval:
+          type: string
+          description: 'Interval with start and end represented as ISO-8601 string. i.e: yyyy-MM-dd''T''HH:mm:ss.SSS''Z''/yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+        metrics:
+          type: array
+          description: A list of aggregated metrics
+          items:
+            $ref: '#/components/schemas/QueryResponseMetric'
+    QueryResponseGroupedData:
+      type: object
+      properties:
+        group:
+          type: object
+          description: The group values for this data
+          additionalProperties:
+            type: string
+        data:
+          type: array
+          description: The metrics in this group
+          items:
+            $ref: '#/components/schemas/QueryResponseData'
     CoachingAppointmentStatusResponseList:
       type: object
       properties:
@@ -3513,65 +4286,144 @@ components:
         pageCount:
           type: integer
           format: int32
-    AddConversationRequest:
+    CoachingAnnotation:
       type: object
       required:
-      - conversationId
+      - text
       properties:
-        conversationId:
+        id:
           type: string
-          description: The id of the conversation to add
-      description: Update coaching appointment request
-    CoachingAnnotationList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CoachingAnnotation'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
+          description: The globally unique identifier for the object.
+          readOnly: true
+        createdBy:
+          description: The user who created the annotation.
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        dateCreated:
           type: string
-          format: uri
-        nextUri:
+          format: date-time
+          description: 'The date/time the annotation was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        modifiedBy:
+          description: The last user to modify the annotation.
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        dateModified:
           type: string
-          format: uri
-        previousUri:
+          format: date-time
+          description: 'The date/time the annotation was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        text:
           type: string
-          format: uri
-        lastUri:
+          description: The text of the annotation.
+        isDeleted:
+          type: boolean
+          description: Flag indicating whether the annotation is deleted.
+          readOnly: true
+        accessType:
           type: string
-          format: uri
+          description: Determines the permissions required to view this item.
+          readOnly: true
+          enum:
+          - Public
+          - Private
         selfUri:
           type: string
           format: uri
-        pageCount:
-          type: integer
-          format: int32
-    CoachingScheduleSlotsJobSchedule:
+          description: The URI for this object
+          readOnly: true
+    CoachingScheduleSlotsJobResponse:
       type: object
       properties:
         id:
           type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        attendeeIds:
+          type: array
+          description: The attendee IDs to fetch the slots for.
+          items:
+            type: string
+        facilitatorIds:
+          type: array
+          description: The facilitator IDs to fetch the slots for.
+          items:
+            type: string
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The length in minutes of the slots.
+        businessUnitId:
+          type: string
+          description: The Business Unit Id of the users.
+        activityCodeId:
+          type: string
+          description: The Activity Code Id of the slots.
+        results:
+          type: array
+          description: The results of the job.
+          items:
+            $ref: '#/components/schemas/CoachingScheduleSlotsJobResult'
+        slotsType:
+          type: string
+          description: The type of slots fetched in the job.
+          enum:
+          - BestTime
         selfUri:
           type: string
           format: uri
-        weekDate:
+          description: The URI for this object
+          readOnly: true
+    AvailableTime:
+      type: object
+      properties:
+        dateStart:
           type: string
-          format: date
-          description: 'The start week date for this schedule. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        weekCount:
+          format: date-time
+          description: 'Start of the availability period. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        lengthInMinutes:
           type: integer
           format: int32
-          description: The number of weeks in this schedule
+          description: Length of availability period in minutes
+          readOnly: true
+        isPaid:
+          type: boolean
+          description: Indicates if this availability period is paid in Workforce Management schedule
+          readOnly: true
+        activityCategory:
+          type: string
+          description: Workforce Management activity category for this availability period
+          readOnly: true
+          enum:
+          - OnQueueWork
+          - Break
+          - Meal
+          - Meeting
+          - OffQueueWork
+          - TimeOff
+          - Training
+          - Unavailable
+        wfmSchedule:
+          description: Workforce Management schedule information associated with the available time
+          readOnly: true
+          $ref: '#/components/schemas/WfmScheduleReference'
+    QueryRequestPredicate:
+      type: object
+      required:
+      - dimension
+      - value
+      properties:
+        dimension:
+          type: string
+          description: The dimension to be filtered
+          enum:
+          - attendeeId
+          - facilitatorId
+          - status
+        value:
+          type: string
+          description: The value to filter by
     CoachingAppointmentResponse:
       type: object
       properties:
@@ -3682,182 +4534,6 @@ components:
           description: The URI for this object
           readOnly: true
       description: Coaching appointment response
-    CoachingAnnotation:
-      type: object
-      required:
-      - text
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        createdBy:
-          description: The user who created the annotation.
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The date/time the annotation was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        modifiedBy:
-          description: The last user to modify the annotation.
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The date/time the annotation was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        text:
-          type: string
-          description: The text of the annotation.
-        isDeleted:
-          type: boolean
-          description: Flag indicating whether the annotation is deleted.
-          readOnly: true
-        accessType:
-          type: string
-          description: Determines the permissions required to view this item.
-          readOnly: true
-          enum:
-          - Public
-          - Private
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CoachingAppointmentAggregateRequest:
-      type: object
-      required:
-      - filter
-      - interval
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Interval to aggregate across. End date is not inclusive. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        metrics:
-          type: array
-          description: A list of metrics to aggregate.  If omitted, all metrics are returned.
-          items:
-            type: string
-            enum:
-            - nActivities
-            - nPlannedActivities
-            - nInProgressActivities
-            - nCompleteActivities
-            - nOverdueActivities
-            - nInvalidScheduleActivities
-        groupBy:
-          type: array
-          description: An optional list of items by which to group the result data.
-          items:
-            type: string
-            enum:
-            - attendeeId
-        filter:
-          description: The filter applied to the data
-          $ref: '#/components/schemas/QueryRequestFilter'
-    DocumentReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    UpdateCoachingAppointmentRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of coaching appointment.
-        description:
-          type: string
-          description: The description of coaching appointment.
-        dateStart:
-          type: string
-          format: date-time
-          description: 'The date/time the coaching appointment starts. Times will be rounded down to the minute. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The duration of coaching appointment in minutes.
-        conversationIds:
-          type: array
-          description: IDs of conversations associated with this coaching appointment.
-          uniqueItems: true
-          items:
-            type: string
-        documentIds:
-          type: array
-          description: IDs of documents associated with this coaching appointment.
-          uniqueItems: true
-          items:
-            type: string
-        status:
-          type: string
-          description: The status of the coaching appointment.
-          enum:
-          - Scheduled
-          - InProgress
-          - Completed
-        wfmSchedule:
-          description: The Workforce Management schedule the appointment is associated with.
-          $ref: '#/components/schemas/WfmScheduleReference'
-        externalLinks:
-          type: array
-          description: The list of external links related to the appointment
-          items:
-            type: string
-        location:
-          type: string
-          description: The location of the appointment
-        shareInsightsData:
-          type: boolean
-          description: Whether to share the insight data
-        addToSchedule:
-          type: boolean
-          description: If True, adds the appointment to their schedule
-      description: Update coaching appointment request
     CoachingAppointmentStatusResponse:
       type: object
       properties:
@@ -3883,321 +4559,23 @@ components:
           - InProgress
           - Completed
           - InvalidSchedule
-    CoachingScheduleSlotsJobRequest:
+    QueryRequestFilter:
       type: object
       required:
-      - activityCodeId
-      - attendeeIds
-      - intervals
-      - lengthInMinutes
-      - slotsType
-      properties:
-        attendeeIds:
-          type: array
-          description: The attendee IDs to fetch the slots for.
-          items:
-            type: string
-        facilitatorIds:
-          type: array
-          description: The facilitator IDs to fetch the slots for.
-          items:
-            type: string
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The length in minutes of the slots, in 15 minutes granularity.
-        activityCodeId:
-          type: string
-          description: The Activity Code Id of the slots.
-        intervals:
-          type: array
-          description: 'The intervals to fetch the slots for. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-          items:
-            type: string
-            format: interval
-            description: 'Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        slotsType:
-          type: string
-          description: The type of slots to fetch in the job.
-          enum:
-          - BestTime
-    QueryRequestClause:
-      type: object
-      required:
-      - predicates
+      - clauses
       - type
       properties:
         type:
           type: string
-          description: The logic used to combine the predicates
+          description: The logic used to combine the clauses
           enum:
           - And
           - Or
-        predicates:
+        clauses:
           type: array
-          description: The list of predicates used to filter the data
+          description: The list of clauses used to filter the data
           items:
-            $ref: '#/components/schemas/QueryRequestPredicate'
-    CoachingAppointmentResponseList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CoachingAppointmentResponse'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    CoachingSlotsResponse:
-      type: object
-      properties:
-        suggestedSlots:
-          type: array
-          description: List of slots where coaching appointment can be scheduled
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/CoachingSlot'
-        attendeeSchedules:
-          type: array
-          description: Periods of availability for attendees to schedule coaching appointment
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/UserAvailableTimes'
-        facilitatorSchedules:
-          type: array
-          description: Periods of availability for facilitators to schedule coaching appointment
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/UserAvailableTimes'
-        wfmScheduleActivities:
-          type: array
-          description: Detailed data for WFM scheduled activities
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/WfmScheduleActivity'
-    WfmScheduleReference:
-      type: object
-      required:
-      - businessUnit
-      - id
-      - weekDate
-      properties:
-        id:
-          type: string
-          description: The ID of the WFM schedule
-        businessUnit:
-          description: A reference to a Workforce Management Business Unit
-          $ref: '#/components/schemas/WfmBusinessUnitReference'
-        weekDate:
-          type: string
-          format: date
-          description: 'The start week date for this schedule. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    AvailableTime:
-      type: object
-      properties:
-        dateStart:
-          type: string
-          format: date-time
-          description: 'Start of the availability period. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: Length of availability period in minutes
-          readOnly: true
-        isPaid:
-          type: boolean
-          description: Indicates if this availability period is paid in Workforce Management schedule
-          readOnly: true
-        activityCategory:
-          type: string
-          description: Workforce Management activity category for this availability period
-          readOnly: true
-          enum:
-          - OnQueueWork
-          - Break
-          - Meal
-          - Meeting
-          - OffQueueWork
-          - TimeOff
-          - Training
-          - Unavailable
-        wfmSchedule:
-          description: Workforce Management schedule information associated with the available time
-          readOnly: true
-          $ref: '#/components/schemas/WfmScheduleReference'
-    CreateCoachingAppointmentRequest:
-      type: object
-      required:
-      - attendeeIds
-      - dateStart
-      - description
-      - lengthInMinutes
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of coaching appointment.
-        description:
-          type: string
-          description: The description of coaching appointment.
-        dateStart:
-          type: string
-          format: date-time
-          description: 'The date/time the coaching appointment starts. Times will be rounded down to the minute. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The duration of coaching appointment in minutes.
-        facilitatorId:
-          type: string
-          description: The facilitator ID of coaching appointment.
-        attendeeIds:
-          type: array
-          description: IDs of attendees in the coaching appointment.
-          uniqueItems: true
-          items:
-            type: string
-        conversationIds:
-          type: array
-          description: IDs of conversations associated with this coaching appointment.
-          uniqueItems: true
-          items:
-            type: string
-        documentIds:
-          type: array
-          description: IDs of documents associated with this coaching appointment.
-          uniqueItems: true
-          items:
-            type: string
-        wfmSchedule:
-          description: The Workforce Management schedule the appointment is associated with.
-          $ref: '#/components/schemas/WfmScheduleReference'
-        externalLinks:
-          type: array
-          description: The list of external links related to the appointment
-          items:
-            type: string
-        location:
-          type: string
-          description: The location of the appointment
-        shareInsightsData:
-          type: boolean
-          description: Whether to share the insight data
-        addToSchedule:
-          type: boolean
-          description: If True, adds the appointment to their schedule
-      description: Create coaching appointment request
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    CoachingScheduleSlotsJobResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        attendeeIds:
-          type: array
-          description: The attendee IDs to fetch the slots for.
-          items:
-            type: string
-        facilitatorIds:
-          type: array
-          description: The facilitator IDs to fetch the slots for.
-          items:
-            type: string
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The length in minutes of the slots.
-        businessUnitId:
-          type: string
-          description: The Business Unit Id of the users.
-        activityCodeId:
-          type: string
-          description: The Activity Code Id of the slots.
-        results:
-          type: array
-          description: The results of the job.
-          items:
-            $ref: '#/components/schemas/CoachingScheduleSlotsJobResult'
-        slotsType:
-          type: string
-          description: The type of slots fetched in the job.
-          enum:
-          - BestTime
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CoachingAppointmentAggregateResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          description: The results of the query
-          items:
-            $ref: '#/components/schemas/QueryResponseGroupedData'
-    CoachingScheduleSlotsJobResult:
-      type: object
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'The interval of the job. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        status:
-          type: string
-          description: The status of the job
-          enum:
-          - InProgress
-          - Complete
-          - Error
-        slot:
-          description: The slot found from the job
-          $ref: '#/components/schemas/CoachingScheduleSlotsJobSlot'
-        hasConflict:
-          type: boolean
-          description: True if the slot conflicts with a Coaching Appointment
+            $ref: '#/components/schemas/QueryRequestClause'
     CoachingSlot:
       type: object
       properties:
@@ -4228,384 +4606,6 @@ components:
           description: Workforce Management schedule information associated with the slot
           readOnly: true
           $ref: '#/components/schemas/WfmScheduleReference'
-    UserAvailableTimes:
-      type: object
-      properties:
-        user:
-          description: User reference
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        availableTimes:
-          type: array
-          description: Periods of availability to schedule coaching appointment for an user
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/AvailableTime'
-    ScheduleActivity:
-      type: object
-      properties:
-        dateStart:
-          type: string
-          format: date-time
-          description: 'The start date/time of this activity. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        lengthMinutes:
-          type: integer
-          format: int32
-          description: The length of this activity in minutes
-        description:
-          type: string
-          description: The description of this activity
-        activityCodeId:
-          type: string
-          description: The ID of the activity code associated with this activity
-        paid:
-          type: boolean
-          description: Whether this activity is paid
-        timeOffRequestId:
-          type: string
-          description: The ID of the time off request associated with this activity, if applicable
-        externalActivityId:
-          type: string
-          description: The ID of the external activity associated with this activity, if applicable
-        externalActivityType:
-          type: string
-          description: The type of the external activity associated with this activity, if applicable
-          enum:
-          - ActivityPlan
-          - Coaching
-          - Learning
-          - Opportunity
-    CoachingAnnotationCreateRequest:
-      type: object
-      required:
-      - accessType
-      - text
-      properties:
-        text:
-          type: string
-          description: The text of the annotation.
-        accessType:
-          type: string
-          description: Determines the permissions required to view this item.
-          enum:
-          - Public
-          - Private
-    QueryRequestFilter:
-      type: object
-      required:
-      - clauses
-      - type
-      properties:
-        type:
-          type: string
-          description: The logic used to combine the clauses
-          enum:
-          - And
-          - Or
-        clauses:
-          type: array
-          description: The list of clauses used to filter the data
-          items:
-            $ref: '#/components/schemas/QueryRequestClause'
-    ConversationReference:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    FullDayTimeOffMarker:
-      type: object
-      properties:
-        businessUnitDate:
-          type: string
-          format: date
-          description: 'The date of the time off marker, interpreted in the business unit''s time zone. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        lengthMinutes:
-          type: integer
-          format: int32
-          description: The length of the time off marker in minutes
-        description:
-          type: string
-          description: The description of the time off marker
-        activityCodeId:
-          type: string
-          description: The ID of the activity code associated with the time off marker
-        paid:
-          type: boolean
-          description: Whether the time off marker is paid
-        timeOffRequestId:
-          type: string
-          description: The ID of the time off request
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    QueryRequestPredicate:
-      type: object
-      required:
-      - dimension
-      - value
-      properties:
-        dimension:
-          type: string
-          description: The dimension to be filtered
-          enum:
-          - attendeeId
-          - facilitatorId
-          - status
-        value:
-          type: string
-          description: The value to filter by
-    CoachingAppointmentReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    AddConversationResponse:
-      type: object
-      properties:
-        conversation:
-          description: The conversation reference
-          readOnly: true
-          $ref: '#/components/schemas/ConversationReference'
-        appointment:
-          description: The appointment reference
-          readOnly: true
-          $ref: '#/components/schemas/CoachingAppointmentReference'
-    QueryResponseData:
-      type: object
-      properties:
-        interval:
-          type: string
-          description: 'Interval with start and end represented as ISO-8601 string. i.e: yyyy-MM-dd''T''HH:mm:ss.SSS''Z''/yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
-        metrics:
-          type: array
-          description: A list of aggregated metrics
-          items:
-            $ref: '#/components/schemas/QueryResponseMetric'
-    QueryResponseStats:
-      type: object
-      properties:
-        count:
-          type: integer
-          format: int32
-          description: The count for this metric
-    CoachingScheduleSlotsJobSlot:
-      type: object
-      properties:
-        dateStart:
-          type: string
-          format: date-time
-          description: 'Start date and time of the slot. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        schedule:
-          description: The schedule information of the slot
-          $ref: '#/components/schemas/CoachingScheduleSlotsJobSchedule'
-    WfmBusinessUnitReference:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The ID of the business unit
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CoachingSlotsRequest:
-      type: object
-      required:
-      - attendeeIds
-      - interval
-      - lengthInMinutes
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Range of time to get slots for scheduling coaching appointments. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The duration of coaching appointment to schedule in 15 minutes granularity up to maximum of 60 minutes
-        attendeeIds:
-          type: array
-          description: List of attendees to determine coaching appointment slots
-          uniqueItems: true
-          items:
-            type: string
-        facilitatorIds:
-          type: array
-          description: List of facilitators to determine coaching appointment slots
-          uniqueItems: true
-          items:
-            type: string
-        interruptibleAppointmentIds:
-          type: array
-          description: List of appointment ids to exclude from consideration when determining blocked slots
-          uniqueItems: true
-          items:
-            type: string
-    CoachingAppointmentStatusRequest:
-      type: object
-      required:
-      - status
-      properties:
-        status:
-          type: string
-          description: The status of the coaching appointment
-          enum:
-          - Scheduled
-          - InProgress
-          - Completed
-    CoachingNotificationList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CoachingNotification'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    WfmScheduleActivity:
-      type: object
-      properties:
-        userReference:
-          description: ID of user that the schedule is for
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        activities:
-          type: array
-          description: List of user's scheduled activities
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/ScheduleActivity'
-        fullDayTimeOffMarkers:
-          type: array
-          description: List of user's days off
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/FullDayTimeOffMarker'
-    CoachingNotification:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the appointment for this notification.
-          readOnly: true
-        markedAsRead:
-          type: boolean
-          description: Indicates if notification is read or unread
-        actionType:
-          type: string
-          description: Action causing the notification.
-          readOnly: true
-          enum:
-          - Create
-          - Update
-          - Delete
-          - StatusChange
-        relationship:
-          type: string
-          description: The relationship of this user to this notification's appointment
-          readOnly: true
-          enum:
-          - Attendee
-          - Creator
-          - Facilitator
-        dateStart:
-          type: string
-          format: date-time
-          description: 'The start time of the appointment relating to this notification. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The duration of the appointment on this notification
-          readOnly: true
-        status:
-          type: string
-          description: The status of the appointment for this notification
-          readOnly: true
-          enum:
-          - Scheduled
-          - InProgress
-          - Completed
-          - InvalidSchedule
-        user:
-          description: The user of this notification
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        appointment:
-          description: The appointment
-          readOnly: true
-          $ref: '#/components/schemas/CoachingAppointmentResponse'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    QueryResponseMetric:
-      type: object
-      properties:
-        metric:
-          type: string
-          description: The metric this applies to
-          enum:
-          - nActivities
-          - nPlannedActivities
-          - nInProgressActivities
-          - nCompleteActivities
-          - nOverdueActivities
-          - nInvalidScheduleActivities
-        stats:
-          description: The aggregated values for this metric
-          $ref: '#/components/schemas/QueryResponseStats'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

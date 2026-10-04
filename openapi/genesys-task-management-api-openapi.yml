@@ -11823,18 +11823,488 @@ paths:
         required: true
 components:
   schemas:
-    BulkJobTerminateResultEntity:
+    WorkitemQuerySort:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'Specify an attribute for sorting. It''s possible to use an attribute both for sorting and in the query at the same time, but these restrictions apply: Only the operators EQ, LT, LTE, GT, GTE, BETWEEN and BEGINS_WITH are supported and the attribute can''t be present in more than one filter.'
+          enum:
+          - dateDue
+          - priority
+        ascending:
+          type: boolean
+          description: Sort Ascending
+    ExternalContactReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        firstName:
+          type: string
+          description: The first name of the contact.
+        lastName:
+          type: string
+          description: The last name of the contact.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkbinCreate:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Workbin name. Valid length between 3 and 256 characters.
+        description:
+          type: string
+          description: Workbin description. Maximum length of 512 characters.
+        divisionId:
+          type: string
+          description: The ID of the division the Workbin belongs to. Defaults to home division ID.
+    WorkitemsAttributeChangeList:
+      type: object
+      properties:
+        newValue:
+          type: array
+          description: New property value
+          items:
+            type: object
+        oldValue:
+          type: array
+          description: Old property value
+          items:
+            type: object
+    BulkJobTerminateResult:
+      type: object
+      properties:
+        error:
+          description: Error details if the operation failed.
+          $ref: '#/components/schemas/BulkJobError'
+        entity:
+          description: The result of the operation if it succeeded. For Workitem Bulk Terminate this is a summary.
+          $ref: '#/components/schemas/BulkJobTerminateResultEntity'
+    WorkitemScriptReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorktypeQuerySort:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'Specify an attribute for sorting. It''s possible to use an attribute both for sorting and in the query at the same time, but these restrictions apply: Only the operators EQ, LT, LTE, GT, GTE, BETWEEN and BEGINS_WITH are supported and the attribute can''t be present in more than one filter.'
+          enum:
+          - dateModified
+          - name
+        ascending:
+          type: boolean
+          description: Sort Ascending
+    WorkitemQueryJobQueryFilters:
+      type: object
+      required:
+      - criteria
+      - name
+      properties:
+        name:
+          type: string
+          example: customFields
+          description: Name of the attribute to filter.
+          enum:
+          - customFields
+        operator:
+          type: string
+          description: Query filter logical operator to join criteria.
+          enum:
+          - AND
+          - OR
+        criteria:
+          type: array
+          description: Query filter criteria.
+          items:
+            $ref: '#/components/schemas/WorkitemQueryJobQueryFiltersCriteria'
+          maxItems: 5
+          minItems: 1
+    WorktypeCreate:
+      type: object
+      required:
+      - defaultWorkbinId
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the Worktype. Valid length between 3 and 256 characters.
+        defaultWorkbinId:
+          type: string
+          description: The ID of the default Workbin for Workitems created from the Worktype.
+        defaultDurationSeconds:
+          type: integer
+          format: int32
+          description: The default duration in seconds for Workitems created from the Worktype. Maximum of 365 days.
+          minimum: 0
+          maximum: 31536000
+        defaultExpirationSeconds:
+          type: integer
+          format: int32
+          description: The default expiration time in seconds for Workitems created from the Worktype. Maximum of 365 days.
+          minimum: 0
+          maximum: 31536000
+        defaultDueDurationSeconds:
+          type: integer
+          format: int32
+          description: The default due duration in seconds for Workitems created from the Worktype. Maximum of 365 days.
+          minimum: 0
+          maximum: 31536000
+        defaultPriority:
+          type: integer
+          format: int32
+          description: The default priority for Workitems created from the Worktype. The valid range is between -25,000,000 and 25,000,000.
+          minimum: -25000000
+          maximum: 25000000
+        defaultTtlSeconds:
+          type: integer
+          format: int32
+          description: The default time to time to live in seconds for Workitems created from the Worktype. The valid range is between 1 and 365 days.
+          minimum: 86400
+          maximum: 31536000
+        assignmentEnabled:
+          type: boolean
+          description: When set to true, Workitems will be sent to the queue of the Worktype as they are created. Default value is false.
+        schemaId:
+          type: string
+          description: The ID of the custom attribute schema for Workitems created from the Worktype. Must be a valid UUID.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        serviceLevelTarget:
+          type: integer
+          format: int32
+          description: The target service level for Workitems created from the Worktype. The default value is 100.
+          minimum: 1
+          maximum: 100
+        ruleSettings:
+          description: Settings for the worktypes rules.
+          $ref: '#/components/schemas/WorkitemRuleSettings'
+        unassignedDivisionContactsEnabled:
+          type: boolean
+          description: When set to true, will allow Workitems to be associated with External Contacts that are not assigned to any division. Default value is true.
+        description:
+          type: string
+          description: The description of the Worktype. Maximum length of 512 characters.
+          minLength: 0
+          maxLength: 512
+        divisionId:
+          type: string
+          description: The ID of the division the Worktype belongs to. Defaults to the default Workbin division ID. The Worktype must be in the same division as its default Workbin.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        disableDefaultStatusCreation:
+          type: boolean
+          description: Set to true to disable default status creation. Default statuses are created with the Worktype by default
+        schemaVersion:
+          type: integer
+          format: int32
+          description: The version of the Worktypes custom attribute schema. The latest schema version will be used if this property is not set.
+        defaultQueueId:
+          type: string
+          description: The ID of the default queue for Workitems created from the Worktype. Must be a valid UUID.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        defaultLanguageId:
+          type: string
+          description: The ID of the default language for Workitems created from the Worktype. Must be a valid UUID.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        defaultSkillIds:
+          type: array
+          description: The IDs of the default skills for Workitems created from the Worktype. Must be valid UUIDs. Maximum of 20 IDs
+          items:
+            type: string
+        defaultScriptId:
+          type: string
+          description: The default script for Workitems created from the Worktype. Must be a valid UUID.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+    BulkJobError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message of the bulk operation result.
+        code:
+          type: string
+          description: Error code of the bulk operation result.
+    BulkJobsListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkJob'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    AutoStatusTransitionDetail:
+      type: object
+      properties:
+        nextStatus:
+          description: Next status of auto status transition.
+          $ref: '#/components/schemas/WorkitemStatusReference'
+        dateOfTransition:
+          type: string
+          format: date-time
+          description: 'Date at which auto status transition occurs. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        errorDetails:
+          description: This property will be set if auto status transition is failed.
+          $ref: '#/components/schemas/TaskManagementErrorDetails'
+    WorkitemDateBasedCondition:
+      type: object
+      required:
+      - attribute
+      - relativeMinutesToInvocation
+      properties:
+        attribute:
+          type: string
+          description: The name of the workitem date attribute.
+          enum:
+          - dateDue
+          - dateExpires
+          - ttl
+          - dateCreated
+        relativeMinutesToInvocation:
+          type: integer
+          format: int32
+          description: The time in minutes before or after the date attribute.
+    WorkbinVersion:
       type: object
       properties:
         id:
           type: string
           description: The globally unique identifier for the object.
           readOnly: true
+        name:
+          type: string
+          description: Workbin name
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/Division'
+        description:
+          type: string
+          description: Workbin description
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The creation date of the Workbin. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The modified date of the Workbin. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          description: The id of the User who modified the Workbin.
+          $ref: '#/components/schemas/UserReference'
+        version:
+          type: integer
+          format: int32
+          description: Version
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
+    WorkitemScoredAgent:
+      type: object
+      properties:
+        agent:
+          description: The agent
+          $ref: '#/components/schemas/UserReference'
+        score:
+          type: integer
+          format: int32
+          description: Agent's score for the workitem, from 0 - 100, higher being better
+    WorkitemPostQueryEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Workitem'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
+        count:
+          type: integer
+          format: int32
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    WorkbinReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemDateBasedConditionUpdate:
+      type: object
+      properties:
+        attribute:
+          type: string
+          description: The name of the workitem date attribute.
+          enum:
+          - dateDue
+          - dateExpires
+          - ttl
+          - dateCreated
+        relativeMinutesToInvocation:
+          type: integer
+          format: int32
+          description: The time in minutes before or after the date attribute.
+    SchemaQuantityLimits:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        minFieldNameCharacters:
+          type: integer
+          format: int32
+          example: '"minFieldNameCharacters":1'
+          description: The minimum number of schema field name characters allowed.
+          readOnly: true
+        maxFieldNameCharacters:
+          type: integer
+          format: int32
+          example: '"maxFieldNameCharacters":100'
+          description: The maximum number of schema field name characters allowed.
+          readOnly: true
+        minFieldTitleCharacters:
+          type: integer
+          format: int32
+          example: '"minFieldTitleCharacters":1'
+          description: The minimum number of schema field title characters allowed.
+          readOnly: true
+        maxFieldTitleCharacters:
+          type: integer
+          format: int32
+          example: '"maxFieldTitleCharacters":100'
+          description: The maximum number of schema field title characters allowed.
+          readOnly: true
+        minFieldDescriptionCharacters:
+          type: integer
+          format: int32
+          example: '"minFieldDescriptionCharacters":0'
+          description: The minimum number of schema field description characters allowed.
+          readOnly: true
+        maxFieldDescriptionCharacters:
+          type: integer
+          format: int32
+          example: '"maxFieldDescriptionCharacters":200'
+          description: The maximum number of schema field description characters allowed.
+          readOnly: true
+        minSchemaNameCharacters:
+          type: integer
+          format: int32
+          example: '"minSchemaNameCharacters":1'
+          description: The minimum number of schema name characters allowed.
+          readOnly: true
+        maxSchemaNameCharacters:
+          type: integer
+          format: int32
+          example: '"maxSchemaNameCharacters":50'
+          description: The maximum number of schema name characters allowed.
+          readOnly: true
+        minSchemaDescriptionCharacters:
+          type: integer
+          format: int32
+          example: '"minSchemaDescriptionCharacters":0'
+          description: The minimum number of schema description characters allowed.
+          readOnly: true
+        maxSchemaDescriptionCharacters:
+          type: integer
+          format: int32
+          example: '"maxSchemaDescriptionCharacters":200'
+          description: The maximum number of schema description characters allowed.
+          readOnly: true
+        maxNumberOfSchemasPerOrg:
+          type: integer
+          format: int32
+          example: '"maxNumberOfSchemasPerOrg":20'
+          description: The maximum number of schema allowed per org.
+          readOnly: true
+        maxNumberOfFieldsPerSchema:
+          type: integer
+          format: int32
+          example: '"maxNumberOfFieldsPerSchema":25'
+          description: The maximum number of schema fields allowed per schema.
+          readOnly: true
+        maxNumberOfFieldsPerOrg:
+          type: integer
+          format: int32
+          example: '"maxNumberOfFieldsPerOrg":500'
+          description: The maximum number of schema fields allowed per organization across all of their schemas.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemStatusListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkitemStatus'
+        selfUri:
+          type: string
+          format: uri
     Coretype:
       type: object
       properties:
@@ -11887,494 +12357,171 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    MaxLength:
+    WorkitemFlowReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemWrapup:
+      type: object
+      properties:
+        workitem:
+          description: Workitem that the wrapup code has been added to.
+          $ref: '#/components/schemas/WorkitemReference'
+        wrapupCode:
+          description: The wrapup code used in the workitem.
+          $ref: '#/components/schemas/WrapupIdReference'
+        modifiedBy:
+          description: The user who added the wrapup code to the workitem.
+          $ref: '#/components/schemas/UserReference'
+        user:
+          description: The user for whom wrapup code was added. This may be the same as modifiedBy.
+          $ref: '#/components/schemas/UserReference'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The modified date of the Workitem when the wrapup code was added. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    WorkitemManualAssign:
       type: object
       required:
-      - max
-      - min
+      - id
       properties:
-        min:
+        id:
+          type: string
+          description: The globally unique identifier for this user.
+    Worktype:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the Worktype.
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/Division'
+        description:
+          type: string
+          description: The description of the Worktype.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The creation date of the Worktype. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The modified date of the Worktype. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        defaultWorkbin:
+          description: The default Workbin for Workitems created from the Worktype.
+          $ref: '#/components/schemas/WorkbinReference'
+        defaultStatus:
+          description: The default status for Workitems created from the Worktype.
+          $ref: '#/components/schemas/WorkitemStatusReference'
+        statuses:
+          type: array
+          description: The list of possible statuses for Workitems created from the Worktype.
+          items:
+            $ref: '#/components/schemas/WorkitemStatus'
+        defaultDurationSeconds:
           type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the minimum largest length string the field can contain for a schema instance.
-        max:
+          format: int32
+          description: The default duration in seconds for Workitems created from the Worktype.
+        defaultExpirationSeconds:
           type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the maximum largest string the field can contain for a schema instance.
-    WorkitemCommonCreate:
+          format: int32
+          description: The default expiration time in seconds for Workitems created from the Worktype.
+        defaultDueDurationSeconds:
+          type: integer
+          format: int32
+          description: The default due duration in seconds for Workitems created from the Worktype.
+        defaultPriority:
+          type: integer
+          format: int32
+          description: The default priority for Workitems created from the Worktype. The valid range is between -25,000,000 and 25,000,000.
+        defaultLanguage:
+          description: The default language for Workitems created from the Worktype.
+          $ref: '#/components/schemas/LanguageReference'
+        defaultTtlSeconds:
+          type: integer
+          format: int32
+          description: The default time to time to live in seconds for Workitems created from the Worktype.
+        modifiedBy:
+          description: The id of the User who modified the Worktype.
+          $ref: '#/components/schemas/UserReference'
+        defaultQueue:
+          description: The default queue for Workitems created from the Worktype.
+          $ref: '#/components/schemas/WorkitemQueueReference'
+        defaultSkills:
+          type: array
+          description: The default skills for Workitems created from the Worktype.
+          items:
+            $ref: '#/components/schemas/RoutingSkillReference'
+        assignmentEnabled:
+          type: boolean
+          description: When set to true, Workitems will be sent to the queue of the Worktype as they are created. Default value is false.
+        schema:
+          description: The schema defining the custom attributes for Workitems created from the Worktype.
+          $ref: '#/components/schemas/WorkitemSchema'
+        serviceLevelTarget:
+          type: integer
+          format: int32
+          description: The target service level for Workitems created from the Worktype. The default value is 100.
+        ruleSettings:
+          description: Settings for the worktypes rules.
+          $ref: '#/components/schemas/WorkitemRuleSettings'
+        flow:
+          description: The flow associated with the Worktype.
+          $ref: '#/components/schemas/WorkitemFlowReference'
+        defaultScript:
+          description: The default script for Workitems created from the Worktype.
+          $ref: '#/components/schemas/WorkitemScriptReference'
+        unassignedDivisionContactsEnabled:
+          type: boolean
+          description: When set to true, will allow Workitems to be associated with External Contacts that are not assigned to any division. Default value is true.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemQueryJobFilter:
       type: object
       required:
       - name
-      - typeId
+      - operator
+      - values
       properties:
         name:
           type: string
-          description: The name of the Workitem. Valid length between 3 and 256 characters.
-        priority:
-          type: integer
-          format: int32
-          description: The priority of the Workitem. The valid range is between -25,000,000 and 25,000,000.
-        dateDue:
+          description: 'Attribute name. Valid filter names are: ''workbinId'', ''id'', ''typeId'', ''priority'', ''dateCreated'', ''dateDue'', ''statusId'', ''dateClosed'', ''externalContactId'', ''assigneeId'', ''assignmentState'', ''queueId'', ''externalTag'', ''divisionId'''
+        operator:
           type: string
-          format: date-time
-          description: 'The due date of the Workitem. Can not be greater than 365 days from the current time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateExpires:
-          type: string
-          format: date-time
-          description: 'The expiry date of the Workitem. Can not be greater than 365 days from the current time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        durationSeconds:
-          type: integer
-          format: int32
-          description: The estimated duration in seconds to complete the Workitem. Maximum of 365 days.
-        ttl:
-          type: integer
-          format: int32
-          description: The epoch timestamp in seconds specifying the time to live for the Workitem. Can not be greater than 365 days from the current time.
-        statusId:
-          type: string
-          description: The ID of the Status of the Workitem.
-        workbinId:
-          type: string
-          description: The ID of Workbin that contains the Workitem.
-        autoStatusTransition:
-          type: boolean
-          description: Set it to false to disable auto status transition. By default, it is enabled.
-        description:
-          type: string
-          description: The description of the Workitem. Maximum length of 512 characters.
-        typeId:
-          type: string
-          description: The ID of the Worktype of the Workitem.
-        customFields:
-          type: object
-          description: Custom fields defined in the schema referenced by the worktype of the workitem.
-          additionalProperties:
-            type: object
-        queueId:
-          type: string
-          description: The ID of the Workitems queue. Must be a valid UUID.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        assigneeId:
-          type: string
-          description: The ID of the assignee of the Workitem. Must be a valid UUID.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        languageId:
-          type: string
-          description: The ID of language of the Workitem. Must be a valid UUID.
-        externalContactId:
-          type: string
-          description: The ID of the external contact of the Workitem. Must be a valid UUID.
-        externalTag:
-          type: string
-          description: The external tag of the Workitem.
-        skillIds:
-          type: array
-          description: The skill IDs of the Workitem. Must be valid UUIDs.
-          items:
-            type: string
-        scriptId:
-          type: string
-          description: The ID of the Workitems script. Must be a valid UUID.
-    Schema:
-      type: object
-      properties:
-        title:
-          type: string
-          description: A core type's title
-          readOnly: true
-        description:
-          type: string
-          description: A core type's description
-          readOnly: true
-        type:
-          type: array
-          example: '["string"] for a text-based core type, ["integer"] for a numeric core type, or ["boolean", "null"] for the checkbox core type'
-          description: An array of fundamental JSON Schema primitive types on which the core type is based
-          readOnly: true
-          items:
-            type: string
-        items:
-          example: '{
-
-            type": "string",
-
-            "pattern": "^[\\S]+$"
-
-            }'
-          description: Denotes the type and pattern of the items in an enum core type
-          readOnly: true
-          $ref: '#/components/schemas/Items'
-        pattern:
-          type: string
-          description: For the "date" and "datetime" core types, denotes the regex prescribing the allowable date/datetime format
-          readOnly: true
-    WorkitemsAttributeChangeBoolean:
-      type: object
-      properties:
-        newValue:
-          type: boolean
-          description: New property value
-        oldValue:
-          type: boolean
-          description: Old property value
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    WorkbinChangeListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkitemsChangeWorkbinDelta'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-    WorkitemOnCreateRuleListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkitemOnCreateRule'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    WorkitemReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemStatusUpdate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the Status. Valid length between 3 and 256 characters.
-        destinationStatusIds:
-          type: array
-          description: A list of destination Statuses where a Workitem with this Status can transition to. If the list is empty Workitems with this Status can transition to all other Statuses defined on the Worktype. A Status can have a maximum of 24 destinations.
-          items:
-            type: string
-        description:
-          type: string
-          description: The description of the Status. Maximum length of 512 characters.
-        defaultDestinationStatusId:
-          type: string
-          description: Default destination status to which this Status will transition to if auto status transition enabled.
-        statusTransitionDelaySeconds:
-          type: integer
-          format: int32
-          description: Delay in seconds for auto status transition. Required if defaultDestinationStatusId is provided.
-        statusTransitionTime:
-          type: string
-          format: local-time
-          description: 'Time is represented as an ISO-8601 string without a timezone. For example: HH:mm:ss.SSS'
-        autoTerminateWorkitem:
-          type: boolean
-          description: Terminate workitem on selection of status. Applicable only for statuses in the Closed category.
-    WorkitemsAttributeChangeWrapupDelta:
-      type: object
-      properties:
-        newValue:
-          description: New property value
-          $ref: '#/components/schemas/WrapupDelta'
-        oldValue:
-          description: Old property value
-          $ref: '#/components/schemas/WrapupDelta'
-    WorkitemsAttributeChangeString:
-      type: object
-      properties:
-        newValue:
-          type: string
-          description: New property value
-        oldValue:
-          type: string
-          description: Old property value
-    JsonSchemaDocument:
-      type: object
-      properties:
-        id:
-          type: string
-        $schema:
-          type: string
-        title:
-          type: string
-        description:
-          type: string
-        type:
-          type: string
-        required:
-          type: array
-          items:
-            type: string
-        properties:
-          type: object
-          additionalProperties:
-            type: object
-        additionalProperties:
-          type: object
-      description: A JSON Schema document.
-    BulkJobAddResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          description: A list of the results from the bulk operation.
-          items:
-            $ref: '#/components/schemas/BulkJobAddResult'
-        errorCount:
-          type: integer
-          format: int32
-          description: The number of errors from the bulk operation.
-        errorIndexes:
-          type: array
-          description: An index of where the errors are in the listing.
-          items:
-            type: integer
-            format: int32
-    WorkitemPostQueryEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Workitem'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-        count:
-          type: integer
-          format: int32
-    WorkitemDateBasedRuleUpdate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the rule.
-          minLength: 3
-          maxLength: 256
-        condition:
-          description: The rules condition. If the condition criteria is met the rules action will be executed.
-          $ref: '#/components/schemas/WorkitemDateBasedConditionUpdate'
-    WorktypeQueryEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Worktype'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-        count:
-          type: integer
-          format: int32
-          description: Count of items returned by the query. Refer to the "select" request parameter for more information.
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    BulkJobTerminateRequest:
-      type: object
-      required:
-      - entities
-      properties:
-        entities:
-          type: array
-          description: The list of bulk job entities to terminate.
-          items:
-            $ref: '#/components/schemas/BulkJobEntity'
-          maxItems: 100
-          minItems: 1
-    WorkitemOnCreateRuleUpdate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the rule.
-          minLength: 3
-          maxLength: 256
-    MinLength:
-      type: object
-      required:
-      - max
-      - min
-      properties:
-        min:
-          type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the minimum smallest length a string field can contain for a schema instance.
-        max:
-          type: integer
-          format: int64
-          description: A non-negative integer for a text-based schema field denoting the maximum smallest length string the field can contain for a schema instance.
-    WorkitemOnAttributeChangeRuleUpdate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the rule.
-          minLength: 3
-          maxLength: 256
-        condition:
-          description: The rules condition. If the condition criteria is met the rules action will be executed.
-          $ref: '#/components/schemas/WorkitemOnAttributeChangeConditionUpdate'
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    BulkJobEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The id of the bulk job entity.
-    WorktypeVersionListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorktypeVersion'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-    WorkitemOnAttributeChangeCondition:
-      type: object
-      required:
-      - attribute
-      - newValue
-      properties:
-        attribute:
-          type: string
-          description: The name of the workitem attribute whose change will be evaluated as part of the rule.
+          description: Filter operator.
           enum:
-          - statusId
-        newValue:
-          type: string
-          description: The new value of the attribute. If the attribute is updated to this value this part of the condition will be met.
-        oldValue:
-          type: string
-          description: The old value of the attribute. If the attribute was updated from this value this part of the condition will be met.
-    WorkbinQueryEntityListing:
-      type: object
-      properties:
-        entities:
+          - EQ
+          - NEQ
+          - GT
+          - LT
+          - GTE
+          - LTE
+          - IN
+          - CONTAINS
+          - BETWEEN
+          - BEGINS_WITH
+        values:
           type: array
+          description: List of values to be used in the filter.
           items:
-            $ref: '#/components/schemas/Workbin'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-        count:
-          type: integer
-          format: int32
-          description: Count of items returned by the query. Refer to the "select" request parameter for more information.
-    WorkitemsAttributeChangeListWorkitemScoredAgentDelta:
-      type: object
-      properties:
-        newValue:
-          type: array
-          description: New property value
-          items:
-            $ref: '#/components/schemas/WorkitemScoredAgentDelta'
-        oldValue:
-          type: array
-          description: Old property value
-          items:
-            $ref: '#/components/schemas/WorkitemScoredAgentDelta'
+            type: string
     WorkitemUpdate:
       type: object
       properties:
@@ -12481,64 +12628,261 @@ components:
         scriptId:
           type: string
           description: The ID of the Workitems script. Must be a valid UUID.
-    WorkitemQueryJobCreate:
+    WorkitemOnAttributeChangeRuleCreate:
       type: object
       required:
-      - filters
+      - condition
+      - name
       properties:
-        pageSize:
-          type: integer
-          format: int32
-          description: The total page size requested. Default 25
-          minimum: 1
-          maximum: 200
-        pageNumber:
-          type: integer
-          format: int32
-          description: The page number requested
-          minimum: 1
-        filters:
+        name:
+          type: string
+          description: The name of the rule.
+          minLength: 3
+          maxLength: 256
+        condition:
+          description: The rules condition. If the condition criteria is met the rules action will be executed.
+          $ref: '#/components/schemas/WorkitemOnAttributeChangeCondition'
+    WorkitemRuleSettings:
+      type: object
+      properties:
+        flowRulesEnabled:
+          type: boolean
+          description: When set to true, the worktypes flow rules will be processed. Default value is false.
+    WorkitemQueryJobSort:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Specify an attribute for sorting.
+          enum:
+          - dateDue
+          - dateCreated
+          - priority
+        ascending:
+          type: boolean
+          description: Sort Ascending
+    WorkitemStatusCreate:
+      type: object
+      required:
+      - category
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the Status. Valid length between 3 and 256 characters.
+        category:
+          type: string
+          description: The Category of the Status.
+          enum:
+          - Open
+          - InProgress
+          - Waiting
+          - Closed
+          - Unknown
+        destinationStatusIds:
           type: array
-          description: List of filter objects to be used in the search.
-          items:
-            $ref: '#/components/schemas/WorkitemQueryJobFilter'
-        queryFilters:
-          type: array
-          description: Query filters for nested attributes.
-          items:
-            $ref: '#/components/schemas/WorkitemQueryJobQueryFilters'
-          maxItems: 1
-          minItems: 1
-        expands:
-          type: array
-          description: List of entity attributes to be expanded in the result.
+          description: A list of destination Statuses where a Workitem with this Status can transition to. If the list is empty Workitems with this Status can transition to all other Statuses defined on the Worktype. A Status can have a maximum of 24 destinations.
           items:
             type: string
-            enum:
-            - type
-            - workbin
-            - status
-            - assignee
-            - reporter
-            - queue
-            - case
-            - externalContact
-        attributes:
+        description:
+          type: string
+          description: The description of the Status. Maximum length of 512 characters.
+        defaultDestinationStatusId:
+          type: string
+          description: Default destination status to which this Status will transition to if auto status transition enabled.
+        statusTransitionDelaySeconds:
+          type: integer
+          format: int32
+          description: Delay in seconds for auto status transition. Required if defaultDestinationStatusId is provided.
+        statusTransitionTime:
+          type: string
+          format: local-time
+          description: 'Time is represented as an ISO-8601 string without a timezone. For example: HH:mm:ss.SSS'
+        autoTerminateWorkitem:
+          type: boolean
+          description: Terminate workitem on selection of status. Applicable only for statuses in the Closed category.
+    WorkitemDateBasedRuleUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the rule.
+          minLength: 3
+          maxLength: 256
+        condition:
+          description: The rules condition. If the condition criteria is met the rules action will be executed.
+          $ref: '#/components/schemas/WorkitemDateBasedConditionUpdate'
+    WorkitemsChangeWorktypeDelta:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int32
+          description: Version
+        modifiedBy:
+          description: modifiedBy
+          $ref: '#/components/schemas/UserReference'
+        delta:
+          description: The changes that originated this version
+          $ref: '#/components/schemas/WorktypeDelta'
+    BulkJobAddWorkitemSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        workbin:
+          description: The workbin of the workitem.
+          $ref: '#/components/schemas/WorkbinReference'
+        type:
+          description: The worktype of the workitem.
+          $ref: '#/components/schemas/WorktypeReference'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemFilter:
+      type: object
+      required:
+      - name
+      - operator
+      - type
+      - values
+      properties:
+        name:
+          type: string
+          description: Attribute name.
+        type:
+          type: string
+          description: Attribute type.
+          enum:
+          - String
+          - Int
+        operator:
+          type: string
+          description: Filter operator.
+          enum:
+          - EQ
+          - NEQ
+          - GT
+          - LT
+          - GTE
+          - LTE
+          - IN
+          - CONTAINS
+          - BETWEEN
+          - BEGINS_WITH
+        values:
           type: array
-          description: List of entity attributes to be retrieved in the result.
+          description: List of values to be used in the filter.
           items:
             type: string
-        sort:
-          description: Sort
-          $ref: '#/components/schemas/WorkitemQueryJobSort'
-        dateIntervalStart:
+    LanguageReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemOnAttributeChangeConditionUpdate:
+      type: object
+      required:
+      - attribute
+      - newValue
+      properties:
+        attribute:
+          type: string
+          description: The name of the workitem attribute whose change will be evaluated as part of the rule.
+          enum:
+          - statusId
+        newValue:
+          type: string
+          description: The new value of the attribute. If the attribute is updated to this value this part of the condition will be met.
+        oldValue:
+          type: string
+          description: The old value of the attribute. If the attribute was updated from this value this part of the condition will be met.
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemQueryJobResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        state:
+          type: string
+          description: The state of the query job
+          enum:
+          - Queued
+          - Running
+          - Succeeded
+          - Failed
+        dateStarted:
           type: string
           format: date-time
-          description: 'Interval start date to use to filter results based on create date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateIntervalEnd:
+          description: 'The date the job was started. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateFinished:
           type: string
           format: date-time
-          description: 'Interval end date to use to filter results based on create date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          description: 'The date the job finished. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        error:
+          description: The error associated with the query job, if the state is Failed
+          $ref: '#/components/schemas/WorkitemQueryJobError'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemUtilizationLabelReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemsAttributeChangeWorkitemStatusCategory:
+      type: object
+      properties:
+        newValue:
+          type: string
+          description: New property value
+          enum:
+          - Open
+          - InProgress
+          - Waiting
+          - Closed
+          - Unknown
+        oldValue:
+          type: string
+          description: Old property value
+          enum:
+          - Open
+          - InProgress
+          - Waiting
+          - Closed
+          - Unknown
     Workitem:
       type: object
       properties:
@@ -12695,95 +13039,104 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    CoretypeListing:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coretype'
-        selfUri:
-          type: string
-          format: uri
-    AutoStatusTransitionDetail:
-      type: object
-      properties:
-        nextStatus:
-          description: Next status of auto status transition.
-          $ref: '#/components/schemas/WorkitemStatusReference'
-        dateOfTransition:
-          type: string
-          format: date-time
-          description: 'Date at which auto status transition occurs. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        errorDetails:
-          description: This property will be set if auto status transition is failed.
-          $ref: '#/components/schemas/TaskManagementErrorDetails'
-    WorkitemQueryJobQueryFilters:
-      type: object
-      required:
-      - criteria
-      - name
-      properties:
-        name:
-          type: string
-          example: customFields
-          description: Name of the attribute to filter.
-          enum:
-          - customFields
-        operator:
-          type: string
-          description: Query filter logical operator to join criteria.
-          enum:
-          - AND
-          - OR
-        criteria:
-          type: array
-          description: Query filter criteria.
-          items:
-            $ref: '#/components/schemas/WorkitemQueryJobQueryFiltersCriteria'
-          maxItems: 5
-          minItems: 1
-    WorkbinQuerySort:
-      type: object
-      properties:
-        name:
-          type: string
-          description: 'Specify an attribute for sorting. It''s possible to use an attribute both for sorting and in the query at the same time, but these restrictions apply: Only the operators EQ, LT, LTE, GT, GTE, BETWEEN and BEGINS_WITH are supported and the attribute can''t be present in more than one filter.'
-          enum:
-          - dateModified
-          - name
-        ascending:
-          type: boolean
-          description: Sort Ascending
-    DataSchemaListing:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataSchema'
-        selfUri:
-          type: string
-          format: uri
-    WorkitemFlowReference:
+    Workbin:
       type: object
       properties:
         id:
           type: string
           description: The globally unique identifier for the object.
+          readOnly: true
         name:
           type: string
+          description: Workbin name
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/Division'
+        description:
+          type: string
+          description: Workbin description
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The creation date of the Workbin. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The modified date of the Workbin. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        modifiedBy:
+          description: The id of the User who modified the Workbin.
+          $ref: '#/components/schemas/UserReference'
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
+    WorkitemOnAttributeChangeRuleUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the rule.
+          minLength: 3
+          maxLength: 256
+        condition:
+          description: The rules condition. If the condition criteria is met the rules action will be executed.
+          $ref: '#/components/schemas/WorkitemOnAttributeChangeConditionUpdate'
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    WorkitemOnCreateRuleUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the rule.
+          minLength: 3
+          maxLength: 256
+    WorkitemChangeListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkitemsChangeWorkitemDelta'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
     WorktypeUpdate:
       type: object
       properties:
@@ -12870,25 +13223,108 @@ components:
         defaultScriptId:
           type: string
           description: The default script for Workitems created from the Worktype. Must be a valid UUID.
-    WorkitemRuleSettings:
+    WorkitemQueueReference:
       type: object
       properties:
-        flowRulesEnabled:
-          type: boolean
-          description: When set to true, the worktypes flow rules will be processed. Default value is false.
-    WorkitemQueryJobSort:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemVersionListing:
       type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkitemVersion'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
+    WorkitemCommonCreate:
+      type: object
+      required:
+      - name
+      - typeId
       properties:
         name:
           type: string
-          description: Specify an attribute for sorting.
-          enum:
-          - dateDue
-          - dateCreated
-          - priority
-        ascending:
+          description: The name of the Workitem. Valid length between 3 and 256 characters.
+        priority:
+          type: integer
+          format: int32
+          description: The priority of the Workitem. The valid range is between -25,000,000 and 25,000,000.
+        dateDue:
+          type: string
+          format: date-time
+          description: 'The due date of the Workitem. Can not be greater than 365 days from the current time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateExpires:
+          type: string
+          format: date-time
+          description: 'The expiry date of the Workitem. Can not be greater than 365 days from the current time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        durationSeconds:
+          type: integer
+          format: int32
+          description: The estimated duration in seconds to complete the Workitem. Maximum of 365 days.
+        ttl:
+          type: integer
+          format: int32
+          description: The epoch timestamp in seconds specifying the time to live for the Workitem. Can not be greater than 365 days from the current time.
+        statusId:
+          type: string
+          description: The ID of the Status of the Workitem.
+        workbinId:
+          type: string
+          description: The ID of Workbin that contains the Workitem.
+        autoStatusTransition:
           type: boolean
-          description: Sort Ascending
+          description: Set it to false to disable auto status transition. By default, it is enabled.
+        description:
+          type: string
+          description: The description of the Workitem. Maximum length of 512 characters.
+        typeId:
+          type: string
+          description: The ID of the Worktype of the Workitem.
+        customFields:
+          type: object
+          description: Custom fields defined in the schema referenced by the worktype of the workitem.
+          additionalProperties:
+            type: object
+        queueId:
+          type: string
+          description: The ID of the Workitems queue. Must be a valid UUID.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        assigneeId:
+          type: string
+          description: The ID of the assignee of the Workitem. Must be a valid UUID.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        languageId:
+          type: string
+          description: The ID of language of the Workitem. Must be a valid UUID.
+        externalContactId:
+          type: string
+          description: The ID of the external contact of the Workitem. Must be a valid UUID.
+        externalTag:
+          type: string
+          description: The external tag of the Workitem.
+        skillIds:
+          type: array
+          description: The skill IDs of the Workitem. Must be valid UUIDs.
+          items:
+            type: string
+        scriptId:
+          type: string
+          description: The ID of the Workitems script. Must be a valid UUID.
     WorkitemVersion:
       type: object
       properties:
@@ -13049,7 +13485,7 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    WorkitemScriptReference:
+    WorkitemReference:
       type: object
       properties:
         id:
@@ -13062,20 +13498,13 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    WorkitemRuleAction:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - LaunchFlow
-    WorktypeChangeListing:
+    WorkbinQueryEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/WorkitemsChangeWorktypeDelta'
+            $ref: '#/components/schemas/Workbin'
         nextUri:
           type: string
         selfUri:
@@ -13084,55 +13513,36 @@ components:
           type: string
         after:
           type: string
-    WorktypeDelta:
+        count:
+          type: integer
+          format: int32
+          description: Count of items returned by the query. Refer to the "select" request parameter for more information.
+    WorkitemWrapupUpdate:
+      type: object
+      required:
+      - action
+      - wrapupCode
+      properties:
+        action:
+          type: string
+          description: Action to be performed for the wrapup code.
+          enum:
+          - Add
+          - Remove
+        wrapupCode:
+          type: string
+          description: The wrapup code which will be added/removed.
+    WorkitemsAttributeChangeInteger:
       type: object
       properties:
-        name:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        description:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        statuses:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeList'
-        defaultWorkbinId:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        defaultDurationSeconds:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
-        defaultExpirationSeconds:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
-        defaultDueDurationSeconds:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
-        defaultPriority:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
-        defaultSkillIds:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeList'
-        defaultStatusId:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        defaultLanguageId:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        defaultTtlSeconds:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
-        assignmentEnabled:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeBoolean'
-        defaultQueueId:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        schemaId:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        schemaVersion:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        serviceLevelTarget:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
-        dateModified:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeInstant'
-        modifiedBy:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        defaultScriptId:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        flowId:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        ruleSettings:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeWorkitemRuleSettings'
-        unassignedDivisionContactsEnabled:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeBoolean'
+        newValue:
+          type: integer
+          format: int32
+          description: New property value
+        oldValue:
+          type: integer
+          format: int32
+          description: Old property value
     WrapupDelta:
       type: object
       properties:
@@ -13145,55 +13555,59 @@ components:
           type: string
         userId:
           type: string
-    WorkitemFilter:
+    WorkitemScoredAgentDelta:
+      type: object
+      properties:
+        id:
+          type: string
+        score:
+          type: integer
+          format: int32
+    WorkitemsChangeWorkbinDelta:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int32
+          description: Version
+        modifiedBy:
+          description: modifiedBy
+          $ref: '#/components/schemas/UserReference'
+        delta:
+          description: The changes that originated this version
+          $ref: '#/components/schemas/WorkbinDelta'
+    WorkitemWrapupEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkitemWrapup'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    WorkitemQueryJobQueryFiltersCriteria:
       type: object
       required:
-      - name
-      - operator
-      - type
-      - values
+      - predicates
       properties:
-        name:
-          type: string
-          description: Attribute name.
-        type:
-          type: string
-          description: Attribute type.
-          enum:
-          - String
-          - Int
         operator:
           type: string
-          description: Filter operator.
+          description: Query filter logical operator to join predicates.
           enum:
-          - EQ
-          - NEQ
-          - GT
-          - LT
-          - GTE
-          - LTE
-          - IN
-          - CONTAINS
-          - BETWEEN
-          - BEGINS_WITH
-        values:
+          - AND
+          - OR
+        predicates:
           type: array
-          description: List of values to be used in the filter.
+          description: Query filter predicates. Number of predicates within the query filter should be between 1 and 5.
           items:
-            type: string
-    WorktypeQuerySort:
-      type: object
-      properties:
-        name:
-          type: string
-          description: 'Specify an attribute for sorting. It''s possible to use an attribute both for sorting and in the query at the same time, but these restrictions apply: Only the operators EQ, LT, LTE, GT, GTE, BETWEEN and BEGINS_WITH are supported and the attribute can''t be present in more than one filter.'
-          enum:
-          - dateModified
-          - name
-        ascending:
-          type: boolean
-          description: Sort Ascending
-    WorktypeReference:
+            $ref: '#/components/schemas/WorkitemQueryJobQueryFiltersPredicate'
+          maxItems: 5
+          minItems: 1
+    WrapupIdReference:
       type: object
       properties:
         id:
@@ -13206,98 +13620,60 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Division:
+    WorkbinDelta:
       type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LanguageReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    BulkJobTerminateResult:
-      type: object
-      properties:
-        error:
-          description: Error details if the operation failed.
-          $ref: '#/components/schemas/BulkJobError'
-        entity:
-          description: The result of the operation if it succeeded. For Workitem Bulk Terminate this is a summary.
-          $ref: '#/components/schemas/BulkJobTerminateResultEntity'
-    WorkitemQueryJobQueryFiltersPredicate:
-      type: object
-      required:
-      - name
-      - operator
       properties:
         name:
-          type: string
-          description: Property name.
-        operator:
-          type: string
-          description: Query filter predicate operator.
-          enum:
-          - EQ
-          - NEQ
-          - GT
-          - LT
-          - GTE
-          - LTE
-          - IN
-          - CONTAINS
-          - BETWEEN
-          - BEGINS_WITH
-          - EXISTS
-        values:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        description:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        dateModified:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeInstant'
+        modifiedBy:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+    BulkJobAddResponse:
+      type: object
+      properties:
+        results:
           type: array
-          description: List of values to be used in the query filter predicate.
+          description: A list of the results from the bulk operation.
           items:
-            type: object
-    WorkitemsAttributeChangeInstant:
+            $ref: '#/components/schemas/BulkJobAddResult'
+        errorCount:
+          type: integer
+          format: int32
+          description: The number of errors from the bulk operation.
+        errorIndexes:
+          type: array
+          description: An index of where the errors are in the listing.
+          items:
+            type: integer
+            format: int32
+    WorkitemScoredAgentRequest:
       type: object
       properties:
-        newValue:
+        id:
           type: string
-          format: date-time
-          description: 'New property value. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        oldValue:
+          description: An agents ID. Must be a valid UUID.
+        score:
+          type: integer
+          format: int32
+          description: Agent's score for the workitem, from 0 - 100, higher being better
+    WorktypeVersionListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorktypeVersion'
+        nextUri:
           type: string
-          format: date-time
-          description: 'Old property value. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    WorkitemsAttributeChangeWorkitemRuleSettings:
-      type: object
-      properties:
-        newValue:
-          description: New property value
-          $ref: '#/components/schemas/WorkitemRuleSettings'
-        oldValue:
-          description: Old property value
-          $ref: '#/components/schemas/WorkitemRuleSettings'
-    BulkJobAddResult:
-      type: object
-      properties:
-        error:
-          description: Error details if the operation failed.
-          $ref: '#/components/schemas/BulkJobError'
-        entity:
-          description: The result of the operation if it succeeded. For Workitem Bulk Add this is a summary.
-          $ref: '#/components/schemas/BulkJobAddWorkitemSummary'
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
     WorkitemQueryPostRequest:
       type: object
       required:
@@ -13344,32 +13720,13 @@ components:
             - queue
             - case
             - externalContact
-    WorkitemWrapup:
-      type: object
-      properties:
-        workitem:
-          description: Workitem that the wrapup code has been added to.
-          $ref: '#/components/schemas/WorkitemReference'
-        wrapupCode:
-          description: The wrapup code used in the workitem.
-          $ref: '#/components/schemas/WrapupIdReference'
-        modifiedBy:
-          description: The user who added the wrapup code to the workitem.
-          $ref: '#/components/schemas/UserReference'
-        user:
-          description: The user for whom wrapup code was added. This may be the same as modifiedBy.
-          $ref: '#/components/schemas/UserReference'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The modified date of the Workitem when the wrapup code was added. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    WorkitemVersionListing:
+    WorkbinChangeListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/WorkitemVersion'
+            $ref: '#/components/schemas/WorkitemsChangeWorkbinDelta'
         nextUri:
           type: string
         selfUri:
@@ -13443,42 +13800,33 @@ components:
           $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
         scoredAgents:
           $ref: '#/components/schemas/WorkitemsAttributeChangeListWorkitemScoredAgentDelta'
-    WorkbinVersion:
+    WorkitemsAttributeChangeWrapupDelta:
       type: object
       properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: Workbin name
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/Division'
-        description:
-          type: string
-          description: Workbin description
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The creation date of the Workbin. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The modified date of the Workbin. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          description: The id of the User who modified the Workbin.
-          $ref: '#/components/schemas/UserReference'
-        version:
+        newValue:
+          description: New property value
+          $ref: '#/components/schemas/WrapupDelta'
+        oldValue:
+          description: Old property value
+          $ref: '#/components/schemas/WrapupDelta'
+    BulkJobTerminateResultsResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          description: A list of the results from the bulk operation.
+          items:
+            $ref: '#/components/schemas/BulkJobTerminateResult'
+        errorCount:
           type: integer
           format: int32
-          description: Version
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
+          description: The number of errors from the bulk operation.
+        errorIndexes:
+          type: array
+          description: An index of where the errors are in the listing.
+          items:
+            type: integer
+            format: int32
     WorkitemStatus:
       type: object
       properties:
@@ -13527,175 +13875,34 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    WorkitemQueueReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemDateBasedCondition:
-      type: object
-      required:
-      - attribute
-      - relativeMinutesToInvocation
-      properties:
-        attribute:
-          type: string
-          description: The name of the workitem date attribute.
-          enum:
-          - dateDue
-          - dateExpires
-          - ttl
-          - dateCreated
-        relativeMinutesToInvocation:
-          type: integer
-          format: int32
-          description: The time in minutes before or after the date attribute.
-    BulkJobUpdate:
-      type: object
-      required:
-      - state
-      properties:
-        state:
-          type: string
-          description: The destination state of the bulk job.
-          enum:
-          - Queued
-          - Terminated
-    Workbin:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: Workbin name
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/Division'
-        description:
-          type: string
-          description: Workbin description
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The creation date of the Workbin. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The modified date of the Workbin. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        modifiedBy:
-          description: The id of the User who modified the Workbin.
-          $ref: '#/components/schemas/UserReference'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemsAttributeChangeList:
+    WorkitemsAttributeChangeBoolean:
       type: object
       properties:
         newValue:
-          type: array
+          type: boolean
           description: New property value
-          items:
-            type: object
         oldValue:
-          type: array
+          type: boolean
           description: Old property value
-          items:
-            type: object
-    BulkJobTerminateResultsResponse:
+    WorkbinQuerySort:
       type: object
       properties:
-        results:
-          type: array
-          description: A list of the results from the bulk operation.
-          items:
-            $ref: '#/components/schemas/BulkJobTerminateResult'
-        errorCount:
-          type: integer
-          format: int32
-          description: The number of errors from the bulk operation.
-        errorIndexes:
-          type: array
-          description: An index of where the errors are in the listing.
-          items:
-            type: integer
-            format: int32
-    WorkitemDateBasedConditionUpdate:
-      type: object
-      properties:
-        attribute:
-          type: string
-          description: The name of the workitem date attribute.
-          enum:
-          - dateDue
-          - dateExpires
-          - ttl
-          - dateCreated
-        relativeMinutesToInvocation:
-          type: integer
-          format: int32
-          description: The time in minutes before or after the date attribute.
-    WorkitemOnAttributeChangeRule:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
         name:
           type: string
+          description: 'Specify an attribute for sorting. It''s possible to use an attribute both for sorting and in the query at the same time, but these restrictions apply: Only the operators EQ, LT, LTE, GT, GTE, BETWEEN and BEGINS_WITH are supported and the attribute can''t be present in more than one filter.'
+          enum:
+          - dateModified
+          - name
+        ascending:
+          type: boolean
+          description: Sort Ascending
+    Items:
+      type: object
+      properties:
         type:
           type: string
-          description: The type of the rule.
-          enum:
-          - OnCreate
-          - OnAttributeChange
-          - Date
-        action:
-          description: The rules action. If the condition criteria is met this action will be executed.
-          $ref: '#/components/schemas/WorkitemRuleAction'
-        worktype:
-          description: The Worktype containing the rule.
-          $ref: '#/components/schemas/WorktypeReference'
-        condition:
-          description: The rules condition. If the condition criteria is met the rules action will be executed.
-          $ref: '#/components/schemas/WorkitemOnAttributeChangeCondition'
-        selfUri:
+        pattern:
           type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemOnCreateRuleCreate:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the rule.
-          minLength: 3
-          maxLength: 256
-    TaskManagementErrorDetails:
-      type: object
-      properties:
-        code:
-          type: string
-          description: System defined error code for the error.
-        message:
-          type: string
-          description: Error message.
     WorkitemDateBasedRuleCreate:
       type: object
       required:
@@ -13710,522 +13917,29 @@ components:
         condition:
           description: The rules condition. If the condition criteria is met the rules action will be executed.
           $ref: '#/components/schemas/WorkitemDateBasedCondition'
-    WorkbinReference:
+    MinLength:
       type: object
+      required:
+      - max
+      - min
       properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UserReferenceWithName:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemUtilizationLabelReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemStatusListing:
-      type: object
-      properties:
-        total:
+        min:
           type: integer
           format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkitemStatus'
-        selfUri:
-          type: string
-          format: uri
-    WorkitemSchema:
-      type: object
-      required:
-      - version
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        version:
-          type: integer
-          format: int32
-          description: The version of the Workitem custom attribute schema.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemScoredAgentDelta:
-      type: object
-      properties:
-        id:
-          type: string
-        score:
-          type: integer
-          format: int32
-    WorkitemsChangeWorkitemDelta:
-      type: object
-      properties:
-        version:
-          type: integer
-          format: int32
-          description: Version
-        modifiedBy:
-          description: modifiedBy
-          $ref: '#/components/schemas/UserReference'
-        delta:
-          description: The changes that originated this version
-          $ref: '#/components/schemas/WorkitemDelta'
-    WorkitemCreate:
-      type: object
-      required:
-      - name
-      - typeId
-      properties:
-        name:
-          type: string
-          description: The name of the Workitem. Valid length between 3 and 256 characters.
-        priority:
-          type: integer
-          format: int32
-          description: The priority of the Workitem. The valid range is between -25,000,000 and 25,000,000.
-        dateDue:
-          type: string
-          format: date-time
-          description: 'The due date of the Workitem. Can not be greater than 365 days from the current time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateExpires:
-          type: string
-          format: date-time
-          description: 'The expiry date of the Workitem. Can not be greater than 365 days from the current time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        durationSeconds:
-          type: integer
-          format: int32
-          description: The estimated duration in seconds to complete the Workitem. Maximum of 365 days.
-        ttl:
-          type: integer
-          format: int32
-          description: The epoch timestamp in seconds specifying the time to live for the Workitem. Can not be greater than 365 days from the current time.
-        statusId:
-          type: string
-          description: The ID of the Status of the Workitem.
-        workbinId:
-          type: string
-          description: The ID of Workbin that contains the Workitem.
-        autoStatusTransition:
-          type: boolean
-          description: Set it to false to disable auto status transition. By default, it is enabled.
-        description:
-          type: string
-          description: The description of the Workitem. Maximum length of 512 characters.
-        typeId:
-          type: string
-          description: The ID of the Worktype of the Workitem.
-        customFields:
-          type: object
-          description: Custom fields defined in the schema referenced by the worktype of the workitem.
-          additionalProperties:
-            type: object
-        queueId:
-          type: string
-          description: The ID of the Workitems queue. Must be a valid UUID.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        assigneeId:
-          type: string
-          description: The ID of the assignee of the Workitem. Must be a valid UUID.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        languageId:
-          type: string
-          description: The ID of language of the Workitem. Must be a valid UUID.
-        externalContactId:
-          type: string
-          description: The ID of the external contact of the Workitem. Must be a valid UUID.
-        externalTag:
-          type: string
-          description: The external tag of the Workitem.
-        skillIds:
-          type: array
-          description: The skill IDs of the Workitem. Must be valid UUIDs.
-          items:
-            type: string
-        scriptId:
-          type: string
-          description: The ID of the Workitems script. Must be a valid UUID.
-        wrapupCode:
-          type: string
-          description: The ID of the wrapup. Must be a valid UUID.
-        utilizationLabelId:
-          type: string
-          description: The ID of utilization label of the Workitem. Must be a valid UUID.
-        scoredAgents:
-          type: array
-          description: A list of scored agents for the Workitem. A workitem can have a maximum of 20 scored agents.
-          items:
-            $ref: '#/components/schemas/WorkitemScoredAgentRequest'
-        preferredAgentIds:
-          type: array
-          description: The preferred agent IDs of the Workitem. Must be valid UUIDs.
-          items:
-            type: string
-    WorkbinCreate:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Workbin name. Valid length between 3 and 256 characters.
-        description:
-          type: string
-          description: Workbin description. Maximum length of 512 characters.
-        divisionId:
-          type: string
-          description: The ID of the division the Workbin belongs to. Defaults to home division ID.
-    WorkitemTerminate:
-      type: object
-      properties:
-        statusId:
-          type: string
-          description: The ID of the status the workitem should be updated to when terminating. The status must be a 'Closed' category status.
-    WorkitemQueryJobResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        state:
-          type: string
-          description: The state of the query job
-          enum:
-          - Queued
-          - Running
-          - Succeeded
-          - Failed
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'The date the job was started. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateFinished:
-          type: string
-          format: date-time
-          description: 'The date the job finished. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        error:
-          description: The error associated with the query job, if the state is Failed
-          $ref: '#/components/schemas/WorkitemQueryJobError'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ExternalContactReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        firstName:
-          type: string
-          description: The first name of the contact.
-        lastName:
-          type: string
-          description: The last name of the contact.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemDateBasedRule:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        type:
-          type: string
-          description: The type of the rule.
-          enum:
-          - OnCreate
-          - OnAttributeChange
-          - Date
-        action:
-          description: The rules action. If the condition criteria is met this action will be executed.
-          $ref: '#/components/schemas/WorkitemRuleAction'
-        worktype:
-          description: The Worktype containing the rule.
-          $ref: '#/components/schemas/WorktypeReference'
-        condition:
-          description: The rules condition. If the condition criteria is met the rules action will be executed.
-          $ref: '#/components/schemas/WorkitemDateBasedCondition'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemWrapupEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkitemWrapup'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    WorkitemStatusCreate:
-      type: object
-      required:
-      - category
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the Status. Valid length between 3 and 256 characters.
-        category:
-          type: string
-          description: The Category of the Status.
-          enum:
-          - Open
-          - InProgress
-          - Waiting
-          - Closed
-          - Unknown
-        destinationStatusIds:
-          type: array
-          description: A list of destination Statuses where a Workitem with this Status can transition to. If the list is empty Workitems with this Status can transition to all other Statuses defined on the Worktype. A Status can have a maximum of 24 destinations.
-          items:
-            type: string
-        description:
-          type: string
-          description: The description of the Status. Maximum length of 512 characters.
-        defaultDestinationStatusId:
-          type: string
-          description: Default destination status to which this Status will transition to if auto status transition enabled.
-        statusTransitionDelaySeconds:
-          type: integer
-          format: int32
-          description: Delay in seconds for auto status transition. Required if defaultDestinationStatusId is provided.
-        statusTransitionTime:
-          type: string
-          format: local-time
-          description: 'Time is represented as an ISO-8601 string without a timezone. For example: HH:mm:ss.SSS'
-        autoTerminateWorkitem:
-          type: boolean
-          description: Terminate workitem on selection of status. Applicable only for statuses in the Closed category.
-    WorkbinQueryRequest:
-      type: object
-      required:
-      - filters
-      properties:
-        pageSize:
-          type: integer
-          format: int32
-          description: Limit the number of entities to return. It is not guaranteed that the requested number of entities will be filled in a single request. If an `after` key is returned as part of the response it is possible that more entities that match the filter criteria exist. Maximum of 200.
-        select:
-          type: string
-          description: Specify the value 'Count' for this parameter in order to return only the record count.
-          enum:
-          - Count
-        filters:
-          type: array
-          description: 'List of filter objects to be used in the search. Valid filter names are: ''id'', ''name'', ''description'', ''divisionId'', ''dateCreated'', ''dateModified'', ''modifiedBy'''
-          items:
-            $ref: '#/components/schemas/WorkitemFilter'
-        attributes:
-          type: array
-          description: List of entity attributes to be retrieved in the result.
-          items:
-            type: string
-        after:
-          type: string
-          description: The cursor that points to the end of the set of entities that has been returned.
-        sort:
-          description: Sort
-          $ref: '#/components/schemas/WorkbinQuerySort'
-    DataSchema:
-      type: object
-      required:
-      - jsonSchema
-      - version
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the schema.  Only required if a schema is used for custom fields during external entity creation or updates.
-        name:
-          type: string
-        version:
-          type: integer
-          format: int32
-          description: The schema's version, a positive integer. Required for updates.
-        appliesTo:
-          type: array
-          description: Indicates the built-in entity type to which this schema applies.
-          readOnly: true
-          items:
-            type: string
-            enum:
-            - CONTACT
-            - CONVERSATION
-            - EXTERNAL_ORGANIZATION
-            - OPEN_ACTION
-            - WORKITEM
-            - DECISION_TABLE
-            - USER_CUSTOM_ATTRIBUTES
-            - EXTERNAL_EVENTS
-        enabled:
-          type: boolean
-          description: The schema's enabled/disabled status. A disabled schema cannot be assigned to any other entities, but the data on those entities from the schema still exists.
-        createdBy:
-          description: The URI of the user that created this schema.
-          readOnly: true
-          $ref: '#/components/schemas/DomainEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The date and time this schema version was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        jsonSchema:
-          example: "{\n    \"appliesTo\": [\n        \"CONTACT\"\n    ],\n    \"jsonSchema\": {\n        \"title\": \"Example schema\",\n        \"description\": \"Uses all of the core types for illustrative purposes\",\n        \"properties\": {\n            \"field1_text\": {\n                \"title\": \"Field 1\",\n                \"description\": \"field1\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/text\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 39\n            },\n            \"field2_longtext\": {\n                \"title\": \"Field 2\",\n                \"description\": \"field2\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/longtext\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 1000\n            },\n            \"field3_enum\": {\n                \"title\": \"Field 3\",\n                \"description\": \"Field 3\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/enum\" } ],\n                \"enum\": [\n                    \"enum1\",\n                    \"enum2\"\n                ]\n            },\n            \"field4_identifier\": {\n                \"title\": \"field4\",\n                \"description\": \"Field 4\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/identifier\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 37\n            },\n            \"field5_integer\": {\n                \"title\": \"field5\",\n                \"description\": \"Field 5\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/integer\" } ],\n                \"minimum\": 1,\n                \"maximum\": 24\n            },\n            \"field6_number\": {\n                \"title\": \"field6\",\n                \"description\": \"Field 6\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/number\" } ],\n                \"minimum\": 2.7,\n                \"maximum\": 31.3\n            },\n            \"field7_date\": {\n                \"title\": \"field7\",\n                \"description\": \"Field 7\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/date\"}]\n            },\n            \"field8_datetime\": {\n                \"title\": \"field8\",\n                \"description\": \"Field 8\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/datetime\"}]\n            },\n            \"field9_checkbox\": {\n                \"title\": \"field9\",\n                \"description\": \"Field 9\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/checkbox\"}]\n            },\n            \"field10_tag\": {\n                \"title\": \"field10\",\n                \"description\": \"Field 10\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/tag\" } ],\n                \"items\": {\n                    \"minLength\": 1,\n                    \"maxLength\": 20\n                },\n                \"minItems\": 0,\n                \"maxItems\": 10,\n                \"uniqueItems\": true\n            }\n        },\n        \"$schema\": \"http://json-schema.org/draft-04/schema#\"\n    }\n}"
-          description: A JSON schema defining the extension to the built-in entity type.
-          $ref: '#/components/schemas/JsonSchemaDocument'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemsAttributeChangeWorkitemStatusCategory:
-      type: object
-      properties:
-        newValue:
-          type: string
-          description: New property value
-          enum:
-          - Open
-          - InProgress
-          - Waiting
-          - Closed
-          - Unknown
-        oldValue:
-          type: string
-          description: Old property value
-          enum:
-          - Open
-          - InProgress
-          - Waiting
-          - Closed
-          - Unknown
-    WorkitemPagedEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Workitem'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
+          description: A non-negative integer for a text-based schema field denoting the minimum smallest length a string field can contain for a schema instance.
+        max:
           type: integer
           format: int64
-        pageCount:
-          type: integer
-          format: int32
-    WrapupIdReference:
+          description: A non-negative integer for a text-based schema field denoting the maximum smallest length string the field can contain for a schema instance.
+    Division:
       type: object
       properties:
         id:
           type: string
           description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
           readOnly: true
-    WorkitemDateBasedRuleListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkitemDateBasedRule'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-    WorkitemQueryJobFilter:
-      type: object
-      required:
-      - name
-      - operator
-      - values
-      properties:
         name:
           type: string
-          description: 'Attribute name. Valid filter names are: ''workbinId'', ''id'', ''typeId'', ''priority'', ''dateCreated'', ''dateDue'', ''statusId'', ''dateClosed'', ''externalContactId'', ''assigneeId'', ''assignmentState'', ''queueId'', ''externalTag'', ''divisionId'''
-        operator:
-          type: string
-          description: Filter operator.
-          enum:
-          - EQ
-          - NEQ
-          - GT
-          - LT
-          - GTE
-          - LTE
-          - IN
-          - CONTAINS
-          - BETWEEN
-          - BEGINS_WITH
-        values:
-          type: array
-          description: List of values to be used in the filter.
-          items:
-            type: string
-    RoutingSkillReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
         selfUri:
           type: string
           format: uri
@@ -14335,36 +14049,207 @@ components:
         value:
           type: integer
           format: int64
-    WorkbinDelta:
+    WorkitemOnAttributeChangeRuleListing:
       type: object
       properties:
-        name:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        description:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-        dateModified:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeInstant'
-        modifiedBy:
-          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
-    WorkitemQueryJobQueryFiltersCriteria:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkitemOnAttributeChangeRule'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
+    WorkitemsAttributeChangeString:
+      type: object
+      properties:
+        newValue:
+          type: string
+          description: New property value
+        oldValue:
+          type: string
+          description: Old property value
+    BulkJobAddRequest:
       type: object
       required:
-      - predicates
+      - entities
       properties:
-        operator:
-          type: string
-          description: Query filter logical operator to join predicates.
-          enum:
-          - AND
-          - OR
-        predicates:
+        entities:
           type: array
-          description: Query filter predicates. Number of predicates within the query filter should be between 1 and 5.
+          description: The list of workitem entities to create.
           items:
-            $ref: '#/components/schemas/WorkitemQueryJobQueryFiltersPredicate'
-          maxItems: 5
+            $ref: '#/components/schemas/WorkitemCommonCreate'
+          maxItems: 50
           minItems: 1
-    SchemaQuantityLimits:
+    WorktypeQueryRequest:
+      type: object
+      required:
+      - filters
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+          description: Limit the number of entities to return. It is not guaranteed that the requested number of entities will be filled in a single request. If an `after` key is returned as part of the response it is possible that more entities that match the filter criteria exist. Maximum of 200.
+        select:
+          type: string
+          description: Specify the value 'Count' for this parameter in order to return only the record count.
+          enum:
+          - Count
+        filters:
+          type: array
+          description: 'List of filter objects to be used in the search. Valid filter names are: ''divisionId'', ''id'', ''name'', ''description'', ''defaultWorkbinId'', ''defaultDurationSeconds'', ''defaultExpirationSeconds'', ''defaultDueDurationSeconds'', ''defaultPriority'', ''defaultLanguageId'', ''defaultTtlSeconds'', ''assignmentEnabled'', ''defaultQueueId'', ''schemaId'', ''schemaVersion'', ''dateCreated'', ''dateModified'', ''modifiedBy'''
+          items:
+            $ref: '#/components/schemas/WorkitemFilter'
+        attributes:
+          type: array
+          description: List of entity attributes to be retrieved in the result.
+          items:
+            type: string
+        after:
+          type: string
+          description: The cursor that points to the end of the set of entities that has been returned.
+        expands:
+          type: string
+          description: List of entity attributes to be expanded in the result.
+          enum:
+          - schema
+        sort:
+          description: Sort
+          $ref: '#/components/schemas/WorktypeQuerySort'
+    WorkbinVersionListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkbinVersion'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
+    WorktypeReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkbinQueryRequest:
+      type: object
+      required:
+      - filters
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+          description: Limit the number of entities to return. It is not guaranteed that the requested number of entities will be filled in a single request. If an `after` key is returned as part of the response it is possible that more entities that match the filter criteria exist. Maximum of 200.
+        select:
+          type: string
+          description: Specify the value 'Count' for this parameter in order to return only the record count.
+          enum:
+          - Count
+        filters:
+          type: array
+          description: 'List of filter objects to be used in the search. Valid filter names are: ''id'', ''name'', ''description'', ''divisionId'', ''dateCreated'', ''dateModified'', ''modifiedBy'''
+          items:
+            $ref: '#/components/schemas/WorkitemFilter'
+        attributes:
+          type: array
+          description: List of entity attributes to be retrieved in the result.
+          items:
+            type: string
+        after:
+          type: string
+          description: The cursor that points to the end of the set of entities that has been returned.
+        sort:
+          description: Sort
+          $ref: '#/components/schemas/WorkbinQuerySort'
+    BulkJobTerminateResultEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DataSchemaListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSchema'
+        selfUri:
+          type: string
+          format: uri
+    Schema:
+      type: object
+      properties:
+        title:
+          type: string
+          description: A core type's title
+          readOnly: true
+        description:
+          type: string
+          description: A core type's description
+          readOnly: true
+        type:
+          type: array
+          example: '["string"] for a text-based core type, ["integer"] for a numeric core type, or ["boolean", "null"] for the checkbox core type'
+          description: An array of fundamental JSON Schema primitive types on which the core type is based
+          readOnly: true
+          items:
+            type: string
+        items:
+          example: '{
+
+            type": "string",
+
+            "pattern": "^[\\S]+$"
+
+            }'
+          description: Denotes the type and pattern of the items in an enum core type
+          readOnly: true
+          $ref: '#/components/schemas/Items'
+        pattern:
+          type: string
+          description: For the "date" and "datetime" core types, denotes the regex prescribing the allowable date/datetime format
+          readOnly: true
+    CoretypeListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coretype'
+        selfUri:
+          type: string
+          format: uri
+    WorkitemOnCreateRule:
       type: object
       properties:
         id:
@@ -14373,93 +14258,545 @@ components:
           readOnly: true
         name:
           type: string
-        minFieldNameCharacters:
-          type: integer
-          format: int32
-          example: '"minFieldNameCharacters":1'
-          description: The minimum number of schema field name characters allowed.
-          readOnly: true
-        maxFieldNameCharacters:
-          type: integer
-          format: int32
-          example: '"maxFieldNameCharacters":100'
-          description: The maximum number of schema field name characters allowed.
-          readOnly: true
-        minFieldTitleCharacters:
-          type: integer
-          format: int32
-          example: '"minFieldTitleCharacters":1'
-          description: The minimum number of schema field title characters allowed.
-          readOnly: true
-        maxFieldTitleCharacters:
-          type: integer
-          format: int32
-          example: '"maxFieldTitleCharacters":100'
-          description: The maximum number of schema field title characters allowed.
-          readOnly: true
-        minFieldDescriptionCharacters:
-          type: integer
-          format: int32
-          example: '"minFieldDescriptionCharacters":0'
-          description: The minimum number of schema field description characters allowed.
-          readOnly: true
-        maxFieldDescriptionCharacters:
-          type: integer
-          format: int32
-          example: '"maxFieldDescriptionCharacters":200'
-          description: The maximum number of schema field description characters allowed.
-          readOnly: true
-        minSchemaNameCharacters:
-          type: integer
-          format: int32
-          example: '"minSchemaNameCharacters":1'
-          description: The minimum number of schema name characters allowed.
-          readOnly: true
-        maxSchemaNameCharacters:
-          type: integer
-          format: int32
-          example: '"maxSchemaNameCharacters":50'
-          description: The maximum number of schema name characters allowed.
-          readOnly: true
-        minSchemaDescriptionCharacters:
-          type: integer
-          format: int32
-          example: '"minSchemaDescriptionCharacters":0'
-          description: The minimum number of schema description characters allowed.
-          readOnly: true
-        maxSchemaDescriptionCharacters:
-          type: integer
-          format: int32
-          example: '"maxSchemaDescriptionCharacters":200'
-          description: The maximum number of schema description characters allowed.
-          readOnly: true
-        maxNumberOfSchemasPerOrg:
-          type: integer
-          format: int32
-          example: '"maxNumberOfSchemasPerOrg":20'
-          description: The maximum number of schema allowed per org.
-          readOnly: true
-        maxNumberOfFieldsPerSchema:
-          type: integer
-          format: int32
-          example: '"maxNumberOfFieldsPerSchema":25'
-          description: The maximum number of schema fields allowed per schema.
-          readOnly: true
-        maxNumberOfFieldsPerOrg:
-          type: integer
-          format: int32
-          example: '"maxNumberOfFieldsPerOrg":500'
-          description: The maximum number of schema fields allowed per organization across all of their schemas.
-          readOnly: true
+        type:
+          type: string
+          description: The type of the rule.
+          enum:
+          - OnCreate
+          - OnAttributeChange
+          - Date
+        action:
+          description: The rules action. If the condition criteria is met this action will be executed.
+          $ref: '#/components/schemas/WorkitemRuleAction'
+        worktype:
+          description: The Worktype containing the rule.
+          $ref: '#/components/schemas/WorktypeReference'
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-    WorkitemOnAttributeChangeRuleCreate:
+    WorkitemQueryJobQueryFiltersPredicate:
       type: object
       required:
-      - condition
+      - name
+      - operator
+      properties:
+        name:
+          type: string
+          description: Property name.
+        operator:
+          type: string
+          description: Query filter predicate operator.
+          enum:
+          - EQ
+          - NEQ
+          - GT
+          - LT
+          - GTE
+          - LTE
+          - IN
+          - CONTAINS
+          - BETWEEN
+          - BEGINS_WITH
+          - EXISTS
+        values:
+          type: array
+          description: List of values to be used in the query filter predicate.
+          items:
+            type: object
+    MaxLength:
+      type: object
+      required:
+      - max
+      - min
+      properties:
+        min:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the minimum largest length string the field can contain for a schema instance.
+        max:
+          type: integer
+          format: int64
+          description: A non-negative integer for a text-based schema field denoting the maximum largest string the field can contain for a schema instance.
+    WorkitemOnCreateRuleListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkitemOnCreateRule'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
+    WorkitemsAttributeChangeInstant:
+      type: object
+      properties:
+        newValue:
+          type: string
+          format: date-time
+          description: 'New property value. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        oldValue:
+          type: string
+          format: date-time
+          description: 'Old property value. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    ItemValidationLimits:
+      type: object
+      required:
+      - maxLength
+      - minLength
+      properties:
+        minLength:
+          example: '"minLength": {"min": 0, "max": 100}'
+          description: A structure denoting the system-imposed minimum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
+          $ref: '#/components/schemas/MinLength'
+        maxLength:
+          example: '"validationLimits": {
+
+            "minLength": {"min": 0, "max": 100},
+
+            "maxLength": {"min": 1, "max": 100}
+
+            }'
+          description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
+          $ref: '#/components/schemas/MaxLength'
+    WorkitemSchema:
+      type: object
+      required:
+      - version
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        version:
+          type: integer
+          format: int32
+          description: The version of the Workitem custom attribute schema.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    JsonSchemaDocument:
+      type: object
+      properties:
+        id:
+          type: string
+        $schema:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        required:
+          type: array
+          items:
+            type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        additionalProperties:
+          type: object
+      description: A JSON Schema document.
+    DataSchema:
+      type: object
+      required:
+      - jsonSchema
+      - version
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the schema.  Only required if a schema is used for custom fields during external entity creation or updates.
+        name:
+          type: string
+        version:
+          type: integer
+          format: int32
+          description: The schema's version, a positive integer. Required for updates.
+        appliesTo:
+          type: array
+          description: Indicates the built-in entity type to which this schema applies.
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - CONTACT
+            - CONVERSATION
+            - EXTERNAL_ORGANIZATION
+            - OPEN_ACTION
+            - WORKITEM
+            - DECISION_TABLE
+            - USER_CUSTOM_ATTRIBUTES
+            - EXTERNAL_EVENTS
+        enabled:
+          type: boolean
+          description: The schema's enabled/disabled status. A disabled schema cannot be assigned to any other entities, but the data on those entities from the schema still exists.
+        createdBy:
+          description: The URI of the user that created this schema.
+          readOnly: true
+          $ref: '#/components/schemas/DomainEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The date and time this schema version was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        jsonSchema:
+          example: "{\n    \"appliesTo\": [\n        \"CONTACT\"\n    ],\n    \"jsonSchema\": {\n        \"title\": \"Example schema\",\n        \"description\": \"Uses all of the core types for illustrative purposes\",\n        \"properties\": {\n            \"field1_text\": {\n                \"title\": \"Field 1\",\n                \"description\": \"field1\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/text\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 39\n            },\n            \"field2_longtext\": {\n                \"title\": \"Field 2\",\n                \"description\": \"field2\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/longtext\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 1000\n            },\n            \"field3_enum\": {\n                \"title\": \"Field 3\",\n                \"description\": \"Field 3\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/enum\" } ],\n                \"enum\": [\n                    \"enum1\",\n                    \"enum2\"\n                ]\n            },\n            \"field4_identifier\": {\n                \"title\": \"field4\",\n                \"description\": \"Field 4\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/identifier\" } ],\n                \"minLength\": 0,\n                \"maxLength\": 37\n            },\n            \"field5_integer\": {\n                \"title\": \"field5\",\n                \"description\": \"Field 5\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/integer\" } ],\n                \"minimum\": 1,\n                \"maximum\": 24\n            },\n            \"field6_number\": {\n                \"title\": \"field6\",\n                \"description\": \"Field 6\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/number\" } ],\n                \"minimum\": 2.7,\n                \"maximum\": 31.3\n            },\n            \"field7_date\": {\n                \"title\": \"field7\",\n                \"description\": \"Field 7\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/date\"}]\n            },\n            \"field8_datetime\": {\n                \"title\": \"field8\",\n                \"description\": \"Field 8\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/datetime\"}]\n            },\n            \"field9_checkbox\": {\n                \"title\": \"field9\",\n                \"description\": \"Field 9\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/checkbox\"}]\n            },\n            \"field10_tag\": {\n                \"title\": \"field10\",\n                \"description\": \"Field 10\",\n                \"allOf\": [ { \"$ref\": \"#/definitions/tag\" } ],\n                \"items\": {\n                    \"minLength\": 1,\n                    \"maxLength\": 20\n                },\n                \"minItems\": 0,\n                \"maxItems\": 10,\n                \"uniqueItems\": true\n            }\n        },\n        \"$schema\": \"http://json-schema.org/draft-04/schema#\"\n    }\n}"
+          description: A JSON schema defining the extension to the built-in entity type.
+          $ref: '#/components/schemas/JsonSchemaDocument'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemPagedEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Workitem'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        pageCount:
+          type: integer
+          format: int32
+    WorkitemOnAttributeChangeRule:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        type:
+          type: string
+          description: The type of the rule.
+          enum:
+          - OnCreate
+          - OnAttributeChange
+          - Date
+        action:
+          description: The rules action. If the condition criteria is met this action will be executed.
+          $ref: '#/components/schemas/WorkitemRuleAction'
+        worktype:
+          description: The Worktype containing the rule.
+          $ref: '#/components/schemas/WorktypeReference'
+        condition:
+          description: The rules condition. If the condition criteria is met the rules action will be executed.
+          $ref: '#/components/schemas/WorkitemOnAttributeChangeCondition'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorktypeChangeListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkitemsChangeWorktypeDelta'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
+    BulkJob:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        state:
+          type: string
+          description: The bulk job state.
+          enum:
+          - Idle
+          - Queued
+          - Running
+          - Succeeded
+          - Failed
+          - Cancelled
+          - Terminated
+        action:
+          type: string
+          description: The bulk job action. This determines what the bulk job does, for example, terminate workitems.
+          enum:
+          - TerminateWorkitems
+          - AddWorkitems
+        totalCount:
+          type: integer
+          format: int32
+          description: Total count of items to be processed in the bulk job.
+        successfulCount:
+          type: integer
+          format: int32
+          description: Count of successfully processed items in the bulk job.
+        failedCount:
+          type: integer
+          format: int32
+          description: Count of failed processed items in the bulk job.
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'The bulk job start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateFinished:
+          type: string
+          format: date-time
+          description: 'The bulk job finished date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The bulk job modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemStatusReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    BulkJobUpdate:
+      type: object
+      required:
+      - state
+      properties:
+        state:
+          type: string
+          description: The destination state of the bulk job.
+          enum:
+          - Queued
+          - Terminated
+    WorkitemCreate:
+      type: object
+      required:
+      - name
+      - typeId
+      properties:
+        name:
+          type: string
+          description: The name of the Workitem. Valid length between 3 and 256 characters.
+        priority:
+          type: integer
+          format: int32
+          description: The priority of the Workitem. The valid range is between -25,000,000 and 25,000,000.
+        dateDue:
+          type: string
+          format: date-time
+          description: 'The due date of the Workitem. Can not be greater than 365 days from the current time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateExpires:
+          type: string
+          format: date-time
+          description: 'The expiry date of the Workitem. Can not be greater than 365 days from the current time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        durationSeconds:
+          type: integer
+          format: int32
+          description: The estimated duration in seconds to complete the Workitem. Maximum of 365 days.
+        ttl:
+          type: integer
+          format: int32
+          description: The epoch timestamp in seconds specifying the time to live for the Workitem. Can not be greater than 365 days from the current time.
+        statusId:
+          type: string
+          description: The ID of the Status of the Workitem.
+        workbinId:
+          type: string
+          description: The ID of Workbin that contains the Workitem.
+        autoStatusTransition:
+          type: boolean
+          description: Set it to false to disable auto status transition. By default, it is enabled.
+        description:
+          type: string
+          description: The description of the Workitem. Maximum length of 512 characters.
+        typeId:
+          type: string
+          description: The ID of the Worktype of the Workitem.
+        customFields:
+          type: object
+          description: Custom fields defined in the schema referenced by the worktype of the workitem.
+          additionalProperties:
+            type: object
+        queueId:
+          type: string
+          description: The ID of the Workitems queue. Must be a valid UUID.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        assigneeId:
+          type: string
+          description: The ID of the assignee of the Workitem. Must be a valid UUID.
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        languageId:
+          type: string
+          description: The ID of language of the Workitem. Must be a valid UUID.
+        externalContactId:
+          type: string
+          description: The ID of the external contact of the Workitem. Must be a valid UUID.
+        externalTag:
+          type: string
+          description: The external tag of the Workitem.
+        skillIds:
+          type: array
+          description: The skill IDs of the Workitem. Must be valid UUIDs.
+          items:
+            type: string
+        scriptId:
+          type: string
+          description: The ID of the Workitems script. Must be a valid UUID.
+        wrapupCode:
+          type: string
+          description: The ID of the wrapup. Must be a valid UUID.
+        utilizationLabelId:
+          type: string
+          description: The ID of utilization label of the Workitem. Must be a valid UUID.
+        scoredAgents:
+          type: array
+          description: A list of scored agents for the Workitem. A workitem can have a maximum of 20 scored agents.
+          items:
+            $ref: '#/components/schemas/WorkitemScoredAgentRequest'
+        preferredAgentIds:
+          type: array
+          description: The preferred agent IDs of the Workitem. Must be valid UUIDs.
+          items:
+            type: string
+    WorkitemDateBasedRule:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        type:
+          type: string
+          description: The type of the rule.
+          enum:
+          - OnCreate
+          - OnAttributeChange
+          - Date
+        action:
+          description: The rules action. If the condition criteria is met this action will be executed.
+          $ref: '#/components/schemas/WorkitemRuleAction'
+        worktype:
+          description: The Worktype containing the rule.
+          $ref: '#/components/schemas/WorktypeReference'
+        condition:
+          description: The rules condition. If the condition criteria is met the rules action will be executed.
+          $ref: '#/components/schemas/WorkitemDateBasedCondition'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorktypeDelta:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        description:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        statuses:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeList'
+        defaultWorkbinId:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        defaultDurationSeconds:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
+        defaultExpirationSeconds:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
+        defaultDueDurationSeconds:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
+        defaultPriority:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
+        defaultSkillIds:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeList'
+        defaultStatusId:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        defaultLanguageId:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        defaultTtlSeconds:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
+        assignmentEnabled:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeBoolean'
+        defaultQueueId:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        schemaId:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        schemaVersion:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        serviceLevelTarget:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeInteger'
+        dateModified:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeInstant'
+        modifiedBy:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        defaultScriptId:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        flowId:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeString'
+        ruleSettings:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeWorkitemRuleSettings'
+        unassignedDivisionContactsEnabled:
+          $ref: '#/components/schemas/WorkitemsAttributeChangeBoolean'
+    WorkitemDateBasedRuleListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkitemDateBasedRule'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+        after:
+          type: string
+    WorkitemsAttributeChangeWorkitemRuleSettings:
+      type: object
+      properties:
+        newValue:
+          description: New property value
+          $ref: '#/components/schemas/WorkitemRuleSettings'
+        oldValue:
+          description: Old property value
+          $ref: '#/components/schemas/WorkitemRuleSettings'
+    WorkitemOnCreateRuleCreate:
+      type: object
+      required:
       - name
       properties:
         name:
@@ -14467,9 +14804,120 @@ components:
           description: The name of the rule.
           minLength: 3
           maxLength: 256
-        condition:
-          description: The rules condition. If the condition criteria is met the rules action will be executed.
-          $ref: '#/components/schemas/WorkitemOnAttributeChangeCondition'
+    BulkJobTerminateRequest:
+      type: object
+      required:
+      - entities
+      properties:
+        entities:
+          type: array
+          description: The list of bulk job entities to terminate.
+          items:
+            $ref: '#/components/schemas/BulkJobEntity'
+          maxItems: 100
+          minItems: 1
+    WorkitemQueryJobError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: System defined error code for the error.
+        message:
+          type: string
+          description: Error message for the failed job.
+    WorkbinUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Workbin name. Valid length between 3 and 256 characters.
+        description:
+          type: string
+          description: Workbin description. Maximum length of 512 characters.
+    WorkitemsChangeWorkitemDelta:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int32
+          description: Version
+        modifiedBy:
+          description: modifiedBy
+          $ref: '#/components/schemas/UserReference'
+        delta:
+          description: The changes that originated this version
+          $ref: '#/components/schemas/WorkitemDelta'
+    RoutingSkillReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TaskManagementErrorDetails:
+      type: object
+      properties:
+        code:
+          type: string
+          description: System defined error code for the error.
+        message:
+          type: string
+          description: Error message.
+    WorkitemsAttributeChangeMap:
+      type: object
+      properties:
+        newValue:
+          type: object
+          description: New property value
+          additionalProperties:
+            type: object
+        oldValue:
+          type: object
+          description: Old property value
+          additionalProperties:
+            type: object
+    ValidationLimits:
+      type: object
+      properties:
+        minLength:
+          $ref: '#/components/schemas/MinLength'
+        maxLength:
+          $ref: '#/components/schemas/MaxLength'
+        minItems:
+          $ref: '#/components/schemas/MinLength'
+        maxItems:
+          $ref: '#/components/schemas/MaxLength'
+        minimum:
+          $ref: '#/components/schemas/MinLength'
+        maximum:
+          $ref: '#/components/schemas/MaxLength'
+    WorkitemOnAttributeChangeCondition:
+      type: object
+      required:
+      - attribute
+      - newValue
+      properties:
+        attribute:
+          type: string
+          description: The name of the workitem attribute whose change will be evaluated as part of the rule.
+          enum:
+          - statusId
+        newValue:
+          type: string
+          description: The new value of the attribute. If the attribute is updated to this value this part of the condition will be met.
+        oldValue:
+          type: string
+          description: The old value of the attribute. If the attribute was updated from this value this part of the condition will be met.
+    BulkJobEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the bulk job entity.
     WorktypeVersion:
       type: object
       properties:
@@ -14570,7 +15018,35 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    WorktypeQueryRequest:
+    BulkJobAddResult:
+      type: object
+      properties:
+        error:
+          description: Error details if the operation failed.
+          $ref: '#/components/schemas/BulkJobError'
+        entity:
+          description: The result of the operation if it succeeded. For Workitem Bulk Add this is a summary.
+          $ref: '#/components/schemas/BulkJobAddWorkitemSummary'
+    WorkitemTerminate:
+      type: object
+      properties:
+        statusId:
+          type: string
+          description: The ID of the status the workitem should be updated to when terminating. The status must be a 'Closed' category status.
+    UserReferenceWithName:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkitemQueryJobCreate:
       type: object
       required:
       - filters
@@ -14578,591 +15054,111 @@ components:
         pageSize:
           type: integer
           format: int32
-          description: Limit the number of entities to return. It is not guaranteed that the requested number of entities will be filled in a single request. If an `after` key is returned as part of the response it is possible that more entities that match the filter criteria exist. Maximum of 200.
-        select:
-          type: string
-          description: Specify the value 'Count' for this parameter in order to return only the record count.
-          enum:
-          - Count
+          description: The total page size requested. Default 25
+          minimum: 1
+          maximum: 200
+        pageNumber:
+          type: integer
+          format: int32
+          description: The page number requested
+          minimum: 1
         filters:
           type: array
-          description: 'List of filter objects to be used in the search. Valid filter names are: ''divisionId'', ''id'', ''name'', ''description'', ''defaultWorkbinId'', ''defaultDurationSeconds'', ''defaultExpirationSeconds'', ''defaultDueDurationSeconds'', ''defaultPriority'', ''defaultLanguageId'', ''defaultTtlSeconds'', ''assignmentEnabled'', ''defaultQueueId'', ''schemaId'', ''schemaVersion'', ''dateCreated'', ''dateModified'', ''modifiedBy'''
+          description: List of filter objects to be used in the search.
           items:
-            $ref: '#/components/schemas/WorkitemFilter'
+            $ref: '#/components/schemas/WorkitemQueryJobFilter'
+        queryFilters:
+          type: array
+          description: Query filters for nested attributes.
+          items:
+            $ref: '#/components/schemas/WorkitemQueryJobQueryFilters'
+          maxItems: 1
+          minItems: 1
+        expands:
+          type: array
+          description: List of entity attributes to be expanded in the result.
+          items:
+            type: string
+            enum:
+            - type
+            - workbin
+            - status
+            - assignee
+            - reporter
+            - queue
+            - case
+            - externalContact
         attributes:
           type: array
           description: List of entity attributes to be retrieved in the result.
           items:
             type: string
-        after:
-          type: string
-          description: The cursor that points to the end of the set of entities that has been returned.
-        expands:
-          type: string
-          description: List of entity attributes to be expanded in the result.
-          enum:
-          - schema
         sort:
           description: Sort
-          $ref: '#/components/schemas/WorktypeQuerySort'
-    Worktype:
+          $ref: '#/components/schemas/WorkitemQueryJobSort'
+        dateIntervalStart:
+          type: string
+          format: date-time
+          description: 'Interval start date to use to filter results based on create date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateIntervalEnd:
+          type: string
+          format: date-time
+          description: 'Interval end date to use to filter results based on create date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    WorkitemRuleAction:
       type: object
       properties:
-        id:
+        type:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the Worktype.
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/Division'
-        description:
-          type: string
-          description: The description of the Worktype.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The creation date of the Worktype. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The modified date of the Worktype. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        defaultWorkbin:
-          description: The default Workbin for Workitems created from the Worktype.
-          $ref: '#/components/schemas/WorkbinReference'
-        defaultStatus:
-          description: The default status for Workitems created from the Worktype.
-          $ref: '#/components/schemas/WorkitemStatusReference'
-        statuses:
-          type: array
-          description: The list of possible statuses for Workitems created from the Worktype.
-          items:
-            $ref: '#/components/schemas/WorkitemStatus'
-        defaultDurationSeconds:
-          type: integer
-          format: int32
-          description: The default duration in seconds for Workitems created from the Worktype.
-        defaultExpirationSeconds:
-          type: integer
-          format: int32
-          description: The default expiration time in seconds for Workitems created from the Worktype.
-        defaultDueDurationSeconds:
-          type: integer
-          format: int32
-          description: The default due duration in seconds for Workitems created from the Worktype.
-        defaultPriority:
-          type: integer
-          format: int32
-          description: The default priority for Workitems created from the Worktype. The valid range is between -25,000,000 and 25,000,000.
-        defaultLanguage:
-          description: The default language for Workitems created from the Worktype.
-          $ref: '#/components/schemas/LanguageReference'
-        defaultTtlSeconds:
-          type: integer
-          format: int32
-          description: The default time to time to live in seconds for Workitems created from the Worktype.
-        modifiedBy:
-          description: The id of the User who modified the Worktype.
-          $ref: '#/components/schemas/UserReference'
-        defaultQueue:
-          description: The default queue for Workitems created from the Worktype.
-          $ref: '#/components/schemas/WorkitemQueueReference'
-        defaultSkills:
-          type: array
-          description: The default skills for Workitems created from the Worktype.
-          items:
-            $ref: '#/components/schemas/RoutingSkillReference'
-        assignmentEnabled:
-          type: boolean
-          description: When set to true, Workitems will be sent to the queue of the Worktype as they are created. Default value is false.
-        schema:
-          description: The schema defining the custom attributes for Workitems created from the Worktype.
-          $ref: '#/components/schemas/WorkitemSchema'
-        serviceLevelTarget:
-          type: integer
-          format: int32
-          description: The target service level for Workitems created from the Worktype. The default value is 100.
-        ruleSettings:
-          description: Settings for the worktypes rules.
-          $ref: '#/components/schemas/WorkitemRuleSettings'
-        flow:
-          description: The flow associated with the Worktype.
-          $ref: '#/components/schemas/WorkitemFlowReference'
-        defaultScript:
-          description: The default script for Workitems created from the Worktype.
-          $ref: '#/components/schemas/WorkitemScriptReference'
-        unassignedDivisionContactsEnabled:
-          type: boolean
-          description: When set to true, will allow Workitems to be associated with External Contacts that are not assigned to any division. Default value is true.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorktypeCreate:
+          enum:
+          - LaunchFlow
+    WorkitemsAttributeChangeListWorkitemScoredAgentDelta:
       type: object
-      required:
-      - defaultWorkbinId
-      - name
+      properties:
+        newValue:
+          type: array
+          description: New property value
+          items:
+            $ref: '#/components/schemas/WorkitemScoredAgentDelta'
+        oldValue:
+          type: array
+          description: Old property value
+          items:
+            $ref: '#/components/schemas/WorkitemScoredAgentDelta'
+    WorkitemStatusUpdate:
+      type: object
       properties:
         name:
           type: string
-          description: The name of the Worktype. Valid length between 3 and 256 characters.
-        defaultWorkbinId:
-          type: string
-          description: The ID of the default Workbin for Workitems created from the Worktype.
-        defaultDurationSeconds:
-          type: integer
-          format: int32
-          description: The default duration in seconds for Workitems created from the Worktype. Maximum of 365 days.
-          minimum: 0
-          maximum: 31536000
-        defaultExpirationSeconds:
-          type: integer
-          format: int32
-          description: The default expiration time in seconds for Workitems created from the Worktype. Maximum of 365 days.
-          minimum: 0
-          maximum: 31536000
-        defaultDueDurationSeconds:
-          type: integer
-          format: int32
-          description: The default due duration in seconds for Workitems created from the Worktype. Maximum of 365 days.
-          minimum: 0
-          maximum: 31536000
-        defaultPriority:
-          type: integer
-          format: int32
-          description: The default priority for Workitems created from the Worktype. The valid range is between -25,000,000 and 25,000,000.
-          minimum: -25000000
-          maximum: 25000000
-        defaultTtlSeconds:
-          type: integer
-          format: int32
-          description: The default time to time to live in seconds for Workitems created from the Worktype. The valid range is between 1 and 365 days.
-          minimum: 86400
-          maximum: 31536000
-        assignmentEnabled:
-          type: boolean
-          description: When set to true, Workitems will be sent to the queue of the Worktype as they are created. Default value is false.
-        schemaId:
-          type: string
-          description: The ID of the custom attribute schema for Workitems created from the Worktype. Must be a valid UUID.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        serviceLevelTarget:
-          type: integer
-          format: int32
-          description: The target service level for Workitems created from the Worktype. The default value is 100.
-          minimum: 1
-          maximum: 100
-        ruleSettings:
-          description: Settings for the worktypes rules.
-          $ref: '#/components/schemas/WorkitemRuleSettings'
-        unassignedDivisionContactsEnabled:
-          type: boolean
-          description: When set to true, will allow Workitems to be associated with External Contacts that are not assigned to any division. Default value is true.
-        description:
-          type: string
-          description: The description of the Worktype. Maximum length of 512 characters.
-          minLength: 0
-          maxLength: 512
-        divisionId:
-          type: string
-          description: The ID of the division the Worktype belongs to. Defaults to the default Workbin division ID. The Worktype must be in the same division as its default Workbin.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        disableDefaultStatusCreation:
-          type: boolean
-          description: Set to true to disable default status creation. Default statuses are created with the Worktype by default
-        schemaVersion:
-          type: integer
-          format: int32
-          description: The version of the Worktypes custom attribute schema. The latest schema version will be used if this property is not set.
-        defaultQueueId:
-          type: string
-          description: The ID of the default queue for Workitems created from the Worktype. Must be a valid UUID.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        defaultLanguageId:
-          type: string
-          description: The ID of the default language for Workitems created from the Worktype. Must be a valid UUID.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        defaultSkillIds:
+          description: The name of the Status. Valid length between 3 and 256 characters.
+        destinationStatusIds:
           type: array
-          description: The IDs of the default skills for Workitems created from the Worktype. Must be valid UUIDs. Maximum of 20 IDs
+          description: A list of destination Statuses where a Workitem with this Status can transition to. If the list is empty Workitems with this Status can transition to all other Statuses defined on the Worktype. A Status can have a maximum of 24 destinations.
           items:
             type: string
-        defaultScriptId:
-          type: string
-          description: The default script for Workitems created from the Worktype. Must be a valid UUID.
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-    WorkitemScoredAgent:
-      type: object
-      properties:
-        agent:
-          description: The agent
-          $ref: '#/components/schemas/UserReference'
-        score:
-          type: integer
-          format: int32
-          description: Agent's score for the workitem, from 0 - 100, higher being better
-    WorkitemScoredAgentRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          description: An agents ID. Must be a valid UUID.
-        score:
-          type: integer
-          format: int32
-          description: Agent's score for the workitem, from 0 - 100, higher being better
-    WorkitemsAttributeChangeMap:
-      type: object
-      properties:
-        newValue:
-          type: object
-          description: New property value
-          additionalProperties:
-            type: object
-        oldValue:
-          type: object
-          description: Old property value
-          additionalProperties:
-            type: object
-    WorkbinVersionListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkbinVersion'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-    WorkbinUpdate:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Workbin name. Valid length between 3 and 256 characters.
         description:
           type: string
-          description: Workbin description. Maximum length of 512 characters.
-    BulkJobsListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkJob'
-        nextUri:
+          description: The description of the Status. Maximum length of 512 characters.
+        defaultDestinationStatusId:
           type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-    WorkitemStatusReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ValidationLimits:
-      type: object
-      properties:
-        minLength:
-          $ref: '#/components/schemas/MinLength'
-        maxLength:
-          $ref: '#/components/schemas/MaxLength'
-        minItems:
-          $ref: '#/components/schemas/MinLength'
-        maxItems:
-          $ref: '#/components/schemas/MaxLength'
-        minimum:
-          $ref: '#/components/schemas/MinLength'
-        maximum:
-          $ref: '#/components/schemas/MaxLength'
-    WorkitemOnAttributeChangeConditionUpdate:
-      type: object
-      required:
-      - attribute
-      - newValue
-      properties:
-        attribute:
-          type: string
-          description: The name of the workitem attribute whose change will be evaluated as part of the rule.
-          enum:
-          - statusId
-        newValue:
-          type: string
-          description: The new value of the attribute. If the attribute is updated to this value this part of the condition will be met.
-        oldValue:
-          type: string
-          description: The old value of the attribute. If the attribute was updated from this value this part of the condition will be met.
-    WorkitemOnCreateRule:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        type:
-          type: string
-          description: The type of the rule.
-          enum:
-          - OnCreate
-          - OnAttributeChange
-          - Date
-        action:
-          description: The rules action. If the condition criteria is met this action will be executed.
-          $ref: '#/components/schemas/WorkitemRuleAction'
-        worktype:
-          description: The Worktype containing the rule.
-          $ref: '#/components/schemas/WorktypeReference'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkitemChangeListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkitemsChangeWorkitemDelta'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-        after:
-          type: string
-    BulkJob:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        state:
-          type: string
-          description: The bulk job state.
-          enum:
-          - Idle
-          - Queued
-          - Running
-          - Succeeded
-          - Failed
-          - Cancelled
-          - Terminated
-        action:
-          type: string
-          description: The bulk job action. This determines what the bulk job does, for example, terminate workitems.
-          enum:
-          - TerminateWorkitems
-          - AddWorkitems
-        totalCount:
+          description: Default destination status to which this Status will transition to if auto status transition enabled.
+        statusTransitionDelaySeconds:
           type: integer
           format: int32
-          description: Total count of items to be processed in the bulk job.
-        successfulCount:
-          type: integer
-          format: int32
-          description: Count of successfully processed items in the bulk job.
-        failedCount:
-          type: integer
-          format: int32
-          description: Count of failed processed items in the bulk job.
-        dateStarted:
+          description: Delay in seconds for auto status transition. Required if defaultDestinationStatusId is provided.
+        statusTransitionTime:
           type: string
-          format: date-time
-          description: 'The bulk job start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateFinished:
-          type: string
-          format: date-time
-          description: 'The bulk job finished date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The bulk job modification date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ItemValidationLimits:
-      type: object
-      required:
-      - maxLength
-      - minLength
-      properties:
-        minLength:
-          example: '"minLength": {"min": 0, "max": 100}'
-          description: A structure denoting the system-imposed minimum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
-          $ref: '#/components/schemas/MinLength'
-        maxLength:
-          example: '"validationLimits": {
-
-            "minLength": {"min": 0, "max": 100},
-
-            "maxLength": {"min": 1, "max": 100}
-
-            }'
-          description: A structure denoting the system-imposed minimum and maximum string length (for text-based core types) or numeric values (for number-based) core types.  For example, the validationLimits for a text-based core type specify the min/max values for a minimum string length (minLength) constraint supplied by a schemaauthor on a text field.  Similarly, the maxLength's min/max specifies maximum string length constraint supplied by a schema author for the same field.
-          $ref: '#/components/schemas/MaxLength'
-    WorkitemQuerySort:
-      type: object
-      properties:
-        name:
-          type: string
-          description: 'Specify an attribute for sorting. It''s possible to use an attribute both for sorting and in the query at the same time, but these restrictions apply: Only the operators EQ, LT, LTE, GT, GTE, BETWEEN and BEGINS_WITH are supported and the attribute can''t be present in more than one filter.'
-          enum:
-          - dateDue
-          - priority
-        ascending:
+          format: local-time
+          description: 'Time is represented as an ISO-8601 string without a timezone. For example: HH:mm:ss.SSS'
+        autoTerminateWorkitem:
           type: boolean
-          description: Sort Ascending
-    WorkitemManualAssign:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for this user.
-    WorkitemsChangeWorktypeDelta:
-      type: object
-      properties:
-        version:
-          type: integer
-          format: int32
-          description: Version
-        modifiedBy:
-          description: modifiedBy
-          $ref: '#/components/schemas/UserReference'
-        delta:
-          description: The changes that originated this version
-          $ref: '#/components/schemas/WorktypeDelta'
-    BulkJobAddWorkitemSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        workbin:
-          description: The workbin of the workitem.
-          $ref: '#/components/schemas/WorkbinReference'
-        type:
-          description: The worktype of the workitem.
-          $ref: '#/components/schemas/WorktypeReference'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Items:
-      type: object
-      properties:
-        type:
-          type: string
-        pattern:
-          type: string
-    WorkitemWrapupUpdate:
-      type: object
-      required:
-      - action
-      - wrapupCode
-      properties:
-        action:
-          type: string
-          description: Action to be performed for the wrapup code.
-          enum:
-          - Add
-          - Remove
-        wrapupCode:
-          type: string
-          description: The wrapup code which will be added/removed.
-    BulkJobAddRequest:
-      type: object
-      required:
-      - entities
-      properties:
-        entities:
-          type: array
-          description: The list of workitem entities to create.
-          items:
-            $ref: '#/components/schemas/WorkitemCommonCreate'
-          maxItems: 50
-          minItems: 1
-    WorkitemQueryJobError:
-      type: object
-      properties:
-        code:
-          type: string
-          description: System defined error code for the error.
-        message:
-          type: string
-          description: Error message for the failed job.
-    WorkitemsAttributeChangeInteger:
-      type: object
-      properties:
-        newValue:
-          type: integer
-          format: int32
-          description: New property value
-        oldValue:
-          type: integer
-          format: int32
-          description: Old property value
-    WorkitemsChangeWorkbinDelta:
-      type: object
-      properties:
-        version:
-          type: integer
-          format: int32
-          description: Version
-        modifiedBy:
-          description: modifiedBy
-          $ref: '#/components/schemas/UserReference'
-        delta:
-          description: The changes that originated this version
-          $ref: '#/components/schemas/WorkbinDelta'
-    BulkJobError:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message of the bulk operation result.
-        code:
-          type: string
-          description: Error code of the bulk operation result.
-    WorkitemOnAttributeChangeRuleListing:
+          description: Terminate workitem on selection of status. Applicable only for statuses in the Closed category.
+    WorktypeQueryEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/WorkitemOnAttributeChangeRule'
+            $ref: '#/components/schemas/Worktype'
         nextUri:
           type: string
         selfUri:
@@ -15171,6 +15167,10 @@ components:
           type: string
         after:
           type: string
+        count:
+          type: integer
+          format: int32
+          description: Count of items returned by the query. Refer to the "select" request parameter for more information.
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

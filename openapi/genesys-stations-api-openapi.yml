@@ -482,6 +482,17 @@ paths:
       x-purecloud-method-name: getStations
 components:
   schemas:
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     DomainEntityRef:
       type: object
       properties:
@@ -492,6 +503,95 @@ components:
         selfUri:
           type: string
           format: uri
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    Station:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+          - AVAILABLE
+          - ASSOCIATED
+        userId:
+          type: string
+          description: The Id of the user currently logged in and associated with the station.
+        webRtcUserId:
+          type: string
+          description: The Id of the user configured for the station if it is of type inin_webrtc_softphone. Empty if station type is not inin_webrtc_softphone.
+        primaryEdge:
+          $ref: '#/components/schemas/DomainEntityRef'
+        secondaryEdge:
+          $ref: '#/components/schemas/DomainEntityRef'
+        type:
+          type: string
+        lineAppearanceId:
+          type: string
+        webRtcMediaDscp:
+          type: integer
+          format: int32
+          description: The default or configured value of media dscp for the station. Empty if station type is not inin_webrtc_softphone.
+          readOnly: true
+        webRtcPersistentEnabled:
+          type: boolean
+          description: The default or configured value of persistent connection setting for the station. Empty if station type is not inin_webrtc_softphone.
+          readOnly: true
+        webRtcForceTurn:
+          type: boolean
+          description: Whether the station is configured to require TURN for routing WebRTC calls. Empty if station type is not inin_webrtc_softphone.
+          readOnly: true
+        webRtcCallAppearances:
+          type: integer
+          format: int32
+          description: The number of call appearances on the station.
+          readOnly: true
+        webRtcRequireMediaHelper:
+          type: boolean
+          description: True when the media helper required.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     Limit:
       type: object
       properties:
@@ -596,63 +696,6 @@ components:
         value:
           type: integer
           format: int64
-    Station:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        description:
-          type: string
-        status:
-          type: string
-          enum:
-          - AVAILABLE
-          - ASSOCIATED
-        userId:
-          type: string
-          description: The Id of the user currently logged in and associated with the station.
-        webRtcUserId:
-          type: string
-          description: The Id of the user configured for the station if it is of type inin_webrtc_softphone. Empty if station type is not inin_webrtc_softphone.
-        primaryEdge:
-          $ref: '#/components/schemas/DomainEntityRef'
-        secondaryEdge:
-          $ref: '#/components/schemas/DomainEntityRef'
-        type:
-          type: string
-        lineAppearanceId:
-          type: string
-        webRtcMediaDscp:
-          type: integer
-          format: int32
-          description: The default or configured value of media dscp for the station. Empty if station type is not inin_webrtc_softphone.
-          readOnly: true
-        webRtcPersistentEnabled:
-          type: boolean
-          description: The default or configured value of persistent connection setting for the station. Empty if station type is not inin_webrtc_softphone.
-          readOnly: true
-        webRtcForceTurn:
-          type: boolean
-          description: Whether the station is configured to require TURN for routing WebRTC calls. Empty if station type is not inin_webrtc_softphone.
-          readOnly: true
-        webRtcCallAppearances:
-          type: integer
-          format: int32
-          description: The number of call appearances on the station.
-          readOnly: true
-        webRtcRequireMediaHelper:
-          type: boolean
-          description: True when the media helper required.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     StationEntityListing:
       type: object
       properties:
@@ -691,49 +734,6 @@ components:
         pageCount:
           type: integer
           format: int32
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

@@ -6804,211 +6804,28 @@ paths:
         required: true
 components:
   schemas:
-    Limit:
+    Filter:
       type: object
+      required:
+      - name
+      - operator
+      - type
+      - values
       properties:
-        key:
-          type: string
-        namespace:
-          type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
-    UserStation:
-      type: object
-      properties:
-        id:
-          type: string
-          description: A globally unique identifier for this station
-          readOnly: true
         name:
           type: string
+          description: The name of the field by which to filter.
         type:
           type: string
-        associatedUser:
-          $ref: '#/components/schemas/User'
-        associatedDate:
+          description: The type of the filter, DATE or STRING.
+        operator:
           type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        defaultUser:
-          $ref: '#/components/schemas/User'
-        providerInfo:
-          type: object
-          description: 'Provider-specific info for this station, e.g. { "edgeGroupId": "ffe7b15c-a9cc-4f4c-88f5-781327819a49" }'
-          additionalProperties:
-            type: string
-        webRtcCallAppearances:
-          type: integer
-          format: int32
-          description: The number of call appearances on the station.
-          readOnly: true
-    Education:
-      type: object
-      properties:
-        school:
-          type: string
-        fieldOfStudy:
-          type: string
-        notes:
-          type: string
-          description: Notes about education has a 2000 character limit
-        dateStart:
-          type: string
-          format: date
-          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEnd:
-          type: string
-          format: date
-          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-    UserStations:
-      type: object
-      properties:
-        associatedStation:
-          description: Current associated station for this user.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        effectiveStation:
-          description: The station where the user can be reached based on their default and associated station.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        defaultStation:
-          description: Default station to be used if not associated with a station.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        lastAssociatedStation:
-          description: Last associated station for this user.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-    TrusteeAuthorization:
-      type: object
-      properties:
-        permissions:
+          description: The operation that the filter performs.
+        values:
           type: array
-          description: Permissions that the trustee user has in the trustor organization
-          readOnly: true
+          description: The values to make the filter comparison against.
           items:
             type: string
-    TrustRequestCreate:
-      type: object
-      properties:
-        userIds:
-          type: array
-          description: The list of trustee users that are requesting access. If no users are specified, at least one group is required.
-          items:
-            type: string
-        groupIds:
-          type: array
-          description: The list of trustee groups that are requesting access. If no groups are specified, at least one user is required.
-          items:
-            type: string
-    WritableDivision:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     UserConversationSummary:
       type: object
       properties:
@@ -7028,91 +6845,39 @@ components:
           $ref: '#/components/schemas/MediaSummary'
         video:
           $ref: '#/components/schemas/MediaSummary'
-    Contact:
-      type: object
-      properties:
-        address:
-          type: string
-          description: Email address or phone number for this contact type
-        display:
-          type: string
-          description: Formatted version of the address property
-          readOnly: true
-        mediaType:
-          type: string
-          enum:
-          - PHONE
-          - EMAIL
-          - SMS
-        type:
-          type: string
-          enum:
-          - PRIMARY
-          - WORK
-          - WORK2
-          - WORK3
-          - WORK4
-          - HOME
-          - MOBILE
-          - MAIN
-          - OTHER
-        extension:
-          type: string
-          description: Use internal extension instead of address. Mutually exclusive with the address field.
-        countryCode:
-          type: string
-        integration:
-          type: string
-          example: microsoftteams
-          description: Integration tag value if this number is associated with an external integration.
-    TrustMemberCreate:
+    TrustCreate:
       type: object
       required:
-      - id
+      - enabled
+      properties:
+        pairingId:
+          type: string
+          description: The pairing Id created by the trustee. This is required to prove that the trustee agrees to the relationship.  Not required when creating a default pairing with Customer Care.
+        enabled:
+          type: boolean
+          description: If disabled no trustee user will have access, even if they were previously added.
+        users:
+          type: array
+          description: The list of users and their roles to which access will be granted. The users are from the trustee and the roles are from the trustor. If no users are specified, at least one group is required.
+          items:
+            $ref: '#/components/schemas/TrustMemberCreate'
+        groups:
+          type: array
+          description: The list of groups and their roles to which access will be granted. The groups are from the trustee and the roles are from the trustor. If no groups are specified, at least one user is required.
+          items:
+            $ref: '#/components/schemas/TrustMemberCreate'
+        dateExpired:
+          type: string
+          format: date-time
+          description: 'The expiration date of the trust. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    AddressableEntityRef:
+      type: object
       properties:
         id:
           type: string
-          description: Trustee User or Group Id
-        roleIds:
-          type: array
-          description: The list of roles to be granted to this user or group. Roles will be granted in all divisions.
-          items:
-            type: string
-        roleDivisions:
-          description: The list of trustor organization roles granting this user or group access paired with the divisions for those roles.
-          $ref: '#/components/schemas/RoleDivisionGrants'
-    ErrorBody:
-      type: object
-      properties:
-        message:
+        selfUri:
           type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
+          format: uri
     TrustorAuditQueryRequest:
       type: object
       required:
@@ -7148,37 +6913,134 @@ components:
           description: Additional custom filters to be applied to the query.
           items:
             $ref: '#/components/schemas/Filter'
-    LocationAddressVerificationDetails:
+    TrustEntityListing:
       type: object
       properties:
-        status:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Trustee'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
           type: string
-          description: Status of address verification process
-          enum:
-          - Pending
-          - InProgress
-          - Retry
-          - Complete
-          - Failed
-        dateFinished:
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    MediaSummary:
+      type: object
+      properties:
+        contactCenter:
+          $ref: '#/components/schemas/MediaSummaryDetail'
+        enterprise:
+          $ref: '#/components/schemas/MediaSummaryDetail'
+    UserStation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A globally unique identifier for this station
+          readOnly: true
+        name:
+          type: string
+        type:
+          type: string
+        associatedUser:
+          $ref: '#/components/schemas/User'
+        associatedDate:
           type: string
           format: date-time
-          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        service:
-          type: string
-          example: smartystreets-us
-          description: Third party service used for address verification
-    TrustGroup:
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        defaultUser:
+          $ref: '#/components/schemas/User'
+        providerInfo:
+          type: object
+          description: 'Provider-specific info for this station, e.g. { "edgeGroupId": "ffe7b15c-a9cc-4f4c-88f5-781327819a49" }'
+          additionalProperties:
+            type: string
+        webRtcCallAppearances:
+          type: integer
+          format: int32
+          description: The number of call appearances on the station.
+          readOnly: true
+    RoleDivisionGrants:
       type: object
       required:
-      - name
-      - rulesVisible
-      - type
-      - visibility
+      - grants
+      properties:
+        grants:
+          type: array
+          description: A list containing pairs of role and division IDs
+          items:
+            $ref: '#/components/schemas/RoleDivisionPair'
+    Biography:
+      type: object
+      properties:
+        biography:
+          type: string
+          description: Personal detailed description
+        interests:
+          type: array
+          items:
+            type: string
+        hobbies:
+          type: array
+          items:
+            type: string
+        spouse:
+          type: string
+        education:
+          type: array
+          description: User education details
+          items:
+            $ref: '#/components/schemas/Education'
+    PresenceDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: description
+        systemPresence:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    RoleDivisionPair:
+      type: object
+      required:
+      - divisionId
+      - roleId
+      properties:
+        roleId:
+          type: string
+          description: The ID of the role
+        divisionId:
+          type: string
+          description: The ID of the division
+    UserRoutingLanguage:
+      type: object
       properties:
         id:
           type: string
@@ -7186,79 +7048,62 @@ components:
           readOnly: true
         name:
           type: string
-          description: The group name.
-        description:
-          type: string
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Last modified date/time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        memberCount:
-          type: integer
-          format: int64
-          description: Number of members.
-          readOnly: true
+        proficiency:
+          type: number
+          format: double
+          description: A rating from 0.0 to 5.0 that indicates how fluent an agent is in a particular language. ACD interactions are routed to agents with higher proficiency ratings.
         state:
           type: string
-          description: Active, inactive, or deleted state.
-          readOnly: true
+          description: Activate or deactivate this routing language.
           enum:
           - active
           - inactive
           - deleted
-        version:
-          type: integer
-          format: int32
-          description: Current version for this resource.
+        languageUri:
+          type: string
+          format: uri
+          description: URI to the organization language used by this user language.
           readOnly: true
-        type:
+        selfUri:
           type: string
-          description: Type of group.
-          enum:
-          - official
-          - social
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/Image'
-        addresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupContact'
-        rulesVisible:
-          type: boolean
-          description: Are membership rules visible to the person requesting to view the group
-        visibility:
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Represents an organization language assigned to a user. When assigning to a user specify the organization language id as the id.
+    Trustor:
+      type: object
+      required:
+      - enabled
+      properties:
+        id:
           type: string
-          description: Who can view this group
-          enum:
-          - public
-          - owners
-          - members
-        rolesEnabled:
+          description: Organization Id for this trust.
+          readOnly: true
+        enabled:
           type: boolean
-          description: Allow roles to be assigned to this group
-        includeOwners:
-          type: boolean
-          description: Allow owners to be included as members of the group
-        callsEnabled:
-          type: boolean
-          description: Allow calls to be placed to this group.
-        owners:
-          type: array
-          description: Owners of the group
-          items:
-            $ref: '#/components/schemas/User'
+          description: If disabled no trustee user will have access, even if they were previously added.
         dateCreated:
           type: string
           format: date-time
-          description: 'The date on which the trusted group was added. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          description: 'Date Trust was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
           readOnly: true
         createdBy:
-          description: The user that added trusted group.
+          description: User that created trust.
           readOnly: true
           $ref: '#/components/schemas/OrgUser'
+        organization:
+          description: Organization associated with this trust.
+          readOnly: true
+          $ref: '#/components/schemas/Organization'
+        authorization:
+          description: Authorization for the trustee user has in this trustor organization
+          readOnly: true
+          $ref: '#/components/schemas/TrusteeAuthorization'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     TrustorEntityListing:
       type: object
       properties:
@@ -7293,59 +7138,15 @@ components:
         pageCount:
           type: integer
           format: int32
-    TrustUpdate:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: If disabled no trustee user will have access, even if they were previously added.
-        dateExpired:
-          type: string
-          format: date-time
-          description: 'The expiration date of the trust. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    DomainEntityRef:
+    TrusteeAuthorization:
       type: object
       properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    UserRoutingLanguage:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
+        permissions:
+          type: array
+          description: Permissions that the trustee user has in the trustor organization
           readOnly: true
-        name:
-          type: string
-        proficiency:
-          type: number
-          format: double
-          description: A rating from 0.0 to 5.0 that indicates how fluent an agent is in a particular language. ACD interactions are routed to agents with higher proficiency ratings.
-        state:
-          type: string
-          description: Activate or deactivate this routing language.
-          enum:
-          - active
-          - inactive
-          - deleted
-        languageUri:
-          type: string
-          format: uri
-          description: URI to the organization language used by this user language.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Represents an organization language assigned to a user. When assigning to a user specify the organization language id as the id.
+          items:
+            type: string
     TrustUserDetails:
       type: object
       properties:
@@ -7358,31 +7159,57 @@ components:
           description: User that added trusted user.
           readOnly: true
           $ref: '#/components/schemas/OrgUser'
-    UserAuthorization:
+    TrustRequestCreate:
       type: object
       properties:
-        roles:
+        userIds:
           type: array
-          items:
-            $ref: '#/components/schemas/DomainRole'
-        unusedRoles:
-          type: array
-          description: A collection of the roles the user is not using
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/DomainRole'
-        permissions:
-          type: array
-          description: A collection of the permissions granted by all assigned roles
-          readOnly: true
+          description: The list of trustee users that are requesting access. If no users are specified, at least one group is required.
           items:
             type: string
-        permissionPolicies:
+        groupIds:
           type: array
-          description: The policies configured for assigned permissions.
-          readOnly: true
+          description: The list of trustee groups that are requesting access. If no groups are specified, at least one user is required.
           items:
-            $ref: '#/components/schemas/ResourcePermissionPolicy'
+            type: string
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    OutOfOffice:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+        startDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        endDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        active:
+          type: boolean
+        indefinite:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     OrgUser:
       type: object
       required:
@@ -7538,128 +7365,114 @@ components:
           readOnly: true
         organization:
           $ref: '#/components/schemas/Organization'
-    Chat:
+    LocationAddressVerificationDetails:
       type: object
       properties:
-        jabberId:
+        status:
           type: string
-    LocationImage:
-      type: object
-      properties:
-        resolution:
-          type: string
-          description: 'Height and/or width of image. ex: 640x480 or x128'
-        imageUri:
-          type: string
-    OAuthLastTokenIssued:
-      type: object
-      properties:
-        dateIssued:
+          description: Status of address verification process
+          enum:
+          - Pending
+          - InProgress
+          - Retry
+          - Complete
+          - Failed
+        dateFinished:
           type: string
           format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    ResourcePermissionPolicy:
+          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        service:
+          type: string
+          example: smartystreets-us
+          description: Third party service used for address verification
+    Geolocation:
       type: object
       properties:
         id:
           type: string
-        domain:
-          type: string
-        entityName:
-          type: string
-        policyName:
-          type: string
-        policyDescription:
-          type: string
-        actionSetKey:
-          type: string
-        allowConditions:
-          type: boolean
-        resourceConditionNode:
-          $ref: '#/components/schemas/ResourceConditionNode'
-        namedResources:
-          type: array
-          items:
-            type: string
-        resourceCondition:
-          type: string
-        actionSet:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
-    Facet:
-      type: object
-      required:
-      - name
-      - type
-      properties:
+          description: The globally unique identifier for the object.
+          readOnly: true
         name:
           type: string
-          description: The name of the field on which to facet.
         type:
           type: string
-          description: The type of the facet, DATE or STRING.
-    GroupContact:
-      type: object
-      required:
-      - address
-      - mediaType
-      - type
-      properties:
-        address:
-          type: string
-          description: Phone number for this contact type
-        extension:
-          type: string
-          description: Extension is set if the number is e164 valid
-        display:
-          type: string
-          description: Formatted version of the address property
-          readOnly: true
-        type:
-          type: string
-          description: Contact type of the address
-          enum:
-          - GROUPRING
-          - GROUPPHONE
-        mediaType:
-          type: string
-          description: Media type of the address
-          enum:
-          - PHONE
-    AuditQueryResponse:
-      type: object
-    ResourceConditionValue:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - SCALAR
-          - VARIABLE
-          - USER
-          - QUEUE
-          - TEAM
-        value:
-          type: string
-    LocationAddress:
-      type: object
-      properties:
-        city:
-          type: string
+          description: A string used to describe the type of client the geolocation is being updated from e.g. ios, android, web, etc.
+        primary:
+          type: boolean
+          description: A boolean used to tell whether or not to set this geolocation client as the primary on a PATCH
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
         country:
           type: string
-        countryName:
+        region:
           type: string
-        state:
+        city:
           type: string
-        street1:
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationDefinition'
+        selfUri:
           type: string
-        street2:
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WritableDivision:
+      type: object
+      properties:
+        id:
           type: string
-        zipcode:
+          description: The globally unique identifier for the object.
+        name:
           type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UserPresence:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        source:
+          type: string
+          description: Deprecated - The sourceID field should be used as a replacement.
+        sourceId:
+          type: string
+          description: Represents the ID of a registered source
+        primary:
+          type: boolean
+          description: A boolean used to tell whether or not to set this presence source as the primary on a PATCH
+        presenceDefinition:
+          $ref: '#/components/schemas/PresenceDefinition'
+        futurePresenceDefinition:
+          description: The definition of the user's desired future presence
+          readOnly: true
+          $ref: '#/components/schemas/PresenceDefinition'
+        message:
+          type: string
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     Team:
       type: object
       required:
@@ -7698,18 +7511,7 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    EmployerInfo:
-      type: object
-      properties:
-        officialName:
-          type: string
-        employeeId:
-          type: string
-        employeeType:
-          type: string
-        dateHire:
-          type: string
-    Division:
+    LocationDefinition:
       type: object
       properties:
         id:
@@ -7718,166 +7520,132 @@ components:
           readOnly: true
         name:
           type: string
-        selfUri:
+        contactUser:
+          description: Site contact for the location entity
+          $ref: '#/components/schemas/AddressableEntityRef'
+        emergencyNumber:
+          description: Emergency number for the location entity
+          $ref: '#/components/schemas/LocationEmergencyNumber'
+        address:
+          $ref: '#/components/schemas/LocationAddress'
+        state:
           type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    TrusteeAuditQueryRequest:
-      type: object
-      required:
-      - trusteeOrganizationIds
-      - trusteeUserIds
-      properties:
-        trusteeOrganizationIds:
-          type: array
-          description: Limit returned audits to these trustee organizationIds.
-          items:
-            type: string
-        trusteeUserIds:
-          type: array
-          description: Limit returned audits to these trustee userIds.
-          items:
-            type: string
-        startDate:
-          type: string
-          format: date-time
-          description: Starting date/time for the audit search. ISO-8601 formatted date-time, UTC.
-        endDate:
-          type: string
-          format: date-time
-          description: Ending date/time for the audit search. ISO-8601 formatted date-time, UTC.
-        queryPhrase:
-          type: string
-          description: Word or phrase to look for in audit bodies.
-        facets:
-          type: array
-          description: Facet information to be returned with the query results.
-          items:
-            $ref: '#/components/schemas/Facet'
-        filters:
-          type: array
-          description: Additional custom filters to be applied to the query.
-          items:
-            $ref: '#/components/schemas/Filter'
-    Filter:
-      type: object
-      required:
-      - name
-      - operator
-      - type
-      - values
-      properties:
-        name:
-          type: string
-          description: The name of the field by which to filter.
-        type:
-          type: string
-          description: The type of the filter, DATE or STRING.
-        operator:
-          type: string
-          description: The operation that the filter performs.
-        values:
-          type: array
-          description: The values to make the filter comparison against.
-          items:
-            type: string
-    Location:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the location
-        floorplanId:
-          type: string
-          description: Unique identifier for the location floorplan image
-          readOnly: true
-        coordinates:
-          type: object
-          description: Users coordinates on the floorplan. Only used when floorplanImage is set
-          additionalProperties:
-            type: number
-            format: double
+          description: Current state of the location entity
+          enum:
+          - active
+          - deleted
         notes:
           type: string
-          description: Optional description on the users location
-        locationDefinition:
-          $ref: '#/components/schemas/LocationDefinition'
-    ClonedUser:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        trustor:
-          description: The ID of the trustor organization this clone exists in.
-          readOnly: true
-          $ref: '#/components/schemas/DomainEntityRef'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Represents a cloned user in a trustor organization.
-    PresenceDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: description
-        systemPresence:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    RoleDivisionGrants:
-      type: object
-      required:
-      - grants
-      properties:
-        grants:
+          description: Notes for the location entity
+        version:
+          type: integer
+          format: int32
+          description: Current version of the location entity, value to be supplied should be retrieved by a GET or on create/update response
+        path:
           type: array
-          description: A list containing pairs of role and division IDs
+          description: A list of ancestor IDs in order
+          readOnly: true
           items:
-            $ref: '#/components/schemas/RoleDivisionPair'
-    LocationEmergencyNumber:
+            type: string
+        profileImage:
+          type: array
+          description: Profile image of the location entity, retrieved with ?expand=images query parameter
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LocationImage'
+        floorplanImage:
+          type: array
+          description: Floorplan images of the location entity, retrieved with ?expand=images query parameter
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LocationImage'
+        addressVerificationDetails:
+          description: Address verification information, retrieve dwith the ?expand=addressVerificationDetails query parameter
+          readOnly: true
+          $ref: '#/components/schemas/LocationAddressVerificationDetails'
+        addressVerified:
+          type: boolean
+          description: Boolean field which states if the address has been verified as an actual address
+          readOnly: true
+        addressStored:
+          type: boolean
+          description: Boolean field which states if the address has been stored for E911
+          readOnly: true
+        images:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Contact:
       type: object
       properties:
-        e164:
+        address:
           type: string
-        number:
+          description: Email address or phone number for this contact type
+        display:
           type: string
+          description: Formatted version of the address property
+          readOnly: true
+        mediaType:
+          type: string
+          enum:
+          - PHONE
+          - EMAIL
+          - SMS
         type:
           type: string
-          description: The type of emergency number.
           enum:
-          - default
-          - elin
-    RoutingStatus:
+          - PRIMARY
+          - WORK
+          - WORK2
+          - WORK3
+          - WORK4
+          - HOME
+          - MOBILE
+          - MAIN
+          - OTHER
+        extension:
+          type: string
+          description: Use internal extension instead of address. Mutually exclusive with the address field.
+        countryCode:
+          type: string
+        integration:
+          type: string
+          example: microsoftteams
+          description: Integration tag value if this number is associated with an external integration.
+    TrustUpdate:
       type: object
+      required:
+      - enabled
       properties:
-        userId:
-          type: string
-          description: The userId of the agent
-        status:
-          type: string
-          description: Indicates the Routing State of the agent.  A value of OFF_QUEUE will be returned if the specified user does not exist.
-          enum:
-          - OFF_QUEUE
-          - IDLE
-          - INTERACTING
-          - NOT_RESPONDING
-          - COMMUNICATING
-        startTime:
+        enabled:
+          type: boolean
+          description: If disabled no trustee user will have access, even if they were previously added.
+        dateExpired:
           type: string
           format: date-time
-          description: 'The timestamp when the agent went into this state. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    UserPresence:
+          description: 'The expiration date of the trust. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    Education:
+      type: object
+      properties:
+        school:
+          type: string
+        fieldOfStudy:
+          type: string
+        notes:
+          type: string
+          description: Notes about education has a 2000 character limit
+        dateStart:
+          type: string
+          format: date
+          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEnd:
+          type: string
+          format: date
+          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+    UserRoutingSkill:
       type: object
       properties:
         id:
@@ -7886,44 +7654,41 @@ components:
           readOnly: true
         name:
           type: string
-        source:
+        proficiency:
+          type: number
+          format: double
+          description: A rating from 0.0 to 5.0 that indicates how adept an agent is at a particular skill. When "Best available skills" is enabled for a queue in Genesys Cloud, ACD interactions in that queue are routed to agents with higher proficiency ratings.
+        state:
           type: string
-          description: Deprecated - The sourceID field should be used as a replacement.
-        sourceId:
+          description: Activate or deactivate this routing skill.
+          enum:
+          - active
+          - inactive
+          - deleted
+        skillUri:
           type: string
-          description: Represents the ID of a registered source
-        primary:
-          type: boolean
-          description: A boolean used to tell whether or not to set this presence source as the primary on a PATCH
-        presenceDefinition:
-          $ref: '#/components/schemas/PresenceDefinition'
-        futurePresenceDefinition:
-          description: The definition of the user's desired future presence
+          format: uri
+          description: URI to the organization skill used by this user skill.
           readOnly: true
-          $ref: '#/components/schemas/PresenceDefinition'
-        message:
-          type: string
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-    RoleDivisionPair:
+      description: Represents an organization skill assigned to a user. When assigning to a user specify the organization skill id as the id.
+    ClonedUserEntityListing:
       type: object
-      required:
-      - divisionId
-      - roleId
       properties:
-        roleId:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClonedUser'
+        selfUri:
           type: string
-          description: The ID of the role
-        divisionId:
-          type: string
-          description: The ID of the division
+          format: uri
     Detail:
       type: object
       properties:
@@ -7934,32 +7699,6 @@ components:
         entityId:
           type: string
         entityName:
-          type: string
-    WorkPlanBidRanks:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the user.
-        workPlanBiddingPerformance:
-          type: integer
-          format: int32
-          description: Work plan bidding agent performance ranking. The range of values is between 0 and 9999.
-        biddingTieBreaker:
-          type: string
-          description: Custom agent ranking metric that some customers can use.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Image:
-      type: object
-      properties:
-        resolution:
-          type: string
-          description: 'Height and/or width of image. ex: 640x480 or x128'
-        imageUri:
           type: string
     TrustGroupEntityListing:
       type: object
@@ -7995,53 +7734,98 @@ components:
         pageCount:
           type: integer
           format: int32
-    TrustEntityListing:
+    EmployerInfo:
       type: object
       properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Trustee'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
+        officialName:
           type: string
-          format: uri
-        nextUri:
+        employeeId:
           type: string
-          format: uri
-        previousUri:
+        employeeType:
           type: string
-          format: uri
-        lastUri:
+        dateHire:
           type: string
-          format: uri
+    Trustee:
+      type: object
+      required:
+      - enabled
+      properties:
+        id:
+          type: string
+          description: Organization Id for this trust.
+          readOnly: true
+        enabled:
+          type: boolean
+          description: If disabled no trustee user will have access, even if they were previously added.
+        usesDefaultRole:
+          type: boolean
+          description: Denotes if trustee uses admin role by default.
+        hasFullAccess:
+          type: boolean
+          description: Denotes if trustee uses full access role by default.
+        isTrustedUser:
+          type: boolean
+          description: Denotes if trustee is given Trusted User access by default.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date Trust was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateExpired:
+          type: string
+          format: date-time
+          description: 'The expiration date of the trust. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        createdBy:
+          description: User that created trust.
+          readOnly: true
+          $ref: '#/components/schemas/OrgUser'
+        organization:
+          description: Organization associated with this trust.
+          readOnly: true
+          $ref: '#/components/schemas/Organization'
         selfUri:
           type: string
           format: uri
-        pageCount:
-          type: integer
-          format: int32
-    ClonedUserEntityListing:
+          description: The URI for this object
+          readOnly: true
+    LocationImage:
       type: object
       properties:
-        total:
-          type: integer
-          format: int64
-        entities:
+        resolution:
+          type: string
+          description: 'Height and/or width of image. ex: 640x480 or x128'
+        imageUri:
+          type: string
+    ResourcePermissionPolicy:
+      type: object
+      properties:
+        id:
+          type: string
+        domain:
+          type: string
+        entityName:
+          type: string
+        policyName:
+          type: string
+        policyDescription:
+          type: string
+        actionSetKey:
+          type: string
+        allowConditions:
+          type: boolean
+        resourceConditionNode:
+          $ref: '#/components/schemas/ResourceConditionNode'
+        namedResources:
           type: array
           items:
-            $ref: '#/components/schemas/ClonedUser'
-        selfUri:
+            type: string
+        resourceCondition:
           type: string
-          format: uri
+        actionSet:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
     User:
       type: object
       required:
@@ -8200,83 +7984,116 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Trustee:
+    Image:
       type: object
-      required:
-      - enabled
       properties:
-        id:
+        resolution:
           type: string
-          description: Organization Id for this trust.
-          readOnly: true
-        enabled:
-          type: boolean
-          description: If disabled no trustee user will have access, even if they were previously added.
-        usesDefaultRole:
-          type: boolean
-          description: Denotes if trustee uses admin role by default.
-        hasFullAccess:
-          type: boolean
-          description: Denotes if trustee uses full access role by default.
-        isTrustedUser:
-          type: boolean
-          description: Denotes if trustee is given Trusted User access by default.
-        dateCreated:
+          description: 'Height and/or width of image. ex: 640x480 or x128'
+        imageUri:
           type: string
-          format: date-time
-          description: 'Date Trust was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    UserStations:
+      type: object
+      properties:
+        associatedStation:
+          description: Current associated station for this user.
           readOnly: true
-        dateExpired:
-          type: string
-          format: date-time
-          description: 'The expiration date of the trust. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        createdBy:
-          description: User that created trust.
+          $ref: '#/components/schemas/UserStation'
+        effectiveStation:
+          description: The station where the user can be reached based on their default and associated station.
           readOnly: true
-          $ref: '#/components/schemas/OrgUser'
-        organization:
-          description: Organization associated with this trust.
+          $ref: '#/components/schemas/UserStation'
+        defaultStation:
+          description: Default station to be used if not associated with a station.
           readOnly: true
-          $ref: '#/components/schemas/Organization'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
+          $ref: '#/components/schemas/UserStation'
+        lastAssociatedStation:
+          description: Last associated station for this user.
           readOnly: true
-    AddressableEntityRef:
+          $ref: '#/components/schemas/UserStation'
+    Location:
       type: object
       properties:
         id:
           type: string
+          description: Unique identifier for the location
+        floorplanId:
+          type: string
+          description: Unique identifier for the location floorplan image
+          readOnly: true
+        coordinates:
+          type: object
+          description: Users coordinates on the floorplan. Only used when floorplanImage is set
+          additionalProperties:
+            type: number
+            format: double
+        notes:
+          type: string
+          description: Optional description on the users location
+        locationDefinition:
+          $ref: '#/components/schemas/LocationDefinition'
+    TrustUserEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrustUser'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
         selfUri:
           type: string
           format: uri
-    TrustCreate:
+        pageCount:
+          type: integer
+          format: int32
+    ResourceConditionNode:
       type: object
-      required:
-      - enabled
       properties:
-        pairingId:
+        variableName:
           type: string
-          description: The pairing Id created by the trustee. This is required to prove that the trustee agrees to the relationship.  Not required when creating a default pairing with Customer Care.
-        enabled:
-          type: boolean
-          description: If disabled no trustee user will have access, even if they were previously added.
-        users:
-          type: array
-          description: The list of users and their roles to which access will be granted. The users are from the trustee and the roles are from the trustor. If no users are specified, at least one group is required.
-          items:
-            $ref: '#/components/schemas/TrustMemberCreate'
-        groups:
-          type: array
-          description: The list of groups and their roles to which access will be granted. The groups are from the trustee and the roles are from the trustor. If no groups are specified, at least one user is required.
-          items:
-            $ref: '#/components/schemas/TrustMemberCreate'
-        dateExpired:
+        conjunction:
           type: string
-          format: date-time
-          description: 'The expiration date of the trust. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    UserRoutingSkill:
+          enum:
+          - AND
+          - OR
+        operator:
+          type: string
+          enum:
+          - EQ
+          - IN
+          - GE
+          - GT
+          - LE
+          - LT
+        operands:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceConditionValue'
+        terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceConditionNode'
+    Division:
       type: object
       properties:
         id:
@@ -8285,38 +8102,342 @@ components:
           readOnly: true
         name:
           type: string
-        proficiency:
-          type: number
-          format: double
-          description: A rating from 0.0 to 5.0 that indicates how adept an agent is at a particular skill. When "Best available skills" is enabled for a queue in Genesys Cloud, ACD interactions in that queue are routed to agents with higher proficiency ratings.
-        state:
-          type: string
-          description: Activate or deactivate this routing skill.
-          enum:
-          - active
-          - inactive
-          - deleted
-        skillUri:
-          type: string
-          format: uri
-          description: URI to the organization skill used by this user skill.
-          readOnly: true
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-      description: Represents an organization skill assigned to a user. When assigning to a user specify the organization skill id as the id.
-    DomainRole:
+    LocationAddress:
       type: object
+      properties:
+        city:
+          type: string
+        country:
+          type: string
+        countryName:
+          type: string
+        state:
+          type: string
+        street1:
+          type: string
+        street2:
+          type: string
+        zipcode:
+          type: string
+    Facet:
+      type: object
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: The name of the field on which to facet.
+        type:
+          type: string
+          description: The type of the facet, DATE or STRING.
+    Organization:
+      type: object
+      required:
+      - version
       properties:
         id:
           type: string
-          description: The ID of the role
+          description: The globally unique identifier for the object.
+          readOnly: true
         name:
           type: string
-          description: The name of the role
-    Group:
+        defaultLanguage:
+          type: string
+          description: 'The default language for this organization. Example: ''en'''
+        defaultCountryCode:
+          type: string
+          description: 'The default country code for this organization. Example: ''US'''
+        thirdPartyOrgName:
+          type: string
+          description: The short name for the organization. This field is globally unique and cannot be changed.
+          readOnly: true
+        thirdPartyURI:
+          type: string
+          format: uri
+        domain:
+          type: string
+        features:
+          type: object
+          description: The state of features available for the organization.
+          readOnly: true
+          additionalProperties:
+            type: boolean
+        version:
+          type: integer
+          format: int32
+          description: The current version of the organization.
+        state:
+          type: string
+          description: The current state. Examples are active, inactive, deleted.
+          enum:
+          - active
+          - inactive
+          - deleted
+        defaultSiteId:
+          type: string
+        supportURI:
+          type: string
+          description: Email address where support tickets are sent to.
+        voicemailEnabled:
+          type: boolean
+        productPlatform:
+          type: string
+          description: Organizations Originating Platform.
+          readOnly: true
+          enum:
+          - GenesysCloud
+          - PureCloud
+          - PureEngage
+          - PureEngageCloud
+          - PureConnect
+          - PureConnectCloud
+          - Unknown
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TrusteeAuditQueryRequest:
+      type: object
+      required:
+      - trusteeOrganizationIds
+      - trusteeUserIds
+      properties:
+        trusteeOrganizationIds:
+          type: array
+          description: Limit returned audits to these trustee organizationIds.
+          items:
+            type: string
+        trusteeUserIds:
+          type: array
+          description: Limit returned audits to these trustee userIds.
+          items:
+            type: string
+        startDate:
+          type: string
+          format: date-time
+          description: Starting date/time for the audit search. ISO-8601 formatted date-time, UTC.
+        endDate:
+          type: string
+          format: date-time
+          description: Ending date/time for the audit search. ISO-8601 formatted date-time, UTC.
+        queryPhrase:
+          type: string
+          description: Word or phrase to look for in audit bodies.
+        facets:
+          type: array
+          description: Facet information to be returned with the query results.
+          items:
+            $ref: '#/components/schemas/Facet'
+        filters:
+          type: array
+          description: Additional custom filters to be applied to the query.
+          items:
+            $ref: '#/components/schemas/Filter'
+    ResourceConditionValue:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - SCALAR
+          - VARIABLE
+          - USER
+          - QUEUE
+          - TEAM
+        value:
+          type: string
+    AuditQueryResponse:
+      type: object
+    OAuthLastTokenIssued:
+      type: object
+      properties:
+        dateIssued:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    TrustRequest:
+      type: object
+      required:
+      - trustee
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        createdBy:
+          description: User who created this request.
+          readOnly: true
+          $ref: '#/components/schemas/OrgUser'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date request was created. There is a 48 hour expiration on all requests. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        trustee:
+          description: Trustee organization who generated this request.
+          readOnly: true
+          $ref: '#/components/schemas/Organization'
+        users:
+          type: array
+          description: The list of trustee users that are requesting access.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/OrgUser'
+        groups:
+          type: array
+          description: The list of trustee groups that are requesting access.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/TrustGroup'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    TrustGroup:
       type: object
       required:
       - name
@@ -8394,373 +8515,24 @@ components:
           description: Owners of the group
           items:
             $ref: '#/components/schemas/User'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    MediaSummaryDetail:
-      type: object
-      properties:
-        active:
-          type: integer
-          format: int32
-        acw:
-          type: integer
-          format: int32
-    TrustUserEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/TrustUser'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    OutOfOffice:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        user:
-          $ref: '#/components/schemas/User'
-        startDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        endDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        active:
-          type: boolean
-        indefinite:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Organization:
-      type: object
-      required:
-      - version
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        defaultLanguage:
-          type: string
-          description: 'The default language for this organization. Example: ''en'''
-        defaultCountryCode:
-          type: string
-          description: 'The default country code for this organization. Example: ''US'''
-        thirdPartyOrgName:
-          type: string
-          description: The short name for the organization. This field is globally unique and cannot be changed.
-          readOnly: true
-        thirdPartyURI:
-          type: string
-          format: uri
-        domain:
-          type: string
-        features:
-          type: object
-          description: The state of features available for the organization.
-          readOnly: true
-          additionalProperties:
-            type: boolean
-        version:
-          type: integer
-          format: int32
-          description: The current version of the organization.
-        state:
-          type: string
-          description: The current state. Examples are active, inactive, deleted.
-          enum:
-          - active
-          - inactive
-          - deleted
-        defaultSiteId:
-          type: string
-        supportURI:
-          type: string
-          description: Email address where support tickets are sent to.
-        voicemailEnabled:
-          type: boolean
-        productPlatform:
-          type: string
-          description: Organizations Originating Platform.
-          readOnly: true
-          enum:
-          - GenesysCloud
-          - PureCloud
-          - PureEngage
-          - PureEngageCloud
-          - PureConnect
-          - PureConnectCloud
-          - Unknown
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Trustor:
-      type: object
-      required:
-      - enabled
-      properties:
-        id:
-          type: string
-          description: Organization Id for this trust.
-          readOnly: true
-        enabled:
-          type: boolean
-          description: If disabled no trustee user will have access, even if they were previously added.
         dateCreated:
           type: string
           format: date-time
-          description: 'Date Trust was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          description: 'The date on which the trusted group was added. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
           readOnly: true
         createdBy:
-          description: User that created trust.
+          description: The user that added trusted group.
           readOnly: true
           $ref: '#/components/schemas/OrgUser'
-        organization:
-          description: Organization associated with this trust.
-          readOnly: true
-          $ref: '#/components/schemas/Organization'
-        authorization:
-          description: Authorization for the trustee user has in this trustor organization
-          readOnly: true
-          $ref: '#/components/schemas/TrusteeAuthorization'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ResourceConditionNode:
-      type: object
-      properties:
-        variableName:
-          type: string
-        conjunction:
-          type: string
-          enum:
-          - AND
-          - OR
-        operator:
-          type: string
-          enum:
-          - EQ
-          - IN
-          - GE
-          - GT
-          - LE
-          - LT
-        operands:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceConditionValue'
-        terms:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceConditionNode'
-    Geolocation:
+    DomainRole:
       type: object
       properties:
         id:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
+          description: The ID of the role
         name:
           type: string
-        type:
-          type: string
-          description: A string used to describe the type of client the geolocation is being updated from e.g. ios, android, web, etc.
-        primary:
-          type: boolean
-          description: A boolean used to tell whether or not to set this geolocation client as the primary on a PATCH
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        country:
-          type: string
-        region:
-          type: string
-        city:
-          type: string
-        locations:
-          type: array
-          items:
-            $ref: '#/components/schemas/LocationDefinition'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Biography:
-      type: object
-      properties:
-        biography:
-          type: string
-          description: Personal detailed description
-        interests:
-          type: array
-          items:
-            type: string
-        hobbies:
-          type: array
-          items:
-            type: string
-        spouse:
-          type: string
-        education:
-          type: array
-          description: User education details
-          items:
-            $ref: '#/components/schemas/Education'
-    LocationDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        contactUser:
-          description: Site contact for the location entity
-          $ref: '#/components/schemas/AddressableEntityRef'
-        emergencyNumber:
-          description: Emergency number for the location entity
-          $ref: '#/components/schemas/LocationEmergencyNumber'
-        address:
-          $ref: '#/components/schemas/LocationAddress'
-        state:
-          type: string
-          description: Current state of the location entity
-          enum:
-          - active
-          - deleted
-        notes:
-          type: string
-          description: Notes for the location entity
-        version:
-          type: integer
-          format: int32
-          description: Current version of the location entity, value to be supplied should be retrieved by a GET or on create/update response
-        path:
-          type: array
-          description: A list of ancestor IDs in order
-          readOnly: true
-          items:
-            type: string
-        profileImage:
-          type: array
-          description: Profile image of the location entity, retrieved with ?expand=images query parameter
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LocationImage'
-        floorplanImage:
-          type: array
-          description: Floorplan images of the location entity, retrieved with ?expand=images query parameter
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LocationImage'
-        addressVerificationDetails:
-          description: Address verification information, retrieve dwith the ?expand=addressVerificationDetails query parameter
-          readOnly: true
-          $ref: '#/components/schemas/LocationAddressVerificationDetails'
-        addressVerified:
-          type: boolean
-          description: Boolean field which states if the address has been verified as an actual address
-          readOnly: true
-        addressStored:
-          type: boolean
-          description: Boolean field which states if the address has been stored for E911
-          readOnly: true
-        images:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    TrustRequest:
-      type: object
-      required:
-      - trustee
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        createdBy:
-          description: User who created this request.
-          readOnly: true
-          $ref: '#/components/schemas/OrgUser'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date request was created. There is a 48 hour expiration on all requests. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        trustee:
-          description: Trustee organization who generated this request.
-          readOnly: true
-          $ref: '#/components/schemas/Organization'
-        users:
-          type: array
-          description: The list of trustee users that are requesting access.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/OrgUser'
-        groups:
-          type: array
-          description: The list of trustee groups that are requesting access.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/TrustGroup'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
+          description: The name of the role
     TrusteeReferenceList:
       type: object
       properties:
@@ -8768,13 +8540,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AddressableEntityRef'
-    MediaSummary:
-      type: object
-      properties:
-        contactCenter:
-          $ref: '#/components/schemas/MediaSummaryDetail'
-        enterprise:
-          $ref: '#/components/schemas/MediaSummaryDetail'
     TrustUser:
       type: object
       required:
@@ -8930,6 +8695,241 @@ components:
           readOnly: true
         trustUserDetails:
           $ref: '#/components/schemas/TrustUserDetails'
+    RoutingStatus:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The userId of the agent
+        status:
+          type: string
+          description: Indicates the Routing State of the agent.  A value of OFF_QUEUE will be returned if the specified user does not exist.
+          enum:
+          - OFF_QUEUE
+          - IDLE
+          - INTERACTING
+          - NOT_RESPONDING
+          - COMMUNICATING
+        startTime:
+          type: string
+          format: date-time
+          description: 'The timestamp when the agent went into this state. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    MediaSummaryDetail:
+      type: object
+      properties:
+        active:
+          type: integer
+          format: int32
+        acw:
+          type: integer
+          format: int32
+    ClonedUser:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        trustor:
+          description: The ID of the trustor organization this clone exists in.
+          readOnly: true
+          $ref: '#/components/schemas/DomainEntityRef'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Represents a cloned user in a trustor organization.
+    WorkPlanBidRanks:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the user.
+        workPlanBiddingPerformance:
+          type: integer
+          format: int32
+          description: Work plan bidding agent performance ranking. The range of values is between 0 and 9999.
+        biddingTieBreaker:
+          type: string
+          description: Custom agent ranking metric that some customers can use.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Chat:
+      type: object
+      properties:
+        jabberId:
+          type: string
+    GroupContact:
+      type: object
+      required:
+      - address
+      - mediaType
+      - type
+      properties:
+        address:
+          type: string
+          description: Phone number for this contact type
+        extension:
+          type: string
+          description: Extension is set if the number is e164 valid
+        display:
+          type: string
+          description: Formatted version of the address property
+          readOnly: true
+        type:
+          type: string
+          description: Contact type of the address
+          enum:
+          - GROUPRING
+          - GROUPPHONE
+        mediaType:
+          type: string
+          description: Media type of the address
+          enum:
+          - PHONE
+    TrustMemberCreate:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: Trustee User or Group Id
+        roleIds:
+          type: array
+          description: The list of roles to be granted to this user or group. Roles will be granted in all divisions.
+          items:
+            type: string
+        roleDivisions:
+          description: The list of trustor organization roles granting this user or group access paired with the divisions for those roles.
+          $ref: '#/components/schemas/RoleDivisionGrants'
+    LocationEmergencyNumber:
+      type: object
+      properties:
+        e164:
+          type: string
+        number:
+          type: string
+        type:
+          type: string
+          description: The type of emergency number.
+          enum:
+          - default
+          - elin
+    Group:
+      type: object
+      required:
+      - name
+      - rulesVisible
+      - type
+      - visibility
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The group name.
+        description:
+          type: string
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Last modified date/time. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        memberCount:
+          type: integer
+          format: int64
+          description: Number of members.
+          readOnly: true
+        state:
+          type: string
+          description: Active, inactive, or deleted state.
+          readOnly: true
+          enum:
+          - active
+          - inactive
+          - deleted
+        version:
+          type: integer
+          format: int32
+          description: Current version for this resource.
+          readOnly: true
+        type:
+          type: string
+          description: Type of group.
+          enum:
+          - official
+          - social
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupContact'
+        rulesVisible:
+          type: boolean
+          description: Are membership rules visible to the person requesting to view the group
+        visibility:
+          type: string
+          description: Who can view this group
+          enum:
+          - public
+          - owners
+          - members
+        rolesEnabled:
+          type: boolean
+          description: Allow roles to be assigned to this group
+        includeOwners:
+          type: boolean
+          description: Allow owners to be included as members of the group
+        callsEnabled:
+          type: boolean
+          description: Allow calls to be placed to this group.
+        owners:
+          type: array
+          description: Owners of the group
+          items:
+            $ref: '#/components/schemas/User'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UserAuthorization:
+      type: object
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DomainRole'
+        unusedRoles:
+          type: array
+          description: A collection of the roles the user is not using
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/DomainRole'
+        permissions:
+          type: array
+          description: A collection of the permissions granted by all assigned roles
+          readOnly: true
+          items:
+            type: string
+        permissionPolicies:
+          type: array
+          description: The policies configured for assigned permissions.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ResourcePermissionPolicy'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

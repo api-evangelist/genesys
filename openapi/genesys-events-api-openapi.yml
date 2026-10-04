@@ -454,10 +454,54 @@ paths:
         required: true
 components:
   schemas:
-    AudioUpdatedEvent:
+    EmailInitialConfiguration:
       type: object
       required:
-      - audioState
+      - from
+      - to
+      properties:
+        to:
+          type: string
+          description: An email address that this email is to.
+        from:
+          type: string
+          description: An email address that this email is from.
+        cc:
+          type: array
+          description: An email addresses that this email is carbon copied to.
+          items:
+            type: string
+        bcc:
+          type: array
+          description: An email addresses that this email is blind carbon copied to.
+          items:
+            type: string
+        subject:
+          type: string
+          description: The subject for this email.
+        previousEmailId:
+          type: string
+          description: UUID identifying the most recent previous email communication ID from the same participant on this email conversation. Will be null if this is a new participant.
+        held:
+          type: boolean
+          description: Indicates that this communication's initial state is held.
+        alerting:
+          type: boolean
+          description: Indicates that this communication's initial state is alerting. If false, the communication started in a connected state.
+        inbound:
+          type: boolean
+          description: Indicates the direction of this communication with respect to the contact center. `true` means the communication is INBOUND. `false` means the communication is OUTBOUND.
+        invitedBy:
+          type: string
+          description: The id of the communication (the "peer") that "invited" this communication, if this occurred.
+        additionalInfo:
+          type: object
+          description: Additional metadata about this session which should be recorded by the platform but which will not be indexed or searchable. Primarily for diagnostic value. Any information that needs to be accessible through other components like Analytics should be moved to dedicated fields.
+          additionalProperties:
+            type: string
+    EmailCommunicationDispositionAppliedEvent:
+      type: object
+      required:
       - communicationId
       - conversationId
       - eventDateTime
@@ -476,9 +520,672 @@ components:
         communicationId:
           type: string
           description: A unique Id (V4 UUID) identifying this communication
-        audioState:
-          description: The updated audioState for the target communication.
-          $ref: '#/components/schemas/AudioState'
+        code:
+          type: string
+          description: The wrapup-code (V4 UUID) used to disposition this interaction. If this value is not provided the disposition is considered skipped.
+        notes:
+          type: string
+          description: Text entered by the agent to describe the interaction or disposition. Ignored if the disposition is considered skipped.
+        tags:
+          type: array
+          description: The list of tags selected by the agent to describe the interaction or disposition. Ignored if the disposition is considered skipped.
+          items:
+            type: string
+    CommunicationAnsweredEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - eventDateTime
+      - eventId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication
+    UserEstablishedEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - eventDateTime
+      - eventId
+      - initialConfiguration
+      - sourceConfiguration
+      - userId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication
+        phoneNumber:
+          type: string
+          description: Identifies the phone number used to reach this user if it is different from the information that would be accessed by userId.
+        userId:
+          type: string
+          description: The userId (V4 UUID) for the user this communication belongs to.
+        stationId:
+          type: string
+          description: A Station ID (V4 UUID) that identifies the station being used if the user is using a station and the stationId is known.
+        ani:
+          type: string
+          description: The automatic number identification if it is available for this conversation.
+        dnis:
+          type: string
+          description: The dialed number identification if it is available for this conversation.
+        afterCallWorkRequired:
+          type: boolean
+          description: Indicates whether or not this user will be required to complete after call work.
+        queueId:
+          type: string
+          description: The id (V4 UUID) of the queue that the user is calling on behalf of. Applies to outbound calls only.
+        initialConfiguration:
+          description: Metadata about this communication.
+          $ref: '#/components/schemas/InitialConfiguration'
+        sourceConfiguration:
+          description: Metadata about the source of this communication's interaction.
+          $ref: '#/components/schemas/SourceConfiguration'
+    UserTransferEvent:
+      type: object
+      required:
+      - commandId
+      - conversationId
+      - destinationUserId
+      - eventDateTime
+      - eventId
+      - initiatingCommunicationId
+      - objectCommunicationId
+      - targetCommunicationId
+      - transferType
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        transferType:
+          type: string
+          description: Indicates the desired type of transfer.
+          enum:
+          - Attended
+          - Unattended
+        commandId:
+          type: string
+          description: The id (V4 UUID) used by the external platform to refer to the transfer in subsequent Transfer events.
+        initiatingCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication representing the participant that is initiating the transfer.
+        targetCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred away from. In many cases this will be the same as the `initiatingCommunicationId`.
+        objectCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred.
+        destinationUserId:
+          type: string
+          description: The id (V4 UUID) of the desired destination user that the object communication should be transferred to.
+    PhoneTransferEvent:
+      type: object
+      required:
+      - commandId
+      - conversationId
+      - destinationPhoneNumber
+      - eventDateTime
+      - eventId
+      - initiatingCommunicationId
+      - objectCommunicationId
+      - targetCommunicationId
+      - transferType
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        transferType:
+          type: string
+          description: Indicates the desired type of transfer.
+          enum:
+          - Attended
+          - Unattended
+        commandId:
+          type: string
+          description: The id (V4 UUID) used by the external platform to refer to the transfer in subsequent Transfer events.
+        initiatingCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication representing the participant that is initiating the transfer.
+        targetCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred away from. In many cases this will be the same as the `initiatingCommunicationId`.
+        objectCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred.
+        destinationPhoneNumber:
+          type: string
+          description: The desired destination phone number that the object communication should be transferred to.
+    SourceConfiguration:
+      type: object
+      required:
+      - interactionId
+      - sourceId
+      properties:
+        sourceId:
+          type: string
+          description: Identifies the external platform that is the source of the conversation.
+        interactionId:
+          type: string
+          description: The customer's unique external identifier associated with the conversation that comes from the external platform.
+        tagId:
+          type: string
+          description: The customer's external identifier or tag associated with the conversation. If set, it will be used to tag the conversation.
+    BatchUserRoutingStatusEventRequest:
+      type: object
+      properties:
+        userRoutingStatusEvents:
+          type: array
+          description: UserRoutingStatus events for this batch
+          items:
+            $ref: '#/components/schemas/UserRoutingStatusEvent'
+      description: A maximum of 100 events are allowed per request
+    EmailRoutingEstablishedEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - eventDateTime
+      - eventId
+      - initialConfiguration
+      - queueId
+      - sourceConfiguration
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication.
+        queueId:
+          type: string
+          description: The id of the queue that is routing this conversation.
+        skillIds:
+          type: array
+          description: The unique identifiers for the skills that should be used to determine the destination for the conversation.
+          items:
+            type: string
+        languageId:
+          type: string
+          description: The unique identifier for the language that should be used to determine the destination for the conversation.
+        label:
+          type: string
+          description: An optional label that categorizes the conversation. Max-utilization settings can be configured at a per-label level.
+        initialConfiguration:
+          description: Metadata about this communication.
+          $ref: '#/components/schemas/EmailInitialConfiguration'
+        sourceConfiguration:
+          description: Metadata about the source of this communication's interaction.
+          $ref: '#/components/schemas/SourceConfiguration'
+    EmailEndTransferEvent:
+      type: object
+      required:
+      - commandId
+      - conversationId
+      - eventDateTime
+      - eventId
+      - finalState
+      - objectCommunicationId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        commandId:
+          type: string
+          description: The id (V4 UUID) used to identify the transfer already started by the external platform.
+        finalState:
+          type: string
+          description: Indicates whether the transfer completed successfully, was cancelled, or failed for some reason.
+          enum:
+          - Completed
+          - Canceled
+          - Failed
+        objectCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that was being transferred.
+    RoutingEstablishedEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - eventDateTime
+      - eventId
+      - initialConfiguration
+      - queueId
+      - sourceConfiguration
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication
+        phoneNumber:
+          type: string
+          description: Identifies the phone number used to reach this queue if it is different from the information that would be accessed by queueId.
+        queueId:
+          type: string
+          description: The id (V4 UUID) of the queue that is routing this conversation.
+        ani:
+          type: string
+          description: The automatic number identification if it is available for this conversation.
+        dnis:
+          type: string
+          description: The dialed number identification if it is available for this conversation.
+        skillIds:
+          type: array
+          description: The unique identifiers (V4 UUID) for the skills that should be used to determine the destination for the conversation.
+          items:
+            type: string
+        languageId:
+          type: string
+          description: The unique identifier (V4 UUID) for the language that should be used to determine the destination for the conversation.
+        initialConfiguration:
+          description: Metadata about this communication.
+          $ref: '#/components/schemas/InitialConfiguration'
+        sourceConfiguration:
+          description: Metadata about the source of this communication's interaction.
+          $ref: '#/components/schemas/SourceConfiguration'
+    EmailCommunicationEndedEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - disconnectType
+      - eventDateTime
+      - eventId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication.
+        disconnectType:
+          type: string
+          description: Indicates how this communication was ended.
+          enum:
+          - Unknown
+          - Self
+          - Peer
+          - System
+          - Error
+          - Spam
+          - Transfer
+          - TransferACD
+          - TransferUser
+    EmailRoutingTransferEvent:
+      type: object
+      required:
+      - commandId
+      - conversationId
+      - destinationQueueId
+      - eventDateTime
+      - eventId
+      - initiatingCommunicationId
+      - objectCommunicationId
+      - targetCommunicationId
+      - transferType
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        transferType:
+          type: string
+          description: Indicates the desired type of transfer.
+          enum:
+          - Attended
+          - Unattended
+        commandId:
+          type: string
+          description: The id (V4 UUID) used by the external platform to refer to the transfer in subsequent *Transfer events.
+        initiatingCommunicationId:
+          type: string
+          description: Indicates the desired type of transfer.
+        targetCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred away from. In many cases this will be the same as the `initiatingCommunicationId`.
+        objectCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred.
+        destinationQueueId:
+          type: string
+          description: The id (V4 UUID) of the desired destination queue that the object communication should be transferred to.
+        languageId:
+          type: string
+          description: The unique identifier (V4 UUID) for the language that should be used to determine the destination for the conversation.
+        skillIds:
+          type: array
+          description: The unique identifiers (V4 UUID) for the skills that should be used to determine the destination for the conversation.
+          items:
+            type: string
+    EndConsultTransferEvent:
+      type: object
+      required:
+      - conversationId
+      - eventDateTime
+      - eventId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+    UserRoutingStatusEvent:
+      type: object
+      required:
+      - agentId
+      - eventDateTime
+      - eventId
+      - sourceId
+      - status
+      properties:
+        eventId:
+          type: string
+          description: A unique (UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A timestamp as epoch representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        agentId:
+          type: string
+          description: Unique identifier of the agent.
+        status:
+          type: string
+          description: The agent's current routing status.
+          enum:
+          - OffQueue
+          - Idle
+          - Interacting
+          - Communicating
+          - NotResponding
+        sourceId:
+          type: string
+          description: The agent's source platform Id.
+    EmailExternalEstablishedEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - eventDateTime
+      - eventId
+      - initialConfiguration
+      - sourceConfiguration
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication.
+        displayName:
+          type: string
+          description: A name for the participant if it is available for this conversation.
+        includeMessage:
+          type: boolean
+          description: Indicates that established communication has an initial email. If true, the initial messagesSent value will be initialized to 1.
+        initialConfiguration:
+          description: Metadata about this communication.
+          $ref: '#/components/schemas/EmailInitialConfiguration'
+        sourceConfiguration:
+          description: Metadata about the source of this communication's interaction.
+          $ref: '#/components/schemas/SourceConfiguration'
+    EmailProgressTransferEvent:
+      type: object
+      required:
+      - commandId
+      - conversationId
+      - destinationCommunicationId
+      - eventDateTime
+      - eventId
+      - objectCommunicationId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        commandId:
+          type: string
+          description: The id (V4 UUID) used to identify the transfer already started by the external platform.
+        objectCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred.
+        destinationCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred to.
+    EmailBeginTransmittingEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - eventDateTime
+      - eventId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication.
+    ConsultTransferEvent:
+      type: object
+      required:
+      - conversationId
+      - destinationCommunicationId
+      - eventDateTime
+      - eventId
+      - initiatingCommunicationId
+      - objectCommunicationId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        initiatingCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication representing the participant that is initiating the transfer.
+        destinationCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred to.
+        objectCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred.
+    EmailHoldUpdatedEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - eventDateTime
+      - eventId
+      - held
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication
+        held:
+          type: boolean
+          description: Indicates whether this communication is held.
+    EmailCommunicationAnsweredEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - eventDateTime
+      - eventId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication
+    CommunicationEndedEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - disconnectType
+      - eventDateTime
+      - eventId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication
+        disconnectType:
+          type: string
+          description: Indicates how this communication was ended.
+          enum:
+          - Error
+          - Peer
+          - Self
+          - System
+          - Transfer
+          - TransferACD
+          - TransferConference
+          - TransferConsult
+          - TransferUser
+        destinationConversationId:
+          type: string
+          description: The id (V4 UUID) of the conversation that the communication is being moved to when conversations are merged.
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     CommunicationDispositionAppliedEvent:
       type: object
       required:
@@ -511,6 +1218,71 @@ components:
           description: The list of tags selected by the agent to describe the interaction or disposition. Ignored if the disposition is considered skipped.
           items:
             type: string
+    EndTransferEvent:
+      type: object
+      required:
+      - commandId
+      - conversationId
+      - eventDateTime
+      - eventId
+      - finalState
+      - objectCommunicationId
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        commandId:
+          type: string
+          description: The id (V4 UUID) used to identify the transfer already started by the external platform.
+        finalState:
+          type: string
+          description: Indicates whether the transfer completed successfully, was cancelled, or failed for some reason.
+          enum:
+          - Completed
+          - Canceled
+          - Failed
+        objectCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that was being transferred.
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -644,7 +1416,7 @@ components:
         sourceConfiguration:
           description: Metadata about the source of this communication's interaction.
           $ref: '#/components/schemas/SourceConfiguration'
-    UserTransferEvent:
+    EmailUserTransferEvent:
       type: object
       required:
       - commandId
@@ -688,7 +1460,109 @@ components:
         destinationUserId:
           type: string
           description: The id (V4 UUID) of the desired destination user that the object communication should be transferred to.
-    ConsultTransferEvent:
+    ExternalEstablishedEvent:
+      type: object
+      required:
+      - communicationId
+      - conversationId
+      - eventDateTime
+      - eventId
+      - initialConfiguration
+      - sourceConfiguration
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        communicationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this communication
+        ani:
+          type: string
+          description: The automatic number identification if it is available for this conversation.
+        aniName:
+          type: string
+          description: The automatic number identification name if it is available for this conversation.
+        dnis:
+          type: string
+          description: The dialed number identification if it is available for this conversation.
+        dnisName:
+          type: string
+          description: The dialed number identification name if it is available for this conversation.
+        initialConfiguration:
+          description: Metadata about this communication.
+          $ref: '#/components/schemas/InitialConfiguration'
+        sourceConfiguration:
+          description: Metadata about the source of this communication's interaction.
+          $ref: '#/components/schemas/SourceConfiguration'
+    RoutingTransferEvent:
+      type: object
+      required:
+      - commandId
+      - conversationId
+      - destinationQueueId
+      - eventDateTime
+      - eventId
+      - initiatingCommunicationId
+      - objectCommunicationId
+      - targetCommunicationId
+      - transferType
+      properties:
+        eventId:
+          type: string
+          description: A unique (V4 UUID) eventId for this event
+        eventDateTime:
+          type: string
+          format: date-time
+          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: A unique Id (V4 UUID) identifying this conversation
+        transferType:
+          type: string
+          description: Indicates the desired type of transfer.
+          enum:
+          - Attended
+          - Unattended
+        commandId:
+          type: string
+          description: The id (V4 UUID) used by the external platform to refer to the transfer in subsequent *Transfer events.
+        initiatingCommunicationId:
+          type: string
+          description: Indicates the desired type of transfer.
+        targetCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred away from. In many cases this will be the same as the `initiatingCommunicationId`.
+        objectCommunicationId:
+          type: string
+          description: The id (V4 UUID) of the communication that is being transferred.
+        destinationQueueId:
+          type: string
+          description: The id (V4 UUID) of the desired destination queue that the object communication should be transferred to.
+        languageId:
+          type: string
+          description: The unique identifier (V4 UUID) for the language that should be used to determine the destination for the conversation.
+        skillIds:
+          type: array
+          description: The unique identifiers (V4 UUID) for the skills that should be used to determine the destination for the conversation.
+          items:
+            type: string
+    BatchUserPresenceEventRequest:
+      type: object
+      properties:
+        userPresenceEvents:
+          type: array
+          description: UserPresence events for this batch
+          items:
+            $ref: '#/components/schemas/UserPresenceEvent'
+      description: A maximum of 100 events are allowed per request
+    ProgressConsultTransferEvent:
       type: object
       required:
       - conversationId
@@ -717,114 +1591,6 @@ components:
         objectCommunicationId:
           type: string
           description: The id (V4 UUID) of the communication that is being transferred.
-    BatchUserPresenceEventRequest:
-      type: object
-      properties:
-        userPresenceEvents:
-          type: array
-          description: UserPresence events for this batch
-          items:
-            $ref: '#/components/schemas/UserPresenceEvent'
-      description: A maximum of 100 events are allowed per request
-    EndConsultTransferEvent:
-      type: object
-      required:
-      - conversationId
-      - eventDateTime
-      - eventId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    EmailHoldUpdatedEvent:
-      type: object
-      required:
-      - communicationId
-      - conversationId
-      - eventDateTime
-      - eventId
-      - held
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication
-        held:
-          type: boolean
-          description: Indicates whether this communication is held.
-    HoldUpdatedEvent:
-      type: object
-      required:
-      - communicationId
-      - conversationId
-      - eventDateTime
-      - eventId
-      - held
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication
-        held:
-          type: boolean
-          description: Indicates whether this communication is held.
     IvrEstablishedEvent:
       type: object
       required:
@@ -887,89 +1653,14 @@ components:
         communicationId:
           type: string
           description: A unique Id (V4 UUID) identifying this communication.
-    SourceConfiguration:
-      type: object
-      required:
-      - interactionId
-      - sourceId
-      properties:
-        sourceId:
-          type: string
-          description: Identifies the external platform that is the source of the conversation.
-        interactionId:
-          type: string
-          description: The customer's unique external identifier associated with the conversation that comes from the external platform.
-        tagId:
-          type: string
-          description: The customer's external identifier or tag associated with the conversation. If set, it will be used to tag the conversation.
-    ProgressTransferEvent:
-      type: object
-      required:
-      - commandId
-      - conversationId
-      - destinationCommunicationId
-      - eventDateTime
-      - eventId
-      - objectCommunicationId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        commandId:
-          type: string
-          description: The id (V4 UUID) used to identify the transfer already started by the external platform.
-        objectCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred.
-        destinationCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred to.
-    ProgressConsultTransferEvent:
-      type: object
-      required:
-      - conversationId
-      - destinationCommunicationId
-      - eventDateTime
-      - eventId
-      - initiatingCommunicationId
-      - objectCommunicationId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        initiatingCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication representing the participant that is initiating the transfer.
-        destinationCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred to.
-        objectCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred.
-    EmailRoutingEstablishedEvent:
+    HoldUpdatedEvent:
       type: object
       required:
       - communicationId
       - conversationId
       - eventDateTime
       - eventId
-      - initialConfiguration
-      - queueId
-      - sourceConfiguration
+      - held
       properties:
         eventId:
           type: string
@@ -983,33 +1674,16 @@ components:
           description: A unique Id (V4 UUID) identifying this conversation
         communicationId:
           type: string
-          description: A unique Id (V4 UUID) identifying this communication.
-        queueId:
-          type: string
-          description: The id of the queue that is routing this conversation.
-        skillIds:
-          type: array
-          description: The unique identifiers for the skills that should be used to determine the destination for the conversation.
-          items:
-            type: string
-        languageId:
-          type: string
-          description: The unique identifier for the language that should be used to determine the destination for the conversation.
-        label:
-          type: string
-          description: An optional label that categorizes the conversation. Max-utilization settings can be configured at a per-label level.
-        initialConfiguration:
-          description: Metadata about this communication.
-          $ref: '#/components/schemas/EmailInitialConfiguration'
-        sourceConfiguration:
-          description: Metadata about the source of this communication's interaction.
-          $ref: '#/components/schemas/SourceConfiguration'
-    EmailCommunicationEndedEvent:
+          description: A unique Id (V4 UUID) identifying this communication
+        held:
+          type: boolean
+          description: Indicates whether this communication is held.
+    AudioUpdatedEvent:
       type: object
       required:
+      - audioState
       - communicationId
       - conversationId
-      - disconnectType
       - eventDateTime
       - eventId
       properties:
@@ -1025,198 +1699,22 @@ components:
           description: A unique Id (V4 UUID) identifying this conversation
         communicationId:
           type: string
-          description: A unique Id (V4 UUID) identifying this communication.
-        disconnectType:
-          type: string
-          description: Indicates how this communication was ended.
-          enum:
-          - Unknown
-          - Self
-          - Peer
-          - System
-          - Error
-          - Spam
-          - Transfer
-          - TransferACD
-          - TransferUser
-    InitialConfiguration:
-      type: object
-      properties:
+          description: A unique Id (V4 UUID) identifying this communication
         audioState:
-          description: Indicates the initial audio state for the communication.
+          description: The updated audioState for the target communication.
           $ref: '#/components/schemas/AudioState'
-        alerting:
-          type: boolean
-          description: Indicates that this communication's initial state is alerting. If false, the communication started in a connected state.
-        inbound:
-          type: boolean
-          description: Indicates the direction of this communication with respect to the contact center. `true` means the communication is INBOUND. `false` means the communication is OUTBOUND.
-        invitedBy:
-          type: string
-          description: The id of the communication (the "peer") that "invited" this communication, if this occurred.
-        recordingActive:
-          type: boolean
-          description: Indicates whether recording is active for this communication at creation.
-        additionalInfo:
-          type: object
-          description: Additional metadata about this session which should be recorded by the platform but which will not be indexed or searchable. Primarily for diagnostic value. Any information that needs to be accessible through other components like Analytics should be moved to dedicated fields.
-          additionalProperties:
-            type: string
-    RoutingEstablishedEvent:
+    EventError:
       type: object
-      required:
-      - communicationId
-      - conversationId
-      - eventDateTime
-      - eventId
-      - initialConfiguration
-      - queueId
-      - sourceConfiguration
       properties:
         eventId:
           type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
+          description: The eventId (V4 UUID) for the event that encountered an error.
+        message:
           type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication
-        phoneNumber:
-          type: string
-          description: Identifies the phone number used to reach this queue if it is different from the information that would be accessed by queueId.
-        queueId:
-          type: string
-          description: The id (V4 UUID) of the queue that is routing this conversation.
-        ani:
-          type: string
-          description: The automatic number identification if it is available for this conversation.
-        dnis:
-          type: string
-          description: The dialed number identification if it is available for this conversation.
-        skillIds:
-          type: array
-          description: The unique identifiers (V4 UUID) for the skills that should be used to determine the destination for the conversation.
-          items:
-            type: string
-        languageId:
-          type: string
-          description: The unique identifier (V4 UUID) for the language that should be used to determine the destination for the conversation.
-        initialConfiguration:
-          description: Metadata about this communication.
-          $ref: '#/components/schemas/InitialConfiguration'
-        sourceConfiguration:
-          description: Metadata about the source of this communication's interaction.
-          $ref: '#/components/schemas/SourceConfiguration'
-    BatchUserRoutingStatusEventRequest:
-      type: object
-      properties:
-        userRoutingStatusEvents:
-          type: array
-          description: UserRoutingStatus events for this batch
-          items:
-            $ref: '#/components/schemas/UserRoutingStatusEvent'
-      description: A maximum of 100 events are allowed per request
-    EmailCommunicationDispositionAppliedEvent:
-      type: object
-      required:
-      - communicationId
-      - conversationId
-      - eventDateTime
-      - eventId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication
-        code:
-          type: string
-          description: The wrapup-code (V4 UUID) used to disposition this interaction. If this value is not provided the disposition is considered skipped.
-        notes:
-          type: string
-          description: Text entered by the agent to describe the interaction or disposition. Ignored if the disposition is considered skipped.
-        tags:
-          type: array
-          description: The list of tags selected by the agent to describe the interaction or disposition. Ignored if the disposition is considered skipped.
-          items:
-            type: string
-    EmailProgressTransferEvent:
-      type: object
-      required:
-      - commandId
-      - conversationId
-      - destinationCommunicationId
-      - eventDateTime
-      - eventId
-      - objectCommunicationId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        commandId:
-          type: string
-          description: The id (V4 UUID) used to identify the transfer already started by the external platform.
-        objectCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred.
-        destinationCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred to.
-    EmailExternalEstablishedEvent:
-      type: object
-      required:
-      - communicationId
-      - conversationId
-      - eventDateTime
-      - eventId
-      - initialConfiguration
-      - sourceConfiguration
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication.
-        displayName:
-          type: string
-          description: A name for the participant if it is available for this conversation.
-        includeMessage:
+          description: A message describing the error.
+        retryable:
           type: boolean
-          description: Indicates that established communication has an initial email. If true, the initial messagesSent value will be initialized to 1.
-        initialConfiguration:
-          description: Metadata about this communication.
-          $ref: '#/components/schemas/EmailInitialConfiguration'
-        sourceConfiguration:
-          description: Metadata about the source of this communication's interaction.
-          $ref: '#/components/schemas/SourceConfiguration'
+          description: The event for this eventId can be resubmitted if this value is true.
     PhoneEstablishedEvent:
       type: object
       required:
@@ -1255,347 +1753,6 @@ components:
         sourceConfiguration:
           description: Metadata about the source of this communication's interaction.
           $ref: '#/components/schemas/SourceConfiguration'
-    CommunicationEndedEvent:
-      type: object
-      required:
-      - communicationId
-      - conversationId
-      - disconnectType
-      - eventDateTime
-      - eventId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication
-        disconnectType:
-          type: string
-          description: Indicates how this communication was ended.
-          enum:
-          - Error
-          - Peer
-          - Self
-          - System
-          - Transfer
-          - TransferACD
-          - TransferConference
-          - TransferConsult
-          - TransferUser
-        destinationConversationId:
-          type: string
-          description: The id (V4 UUID) of the conversation that the communication is being moved to when conversations are merged.
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    EventError:
-      type: object
-      properties:
-        eventId:
-          type: string
-          description: The eventId (V4 UUID) for the event that encountered an error.
-        message:
-          type: string
-          description: A message describing the error.
-        retryable:
-          type: boolean
-          description: The event for this eventId can be resubmitted if this value is true.
-    EmailEndTransferEvent:
-      type: object
-      required:
-      - commandId
-      - conversationId
-      - eventDateTime
-      - eventId
-      - finalState
-      - objectCommunicationId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        commandId:
-          type: string
-          description: The id (V4 UUID) used to identify the transfer already started by the external platform.
-        finalState:
-          type: string
-          description: Indicates whether the transfer completed successfully, was cancelled, or failed for some reason.
-          enum:
-          - Completed
-          - Canceled
-          - Failed
-        objectCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that was being transferred.
-    UserRoutingStatusEvent:
-      type: object
-      required:
-      - agentId
-      - eventDateTime
-      - eventId
-      - sourceId
-      - status
-      properties:
-        eventId:
-          type: string
-          description: A unique (UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A timestamp as epoch representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        agentId:
-          type: string
-          description: Unique identifier of the agent.
-        status:
-          type: string
-          description: The agent's current routing status.
-          enum:
-          - OffQueue
-          - Idle
-          - Interacting
-          - Communicating
-          - NotResponding
-        sourceId:
-          type: string
-          description: The agent's source platform Id.
-    EmailInitialConfiguration:
-      type: object
-      required:
-      - from
-      - to
-      properties:
-        to:
-          type: string
-          description: An email address that this email is to.
-        from:
-          type: string
-          description: An email address that this email is from.
-        cc:
-          type: array
-          description: An email addresses that this email is carbon copied to.
-          items:
-            type: string
-        bcc:
-          type: array
-          description: An email addresses that this email is blind carbon copied to.
-          items:
-            type: string
-        subject:
-          type: string
-          description: The subject for this email.
-        previousEmailId:
-          type: string
-          description: UUID identifying the most recent previous email communication ID from the same participant on this email conversation. Will be null if this is a new participant.
-        held:
-          type: boolean
-          description: Indicates that this communication's initial state is held.
-        alerting:
-          type: boolean
-          description: Indicates that this communication's initial state is alerting. If false, the communication started in a connected state.
-        inbound:
-          type: boolean
-          description: Indicates the direction of this communication with respect to the contact center. `true` means the communication is INBOUND. `false` means the communication is OUTBOUND.
-        invitedBy:
-          type: string
-          description: The id of the communication (the "peer") that "invited" this communication, if this occurred.
-        additionalInfo:
-          type: object
-          description: Additional metadata about this session which should be recorded by the platform but which will not be indexed or searchable. Primarily for diagnostic value. Any information that needs to be accessible through other components like Analytics should be moved to dedicated fields.
-          additionalProperties:
-            type: string
-    EmailCommunicationAnsweredEvent:
-      type: object
-      required:
-      - communicationId
-      - conversationId
-      - eventDateTime
-      - eventId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication
-    RoutingTransferEvent:
-      type: object
-      required:
-      - commandId
-      - conversationId
-      - destinationQueueId
-      - eventDateTime
-      - eventId
-      - initiatingCommunicationId
-      - objectCommunicationId
-      - targetCommunicationId
-      - transferType
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        transferType:
-          type: string
-          description: Indicates the desired type of transfer.
-          enum:
-          - Attended
-          - Unattended
-        commandId:
-          type: string
-          description: The id (V4 UUID) used by the external platform to refer to the transfer in subsequent *Transfer events.
-        initiatingCommunicationId:
-          type: string
-          description: Indicates the desired type of transfer.
-        targetCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred away from. In many cases this will be the same as the `initiatingCommunicationId`.
-        objectCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred.
-        destinationQueueId:
-          type: string
-          description: The id (V4 UUID) of the desired destination queue that the object communication should be transferred to.
-        languageId:
-          type: string
-          description: The unique identifier (V4 UUID) for the language that should be used to determine the destination for the conversation.
-        skillIds:
-          type: array
-          description: The unique identifiers (V4 UUID) for the skills that should be used to determine the destination for the conversation.
-          items:
-            type: string
-    PhoneTransferEvent:
-      type: object
-      required:
-      - commandId
-      - conversationId
-      - destinationPhoneNumber
-      - eventDateTime
-      - eventId
-      - initiatingCommunicationId
-      - objectCommunicationId
-      - targetCommunicationId
-      - transferType
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        transferType:
-          type: string
-          description: Indicates the desired type of transfer.
-          enum:
-          - Attended
-          - Unattended
-        commandId:
-          type: string
-          description: The id (V4 UUID) used by the external platform to refer to the transfer in subsequent Transfer events.
-        initiatingCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication representing the participant that is initiating the transfer.
-        targetCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred away from. In many cases this will be the same as the `initiatingCommunicationId`.
-        objectCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred.
-        destinationPhoneNumber:
-          type: string
-          description: The desired destination phone number that the object communication should be transferred to.
-    EmailBeginTransmittingEvent:
-      type: object
-      required:
-      - communicationId
-      - conversationId
-      - eventDateTime
-      - eventId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication.
-    EndTransferEvent:
-      type: object
-      required:
-      - commandId
-      - conversationId
-      - eventDateTime
-      - eventId
-      - finalState
-      - objectCommunicationId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        commandId:
-          type: string
-          description: The id (V4 UUID) used to identify the transfer already started by the external platform.
-        finalState:
-          type: string
-          description: Indicates whether the transfer completed successfully, was cancelled, or failed for some reason.
-          enum:
-          - Completed
-          - Canceled
-          - Failed
-        objectCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that was being transferred.
     EmailUserEstablishedEvent:
       type: object
       required:
@@ -1635,97 +1792,15 @@ components:
         sourceConfiguration:
           description: Metadata about the source of this communication's interaction.
           $ref: '#/components/schemas/SourceConfiguration'
-    BatchEventResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          description: A list of validation or server errors that occurred for posted events.
-          items:
-            $ref: '#/components/schemas/EventError'
-    ExternalEstablishedEvent:
-      type: object
-      required:
-      - communicationId
-      - conversationId
-      - eventDateTime
-      - eventId
-      - initialConfiguration
-      - sourceConfiguration
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication
-        ani:
-          type: string
-          description: The automatic number identification if it is available for this conversation.
-        aniName:
-          type: string
-          description: The automatic number identification name if it is available for this conversation.
-        dnis:
-          type: string
-          description: The dialed number identification if it is available for this conversation.
-        dnisName:
-          type: string
-          description: The dialed number identification name if it is available for this conversation.
-        initialConfiguration:
-          description: Metadata about this communication.
-          $ref: '#/components/schemas/InitialConfiguration'
-        sourceConfiguration:
-          description: Metadata about the source of this communication's interaction.
-          $ref: '#/components/schemas/SourceConfiguration'
-    CommunicationAnsweredEvent:
-      type: object
-      required:
-      - communicationId
-      - conversationId
-      - eventDateTime
-      - eventId
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication
-    AudioState:
-      type: object
-      properties:
-        canHear:
-          type: boolean
-          description: Indicates that this communication's audio allows its participant to hear others.
-        canSpeak:
-          type: boolean
-          description: Indicates that this communication's audio allows others to hear this participant.
-    EmailRoutingTransferEvent:
+    ProgressTransferEvent:
       type: object
       required:
       - commandId
       - conversationId
-      - destinationQueueId
+      - destinationCommunicationId
       - eventDateTime
       - eventId
-      - initiatingCommunicationId
       - objectCommunicationId
-      - targetCommunicationId
-      - transferType
       properties:
         eventId:
           type: string
@@ -1737,88 +1812,44 @@ components:
         conversationId:
           type: string
           description: A unique Id (V4 UUID) identifying this conversation
-        transferType:
-          type: string
-          description: Indicates the desired type of transfer.
-          enum:
-          - Attended
-          - Unattended
         commandId:
           type: string
-          description: The id (V4 UUID) used by the external platform to refer to the transfer in subsequent *Transfer events.
-        initiatingCommunicationId:
-          type: string
-          description: Indicates the desired type of transfer.
-        targetCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred away from. In many cases this will be the same as the `initiatingCommunicationId`.
+          description: The id (V4 UUID) used to identify the transfer already started by the external platform.
         objectCommunicationId:
           type: string
           description: The id (V4 UUID) of the communication that is being transferred.
-        destinationQueueId:
+        destinationCommunicationId:
           type: string
-          description: The id (V4 UUID) of the desired destination queue that the object communication should be transferred to.
-        languageId:
+          description: The id (V4 UUID) of the communication that is being transferred to.
+    InitialConfiguration:
+      type: object
+      properties:
+        audioState:
+          description: Indicates the initial audio state for the communication.
+          $ref: '#/components/schemas/AudioState'
+        alerting:
+          type: boolean
+          description: Indicates that this communication's initial state is alerting. If false, the communication started in a connected state.
+        inbound:
+          type: boolean
+          description: Indicates the direction of this communication with respect to the contact center. `true` means the communication is INBOUND. `false` means the communication is OUTBOUND.
+        invitedBy:
           type: string
-          description: The unique identifier (V4 UUID) for the language that should be used to determine the destination for the conversation.
-        skillIds:
-          type: array
-          description: The unique identifiers (V4 UUID) for the skills that should be used to determine the destination for the conversation.
-          items:
+          description: The id of the communication (the "peer") that "invited" this communication, if this occurred.
+        recordingActive:
+          type: boolean
+          description: Indicates whether recording is active for this communication at creation.
+        additionalInfo:
+          type: object
+          description: Additional metadata about this session which should be recorded by the platform but which will not be indexed or searchable. Primarily for diagnostic value. Any information that needs to be accessible through other components like Analytics should be moved to dedicated fields.
+          additionalProperties:
             type: string
-    EmailUserTransferEvent:
+    UserPresenceEvent:
       type: object
       required:
-      - commandId
-      - conversationId
-      - destinationUserId
       - eventDateTime
       - eventId
-      - initiatingCommunicationId
-      - objectCommunicationId
-      - targetCommunicationId
-      - transferType
-      properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        transferType:
-          type: string
-          description: Indicates the desired type of transfer.
-          enum:
-          - Attended
-          - Unattended
-        commandId:
-          type: string
-          description: The id (V4 UUID) used by the external platform to refer to the transfer in subsequent Transfer events.
-        initiatingCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication representing the participant that is initiating the transfer.
-        targetCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred away from. In many cases this will be the same as the `initiatingCommunicationId`.
-        objectCommunicationId:
-          type: string
-          description: The id (V4 UUID) of the communication that is being transferred.
-        destinationUserId:
-          type: string
-          description: The id (V4 UUID) of the desired destination user that the object communication should be transferred to.
-    UserEstablishedEvent:
-      type: object
-      required:
-      - communicationId
-      - conversationId
-      - eventDateTime
-      - eventId
-      - initialConfiguration
-      - sourceConfiguration
+      - sourceId
       - userId
       properties:
         eventId:
@@ -1828,39 +1859,27 @@ components:
           type: string
           format: date-time
           description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this conversation
-        communicationId:
-          type: string
-          description: A unique Id (V4 UUID) identifying this communication
-        phoneNumber:
-          type: string
-          description: Identifies the phone number used to reach this user if it is different from the information that would be accessed by userId.
         userId:
           type: string
-          description: The userId (V4 UUID) for the user this communication belongs to.
-        stationId:
+          description: The User ID of the user associated with this UserPresence
+        sourceId:
           type: string
-          description: A Station ID (V4 UUID) that identifies the station being used if the user is using a station and the stationId is known.
-        ani:
+          description: The id (V4 UUID) of the presence source being updated
+        presenceDefinitionId:
           type: string
-          description: The automatic number identification if it is available for this conversation.
-        dnis:
+          description: The id (UUID) of the presence definition that the user presence is associated with
+        message:
           type: string
-          description: The dialed number identification if it is available for this conversation.
-        afterCallWorkRequired:
+          description: The message associated with the presence
+    AudioState:
+      type: object
+      properties:
+        canHear:
           type: boolean
-          description: Indicates whether or not this user will be required to complete after call work.
-        queueId:
-          type: string
-          description: The id (V4 UUID) of the queue that the user is calling on behalf of. Applies to outbound calls only.
-        initialConfiguration:
-          description: Metadata about this communication.
-          $ref: '#/components/schemas/InitialConfiguration'
-        sourceConfiguration:
-          description: Metadata about the source of this communication's interaction.
-          $ref: '#/components/schemas/SourceConfiguration'
+          description: Indicates that this communication's audio allows its participant to hear others.
+        canSpeak:
+          type: boolean
+          description: Indicates that this communication's audio allows others to hear this participant.
     BatchConversationEventRequest:
       type: object
       properties:
@@ -2025,33 +2044,14 @@ components:
           items:
             $ref: '#/components/schemas/EmailUserTransferEvent'
       description: A maximum of 100 events are allowed per request
-    UserPresenceEvent:
+    BatchEventResponse:
       type: object
-      required:
-      - eventDateTime
-      - eventId
-      - sourceId
-      - userId
       properties:
-        eventId:
-          type: string
-          description: A unique (V4 UUID) eventId for this event
-        eventDateTime:
-          type: string
-          format: date-time
-          description: 'A Date Time representing the time this event occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        userId:
-          type: string
-          description: The User ID of the user associated with this UserPresence
-        sourceId:
-          type: string
-          description: The id (V4 UUID) of the presence source being updated
-        presenceDefinitionId:
-          type: string
-          description: The id (UUID) of the presence definition that the user presence is associated with
-        message:
-          type: string
-          description: The message associated with the presence
+        errors:
+          type: array
+          description: A list of validation or server errors that occurred for posted events.
+          items:
+            $ref: '#/components/schemas/EventError'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

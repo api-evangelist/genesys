@@ -746,25 +746,283 @@ paths:
         required: true
 components:
   schemas:
-    ConversationProfile:
+    CopilotRule:
       type: object
       required:
-      - languageCode
-      - name
+      - actions
+      - conditions
       properties:
+        conditions:
+          type: array
+          description: 'List of conditions to execute actions, must have at least 1 element and maximum 100 elements. Operator in case of multiple conditions: ''OR''.'
+          items:
+            $ref: '#/components/schemas/CopilotCondition'
+        actions:
+          type: array
+          description: List of actions to execute, must have at least 1 element and maximum 100 elements.
+          items:
+            $ref: '#/components/schemas/CopilotAction'
+    GoogleDialogflowConfig:
+      type: object
+      required:
+      - conversationProfiles
+      properties:
+        integrationId:
+          type: string
+          description: The integration identifier with which the assistant will fetch transcriptions and knowledge suggestions.
+        conversationProfiles:
+          type: array
+          description: The conversation profiles for which the assistant will fetch transcription and knowledge suggestions.
+          items:
+            $ref: '#/components/schemas/ConversationProfile'
+    KnowledgeAnswerConfig:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Knowledge answer is enabled.
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    CopilotCondition:
+      type: object
+      required:
+      - conditionType
+      - conditionValues
+      properties:
+        conditionType:
+          type: string
+          description: Type of condition.
+          enum:
+          - Intent
+          - ConversationStart
+          - ConversationTransfer
+          - ConversationEnd
+        conditionValues:
+          type: array
+          description: Condition values.
+          items:
+            type: string
+    AnswerGenerationConfig:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Answer generation is enabled.
+    ManualSearchConfig:
+      type: object
+      properties:
+        articlesWithAnswerHighlights:
+          type: boolean
+          description: Articles with answer highlights.
+        answerGeneration:
+          type: boolean
+          description: Answer generation.
+    WrapupCodePredictionConfig:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Copilot generated wrapup code prediction is enabled.
+    NluConfig:
+      type: object
+      required:
+      - domain
+      - intentConfidenceThreshold
+      properties:
+        domain:
+          description: NLU domain.
+          $ref: '#/components/schemas/CopilotNluDomain'
+        intentConfidenceThreshold:
+          type: number
+          format: float
+          description: Minimum confidence value of accepting NLU intents, must be greater than 0 and less than 1.
+    AssistantCopilotVariationListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssistantCopilotVariation'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TranscriptionConfig:
+      type: object
+      required:
+      - vendorName
+      properties:
+        vendorName:
+          type: string
+          description: The name of the vendor used for speech transcription.
+          enum:
+          - GoogleDialogflow
+          - Unknown
+          - Genesys
+    KnowledgeBaseWithDialectReference:
+      type: object
+      required:
+      - id
+      - languageCode
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the knowledge base.
         languageCode:
           type: string
-          description: The language code supported by the conversation profile belonging to a particular project for Dialogflow.
+          description: The dialect for the knowledge base.
           enum:
-          - en
+          - en-ZA
           - en-AU
-          - en-CA
           - en-GB
+          - en-IE
           - en-IN
           - en-US
-        name:
+          - es-US
+          - es-ES
+          - nl-NL
+          - fr-CA
+          - fr-FR
+          - de-DE
+          - it-IT
+          - pt-PT
+          - pt-BR
+          - ar-AE
+          - ja-JP
+          - sv-SE
+          - de-AT
+          - de-CH
+          - da-DK
+          - fr-BE
+          - fr-CH
+          - es-MX
+          - es-CO
+          - ko-KR
+          - hi-IN
+          - tr-TR
+          - es-AR
+          - fi-FI
+          - nb-NO
+          - cs-CZ
+          - hu-HU
+          - th-TH
+          - pl-PL
+          - nl-BE
+          - fil-PH
+          - ms-MY
+          - he-IL
+          - el-GR
+        selfUri:
           type: string
-          description: The name of the conversation profile belonging to a particular project for Dialogflow
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    CopilotFallbackAction:
+      type: object
+      required:
+      - actionType
+      properties:
+        actionType:
+          type: string
+          description: Type of action.
+          enum:
+          - KnowledgeArticle
+          - CannedResponse
+          - Script
+          - KnowledgeSearch
+          - ThirdPartyAction
+        attributes:
+          type: object
+          description: Action specific attributes, if any. Maximum 100 of string key-value pair allowed.
+          additionalProperties:
+            type: string
+    CopilotAction:
+      type: object
+      required:
+      - actionType
+      properties:
+        actionType:
+          type: string
+          description: Type of action.
+          enum:
+          - KnowledgeArticle
+          - CannedResponse
+          - Script
+          - Checklist
+          - ThirdPartyAction
+        attributes:
+          type: object
+          description: Action specific attributes, if any. Maximum 100 of string key-value pair allowed.
+          additionalProperties:
+            type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -869,38 +1127,122 @@ components:
         value:
           type: integer
           format: int64
-    ErrorBody:
+    Copilot:
+      type: object
+      required:
+      - defaultLanguage
+      - liveOnQueue
+      properties:
+        enabled:
+          type: boolean
+          description: Copilot is enabled.
+          readOnly: true
+        liveOnQueue:
+          type: boolean
+          description: Copilot is live on selected queue.
+        defaultLanguage:
+          type: string
+          description: Copilot default language, e.g. [en-US, es-US, es-ES]. Once set, it can not be modified.
+        knowledgeAnswerConfig:
+          description: 'Deprecated: Please use AutoSearchConfig and ManualSearchConfig fields instead.'
+          $ref: '#/components/schemas/KnowledgeAnswerConfig'
+        summaryGenerationConfig:
+          description: Copilot generated summary configuration.
+          $ref: '#/components/schemas/SummaryGenerationConfig'
+        wrapupCodePredictionConfig:
+          description: Copilot generated wrapup code prediction configuration.
+          $ref: '#/components/schemas/WrapupCodePredictionConfig'
+        answerGenerationConfig:
+          description: 'Deprecated: Please use AutoSearchConfig and ManualSearchConfig fields instead.'
+          $ref: '#/components/schemas/AnswerGenerationConfig'
+        nluEngineType:
+          type: string
+          description: Language understanding engine type.
+          enum:
+          - NluV3
+        nluConfig:
+          description: NLU configuration.
+          $ref: '#/components/schemas/NluConfig'
+        ruleEngineConfig:
+          description: Rule engine configuration.
+          $ref: '#/components/schemas/RuleEngineConfig'
+        autoSearchConfig:
+          description: Auto search configuration.
+          $ref: '#/components/schemas/AutoSearchConfig'
+        manualSearchConfig:
+          description: Manual Search configuration.
+          $ref: '#/components/schemas/ManualSearchConfig'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CopilotNluDomainVersion:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: Id of the NLU v3 domain version.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    SummaryGenerationConfig:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Copilot generated summary is enabled.
+        summarySetting:
+          description: Configured summary setting object.
+          $ref: '#/components/schemas/SummarySettingEntity'
+    AutoSearchConfig:
       type: object
       properties:
-        message:
+        type:
           type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
+          description: Auto search configuration type.
+          enum:
+          - ArticlesOnly
+          - ArticlesWithAnswerHighlights
+          - AnswerGeneration
+    RuleEngineConfig:
+      type: object
+      required:
+      - rules
+      properties:
+        rules:
           type: array
+          description: List of rules to evaluate by the engine.
           items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
+            $ref: '#/components/schemas/RuleConfig'
+        fallback:
+          description: Fallback configuration.
+          $ref: '#/components/schemas/Fallback'
+    ConversationProfile:
+      type: object
+      required:
+      - languageCode
+      - name
+      properties:
+        languageCode:
+          type: string
+          description: The language code supported by the conversation profile belonging to a particular project for Dialogflow.
+          enum:
+          - en
+          - en-AU
+          - en-CA
+          - en-GB
+          - en-IN
+          - en-US
+        name:
+          type: string
+          description: The name of the conversation profile belonging to a particular project for Dialogflow
     KnowledgeSuggestionConfig:
       type: object
       required:
@@ -925,15 +1267,26 @@ components:
         receiveSegmentedArticles:
           type: boolean
           description: Include segmented articles in knowledge suggestions.
-    ManualSearchConfig:
+    CopilotNluDomain:
       type: object
+      required:
+      - id
+      - useLatestVersion
       properties:
-        articlesWithAnswerHighlights:
+        id:
+          type: string
+          description: Id of the NLU domain.
+        useLatestVersion:
           type: boolean
-          description: Articles with answer highlights.
-        answerGeneration:
-          type: boolean
-          description: Answer generation.
+          description: Use the latest version of the NLU domain. If false, version is required.
+        version:
+          description: NLU domain version.
+          $ref: '#/components/schemas/CopilotNluDomainVersion'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     AssistantCopilotVariation:
       type: object
       required:
@@ -994,87 +1347,6 @@ components:
           description: The parent assistant if this assistant is a variation of an assistant
           readOnly: true
           $ref: '#/components/schemas/AddressableEntityRef'
-    CopilotCondition:
-      type: object
-      required:
-      - conditionType
-      - conditionValues
-      properties:
-        conditionType:
-          type: string
-          description: Type of condition.
-          enum:
-          - Intent
-          - ConversationStart
-          - ConversationTransfer
-          - ConversationEnd
-        conditionValues:
-          type: array
-          description: Condition values.
-          items:
-            type: string
-    NluConfig:
-      type: object
-      required:
-      - domain
-      - intentConfidenceThreshold
-      properties:
-        domain:
-          description: NLU domain.
-          $ref: '#/components/schemas/CopilotNluDomain'
-        intentConfidenceThreshold:
-          type: number
-          format: float
-          description: Minimum confidence value of accepting NLU intents, must be greater than 0 and less than 1.
-    GoogleDialogflowConfig:
-      type: object
-      required:
-      - conversationProfiles
-      properties:
-        integrationId:
-          type: string
-          description: The integration identifier with which the assistant will fetch transcriptions and knowledge suggestions.
-        conversationProfiles:
-          type: array
-          description: The conversation profiles for which the assistant will fetch transcription and knowledge suggestions.
-          items:
-            $ref: '#/components/schemas/ConversationProfile'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    RuleEngineConfig:
-      type: object
-      required:
-      - rules
-      properties:
-        rules:
-          type: array
-          description: List of rules to evaluate by the engine.
-          items:
-            $ref: '#/components/schemas/RuleConfig'
-        fallback:
-          description: Fallback configuration.
-          $ref: '#/components/schemas/Fallback'
-    SummarySettingEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     Fallback:
       type: object
       properties:
@@ -1086,203 +1358,13 @@ components:
           description: Fallback actions.
           items:
             $ref: '#/components/schemas/CopilotFallbackAction'
-    KnowledgeBaseWithDialectReference:
-      type: object
-      required:
-      - id
-      - languageCode
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the knowledge base.
-        languageCode:
-          type: string
-          description: The dialect for the knowledge base.
-          enum:
-          - en-ZA
-          - en-AU
-          - en-GB
-          - en-IE
-          - en-IN
-          - en-US
-          - es-US
-          - es-ES
-          - nl-NL
-          - fr-CA
-          - fr-FR
-          - de-DE
-          - it-IT
-          - pt-PT
-          - pt-BR
-          - ar-AE
-          - ja-JP
-          - sv-SE
-          - de-AT
-          - de-CH
-          - da-DK
-          - fr-BE
-          - fr-CH
-          - es-MX
-          - es-CO
-          - ko-KR
-          - hi-IN
-          - tr-TR
-          - es-AR
-          - fi-FI
-          - nb-NO
-          - cs-CZ
-          - hu-HU
-          - th-TH
-          - pl-PL
-          - nl-BE
-          - fil-PH
-          - ms-MY
-          - he-IL
-          - el-GR
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Copilot:
-      type: object
-      required:
-      - defaultLanguage
-      - liveOnQueue
-      properties:
-        enabled:
-          type: boolean
-          description: Copilot is enabled.
-          readOnly: true
-        liveOnQueue:
-          type: boolean
-          description: Copilot is live on selected queue.
-        defaultLanguage:
-          type: string
-          description: Copilot default language, e.g. [en-US, es-US, es-ES]. Once set, it can not be modified.
-        knowledgeAnswerConfig:
-          description: 'Deprecated: Please use AutoSearchConfig and ManualSearchConfig fields instead.'
-          $ref: '#/components/schemas/KnowledgeAnswerConfig'
-        summaryGenerationConfig:
-          description: Copilot generated summary configuration.
-          $ref: '#/components/schemas/SummaryGenerationConfig'
-        wrapupCodePredictionConfig:
-          description: Copilot generated wrapup code prediction configuration.
-          $ref: '#/components/schemas/WrapupCodePredictionConfig'
-        answerGenerationConfig:
-          description: 'Deprecated: Please use AutoSearchConfig and ManualSearchConfig fields instead.'
-          $ref: '#/components/schemas/AnswerGenerationConfig'
-        nluEngineType:
-          type: string
-          description: Language understanding engine type.
-          enum:
-          - NluV3
-        nluConfig:
-          description: NLU configuration.
-          $ref: '#/components/schemas/NluConfig'
-        ruleEngineConfig:
-          description: Rule engine configuration.
-          $ref: '#/components/schemas/RuleEngineConfig'
-        autoSearchConfig:
-          description: Auto search configuration.
-          $ref: '#/components/schemas/AutoSearchConfig'
-        manualSearchConfig:
-          description: Manual Search configuration.
-          $ref: '#/components/schemas/ManualSearchConfig'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CopilotAction:
-      type: object
-      required:
-      - actionType
-      properties:
-        actionType:
-          type: string
-          description: Type of action.
-          enum:
-          - KnowledgeArticle
-          - CannedResponse
-          - Script
-          - Checklist
-          - ThirdPartyAction
-        attributes:
-          type: object
-          description: Action specific attributes, if any. Maximum 100 of string key-value pair allowed.
-          additionalProperties:
-            type: string
-    WrapupCodePredictionConfig:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: Copilot generated wrapup code prediction is enabled.
-    TranscriptionConfig:
-      type: object
-      required:
-      - vendorName
-      properties:
-        vendorName:
-          type: string
-          description: The name of the vendor used for speech transcription.
-          enum:
-          - GoogleDialogflow
-          - Unknown
-          - Genesys
-    KnowledgeAnswerConfig:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: Knowledge answer is enabled.
-    CopilotNluDomain:
-      type: object
-      required:
-      - id
-      - useLatestVersion
-      properties:
-        id:
-          type: string
-          description: Id of the NLU domain.
-        useLatestVersion:
-          type: boolean
-          description: Use the latest version of the NLU domain. If false, version is required.
-        version:
-          description: NLU domain version.
-          $ref: '#/components/schemas/CopilotNluDomainVersion'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CopilotRule:
-      type: object
-      required:
-      - actions
-      - conditions
-      properties:
-        conditions:
-          type: array
-          description: 'List of conditions to execute actions, must have at least 1 element and maximum 100 elements. Operator in case of multiple conditions: ''OR''.'
-          items:
-            $ref: '#/components/schemas/CopilotCondition'
-        actions:
-          type: array
-          description: List of actions to execute, must have at least 1 element and maximum 100 elements.
-          items:
-            $ref: '#/components/schemas/CopilotAction'
-    UserReference:
+    SummarySettingEntity:
       type: object
       properties:
         id:
           type: string
           description: The globally unique identifier for the object.
+          readOnly: true
         selfUri:
           type: string
           format: uri
@@ -1374,88 +1456,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    AutoSearchConfig:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Auto search configuration type.
-          enum:
-          - ArticlesOnly
-          - ArticlesWithAnswerHighlights
-          - AnswerGeneration
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    SummaryGenerationConfig:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: Copilot generated summary is enabled.
-        summarySetting:
-          description: Configured summary setting object.
-          $ref: '#/components/schemas/SummarySettingEntity'
-    CopilotFallbackAction:
-      type: object
-      required:
-      - actionType
-      properties:
-        actionType:
-          type: string
-          description: Type of action.
-          enum:
-          - KnowledgeArticle
-          - CannedResponse
-          - Script
-          - KnowledgeSearch
-          - ThirdPartyAction
-        attributes:
-          type: object
-          description: Action specific attributes, if any. Maximum 100 of string key-value pair allowed.
-          additionalProperties:
-            type: string
-    CopilotNluDomainVersion:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: Id of the NLU v3 domain version.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    AnswerGenerationConfig:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: Answer generation is enabled.
-    AssistantCopilotVariationListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssistantCopilotVariation'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

@@ -156,6 +156,62 @@ paths:
               $ref: '#/components/schemas/BackgroundAssistantUserAuthenticatedInfo'
 components:
   schemas:
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    SignedData:
+      type: object
+      properties:
+        jwt:
+          type: string
+    BackgroundAssistantUserAuthenticatedInfo:
+      type: object
+      required:
+      - backgroundAssistantId
+      properties:
+        backgroundAssistantId:
+          type: string
+          description: Id of Genesys Cloud Background Assistant
     Limit:
       type: object
       properties:
@@ -260,62 +316,6 @@ components:
         value:
           type: integer
           format: int64
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    SignedData:
-      type: object
-      properties:
-        jwt:
-          type: string
-    BackgroundAssistantUserAuthenticatedInfo:
-      type: object
-      required:
-      - backgroundAssistantId
-      properties:
-        backgroundAssistantId:
-          type: string
-          description: Id of Genesys Cloud Background Assistant
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

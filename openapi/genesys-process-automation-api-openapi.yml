@@ -1930,6 +1930,264 @@ paths:
         required: true
 components:
   schemas:
+    MatchCriteriaTestResult:
+      type: object
+      properties:
+        jsonPath:
+          type: string
+          description: The Goessner json path of the field to match
+        operator:
+          type: string
+          description: The type of operation to perform for matching check
+          enum:
+          - GreaterThanOrEqual
+          - LessThanOrEqual
+          - Equal
+          - NotEqual
+          - LessThan
+          - GreaterThan
+          - NotIn
+          - In
+          - Contains
+          - All
+          - Exists
+          - Size
+        value:
+          description: The value to match on. Only one of value and values can be included
+          $ref: '#/components/schemas/JsonNode'
+        values:
+          type: array
+          description: The list of values to match on. Only one of value and values can be included
+          items:
+            $ref: '#/components/schemas/JsonNode'
+        generatedJsonPathCondition:
+          type: string
+          description: The generated json path condition
+        match:
+          type: boolean
+          description: Did the generated json path condition match
+        jsonPathExtraction:
+          type: array
+          description: The json paths and their values that were compared
+          items:
+            $ref: '#/components/schemas/MatchTestResult'
+      description: Results of a matching expression
+    TestModeEventResults:
+      type: object
+      properties:
+        schemaValidation:
+          description: Information about the validation of the schema of the event body passed in to test mode
+          $ref: '#/components/schemas/TestSchemaOperation'
+        triggerMatchValidation:
+          description: Information about matched and unmatched triggers
+          $ref: '#/components/schemas/TestMatchesEventOperation'
+      description: Information about event test mode execution
+    MatchCriteria:
+      type: object
+      properties:
+        jsonPath:
+          type: string
+          description: The Goessner json path of the field to match
+        operator:
+          type: string
+          description: The type of operation to perform for matching check
+          enum:
+          - GreaterThanOrEqual
+          - LessThanOrEqual
+          - Equal
+          - NotEqual
+          - LessThan
+          - GreaterThan
+          - NotIn
+          - In
+          - Contains
+          - All
+          - Exists
+          - Size
+        value:
+          description: The value to match on. Only one of value and values can be included
+          $ref: '#/components/schemas/JsonNode'
+        values:
+          type: array
+          description: The list of values to match on. Only one of value and values can be included
+          items:
+            $ref: '#/components/schemas/JsonNode'
+      description: Defines a simple matching condition
+    TriggerEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Trigger'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    TriggerSchedule:
+      type: object
+      properties:
+        minutes:
+          type: string
+          description: Minutes on which the trigger should fire. Coma separated list of up to 2 values 0-59
+        hours:
+          type: string
+          description: Hours on which the trigger should fire. 0-23 or '*' for every hour.
+        daysOfMonth:
+          type: string
+          description: Days of month on which the trigger should fire. 1-31 or '*' for every or '?' for any
+        months:
+          type: string
+          description: Months on which the trigger should fire. 1-12 or '*' for every
+        daysOfWeek:
+          type: string
+          description: Days of week on which the trigger should fire. 1-7 or '*' for every or '?' for any
+        timezone:
+          type: string
+          description: Timezone for the trigger schedule
+      description: Schedule configuration for a scheduled trigger
+    WorkflowTargetSettings:
+      type: object
+      properties:
+        dataFormat:
+          type: string
+          description: The data format to use when invoking target.
+          enum:
+          - Json
+          - TopLevelPrimitives
+    Trigger:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the trigger
+        topicName:
+          type: string
+          description: The topic that will cause the trigger to be invoked
+        target:
+          description: The target to invoke when a matching event is received
+          $ref: '#/components/schemas/TriggerTarget'
+        version:
+          type: integer
+          format: int64
+          description: Version of this trigger
+        enabled:
+          type: boolean
+          description: Whether or not the trigger is enabled
+        matchCriteria:
+          type: array
+          description: The configuration for when a trigger is considered to be a match for an event
+          items:
+            $ref: '#/components/schemas/MatchCriteria'
+        eventTTLSeconds:
+          type: integer
+          format: int32
+          description: Optional length of time that events are meaningful after origination. Events older than this threshold may be dropped if the platform is delayed in processing events. Unset means events are valid indefinitely, otherwise must be set to at least 10 seconds. Only one of eventTTLSeconds or delayBySeconds can be set.
+        delayBySeconds:
+          type: integer
+          format: int32
+          description: Optional delay invoking target after trigger fires. Must be in the range of 60 to 900 seconds. Only one of eventTTLSeconds or delayBySeconds can be set.
+        description:
+          type: string
+          description: Description of the trigger. Can be up to 512 characters in length.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Defines a process automation trigger.
+    MatchTestResult:
+      type: object
+      properties:
+        value:
+          description: The value of the field being matched
+          $ref: '#/components/schemas/JsonNode'
+        path:
+          type: string
+          description: 'The json path to the json node being matched on. ex: $[''things''][1]'
+      description: Information about the results being matched by the expressions
+    UpdateScheduledTriggerRequest:
+      type: object
+      required:
+      - enabled
+      - name
+      - schedule
+      - target
+      - version
+      properties:
+        version:
+          type: integer
+          format: int64
+          description: Version of this scheduled trigger
+        enabled:
+          type: boolean
+          description: Boolean indicating if scheduled trigger is enabled
+        target:
+          description: The target to invoke when the scheduled trigger fires
+          $ref: '#/components/schemas/TriggerTarget'
+        name:
+          type: string
+          description: The name of the scheduled trigger. Can be up to 162 characters in length.
+        schedule:
+          description: The schedule configuration for when this trigger should fire
+          $ref: '#/components/schemas/TriggerSchedule'
+        description:
+          type: string
+          description: Description of the trigger. Can be up to 512 characters in length.
+    ScheduledTriggerEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduledTrigger'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    TestModeResults:
+      type: object
+      properties:
+        schemaValidation:
+          description: Information about the validation of the schema of the event body passed in to test mode
+          $ref: '#/components/schemas/TestSchemaOperation'
+        targetValidation:
+          description: Information about the validation of the trigger target
+          $ref: '#/components/schemas/TestTargetOperation'
+        jsonPathValidation:
+          description: Information about the json path matching criteria
+          $ref: '#/components/schemas/TestMatchesOperation'
+        triggerMatches:
+          type: boolean
+          description: Whether the trigger would have matched on the provided event body
+      description: Information about trigger test mode execution
+    TestModeTrigger:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the trigger
+        enabled:
+          type: boolean
+          description: Whether or not the trigger is enabled
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Basic identifying information about a trigger
     TestSchemaOperation:
       type: object
       properties:
@@ -1949,6 +2207,53 @@ components:
           items:
             type: string
       description: Information about the Trigger test mode schema validation step
+    TestMatchesOperation:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the processing step
+        step:
+          type: integer
+          format: int32
+          description: The number of the processing step
+        matches:
+          type: boolean
+          description: Whether or not the operation matches expectations
+        details:
+          type: array
+          description: Details about why the operation did or did not succeed
+          items:
+            $ref: '#/components/schemas/MatchCriteriaTestResult'
+      description: Information about the Trigger test mode processing step
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    JsonNode:
+      type: object
+    TriggerTarget:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The entity type to target
+          enum:
+          - Workflow
+        id:
+          type: string
+          description: The ID of the entity to target
+        workflowTargetSettings:
+          description: Optional config for the target.
+          $ref: '#/components/schemas/WorkflowTargetSettings'
+      description: The target of a trigger invocation
     CreateTriggerRequest:
       type: object
       required:
@@ -1985,6 +2290,38 @@ components:
         description:
           type: string
           description: Description of the trigger. Can be up to 512 characters in length.
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -2089,231 +2426,6 @@ components:
         value:
           type: integer
           format: int64
-    Trigger:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the trigger
-        topicName:
-          type: string
-          description: The topic that will cause the trigger to be invoked
-        target:
-          description: The target to invoke when a matching event is received
-          $ref: '#/components/schemas/TriggerTarget'
-        version:
-          type: integer
-          format: int64
-          description: Version of this trigger
-        enabled:
-          type: boolean
-          description: Whether or not the trigger is enabled
-        matchCriteria:
-          type: array
-          description: The configuration for when a trigger is considered to be a match for an event
-          items:
-            $ref: '#/components/schemas/MatchCriteria'
-        eventTTLSeconds:
-          type: integer
-          format: int32
-          description: Optional length of time that events are meaningful after origination. Events older than this threshold may be dropped if the platform is delayed in processing events. Unset means events are valid indefinitely, otherwise must be set to at least 10 seconds. Only one of eventTTLSeconds or delayBySeconds can be set.
-        delayBySeconds:
-          type: integer
-          format: int32
-          description: Optional delay invoking target after trigger fires. Must be in the range of 60 to 900 seconds. Only one of eventTTLSeconds or delayBySeconds can be set.
-        description:
-          type: string
-          description: Description of the trigger. Can be up to 512 characters in length.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Defines a process automation trigger.
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    TriggerSchedule:
-      type: object
-      properties:
-        minutes:
-          type: string
-          description: Minutes on which the trigger should fire. Coma separated list of up to 2 values 0-59
-        hours:
-          type: string
-          description: Hours on which the trigger should fire. 0-23 or '*' for every hour.
-        daysOfMonth:
-          type: string
-          description: Days of month on which the trigger should fire. 1-31 or '*' for every or '?' for any
-        months:
-          type: string
-          description: Months on which the trigger should fire. 1-12 or '*' for every
-        daysOfWeek:
-          type: string
-          description: Days of week on which the trigger should fire. 1-7 or '*' for every or '?' for any
-        timezone:
-          type: string
-          description: Timezone for the trigger schedule
-      description: Schedule configuration for a scheduled trigger
-    UpdateScheduledTriggerRequest:
-      type: object
-      required:
-      - enabled
-      - name
-      - schedule
-      - target
-      - version
-      properties:
-        version:
-          type: integer
-          format: int64
-          description: Version of this scheduled trigger
-        enabled:
-          type: boolean
-          description: Boolean indicating if scheduled trigger is enabled
-        target:
-          description: The target to invoke when the scheduled trigger fires
-          $ref: '#/components/schemas/TriggerTarget'
-        name:
-          type: string
-          description: The name of the scheduled trigger. Can be up to 162 characters in length.
-        schedule:
-          description: The schedule configuration for when this trigger should fire
-          $ref: '#/components/schemas/TriggerSchedule'
-        description:
-          type: string
-          description: Description of the trigger. Can be up to 512 characters in length.
-    WorkflowTargetSettings:
-      type: object
-      properties:
-        dataFormat:
-          type: string
-          description: The data format to use when invoking target.
-          enum:
-          - Json
-          - TopLevelPrimitives
-    TriggerTarget:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The entity type to target
-          enum:
-          - Workflow
-        id:
-          type: string
-          description: The ID of the entity to target
-        workflowTargetSettings:
-          description: Optional config for the target.
-          $ref: '#/components/schemas/WorkflowTargetSettings'
-      description: The target of a trigger invocation
-    ScheduledTrigger:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the scheduled trigger. Can be up to 162 characters in length.
-        target:
-          description: The target to invoke when the scheduled trigger fires
-          $ref: '#/components/schemas/TriggerTarget'
-        version:
-          type: integer
-          format: int64
-          description: Version of this scheduled trigger
-        enabled:
-          type: boolean
-          description: Whether or not the scheduled trigger is enabled
-        schedule:
-          description: The schedule configuration for when this trigger should fire
-          $ref: '#/components/schemas/TriggerSchedule'
-        description:
-          type: string
-          description: Description of the trigger. Can be up to 512 characters in length.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Defines a process automation scheduled trigger.
-    MatchCriteria:
-      type: object
-      properties:
-        jsonPath:
-          type: string
-          description: The Goessner json path of the field to match
-        operator:
-          type: string
-          description: The type of operation to perform for matching check
-          enum:
-          - GreaterThanOrEqual
-          - LessThanOrEqual
-          - Equal
-          - NotEqual
-          - LessThan
-          - GreaterThan
-          - NotIn
-          - In
-          - Contains
-          - All
-          - Exists
-          - Size
-        value:
-          description: The value to match on. Only one of value and values can be included
-          $ref: '#/components/schemas/JsonNode'
-        values:
-          type: array
-          description: The list of values to match on. Only one of value and values can be included
-          items:
-            $ref: '#/components/schemas/JsonNode'
-      description: Defines a simple matching condition
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
     TopicCursorEntityListing:
       type: object
       properties:
@@ -2328,22 +2440,25 @@ components:
         previousUri:
           type: string
       description: Cursor listing of Topics.
-    TestModeResults:
+    TestTargetOperation:
       type: object
       properties:
-        schemaValidation:
-          description: Information about the validation of the schema of the event body passed in to test mode
-          $ref: '#/components/schemas/TestSchemaOperation'
-        targetValidation:
-          description: Information about the validation of the trigger target
-          $ref: '#/components/schemas/TestTargetOperation'
-        jsonPathValidation:
-          description: Information about the json path matching criteria
-          $ref: '#/components/schemas/TestMatchesOperation'
-        triggerMatches:
+        name:
+          type: string
+          description: The name of the processing step
+        step:
+          type: integer
+          format: int32
+          description: The number of the processing step
+        matches:
           type: boolean
-          description: Whether the trigger would have matched on the provided event body
-      description: Information about trigger test mode execution
+          description: Whether or not the operation matches expectations
+        details:
+          type: array
+          description: Details about why the operation did or did not succeed
+          items:
+            type: string
+      description: Information about the Trigger test mode target validation step
     UpdateTriggerRequest:
       type: object
       required:
@@ -2385,16 +2500,6 @@ components:
         description:
           type: string
           description: Description of the trigger. Can be up to 512 characters in length.
-    TestModeEventResults:
-      type: object
-      properties:
-        schemaValidation:
-          description: Information about the validation of the schema of the event body passed in to test mode
-          $ref: '#/components/schemas/TestSchemaOperation'
-        triggerMatchValidation:
-          description: Information about matched and unmatched triggers
-          $ref: '#/components/schemas/TestMatchesEventOperation'
-      description: Information about event test mode execution
     CreateScheduledTriggerRequest:
       type: object
       required:
@@ -2418,8 +2523,38 @@ components:
         description:
           type: string
           description: Description of the trigger. Can be up to 512 characters in length.
-    JsonNode:
+    ScheduledTrigger:
       type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the scheduled trigger. Can be up to 162 characters in length.
+        target:
+          description: The target to invoke when the scheduled trigger fires
+          $ref: '#/components/schemas/TriggerTarget'
+        version:
+          type: integer
+          format: int64
+          description: Version of this scheduled trigger
+        enabled:
+          type: boolean
+          description: Whether or not the scheduled trigger is enabled
+        schedule:
+          description: The schedule configuration for when this trigger should fire
+          $ref: '#/components/schemas/TriggerSchedule'
+        description:
+          type: string
+          description: Description of the trigger. Can be up to 512 characters in length.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Defines a process automation scheduled trigger.
     TestMatchesEventOperation:
       type: object
       properties:
@@ -2441,141 +2576,6 @@ components:
           items:
             $ref: '#/components/schemas/TestModeTrigger'
       description: Results from evaluating matching criteria against test input
-    TriggerEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Trigger'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    TestModeTrigger:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the trigger
-        enabled:
-          type: boolean
-          description: Whether or not the trigger is enabled
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Basic identifying information about a trigger
-    ScheduledTriggerEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScheduledTrigger'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    TestMatchesOperation:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the processing step
-        step:
-          type: integer
-          format: int32
-          description: The number of the processing step
-        matches:
-          type: boolean
-          description: Whether or not the operation matches expectations
-        details:
-          type: array
-          description: Details about why the operation did or did not succeed
-          items:
-            $ref: '#/components/schemas/MatchCriteriaTestResult'
-      description: Information about the Trigger test mode processing step
-    TestTargetOperation:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the processing step
-        step:
-          type: integer
-          format: int32
-          description: The number of the processing step
-        matches:
-          type: boolean
-          description: Whether or not the operation matches expectations
-        details:
-          type: array
-          description: Details about why the operation did or did not succeed
-          items:
-            type: string
-      description: Information about the Trigger test mode target validation step
-    MatchCriteriaTestResult:
-      type: object
-      properties:
-        jsonPath:
-          type: string
-          description: The Goessner json path of the field to match
-        operator:
-          type: string
-          description: The type of operation to perform for matching check
-          enum:
-          - GreaterThanOrEqual
-          - LessThanOrEqual
-          - Equal
-          - NotEqual
-          - LessThan
-          - GreaterThan
-          - NotIn
-          - In
-          - Contains
-          - All
-          - Exists
-          - Size
-        value:
-          description: The value to match on. Only one of value and values can be included
-          $ref: '#/components/schemas/JsonNode'
-        values:
-          type: array
-          description: The list of values to match on. Only one of value and values can be included
-          items:
-            $ref: '#/components/schemas/JsonNode'
-        generatedJsonPathCondition:
-          type: string
-          description: The generated json path condition
-        match:
-          type: boolean
-          description: Did the generated json path condition match
-        jsonPathExtraction:
-          type: array
-          description: The json paths and their values that were compared
-          items:
-            $ref: '#/components/schemas/MatchTestResult'
-      description: Results of a matching expression
-    MatchTestResult:
-      type: object
-      properties:
-        value:
-          description: The value of the field being matched
-          $ref: '#/components/schemas/JsonNode'
-        path:
-          type: string
-          description: 'The json path to the json node being matched on. ex: $[''things''][1]'
-      description: Information about the results being matched by the expressions
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

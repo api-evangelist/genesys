@@ -1946,6 +1946,27 @@ paths:
       x-purecloud-method-name: deleteExternalcontactsSettings
 components:
   schemas:
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    AutoAnswerSettings:
+      type: object
+      required:
+      - settings
+      properties:
+        settings:
+          type: object
+          description: Map of conversation media type enabled status.
+          additionalProperties:
+            $ref: '#/components/schemas/AutoAnswerSetting'
     DomainEntityRef:
       type: object
       properties:
@@ -1956,6 +1977,65 @@ components:
         selfUri:
           type: string
           format: uri
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    UpdatedSettingsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    ExecutionDataSettingsRequest:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: whether or not the setting is enabled.
+    AutoAnswerSetting:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: The media type status.
+    EmailSettings:
+      type: object
+      properties:
+        multipleRouteDestinationsOnInboundEmailEnabled:
+          type: boolean
+          description: This setting allows a single inbound email that contains multiple routes configured in Genesys Cloud to create a conversation per route. When this setting is disabled only a single conversation will be created
     EmailThreadingSettings:
       type: object
       properties:
@@ -1966,6 +2046,40 @@ components:
           type: integer
           format: int64
           description: In minutes, how long an email conversation should keep being threaded after being disconnected.
+    ExecutionDataGlobalSettingsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        enabled:
+          type: boolean
+          description: whether or not the setting is enabled.
+        modifiedBy:
+          description: User that last changed the setting.
+          $ref: '#/components/schemas/UserReference'
+        modifiedByClient:
+          description: OAuth client that last changed the setting.
+          $ref: '#/components/schemas/DomainEntityRef'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The time this setting was set. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ExternalContactsSettings:
+      type: object
+      properties:
+        manuallyAssignDivisionsToInteractions:
+          type: boolean
+        manuallyAssignDivisionsToContacts:
+          type: boolean
     Limit:
       type: object
       properties:
@@ -2070,68 +2184,6 @@ components:
         value:
           type: integer
           format: int64
-    AutoAnswerSetting:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: The media type status.
-    UpdatedSettingsResponse:
-      type: object
-      properties:
-        message:
-          type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    ExternalContactsSettings:
-      type: object
-      properties:
-        manuallyAssignDivisionsToInteractions:
-          type: boolean
-        manuallyAssignDivisionsToContacts:
-          type: boolean
-    AutoAnswerSettings:
-      type: object
-      required:
-      - settings
-      properties:
-        settings:
-          type: object
-          description: Map of conversation media type enabled status.
-          additionalProperties:
-            $ref: '#/components/schemas/AutoAnswerSetting'
     UserReference:
       type: object
       properties:
@@ -2143,58 +2195,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    ExecutionDataSettingsRequest:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: whether or not the setting is enabled.
-    EmailSettings:
-      type: object
-      properties:
-        multipleRouteDestinationsOnInboundEmailEnabled:
-          type: boolean
-          description: This setting allows a single inbound email that contains multiple routes configured in Genesys Cloud to create a conversation per route. When this setting is disabled only a single conversation will be created
-    ExecutionDataGlobalSettingsResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        enabled:
-          type: boolean
-          description: whether or not the setting is enabled.
-        modifiedBy:
-          description: User that last changed the setting.
-          $ref: '#/components/schemas/UserReference'
-        modifiedByClient:
-          description: OAuth client that last changed the setting.
-          $ref: '#/components/schemas/DomainEntityRef'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The time this setting was set. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

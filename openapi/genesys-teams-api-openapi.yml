@@ -1525,6 +1525,423 @@ paths:
         required: true
 components:
   schemas:
+    TeamMemberEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserReferenceWithName'
+        nextUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+    TeamActivityQueryFilter:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: Boolean operation to apply to the provided predicates and clauses
+          enum:
+          - and
+          - or
+        clauses:
+          type: array
+          description: Boolean 'and/or' logic with up to two-levels of nesting
+          items:
+            $ref: '#/components/schemas/TeamActivityQueryClause'
+        predicates:
+          type: array
+          description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
+          items:
+            $ref: '#/components/schemas/TeamActivityQueryPredicate'
+    TeamActivityQuery:
+      type: object
+      required:
+      - groupBy
+      - metrics
+      properties:
+        metrics:
+          type: array
+          description: List of requested metrics
+          items:
+            $ref: '#/components/schemas/TeamActivityQueryMetric'
+        groupBy:
+          type: array
+          description: Dimension(s) to group by
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - teamId
+        filter:
+          description: Filter to return a subset of observations. Expresses boolean logical predicates as well as dimensional filters
+          $ref: '#/components/schemas/TeamActivityQueryFilter'
+        order:
+          type: string
+          description: Sort the result set in ascending/descending order. Default is ascending
+          enum:
+          - asc
+          - desc
+          - unordered
+    TeamActivityEntityData:
+      type: object
+      required:
+      - activityDate
+      properties:
+        activityDate:
+          type: string
+          format: date-time
+          description: 'The time at which the activity was observed. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        organizationPresenceId:
+          type: string
+          description: Organization presence identifier
+        presenceDate:
+          type: string
+          format: date-time
+          description: 'Date of the latest presence change. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        queueId:
+          type: string
+          description: Queue identifier
+        queueMembershipStatus:
+          type: string
+          description: Queue membership status (e.g. active or inactive)
+        routingStatus:
+          type: string
+          description: Agent routing status
+        routingStatusDate:
+          type: string
+          format: date-time
+          description: 'Date of the latest routing status change. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        systemPresence:
+          type: string
+          description: System presence
+        teamId:
+          type: string
+          description: The team ID the user is a member of
+        userId:
+          type: string
+          description: Unique identifier for the user
+    TeamSearchCriteria:
+      type: object
+      required:
+      - type
+      properties:
+        endValue:
+          type: string
+          description: The end value of the range. This field is used for range search types.
+        values:
+          type: array
+          description: A list of values for the search to match against
+          items:
+            type: string
+        startValue:
+          type: string
+          description: The start value of the range. This field is used for range search types.
+        value:
+          type: string
+          description: A value for the search to match against
+        operator:
+          type: string
+          description: How to apply this search criteria against other criteria
+          enum:
+          - AND
+          - OR
+          - NOT
+        group:
+          type: array
+          description: Groups multiple conditions
+          items:
+            $ref: '#/components/schemas/TeamSearchCriteria'
+        dateFormat:
+          type: string
+          description: Set date format for criteria values when using date range search type.  Supports Java date format syntax, example yyyy-MM-dd'T'HH:mm:ss.SSSX.
+        fields:
+          type: array
+          description: Field names to search against
+          items:
+            type: string
+          x-genesys-search-fields:
+            value:
+            - description
+            - name
+        type:
+          type: string
+          description: Search Type
+          enum:
+          - EXACT
+          - STARTS_WITH
+    TeamEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        nextUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+    TeamSearchRequest:
+      type: object
+      required:
+      - query
+      properties:
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
+        pageSize:
+          type: integer
+          format: int32
+          description: The number of results per page
+        pageNumber:
+          type: integer
+          format: int32
+          description: The page of resources you want to retrieve
+        sort:
+          type: array
+          description: Multi-value sort order, list of multiple sort values
+          items:
+            $ref: '#/components/schemas/SearchSort'
+        query:
+          type: array
+          description: Team Search Criteria
+          items:
+            $ref: '#/components/schemas/TeamSearchCriteria'
+    SearchSort:
+      type: object
+      properties:
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
+    TeamMemberAddListingResponse:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserReference'
+        failures:
+          type: array
+          description: List of any user ids that were not added.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/TeamAddMemberFailure'
+    TeamActivityResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          description: Query results
+          items:
+            $ref: '#/components/schemas/TeamActivityData'
+        entityIdDimension:
+          type: string
+          description: Dimension that is used as an entityId
+          enum:
+          - organizationPresenceId
+          - presenceDate
+          - queueId
+          - queueMembershipStatus
+          - routingStatus
+          - routingStatusDate
+          - systemPresence
+          - teamId
+          - userId
+    TeamActivityQueryPredicate:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Optional type, can usually be inferred
+          enum:
+          - dimension
+          - property
+          - metric
+        dimension:
+          type: string
+          description: Left hand side for dimension predicates
+          enum:
+          - organizationPresenceId
+          - presenceDate
+          - queueId
+          - queueMembershipStatus
+          - routingStatus
+          - routingStatusDate
+          - systemPresence
+          - teamId
+          - userId
+          x-genesys-entity-type:
+            value: DIMENSION_TYPE
+        operator:
+          type: string
+          description: Optional operator, default is matches
+          enum:
+          - matches
+          - exists
+          - notExists
+        value:
+          type: string
+          description: Right hand side for dimension predicates
+          x-genesys-entity-type:
+            value: DIMENSION_SELECTOR
+    WritableDivision:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Team:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The team name
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/WritableDivision'
+        description:
+          type: string
+          description: Team information.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        memberCount:
+          type: integer
+          format: int64
+          description: Number of members in a team
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TeamMembers:
+      type: object
+      required:
+      - memberIds
+      properties:
+        memberIds:
+          type: array
+          description: A list of the ids of the members to add or remove
+          items:
+            type: string
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TeamActivityQueryMetric:
+      type: object
+      required:
+      - metric
+      properties:
+        metric:
+          type: string
+          description: The requested metric
+          enum:
+          - oTeamOffQueueUsers
+          - oTeamOnQueueUsers
+          - oTeamPresences
+          - oTeamRoutingStatuses
+        details:
+          type: boolean
+          description: Flag for including observation details for this metric in the response
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -1629,48 +2046,76 @@ components:
         value:
           type: integer
           format: int64
-    TeamActivityQueryFilter:
+    TeamActivityMetricValue:
+      type: object
+      properties:
+        metric:
+          type: string
+          description: Metric
+          enum:
+          - oTeamOffQueueUsers
+          - oTeamOnQueueUsers
+          - oTeamPresences
+          - oTeamRoutingStatuses
+        qualifier:
+          type: string
+          description: Metric qualifier
+        secondaryQualifier:
+          type: string
+          description: Secondary metric qualifier
+        entityIds:
+          type: array
+          description: Entity ids for matching entities if details were requested
+          uniqueItems: true
+          items:
+            type: string
+        count:
+          type: integer
+          format: int32
+          description: Metric count
+    TeamAddMemberFailure:
+      type: object
+      properties:
+        id:
+          type: string
+        reason:
+          type: string
+          description: Specific reason the member could not be added.
+          readOnly: true
+          enum:
+          - UserNotFound
+          - UserGroupLimitExceeded
+          - UserGroupDivisionMismatch
+    TeamActivityQueryClause:
       type: object
       required:
+      - predicates
       - type
       properties:
         type:
           type: string
-          description: Boolean operation to apply to the provided predicates and clauses
+          description: Boolean operation to apply to the provided predicates
           enum:
           - and
           - or
-        clauses:
-          type: array
-          description: Boolean 'and/or' logic with up to two-levels of nesting
-          items:
-            $ref: '#/components/schemas/TeamActivityQueryClause'
         predicates:
           type: array
           description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
           items:
             $ref: '#/components/schemas/TeamActivityQueryPredicate'
-    TeamActivityResponse:
+    UserReferenceWithName:
       type: object
       properties:
-        results:
-          type: array
-          description: Query results
-          items:
-            $ref: '#/components/schemas/TeamActivityData'
-        entityIdDimension:
+        id:
           type: string
-          description: Dimension that is used as an entityId
-          enum:
-          - organizationPresenceId
-          - presenceDate
-          - queueId
-          - queueMembershipStatus
-          - routingStatus
-          - routingStatusDate
-          - systemPresence
-          - teamId
-          - userId
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     TeamsSearchResponse:
       type: object
       required:
@@ -1716,104 +2161,6 @@ components:
           description: Search results
           items:
             $ref: '#/components/schemas/Team'
-    TeamAddMemberFailure:
-      type: object
-      properties:
-        id:
-          type: string
-        reason:
-          type: string
-          description: Specific reason the member could not be added.
-          readOnly: true
-          enum:
-          - UserNotFound
-          - UserGroupLimitExceeded
-          - UserGroupDivisionMismatch
-    WritableDivision:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    SearchSort:
-      type: object
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    TeamActivityMetricValue:
-      type: object
-      properties:
-        metric:
-          type: string
-          description: Metric
-          enum:
-          - oTeamOffQueueUsers
-          - oTeamOnQueueUsers
-          - oTeamPresences
-          - oTeamRoutingStatuses
-        qualifier:
-          type: string
-          description: Metric qualifier
-        secondaryQualifier:
-          type: string
-          description: Secondary metric qualifier
-        entityIds:
-          type: array
-          description: Entity ids for matching entities if details were requested
-          uniqueItems: true
-          items:
-            type: string
-        count:
-          type: integer
-          format: int32
-          description: Metric count
     TeamActivityData:
       type: object
       properties:
@@ -1835,353 +2182,6 @@ components:
           description: Details for active entities
           items:
             $ref: '#/components/schemas/TeamActivityEntityData'
-    TeamMemberEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserReferenceWithName'
-        nextUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-    UserReferenceWithName:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Team:
-      type: object
-      required:
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The team name
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/WritableDivision'
-        description:
-          type: string
-          description: Team information.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        memberCount:
-          type: integer
-          format: int64
-          description: Number of members in a team
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    TeamEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Team'
-        nextUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-    TeamActivityQueryClause:
-      type: object
-      required:
-      - predicates
-      - type
-      properties:
-        type:
-          type: string
-          description: Boolean operation to apply to the provided predicates
-          enum:
-          - and
-          - or
-        predicates:
-          type: array
-          description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
-          items:
-            $ref: '#/components/schemas/TeamActivityQueryPredicate'
-    TeamSearchRequest:
-      type: object
-      required:
-      - query
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-        pageSize:
-          type: integer
-          format: int32
-          description: The number of results per page
-        pageNumber:
-          type: integer
-          format: int32
-          description: The page of resources you want to retrieve
-        sort:
-          type: array
-          description: Multi-value sort order, list of multiple sort values
-          items:
-            $ref: '#/components/schemas/SearchSort'
-        query:
-          type: array
-          description: Team Search Criteria
-          items:
-            $ref: '#/components/schemas/TeamSearchCriteria'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    TeamMembers:
-      type: object
-      required:
-      - memberIds
-      properties:
-        memberIds:
-          type: array
-          description: A list of the ids of the members to add or remove
-          items:
-            type: string
-    TeamActivityQuery:
-      type: object
-      required:
-      - groupBy
-      - metrics
-      properties:
-        metrics:
-          type: array
-          description: List of requested metrics
-          items:
-            $ref: '#/components/schemas/TeamActivityQueryMetric'
-        groupBy:
-          type: array
-          description: Dimension(s) to group by
-          uniqueItems: true
-          items:
-            type: string
-            enum:
-            - teamId
-        filter:
-          description: Filter to return a subset of observations. Expresses boolean logical predicates as well as dimensional filters
-          $ref: '#/components/schemas/TeamActivityQueryFilter'
-        order:
-          type: string
-          description: Sort the result set in ascending/descending order. Default is ascending
-          enum:
-          - asc
-          - desc
-          - unordered
-    TeamActivityQueryPredicate:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Optional type, can usually be inferred
-          enum:
-          - dimension
-          - property
-          - metric
-        dimension:
-          type: string
-          description: Left hand side for dimension predicates
-          enum:
-          - organizationPresenceId
-          - presenceDate
-          - queueId
-          - queueMembershipStatus
-          - routingStatus
-          - routingStatusDate
-          - systemPresence
-          - teamId
-          - userId
-          x-genesys-entity-type:
-            value: DIMENSION_TYPE
-        operator:
-          type: string
-          description: Optional operator, default is matches
-          enum:
-          - matches
-          - exists
-          - notExists
-        value:
-          type: string
-          description: Right hand side for dimension predicates
-          x-genesys-entity-type:
-            value: DIMENSION_SELECTOR
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    TeamMemberAddListingResponse:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserReference'
-        failures:
-          type: array
-          description: List of any user ids that were not added.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/TeamAddMemberFailure'
-    TeamActivityQueryMetric:
-      type: object
-      required:
-      - metric
-      properties:
-        metric:
-          type: string
-          description: The requested metric
-          enum:
-          - oTeamOffQueueUsers
-          - oTeamOnQueueUsers
-          - oTeamPresences
-          - oTeamRoutingStatuses
-        details:
-          type: boolean
-          description: Flag for including observation details for this metric in the response
-    TeamActivityEntityData:
-      type: object
-      required:
-      - activityDate
-      properties:
-        activityDate:
-          type: string
-          format: date-time
-          description: 'The time at which the activity was observed. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        organizationPresenceId:
-          type: string
-          description: Organization presence identifier
-        presenceDate:
-          type: string
-          format: date-time
-          description: 'Date of the latest presence change. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        queueId:
-          type: string
-          description: Queue identifier
-        queueMembershipStatus:
-          type: string
-          description: Queue membership status (e.g. active or inactive)
-        routingStatus:
-          type: string
-          description: Agent routing status
-        routingStatusDate:
-          type: string
-          format: date-time
-          description: 'Date of the latest routing status change. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        systemPresence:
-          type: string
-          description: System presence
-        teamId:
-          type: string
-          description: The team ID the user is a member of
-        userId:
-          type: string
-          description: Unique identifier for the user
-    TeamSearchCriteria:
-      type: object
-      required:
-      - type
-      properties:
-        endValue:
-          type: string
-          description: The end value of the range. This field is used for range search types.
-        values:
-          type: array
-          description: A list of values for the search to match against
-          items:
-            type: string
-        startValue:
-          type: string
-          description: The start value of the range. This field is used for range search types.
-        value:
-          type: string
-          description: A value for the search to match against
-        operator:
-          type: string
-          description: How to apply this search criteria against other criteria
-          enum:
-          - AND
-          - OR
-          - NOT
-        group:
-          type: array
-          description: Groups multiple conditions
-          items:
-            $ref: '#/components/schemas/TeamSearchCriteria'
-        dateFormat:
-          type: string
-          description: Set date format for criteria values when using date range search type.  Supports Java date format syntax, example yyyy-MM-dd'T'HH:mm:ss.SSSX.
-        fields:
-          type: array
-          description: Field names to search against
-          items:
-            type: string
-          x-genesys-search-fields:
-            value:
-            - description
-            - name
-        type:
-          type: string
-          description: Search Type
-          enum:
-          - EXACT
-          - STARTS_WITH
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

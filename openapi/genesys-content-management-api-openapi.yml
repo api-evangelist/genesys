@@ -5505,131 +5505,20 @@ paths:
         required: true
 components:
   schemas:
-    FacetEntry:
+    CreateShareRequest:
       type: object
+      required:
+      - sharedEntity
+      - sharedEntityType
       properties:
-        attribute:
-          $ref: '#/components/schemas/TermAttribute'
-        statistics:
-          $ref: '#/components/schemas/FacetStatistics'
-        other:
-          type: integer
-          format: int64
-        total:
-          type: integer
-          format: int64
-        missing:
-          type: integer
-          format: int64
-        termCount:
-          type: integer
-          format: int32
-        termType:
-          type: string
-          enum:
-          - TERM
-          - NUMBERRANGE
-          - NUMBERHISTOGRAM
-          - DATERANGE
-          - DATEHISTOGRAM
-          - ID
-        terms:
-          type: array
-          items:
-            $ref: '#/components/schemas/FacetTerm'
-    Contact:
-      type: object
-      properties:
-        address:
-          type: string
-          description: Email address or phone number for this contact type
-        display:
-          type: string
-          description: Formatted version of the address property
-          readOnly: true
-        mediaType:
-          type: string
-          enum:
-          - PHONE
-          - EMAIL
-          - SMS
-        type:
-          type: string
-          enum:
-          - PRIMARY
-          - WORK
-          - WORK2
-          - WORK3
-          - WORK4
-          - HOME
-          - MOBILE
-          - MAIN
-          - OTHER
-        extension:
-          type: string
-          description: Use internal extension instead of address. Mutually exclusive with the address field.
-        countryCode:
-          type: string
-        integration:
-          type: string
-          example: microsoftteams
-          description: Integration tag value if this number is associated with an external integration.
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    DocumentAttribute:
-      type: object
-      properties:
-        attribute:
-          $ref: '#/components/schemas/Attribute'
-        values:
-          type: array
-          items:
-            type: string
-    CreateShareResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
         sharedEntityType:
           type: string
+          description: The share entity type
           enum:
           - DOCUMENT
         sharedEntity:
-          $ref: '#/components/schemas/DomainEntityRef'
+          description: The entity that will be shared
+          $ref: '#/components/schemas/SharedEntity'
         memberType:
           type: string
           enum:
@@ -5637,31 +5526,32 @@ components:
           - GROUP
           - PUBLIC
         member:
-          $ref: '#/components/schemas/DomainEntityRef'
-        sharedBy:
-          $ref: '#/components/schemas/DomainEntityRef'
-        workspace:
-          $ref: '#/components/schemas/DomainEntityRef'
-        succeeded:
+          description: The member that will have access to this share. Only required if a list of members is not provided.
+          $ref: '#/components/schemas/SharedEntity'
+        members:
           type: array
           items:
-            $ref: '#/components/schemas/Share'
-        failed:
-          type: array
-          items:
-            $ref: '#/components/schemas/Share'
+            $ref: '#/components/schemas/CreateShareRequestMember'
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
         selfUri:
           type: string
           format: uri
-          description: The URI for this object
-          readOnly: true
-    DomainEntityListingQueryResult:
+    MemberEntity:
+      type: object
+      properties:
+        id:
+          type: string
+    WorkspaceEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/QueryResult'
+            $ref: '#/components/schemas/Workspace'
         pageSize:
           type: integer
           format: int32
@@ -5689,6 +5579,19 @@ components:
         pageCount:
           type: integer
           format: int32
+    PresenceDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: description
+        systemPresence:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     DomainEntityRef:
       type: object
       properties:
@@ -5699,48 +5602,105 @@ components:
         selfUri:
           type: string
           format: uri
-    DocumentUpdate:
+    OutOfOffice:
       type: object
-      required:
-      - name
       properties:
-        changeNumber:
-          type: integer
-          format: int32
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
         name:
           type: string
-          description: The name of the document
-        read:
+        user:
+          $ref: '#/components/schemas/User'
+        startDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        endDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        active:
           type: boolean
-        addTags:
-          type: array
-          items:
-            type: string
-        removeTags:
-          type: array
-          items:
-            type: string
-        addTagIds:
-          type: array
-          items:
-            type: string
-        removeTagIds:
-          type: array
-          items:
-            type: string
-        updateAttributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/DocumentAttribute'
-        removeAttributes:
-          type: array
-          items:
-            type: string
-    Chat:
+        indefinite:
+          type: boolean
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    CreateShareRequestMember:
       type: object
       properties:
-        jabberId:
+        memberType:
           type: string
+          enum:
+          - USER
+          - GROUP
+          - PUBLIC
+        member:
+          $ref: '#/components/schemas/MemberEntity'
+    FacetStatistics:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+        min:
+          type: number
+          format: double
+        max:
+          type: number
+          format: double
+        mean:
+          type: number
+          format: double
+        stdDeviation:
+          type: number
+          format: double
+        dateMin:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateMax:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    TagValueEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagValue'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
     CommandStatus:
       type: object
       properties:
@@ -5784,136 +5744,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    ResourcePermissionPolicy:
-      type: object
-      properties:
-        id:
-          type: string
-        domain:
-          type: string
-        entityName:
-          type: string
-        policyName:
-          type: string
-        policyDescription:
-          type: string
-        actionSetKey:
-          type: string
-        allowConditions:
-          type: boolean
-        resourceConditionNode:
-          $ref: '#/components/schemas/ResourceConditionNode'
-        namedResources:
-          type: array
-          items:
-            type: string
-        resourceCondition:
-          type: string
-        actionSet:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
-    SharedResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        downloadUri:
-          type: string
-          format: uri
-        viewUri:
-          type: string
-          format: uri
-        document:
-          $ref: '#/components/schemas/Document'
-        share:
-          $ref: '#/components/schemas/Share'
-    Team:
-      type: object
-      required:
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The team name
-        division:
-          description: The division to which this entity belongs.
-          $ref: '#/components/schemas/WritableDivision'
-        description:
-          type: string
-          description: Team information.
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        memberCount:
-          type: integer
-          format: int64
-          description: Number of members in a team
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Location:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the location
-        floorplanId:
-          type: string
-          description: Unique identifier for the location floorplan image
-          readOnly: true
-        coordinates:
-          type: object
-          description: Users coordinates on the floorplan. Only used when floorplanImage is set
-          additionalProperties:
-            type: number
-            format: double
-        notes:
-          type: string
-          description: Optional description on the users location
-        locationDefinition:
-          $ref: '#/components/schemas/LocationDefinition'
-    FacetStatistics:
-      type: object
-      properties:
-        count:
-          type: integer
-          format: int64
-        min:
-          type: number
-          format: double
-        max:
-          type: number
-          format: double
-        mean:
-          type: number
-          format: double
-        stdDeviation:
-          type: number
-          format: double
-        dateMin:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateMax:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
     Detail:
       type: object
       properties:
@@ -5925,11 +5755,44 @@ components:
           type: string
         entityName:
           type: string
-    SharedEntity:
+    EmployerInfo:
       type: object
       properties:
-        id:
+        officialName:
           type: string
+        employeeId:
+          type: string
+        employeeType:
+          type: string
+        dateHire:
+          type: string
+    LocationImage:
+      type: object
+      properties:
+        resolution:
+          type: string
+          description: 'Height and/or width of image. ex: 640x480 or x128'
+        imageUri:
+          type: string
+    UserStations:
+      type: object
+      properties:
+        associatedStation:
+          description: Current associated station for this user.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+        effectiveStation:
+          description: The station where the user can be reached based on their default and associated station.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+        defaultStation:
+          description: Default station to be used if not associated with a station.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
+        lastAssociatedStation:
+          description: Last associated station for this user.
+          readOnly: true
+          $ref: '#/components/schemas/UserStation'
     User:
       type: object
       required:
@@ -6088,20 +5951,59 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    DomainRole:
+    Location:
       type: object
       properties:
         id:
           type: string
-          description: The ID of the role
+          description: Unique identifier for the location
+        floorplanId:
+          type: string
+          description: Unique identifier for the location floorplan image
+          readOnly: true
+        coordinates:
+          type: object
+          description: Users coordinates on the floorplan. Only used when floorplanImage is set
+          additionalProperties:
+            type: number
+            format: double
+        notes:
+          type: string
+          description: Optional description on the users location
+        locationDefinition:
+          $ref: '#/components/schemas/LocationDefinition'
+    FacetTerm:
+      type: object
+      properties:
+        term:
+          type: string
+        key:
+          type: integer
+          format: int64
+        id:
+          type: string
         name:
           type: string
-          description: The name of the role
-    AttributeFilterItem:
+        count:
+          type: integer
+          format: int64
+        time:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    ContentFilterItem:
       type: object
       properties:
-        id:
+        name:
           type: string
+        type:
+          type: string
+          enum:
+          - NUMBER
+          - STRING
+          - DATE
+          - BOOLEAN
+          - LIST
         operator:
           type: string
           enum:
@@ -6118,26 +6020,25 @@ components:
           type: array
           items:
             type: string
-    ReplaceResponse:
+    SecurityProfile:
       type: object
       properties:
         id:
           type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
         name:
           type: string
-        changeNumber:
-          type: integer
-          format: int32
-        uploadStatus:
-          $ref: '#/components/schemas/DomainEntityRef'
-        uploadDestinationUri:
+        permissions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        selfUri:
           type: string
           format: uri
-        uploadMethod:
-          type: string
-          enum:
-          - SINGLE_PUT
-          - MULTIPART_POST
+          description: The URI for this object
+          readOnly: true
     ReplaceRequest:
       type: object
       properties:
@@ -6148,40 +6049,13 @@ components:
           type: string
         authToken:
           type: string
-    ResourceConditionNode:
-      type: object
-      properties:
-        variableName:
-          type: string
-        conjunction:
-          type: string
-          enum:
-          - AND
-          - OR
-        operator:
-          type: string
-          enum:
-          - EQ
-          - IN
-          - GE
-          - GT
-          - LE
-          - LT
-        operands:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceConditionValue'
-        terms:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResourceConditionNode'
-    TagValueEntityListing:
+    CommandStatusEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/TagValue'
+            $ref: '#/components/schemas/CommandStatus'
         pageSize:
           type: integer
           format: int32
@@ -6209,32 +6083,66 @@ components:
         pageCount:
           type: integer
           format: int32
-    SortItem:
+    RoutingStatus:
       type: object
       properties:
-        name:
+        userId:
           type: string
-        ascending:
-          type: boolean
-    UserStations:
+          description: The userId of the agent
+        status:
+          type: string
+          description: Indicates the Routing State of the agent.  A value of OFF_QUEUE will be returned if the specified user does not exist.
+          enum:
+          - OFF_QUEUE
+          - IDLE
+          - INTERACTING
+          - NOT_RESPONDING
+          - COMMUNICATING
+        startTime:
+          type: string
+          format: date-time
+          description: 'The timestamp when the agent went into this state. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    GroupContact:
+      type: object
+      required:
+      - address
+      - mediaType
+      - type
+      properties:
+        address:
+          type: string
+          description: Phone number for this contact type
+        extension:
+          type: string
+          description: Extension is set if the number is e164 valid
+        display:
+          type: string
+          description: Formatted version of the address property
+          readOnly: true
+        type:
+          type: string
+          description: Contact type of the address
+          enum:
+          - GROUPRING
+          - GROUPPHONE
+        mediaType:
+          type: string
+          description: Media type of the address
+          enum:
+          - PHONE
+    LocationEmergencyNumber:
       type: object
       properties:
-        associatedStation:
-          description: Current associated station for this user.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        effectiveStation:
-          description: The station where the user can be reached based on their default and associated station.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        defaultStation:
-          description: Default station to be used if not associated with a station.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
-        lastAssociatedStation:
-          description: Last associated station for this user.
-          readOnly: true
-          $ref: '#/components/schemas/UserStation'
+        e164:
+          type: string
+        number:
+          type: string
+        type:
+          type: string
+          description: The type of emergency number.
+          enum:
+          - default
+          - elin
     Workspace:
       type: object
       required:
@@ -6279,25 +6187,480 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    FacetTerm:
+    UserConversationSummary:
       type: object
       properties:
-        term:
+        userId:
           type: string
-        key:
-          type: integer
-          format: int64
+        call:
+          $ref: '#/components/schemas/MediaSummary'
+        callback:
+          $ref: '#/components/schemas/MediaSummary'
+        email:
+          $ref: '#/components/schemas/MediaSummary'
+        message:
+          $ref: '#/components/schemas/MediaSummary'
+        chat:
+          $ref: '#/components/schemas/MediaSummary'
+        socialExpression:
+          $ref: '#/components/schemas/MediaSummary'
+        video:
+          $ref: '#/components/schemas/MediaSummary'
+    FacetKeyAttribute:
+      type: object
+      properties:
         id:
           type: string
         name:
           type: string
         count:
           type: integer
+          format: int32
+    DocumentUpload:
+      type: object
+      required:
+      - name
+      - workspace
+      properties:
+        name:
+          type: string
+          description: The name of the document
+        workspace:
+          description: The workspace the document will be uploaded to
+          $ref: '#/components/schemas/DomainEntityRef'
+        tags:
+          type: array
+          items:
+            type: string
+        tagIds:
+          type: array
+          items:
+            type: string
+    FacetEntry:
+      type: object
+      properties:
+        attribute:
+          $ref: '#/components/schemas/TermAttribute'
+        statistics:
+          $ref: '#/components/schemas/FacetStatistics'
+        other:
+          type: integer
           format: int64
-        time:
+        total:
+          type: integer
+          format: int64
+        missing:
+          type: integer
+          format: int64
+        termCount:
+          type: integer
+          format: int32
+        termType:
+          type: string
+          enum:
+          - TERM
+          - NUMBERRANGE
+          - NUMBERHISTOGRAM
+          - DATERANGE
+          - DATEHISTOGRAM
+          - ID
+        terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetTerm'
+    Biography:
+      type: object
+      properties:
+        biography:
+          type: string
+          description: Personal detailed description
+        interests:
+          type: array
+          items:
+            type: string
+        hobbies:
+          type: array
+          items:
+            type: string
+        spouse:
+          type: string
+        education:
+          type: array
+          description: User education details
+          items:
+            $ref: '#/components/schemas/Education'
+    UserRoutingLanguage:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        proficiency:
+          type: number
+          format: double
+          description: A rating from 0.0 to 5.0 that indicates how fluent an agent is in a particular language. ACD interactions are routed to agents with higher proficiency ratings.
+        state:
+          type: string
+          description: Activate or deactivate this routing language.
+          enum:
+          - active
+          - inactive
+          - deleted
+        languageUri:
+          type: string
+          format: uri
+          description: URI to the organization language used by this user language.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Represents an organization language assigned to a user. When assigning to a user specify the organization language id as the id.
+    SharedEntity:
+      type: object
+      properties:
+        id:
+          type: string
+    LocationAddressVerificationDetails:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of address verification process
+          enum:
+          - Pending
+          - InProgress
+          - Retry
+          - Complete
+          - Failed
+        dateFinished:
+          type: string
+          format: date-time
+          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        service:
+          type: string
+          example: smartystreets-us
+          description: Third party service used for address verification
+    WritableDivision:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DocumentAttribute:
+      type: object
+      properties:
+        attribute:
+          $ref: '#/components/schemas/Attribute'
+        values:
+          type: array
+          items:
+            type: string
+    Education:
+      type: object
+      properties:
+        school:
+          type: string
+        fieldOfStudy:
+          type: string
+        notes:
+          type: string
+          description: Notes about education has a 2000 character limit
+        dateStart:
+          type: string
+          format: date
+          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEnd:
+          type: string
+          format: date
+          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+    WorkspaceMember:
+      type: object
+      required:
+      - memberType
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        workspace:
+          $ref: '#/components/schemas/DomainEntityRef'
+        memberType:
+          type: string
+          description: The workspace member type.
+          enum:
+          - USER
+          - GROUP
+        member:
+          $ref: '#/components/schemas/DomainEntityRef'
+        user:
+          $ref: '#/components/schemas/User'
+        group:
+          $ref: '#/components/schemas/Group'
+        securityProfile:
+          $ref: '#/components/schemas/SecurityProfile'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UserRoutingSkill:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        proficiency:
+          type: number
+          format: double
+          description: A rating from 0.0 to 5.0 that indicates how adept an agent is at a particular skill. When "Best available skills" is enabled for a queue in Genesys Cloud, ACD interactions in that queue are routed to agents with higher proficiency ratings.
+        state:
+          type: string
+          description: Activate or deactivate this routing skill.
+          enum:
+          - active
+          - inactive
+          - deleted
+        skillUri:
+          type: string
+          format: uri
+          description: URI to the organization skill used by this user skill.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Represents an organization skill assigned to a user. When assigning to a user specify the organization skill id as the id.
+    QueryRequest:
+      type: object
+      properties:
+        queryPhrase:
+          type: string
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        facetNameRequests:
+          type: array
+          items:
+            type: string
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortItem'
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContentFilterItem'
+        attributeFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttributeFilterItem'
+        includeShares:
+          type: boolean
+    Share:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        sharedEntityType:
+          type: string
+          enum:
+          - DOCUMENT
+        sharedEntity:
+          $ref: '#/components/schemas/DomainEntityRef'
+        memberType:
+          type: string
+          enum:
+          - USER
+          - GROUP
+          - PUBLIC
+        member:
+          $ref: '#/components/schemas/DomainEntityRef'
+        sharedBy:
+          $ref: '#/components/schemas/DomainEntityRef'
+        workspace:
+          $ref: '#/components/schemas/DomainEntityRef'
+        user:
+          $ref: '#/components/schemas/User'
+        group:
+          $ref: '#/components/schemas/Group'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    WorkPlanBidRanks:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the user.
+        workPlanBiddingPerformance:
+          type: integer
+          format: int32
+          description: Work plan bidding agent performance ranking. The range of values is between 0 and 9999.
+        biddingTieBreaker:
+          type: string
+          description: Custom agent ranking metric that some customers can use.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ShareEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Share'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    LockInfo:
+      type: object
+      properties:
+        lockedBy:
+          $ref: '#/components/schemas/DomainEntityRef'
+        dateCreated:
           type: string
           format: date-time
           description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateExpires:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        action:
+          type: string
+          enum:
+          - UPDATE
+          - DELETE
+          - COPY
+          - MOVE
+          - REPLACE
+          - THUMBNAIL
+          - TEXT_EXTRACTION
+    UserAuthorization:
+      type: object
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DomainRole'
+        unusedRoles:
+          type: array
+          description: A collection of the roles the user is not using
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/DomainRole'
+        permissions:
+          type: array
+          description: A collection of the permissions granted by all assigned roles
+          readOnly: true
+          items:
+            type: string
+        permissionPolicies:
+          type: array
+          description: The policies configured for assigned permissions.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/ResourcePermissionPolicy'
+    WorkspaceCreate:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The workspace name
+        bucket:
+          type: string
+        description:
+          type: string
     Attribute:
       type: object
       required:
@@ -6332,68 +6695,549 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Usage:
+    DomainEntity:
       type: object
       properties:
-        types:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    QueryResults:
+      type: object
+      properties:
+        results:
+          $ref: '#/components/schemas/DomainEntityListingQueryResult'
+        facetInfo:
+          $ref: '#/components/schemas/QueryFacetInfo'
+    UserPresence:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        source:
+          type: string
+          description: Deprecated - The sourceID field should be used as a replacement.
+        sourceId:
+          type: string
+          description: Represents the ID of a registered source
+        primary:
+          type: boolean
+          description: A boolean used to tell whether or not to set this presence source as the primary on a PATCH
+        presenceDefinition:
+          $ref: '#/components/schemas/PresenceDefinition'
+        futurePresenceDefinition:
+          description: The definition of the user's desired future presence
+          readOnly: true
+          $ref: '#/components/schemas/PresenceDefinition'
+        message:
+          type: string
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WorkspaceSummary:
+      type: object
+      properties:
+        totalDocumentCount:
+          type: integer
+          format: int64
+        totalDocumentByteCount:
+          type: integer
+          format: int64
+    LocationDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        contactUser:
+          description: Site contact for the location entity
+          $ref: '#/components/schemas/AddressableEntityRef'
+        emergencyNumber:
+          description: Emergency number for the location entity
+          $ref: '#/components/schemas/LocationEmergencyNumber'
+        address:
+          $ref: '#/components/schemas/LocationAddress'
+        state:
+          type: string
+          description: Current state of the location entity
+          enum:
+          - active
+          - deleted
+        notes:
+          type: string
+          description: Notes for the location entity
+        version:
+          type: integer
+          format: int32
+          description: Current version of the location entity, value to be supplied should be retrieved by a GET or on create/update response
+        path:
+          type: array
+          description: A list of ancestor IDs in order
+          readOnly: true
+          items:
+            type: string
+        profileImage:
+          type: array
+          description: Profile image of the location entity, retrieved with ?expand=images query parameter
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LocationImage'
+        floorplanImage:
+          type: array
+          description: Floorplan images of the location entity, retrieved with ?expand=images query parameter
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LocationImage'
+        addressVerificationDetails:
+          description: Address verification information, retrieve dwith the ?expand=addressVerificationDetails query parameter
+          readOnly: true
+          $ref: '#/components/schemas/LocationAddressVerificationDetails'
+        addressVerified:
+          type: boolean
+          description: Boolean field which states if the address has been verified as an actual address
+          readOnly: true
+        addressStored:
+          type: boolean
+          description: Boolean field which states if the address has been stored for E911
+          readOnly: true
+        images:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    QueryResult:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        body:
+          $ref: '#/components/schemas/DomainEntity'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    QueryFacetInfo:
+      type: object
+      properties:
+        attributes:
           type: array
           items:
-            $ref: '#/components/schemas/UsageItem'
-    TermAttribute:
+            $ref: '#/components/schemas/FacetKeyAttribute'
+        facets:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetEntry'
+    AttributeFilterItem:
+      type: object
+      properties:
+        id:
+          type: string
+        operator:
+          type: string
+          enum:
+          - IN
+          - RANGE
+          - EQUALS
+          - NOTEQUALS
+          - LESSTHAN
+          - LESSTHANEQUALS
+          - GREATERTHAN
+          - GREATERTHANEQUALS
+          - CONTAINS
+        values:
+          type: array
+          items:
+            type: string
+    Division:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LocationAddress:
+      type: object
+      properties:
+        city:
+          type: string
+        country:
+          type: string
+        countryName:
+          type: string
+        state:
+          type: string
+        street1:
+          type: string
+        street2:
+          type: string
+        zipcode:
+          type: string
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    TagValue:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The workspace tag name.
+        inUse:
+          type: boolean
+        acl:
+          type: array
+          items:
+            type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TagQueryRequest:
+      type: object
+      properties:
+        query:
+          type: string
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+    Chat:
+      type: object
+      properties:
+        jabberId:
+          type: string
+    ReplaceResponse:
       type: object
       properties:
         id:
           type: string
         name:
           type: string
-        type:
+        changeNumber:
+          type: integer
+          format: int32
+        uploadStatus:
+          $ref: '#/components/schemas/DomainEntityRef'
+        uploadDestinationUri:
+          type: string
+          format: uri
+        uploadMethod:
           type: string
           enum:
-          - NUMBER
-          - STRING
-          - DATE
-          - BOOLEAN
-          - LIST
-    LocationAddressVerificationDetails:
+          - SINGLE_PUT
+          - MULTIPART_POST
+    DocumentUpdate:
+      type: object
+      required:
+      - name
+      properties:
+        changeNumber:
+          type: integer
+          format: int32
+        name:
+          type: string
+          description: The name of the document
+        read:
+          type: boolean
+        addTags:
+          type: array
+          items:
+            type: string
+        removeTags:
+          type: array
+          items:
+            type: string
+        addTagIds:
+          type: array
+          items:
+            type: string
+        removeTagIds:
+          type: array
+          items:
+            type: string
+        updateAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentAttribute'
+        removeAttributes:
+          type: array
+          items:
+            type: string
+    MediaSummary:
       type: object
       properties:
-        status:
-          type: string
-          description: Status of address verification process
-          enum:
-          - Pending
-          - InProgress
-          - Retry
-          - Complete
-          - Failed
-        dateFinished:
-          type: string
-          format: date-time
-          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        service:
-          type: string
-          example: smartystreets-us
-          description: Third party service used for address verification
-    UsageItem:
+        contactCenter:
+          $ref: '#/components/schemas/MediaSummaryDetail'
+        enterprise:
+          $ref: '#/components/schemas/MediaSummaryDetail'
+    DocumentThumbnail:
       type: object
       properties:
+        resolution:
+          type: string
+        imageUri:
+          type: string
+        height:
+          type: integer
+          format: int32
+        width:
+          type: integer
+          format: int32
+    UserStation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A globally unique identifier for this station
+          readOnly: true
+        name:
+          type: string
         type:
           type: string
-          enum:
-          - RECORDING
-          - FAX
-          - DOCUMENT
-          - ALL
-        totalDocumentByteCount:
+        associatedUser:
+          $ref: '#/components/schemas/User'
+        associatedDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        defaultUser:
+          $ref: '#/components/schemas/User'
+        providerInfo:
+          type: object
+          description: 'Provider-specific info for this station, e.g. { "edgeGroupId": "ffe7b15c-a9cc-4f4c-88f5-781327819a49" }'
+          additionalProperties:
+            type: string
+        webRtcCallAppearances:
+          type: integer
+          format: int32
+          description: The number of call appearances on the station.
+          readOnly: true
+    WorkspaceMemberEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceMember'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
           type: integer
           format: int64
-        totalDocumentCount:
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    SharedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        downloadUri:
+          type: string
+          format: uri
+        viewUri:
+          type: string
+          format: uri
+        document:
+          $ref: '#/components/schemas/Document'
+        share:
+          $ref: '#/components/schemas/Share'
+    SecurityProfileEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityProfile'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
           type: integer
           format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
     Document:
       type: object
       properties:
@@ -6499,173 +7343,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Division:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    MemberEntity:
-      type: object
-      properties:
-        id:
-          type: string
-    LocationEmergencyNumber:
-      type: object
-      properties:
-        e164:
-          type: string
-        number:
-          type: string
-        type:
-          type: string
-          description: The type of emergency number.
-          enum:
-          - default
-          - elin
-    UserPresence:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        source:
-          type: string
-          description: Deprecated - The sourceID field should be used as a replacement.
-        sourceId:
-          type: string
-          description: Represents the ID of a registered source
-        primary:
-          type: boolean
-          description: A boolean used to tell whether or not to set this presence source as the primary on a PATCH
-        presenceDefinition:
-          $ref: '#/components/schemas/PresenceDefinition'
-        futurePresenceDefinition:
-          description: The definition of the user's desired future presence
-          readOnly: true
-          $ref: '#/components/schemas/PresenceDefinition'
-        message:
-          type: string
-        modifiedDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    QueryResults:
-      type: object
-      properties:
-        results:
-          $ref: '#/components/schemas/DomainEntityListingQueryResult'
-        facetInfo:
-          $ref: '#/components/schemas/QueryFacetInfo'
-    QueryRequest:
-      type: object
-      properties:
-        queryPhrase:
-          type: string
-        pageNumber:
-          type: integer
-          format: int32
-        pageSize:
-          type: integer
-          format: int32
-        facetNameRequests:
-          type: array
-          items:
-            type: string
-        sort:
-          type: array
-          items:
-            $ref: '#/components/schemas/SortItem'
-        filters:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContentFilterItem'
-        attributeFilters:
-          type: array
-          items:
-            $ref: '#/components/schemas/AttributeFilterItem'
-        includeShares:
-          type: boolean
-    OutOfOffice:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        user:
-          $ref: '#/components/schemas/User'
-        startDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        endDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        active:
-          type: boolean
-        indefinite:
-          type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Share:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        sharedEntityType:
-          type: string
-          enum:
-          - DOCUMENT
-        sharedEntity:
-          $ref: '#/components/schemas/DomainEntityRef'
-        memberType:
-          type: string
-          enum:
-          - USER
-          - GROUP
-          - PUBLIC
-        member:
-          $ref: '#/components/schemas/DomainEntityRef'
-        sharedBy:
-          $ref: '#/components/schemas/DomainEntityRef'
-        workspace:
-          $ref: '#/components/schemas/DomainEntityRef'
-        user:
-          $ref: '#/components/schemas/User'
-        group:
-          $ref: '#/components/schemas/Group'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     Geolocation:
       type: object
       properties:
@@ -6702,207 +7379,44 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    CommandStatusEntityListing:
+    Contact:
       type: object
       properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CommandStatus'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    LocationDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        contactUser:
-          description: Site contact for the location entity
-          $ref: '#/components/schemas/AddressableEntityRef'
-        emergencyNumber:
-          description: Emergency number for the location entity
-          $ref: '#/components/schemas/LocationEmergencyNumber'
         address:
-          $ref: '#/components/schemas/LocationAddress'
-        state:
           type: string
-          description: Current state of the location entity
+          description: Email address or phone number for this contact type
+        display:
+          type: string
+          description: Formatted version of the address property
+          readOnly: true
+        mediaType:
+          type: string
           enum:
-          - active
-          - deleted
-        notes:
-          type: string
-          description: Notes for the location entity
-        version:
-          type: integer
-          format: int32
-          description: Current version of the location entity, value to be supplied should be retrieved by a GET or on create/update response
-        path:
-          type: array
-          description: A list of ancestor IDs in order
-          readOnly: true
-          items:
-            type: string
-        profileImage:
-          type: array
-          description: Profile image of the location entity, retrieved with ?expand=images query parameter
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LocationImage'
-        floorplanImage:
-          type: array
-          description: Floorplan images of the location entity, retrieved with ?expand=images query parameter
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LocationImage'
-        addressVerificationDetails:
-          description: Address verification information, retrieve dwith the ?expand=addressVerificationDetails query parameter
-          readOnly: true
-          $ref: '#/components/schemas/LocationAddressVerificationDetails'
-        addressVerified:
-          type: boolean
-          description: Boolean field which states if the address has been verified as an actual address
-          readOnly: true
-        addressStored:
-          type: boolean
-          description: Boolean field which states if the address has been stored for E911
-          readOnly: true
-        images:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UserStation:
-      type: object
-      properties:
-        id:
-          type: string
-          description: A globally unique identifier for this station
-          readOnly: true
-        name:
-          type: string
+          - PHONE
+          - EMAIL
+          - SMS
         type:
           type: string
-        associatedUser:
-          $ref: '#/components/schemas/User'
-        associatedDate:
+          enum:
+          - PRIMARY
+          - WORK
+          - WORK2
+          - WORK3
+          - WORK4
+          - HOME
+          - MOBILE
+          - MAIN
+          - OTHER
+        extension:
           type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        defaultUser:
-          $ref: '#/components/schemas/User'
-        providerInfo:
-          type: object
-          description: 'Provider-specific info for this station, e.g. { "edgeGroupId": "ffe7b15c-a9cc-4f4c-88f5-781327819a49" }'
-          additionalProperties:
-            type: string
-        webRtcCallAppearances:
-          type: integer
-          format: int32
-          description: The number of call appearances on the station.
-          readOnly: true
-    QueryFacetInfo:
-      type: object
-      properties:
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/FacetKeyAttribute'
-        facets:
-          type: array
-          items:
-            $ref: '#/components/schemas/FacetEntry'
-    QueryResult:
-      type: object
-      properties:
-        id:
+          description: Use internal extension instead of address. Mutually exclusive with the address field.
+        countryCode:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
+        integration:
           type: string
-        body:
-          $ref: '#/components/schemas/DomainEntity'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    TagQueryRequest:
-      type: object
-      properties:
-        query:
-          type: string
-        pageNumber:
-          type: integer
-          format: int32
-        pageSize:
-          type: integer
-          format: int32
-    WritableDivision:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    UserConversationSummary:
-      type: object
-      properties:
-        userId:
-          type: string
-        call:
-          $ref: '#/components/schemas/MediaSummary'
-        callback:
-          $ref: '#/components/schemas/MediaSummary'
-        email:
-          $ref: '#/components/schemas/MediaSummary'
-        message:
-          $ref: '#/components/schemas/MediaSummary'
-        chat:
-          $ref: '#/components/schemas/MediaSummary'
-        socialExpression:
-          $ref: '#/components/schemas/MediaSummary'
-        video:
-          $ref: '#/components/schemas/MediaSummary'
-    TagValue:
+          example: microsoftteams
+          description: Integration tag value if this number is associated with an external integration.
+    Team:
       type: object
       required:
       - name
@@ -6913,38 +7427,40 @@ components:
           readOnly: true
         name:
           type: string
-          description: The workspace tag name.
-        inUse:
-          type: boolean
-        acl:
-          type: array
-          items:
-            type: string
+          description: The team name
+        division:
+          description: The division to which this entity belongs.
+          $ref: '#/components/schemas/WritableDivision'
+        description:
+          type: string
+          description: Team information.
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Last modified datetime. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        memberCount:
+          type: integer
+          format: int64
+          description: Number of members in a team
+          readOnly: true
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-    DocumentThumbnail:
-      type: object
-      properties:
-        resolution:
-          type: string
-        imageUri:
-          type: string
-        height:
-          type: integer
-          format: int32
-        width:
-          type: integer
-          format: int32
-    WorkspaceEntityListing:
+    DocumentEntityListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/Workspace'
+            $ref: '#/components/schemas/Document'
         pageSize:
           type: integer
           format: int32
@@ -6972,105 +7488,36 @@ components:
         pageCount:
           type: integer
           format: int32
-    UserRoutingLanguage:
+    ResourcePermissionPolicy:
       type: object
       properties:
         id:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
+        domain:
           type: string
-        proficiency:
-          type: number
-          format: double
-          description: A rating from 0.0 to 5.0 that indicates how fluent an agent is in a particular language. ACD interactions are routed to agents with higher proficiency ratings.
-        state:
+        entityName:
           type: string
-          description: Activate or deactivate this routing language.
-          enum:
-          - active
-          - inactive
-          - deleted
-        languageUri:
+        policyName:
           type: string
-          format: uri
-          description: URI to the organization language used by this user language.
-          readOnly: true
-        selfUri:
+        policyDescription:
           type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Represents an organization language assigned to a user. When assigning to a user specify the organization language id as the id.
-    LocationImage:
-      type: object
-      properties:
-        resolution:
+        actionSetKey:
           type: string
-          description: 'Height and/or width of image. ex: 640x480 or x128'
-        imageUri:
+        allowConditions:
+          type: boolean
+        resourceConditionNode:
+          $ref: '#/components/schemas/ResourceConditionNode'
+        namedResources:
+          type: array
+          items:
+            type: string
+        resourceCondition:
           type: string
-    OAuthLastTokenIssued:
-      type: object
-      properties:
-        dateIssued:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    LocationAddress:
-      type: object
-      properties:
-        city:
-          type: string
-        country:
-          type: string
-        countryName:
-          type: string
-        state:
-          type: string
-        street1:
-          type: string
-        street2:
-          type: string
-        zipcode:
-          type: string
-    PresenceDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: description
-        systemPresence:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkspaceSummary:
-      type: object
-      properties:
-        totalDocumentCount:
-          type: integer
-          format: int64
-        totalDocumentByteCount:
-          type: integer
-          format: int64
-    DomainEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
+        actionSet:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
     Image:
       type: object
       properties:
@@ -7079,32 +7526,146 @@ components:
           description: 'Height and/or width of image. ex: 640x480 or x128'
         imageUri:
           type: string
-    LockInfo:
+    SortItem:
       type: object
       properties:
-        lockedBy:
-          $ref: '#/components/schemas/DomainEntityRef'
-        dateCreated:
+        name:
           type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateExpires:
+        ascending:
+          type: boolean
+    ResourceConditionNode:
+      type: object
+      properties:
+        variableName:
           type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        action:
+        conjunction:
           type: string
           enum:
-          - UPDATE
-          - DELETE
-          - COPY
-          - MOVE
-          - REPLACE
-          - THUMBNAIL
-          - TEXT_EXTRACTION
-    ContentFilterItem:
+          - AND
+          - OR
+        operator:
+          type: string
+          enum:
+          - EQ
+          - IN
+          - GE
+          - GT
+          - LE
+          - LT
+        operands:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceConditionValue'
+        terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceConditionNode'
+    UsageItem:
       type: object
       properties:
+        type:
+          type: string
+          enum:
+          - RECORDING
+          - FAX
+          - DOCUMENT
+          - ALL
+        totalDocumentByteCount:
+          type: integer
+          format: int64
+        totalDocumentCount:
+          type: integer
+          format: int64
+    CreateShareResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        sharedEntityType:
+          type: string
+          enum:
+          - DOCUMENT
+        sharedEntity:
+          $ref: '#/components/schemas/DomainEntityRef'
+        memberType:
+          type: string
+          enum:
+          - USER
+          - GROUP
+          - PUBLIC
+        member:
+          $ref: '#/components/schemas/DomainEntityRef'
+        sharedBy:
+          $ref: '#/components/schemas/DomainEntityRef'
+        workspace:
+          $ref: '#/components/schemas/DomainEntityRef'
+        succeeded:
+          type: array
+          items:
+            $ref: '#/components/schemas/Share'
+        failed:
+          type: array
+          items:
+            $ref: '#/components/schemas/Share'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Usage:
+      type: object
+      properties:
+        types:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsageItem'
+    ResourceConditionValue:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - SCALAR
+          - VARIABLE
+          - USER
+          - QUEUE
+          - TEAM
+        value:
+          type: string
+    OAuthLastTokenIssued:
+      type: object
+      properties:
+        dateIssued:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    DomainRole:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the role
+        name:
+          type: string
+          description: The name of the role
+    MediaSummaryDetail:
+      type: object
+      properties:
+        active:
+          type: integer
+          format: int32
+        acw:
+          type: integer
+          format: int32
+    TermAttribute:
+      type: object
+      properties:
+        id:
+          type: string
         name:
           type: string
         type:
@@ -7115,56 +7676,6 @@ components:
           - DATE
           - BOOLEAN
           - LIST
-        operator:
-          type: string
-          enum:
-          - IN
-          - RANGE
-          - EQUALS
-          - NOTEQUALS
-          - LESSTHAN
-          - LESSTHANEQUALS
-          - GREATERTHAN
-          - GREATERTHANEQUALS
-          - CONTAINS
-        values:
-          type: array
-          items:
-            type: string
-    WorkspaceMemberEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkspaceMember'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
     Group:
       type: object
       required:
@@ -7248,42 +7759,13 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    MediaSummaryDetail:
-      type: object
-      properties:
-        active:
-          type: integer
-          format: int32
-        acw:
-          type: integer
-          format: int32
-    DocumentUpload:
-      type: object
-      required:
-      - name
-      - workspace
-      properties:
-        name:
-          type: string
-          description: The name of the document
-        workspace:
-          description: The workspace the document will be uploaded to
-          $ref: '#/components/schemas/DomainEntityRef'
-        tags:
-          type: array
-          items:
-            type: string
-        tagIds:
-          type: array
-          items:
-            type: string
-    ShareEntityListing:
+    DomainEntityListingQueryResult:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/Share'
+            $ref: '#/components/schemas/QueryResult'
         pageSize:
           type: integer
           format: int32
@@ -7333,488 +7815,6 @@ components:
           type: string
         selfUri:
           type: string
-    Biography:
-      type: object
-      properties:
-        biography:
-          type: string
-          description: Personal detailed description
-        interests:
-          type: array
-          items:
-            type: string
-        hobbies:
-          type: array
-          items:
-            type: string
-        spouse:
-          type: string
-        education:
-          type: array
-          description: User education details
-          items:
-            $ref: '#/components/schemas/Education'
-    SecurityProfile:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        permissions:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Limit:
-      type: object
-      properties:
-        key:
-          type: string
-        namespace:
-          type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
-    Education:
-      type: object
-      properties:
-        school:
-          type: string
-        fieldOfStudy:
-          type: string
-        notes:
-          type: string
-          description: Notes about education has a 2000 character limit
-        dateStart:
-          type: string
-          format: date
-          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEnd:
-          type: string
-          format: date
-          description: 'Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-    CreateShareRequestMember:
-      type: object
-      properties:
-        memberType:
-          type: string
-          enum:
-          - USER
-          - GROUP
-          - PUBLIC
-        member:
-          $ref: '#/components/schemas/MemberEntity'
-    CreateShareRequest:
-      type: object
-      required:
-      - sharedEntity
-      - sharedEntityType
-      properties:
-        sharedEntityType:
-          type: string
-          description: The share entity type
-          enum:
-          - DOCUMENT
-        sharedEntity:
-          description: The entity that will be shared
-          $ref: '#/components/schemas/SharedEntity'
-        memberType:
-          type: string
-          enum:
-          - USER
-          - GROUP
-          - PUBLIC
-        member:
-          description: The member that will have access to this share. Only required if a list of members is not provided.
-          $ref: '#/components/schemas/SharedEntity'
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/CreateShareRequestMember'
-    UserAuthorization:
-      type: object
-      properties:
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/DomainRole'
-        unusedRoles:
-          type: array
-          description: A collection of the roles the user is not using
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/DomainRole'
-        permissions:
-          type: array
-          description: A collection of the permissions granted by all assigned roles
-          readOnly: true
-          items:
-            type: string
-        permissionPolicies:
-          type: array
-          description: The policies configured for assigned permissions.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/ResourcePermissionPolicy'
-    SecurityProfileEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/SecurityProfile'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    GroupContact:
-      type: object
-      required:
-      - address
-      - mediaType
-      - type
-      properties:
-        address:
-          type: string
-          description: Phone number for this contact type
-        extension:
-          type: string
-          description: Extension is set if the number is e164 valid
-        display:
-          type: string
-          description: Formatted version of the address property
-          readOnly: true
-        type:
-          type: string
-          description: Contact type of the address
-          enum:
-          - GROUPRING
-          - GROUPPHONE
-        mediaType:
-          type: string
-          description: Media type of the address
-          enum:
-          - PHONE
-    ResourceConditionValue:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - SCALAR
-          - VARIABLE
-          - USER
-          - QUEUE
-          - TEAM
-        value:
-          type: string
-    EmployerInfo:
-      type: object
-      properties:
-        officialName:
-          type: string
-        employeeId:
-          type: string
-        employeeType:
-          type: string
-        dateHire:
-          type: string
-    RoutingStatus:
-      type: object
-      properties:
-        userId:
-          type: string
-          description: The userId of the agent
-        status:
-          type: string
-          description: Indicates the Routing State of the agent.  A value of OFF_QUEUE will be returned if the specified user does not exist.
-          enum:
-          - OFF_QUEUE
-          - IDLE
-          - INTERACTING
-          - NOT_RESPONDING
-          - COMMUNICATING
-        startTime:
-          type: string
-          format: date-time
-          description: 'The timestamp when the agent went into this state. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    WorkPlanBidRanks:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the user.
-        workPlanBiddingPerformance:
-          type: integer
-          format: int32
-          description: Work plan bidding agent performance ranking. The range of values is between 0 and 9999.
-        biddingTieBreaker:
-          type: string
-          description: Custom agent ranking metric that some customers can use.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    FacetKeyAttribute:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        count:
-          type: integer
-          format: int32
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    UserRoutingSkill:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        proficiency:
-          type: number
-          format: double
-          description: A rating from 0.0 to 5.0 that indicates how adept an agent is at a particular skill. When "Best available skills" is enabled for a queue in Genesys Cloud, ACD interactions in that queue are routed to agents with higher proficiency ratings.
-        state:
-          type: string
-          description: Activate or deactivate this routing skill.
-          enum:
-          - active
-          - inactive
-          - deleted
-        skillUri:
-          type: string
-          format: uri
-          description: URI to the organization skill used by this user skill.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Represents an organization skill assigned to a user. When assigning to a user specify the organization skill id as the id.
-    WorkspaceMember:
-      type: object
-      required:
-      - memberType
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        workspace:
-          $ref: '#/components/schemas/DomainEntityRef'
-        memberType:
-          type: string
-          description: The workspace member type.
-          enum:
-          - USER
-          - GROUP
-        member:
-          $ref: '#/components/schemas/DomainEntityRef'
-        user:
-          $ref: '#/components/schemas/User'
-        group:
-          $ref: '#/components/schemas/Group'
-        securityProfile:
-          $ref: '#/components/schemas/SecurityProfile'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WorkspaceCreate:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The workspace name
-        bucket:
-          type: string
-        description:
-          type: string
-    DocumentEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Document'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    MediaSummary:
-      type: object
-      properties:
-        contactCenter:
-          $ref: '#/components/schemas/MediaSummaryDetail'
-        enterprise:
-          $ref: '#/components/schemas/MediaSummaryDetail'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

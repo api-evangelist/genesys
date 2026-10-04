@@ -914,50 +914,17 @@ paths:
         required: true
 components:
   schemas:
-    ContestCompleteData:
+    Detail:
       type: object
       properties:
-        dateEnd:
+        errorCode:
           type: string
-          format: date
-          description: 'End date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        anonymization:
+        fieldName:
           type: string
-          description: Anonymization of the contest
-          enum:
-          - NoAnonymization
-          - All
-          - AllExceptTop
-        metrics:
-          type: array
-          description: Metrics of the contest
-          items:
-            $ref: '#/components/schemas/ContestDataMetrics'
-        prizes:
-          type: array
-          description: Prizes of the contest
-          items:
-            $ref: '#/components/schemas/ContestDataPrizes'
-        winners:
-          type: array
-          description: Winners of the contest
-          items:
-            $ref: '#/components/schemas/ContestDataWinners'
-    ContestDataWinnersUsers:
-      type: object
-      properties:
-        id:
+        entityId:
           type: string
-          description: The globally unique identifier for the object.
-        rank:
-          type: integer
-          format: int32
-          description: The Contest user's rank
-        selfUri:
+        entityName:
           type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     Limit:
       type: object
       properties:
@@ -1062,220 +1029,35 @@ components:
         value:
           type: integer
           format: int64
-    Recognitions:
+    ContestCompleteData:
       type: object
       properties:
-        entities:
+        dateEnd:
+          type: string
+          format: date
+          description: 'End date of the contest. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        anonymization:
+          type: string
+          description: Anonymization of the contest
+          enum:
+          - NoAnonymization
+          - All
+          - AllExceptTop
+        metrics:
           type: array
+          description: Metrics of the contest
           items:
-            $ref: '#/components/schemas/Recognition'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        pageCount:
-          type: integer
-          format: int32
-    RecognitionBase:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        recipient:
-          description: The recipient of the recognition
-          $ref: '#/components/schemas/UserReference'
-        createdBy:
-          description: The creator of the recognition
-          $ref: '#/components/schemas/UserReference'
-        dateCreated:
-          type: string
-          format: date-time
-          example: '2023-01-01T01:01:01Z'
-          description: 'The creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        type:
-          type: string
-          description: The type of recognition
-          enum:
-          - ThankYou
-          - Congratulations
-          - HighPerformance
-          - CompanyValues
-        title:
-          type: string
-          description: The recognition title
-        note:
-          type: string
-          description: The recognition note
-        contextType:
-          type: string
-          description: The context type (optional)
-          enum:
-          - Interaction
-          - Insights
-          - Development
-          - Scorecard
-        contextId:
-          type: string
-          description: The context id (optional)
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CelebrationStateParam:
-      type: object
-      properties:
-        state:
-          type: string
-          description: The state of the celebration
-          enum:
-          - Displayed
-    ContestDataMetrics:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The Contest Metrics name
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    SourceEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        type:
-          type: string
-          description: The type of the source entity
-          enum:
-          - ThankYou
-          - Congratulations
-          - HighPerformance
-          - CompanyValues
-          - Competition
-          - Race
-          - Raffle
-          - TeamGoal
-        contestCompleteData:
-          description: The contest data - Only supplied when celebration is of type ContestComplete
-          $ref: '#/components/schemas/ContestCompleteData'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ContestCompleteDataScore:
-      type: object
-      properties:
-        score:
-          type: number
-          format: double
-          description: The Contest score
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
+            $ref: '#/components/schemas/ContestDataMetrics'
+        prizes:
           type: array
+          description: Prizes of the contest
           items:
-            $ref: '#/components/schemas/Detail'
-        errors:
+            $ref: '#/components/schemas/ContestDataPrizes'
+        winners:
           type: array
+          description: Winners of the contest
           items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Celebration:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        recipient:
-          description: The Recipient of the celebration
-          $ref: '#/components/schemas/UserReference'
-        createdBy:
-          description: The creator of the celebration
-          $ref: '#/components/schemas/UserReference'
-        dateCreated:
-          type: string
-          format: date-time
-          example: '2023-01-01T01:01:01Z'
-          description: 'The date the celebration was created on. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        type:
-          type: string
-          description: The Celebration Type
-          enum:
-          - Recognition
-          - ContestComplete
-        title:
-          type: string
-          description: The Celebration title
-        note:
-          type: string
-          description: The Celebration note
-        sourceEntity:
-          description: The celebration's source entity
-          $ref: '#/components/schemas/SourceEntity'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ContestDataWinners:
-      type: object
-      properties:
-        tier:
-          type: integer
-          format: int32
-          description: Tier of the winners
-        winnersCount:
-          type: integer
-          format: int32
-          description: Number of winners in this tier
-        contestScore:
-          description: Number of winners in this tier
-          $ref: '#/components/schemas/ContestCompleteDataScore'
-        users:
-          type: array
-          description: List of users in this tier
-          items:
-            $ref: '#/components/schemas/ContestDataWinnersUsers'
+            $ref: '#/components/schemas/ContestDataWinners'
     CreateRecognition:
       type: object
       required:
@@ -1311,64 +1093,6 @@ components:
         contextId:
           type: string
           description: The context id (optional)
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ContestDataPrizes:
-      type: object
-      properties:
-        tier:
-          type: integer
-          format: int32
-          description: Tier of the prize
-        name:
-          type: string
-          description: Name of the prize
-        imageId:
-          type: string
-          description: Id of the prize image
-    GetCelebrationListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Celebration'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
     Recognition:
       type: object
       properties:
@@ -1427,17 +1151,293 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Detail:
+    ErrorBody:
       type: object
       properties:
-        errorCode:
+        message:
           type: string
-        fieldName:
+        code:
           type: string
+        status:
+          type: integer
+          format: int32
         entityId:
           type: string
         entityName:
           type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    ContestDataWinners:
+      type: object
+      properties:
+        tier:
+          type: integer
+          format: int32
+          description: Tier of the winners
+        winnersCount:
+          type: integer
+          format: int32
+          description: Number of winners in this tier
+        contestScore:
+          description: Number of winners in this tier
+          $ref: '#/components/schemas/ContestCompleteDataScore'
+        users:
+          type: array
+          description: List of users in this tier
+          items:
+            $ref: '#/components/schemas/ContestDataWinnersUsers'
+    CelebrationStateParam:
+      type: object
+      properties:
+        state:
+          type: string
+          description: The state of the celebration
+          enum:
+          - Displayed
+    ContestDataPrizes:
+      type: object
+      properties:
+        tier:
+          type: integer
+          format: int32
+          description: Tier of the prize
+        name:
+          type: string
+          description: Name of the prize
+        imageId:
+          type: string
+          description: Id of the prize image
+    ContestCompleteDataScore:
+      type: object
+      properties:
+        score:
+          type: number
+          format: double
+          description: The Contest score
+    Celebration:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        recipient:
+          description: The Recipient of the celebration
+          $ref: '#/components/schemas/UserReference'
+        createdBy:
+          description: The creator of the celebration
+          $ref: '#/components/schemas/UserReference'
+        dateCreated:
+          type: string
+          format: date-time
+          example: '2023-01-01T01:01:01Z'
+          description: 'The date the celebration was created on. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        type:
+          type: string
+          description: The Celebration Type
+          enum:
+          - Recognition
+          - ContestComplete
+        title:
+          type: string
+          description: The Celebration title
+        note:
+          type: string
+          description: The Celebration note
+        sourceEntity:
+          description: The celebration's source entity
+          $ref: '#/components/schemas/SourceEntity'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ContestDataWinnersUsers:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        rank:
+          type: integer
+          format: int32
+          description: The Contest user's rank
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    RecognitionBase:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        recipient:
+          description: The recipient of the recognition
+          $ref: '#/components/schemas/UserReference'
+        createdBy:
+          description: The creator of the recognition
+          $ref: '#/components/schemas/UserReference'
+        dateCreated:
+          type: string
+          format: date-time
+          example: '2023-01-01T01:01:01Z'
+          description: 'The creation date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        type:
+          type: string
+          description: The type of recognition
+          enum:
+          - ThankYou
+          - Congratulations
+          - HighPerformance
+          - CompanyValues
+        title:
+          type: string
+          description: The recognition title
+        note:
+          type: string
+          description: The recognition note
+        contextType:
+          type: string
+          description: The context type (optional)
+          enum:
+          - Interaction
+          - Insights
+          - Development
+          - Scorecard
+        contextId:
+          type: string
+          description: The context id (optional)
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    GetCelebrationListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Celebration'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    SourceEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        type:
+          type: string
+          description: The type of the source entity
+          enum:
+          - ThankYou
+          - Congratulations
+          - HighPerformance
+          - CompanyValues
+          - Competition
+          - Race
+          - Raffle
+          - TeamGoal
+        contestCompleteData:
+          description: The contest data - Only supplied when celebration is of type ContestComplete
+          $ref: '#/components/schemas/ContestCompleteData'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ContestDataMetrics:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The Contest Metrics name
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Recognitions:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recognition'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        pageCount:
+          type: integer
+          format: int32
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

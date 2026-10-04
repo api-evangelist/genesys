@@ -6098,7 +6098,492 @@ paths:
         description: The SCORM package to be uploaded
 components:
   schemas:
-    LearningModulePreviewGetResponseAssignment:
+    LearningAssignmentReschedule:
+      type: object
+      required:
+      - dateRecommendedForCompletion
+      properties:
+        dateRecommendedForCompletion:
+          type: string
+          format: date-time
+          description: 'The recommended completion date of the assignment. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The length in minutes of the assignment
+        addToSchedule:
+          type: boolean
+          description: If True, adds the assignment to their schedule
+    LearningAssignmentItem:
+      type: object
+      required:
+      - moduleId
+      - userId
+      properties:
+        moduleId:
+          type: string
+          position: 1
+          description: The Learning Module ID associated with this assignment
+        userId:
+          type: string
+          position: 2
+          description: The User ID associated with this assignment
+    LearningAssignmentUserQuery:
+      type: object
+      required:
+      - rule
+      properties:
+        rule:
+          description: Learning module rule object
+          $ref: '#/components/schemas/LearningModuleRule'
+        searchTerm:
+          type: string
+          description: The user name to be searched for
+      description: Learning module users query request model
+    LearningModulePreviewUpdateStep:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the step
+        successStatus:
+          type: string
+          description: The success status of the step
+          enum:
+          - Passed
+          - Failed
+          - Unknown
+        completionStatus:
+          type: string
+          description: The completion status of the step
+          enum:
+          - Completed
+          - Incomplete
+          - NotAttempted
+          - Unknown
+        completionPercentage:
+          type: number
+          format: float
+          description: The completion percentage of the step
+        percentageScore:
+          type: number
+          format: float
+          description: Percentage Score
+        structure:
+          type: array
+          description: The structure for any SCO associated with this step
+          items:
+            $ref: '#/components/schemas/LearningModulePreviewUpdateScoStructure'
+      description: Learning module preview update assignment step
+    LearningModulePreviewUpdateRequestCurrentStep:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of this step
+        completionPercentage:
+          type: number
+          format: float
+          description: The completion percentage for this step
+        shareableContentObject:
+          description: The SCO (Shareable Content Object) data
+          $ref: '#/components/schemas/LearningShareableContentObject'
+      description: Learning module preview update request current step
+    LearningModulePreviewUpdateResponseCurrentStep:
+      type: object
+      properties:
+        shareableContentObject:
+          description: The SCO (Shareable Content Object) data
+          $ref: '#/components/schemas/LearningShareableContentObject'
+      description: Learning module preview update response current step
+    LearningAssignmentAggregateQueryRequestPredicate:
+      type: object
+      required:
+      - dimension
+      - value
+      properties:
+        dimension:
+          type: string
+          description: Each predicates specifies a dimension.
+          enum:
+          - attendeeId
+          - type
+          - moduleId
+          - isPassed
+        value:
+          type: string
+          description: 'Corresponding value for dimensions in predicates. If the dimension is type, Valid Values: Informational (deprecated), AssessedContent (deprecated), Assessment (deprecated), External, Native'
+    LearningModuleReassignSummary:
+      type: object
+      properties:
+        totalReassigned:
+          type: integer
+          format: int32
+          description: The total number of users for whom assignment is reassigned
+        completedCount:
+          type: integer
+          format: int32
+          description: The total number of users who have the assignment in Completed state
+        inProgressCount:
+          type: integer
+          format: int32
+          description: The total number of users who have the assignment in InProgress state
+        assignedCount:
+          type: integer
+          format: int32
+          description: The total number of users who have the assignment in Assigned state
+        notCompletedCount:
+          type: integer
+          format: int32
+          description: The total number of users who have their assignment overdue
+      description: Learning module reassign summary data
+    LearningScheduleSlotsJobResult:
+      type: object
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'The interval of the job. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        status:
+          type: string
+          description: The status of the job
+          enum:
+          - InProgress
+          - Complete
+          - Error
+        slot:
+          description: The slot found from the job
+          $ref: '#/components/schemas/LearningScheduleSlotsJobSlot'
+    LearningAssignmentUser:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LearningScheduleSlotsJobSchedule:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+        weekDate:
+          type: string
+          format: date
+          description: 'The start week date for this schedule. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        weekCount:
+          type: integer
+          format: int32
+          description: The number of weeks in this schedule
+    LearningAssignmentAggregateQueryResponseGroupedData:
+      type: object
+      properties:
+        group:
+          type: object
+          description: The group values for this data
+          additionalProperties:
+            type: string
+        data:
+          type: array
+          description: The metrics in this group
+          items:
+            $ref: '#/components/schemas/LearningAssignmentAggregateQueryResponseData'
+    LearningAssignmentAggregateQueryResponseMetric:
+      type: object
+      properties:
+        metric:
+          type: string
+          description: The metric this applies to
+          enum:
+          - nActivities
+          - nPlannedActivities
+          - nInProgressActivities
+          - nCompleteActivities
+          - nOverdueActivities
+          - nInvalidScheduleActivities
+          - nPassedActivities
+          - nFailedActivities
+          - oActivityScore
+          - nNotCompletedActivities
+        stats:
+          description: The aggregated values for this metric
+          $ref: '#/components/schemas/LearningAssignmentAggregateQueryResponseStats'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    VisibilityCondition:
+      type: object
+      properties:
+        combiningOperation:
+          type: string
+          enum:
+          - AND
+          - OR
+        predicates:
+          type: array
+          description: 'A list of strings, each representing the location in the form of the Answer Option to depend on. In the format of "/form/questionGroup/{questionGroupIndex}/question/{questionIndex}/answer/{answerIndex}" or, to assume the current question group, "../question/{questionIndex}/answer/{answerIndex}". Note: Indexes are zero-based'
+          items:
+            type: object
+    LearningModuleRuleParts:
+      type: object
+      required:
+      - operation
+      - order
+      - selector
+      - value
+      properties:
+        operation:
+          type: string
+          description: The learning module rule operation
+          enum:
+          - Include
+          - Exclude
+        selector:
+          type: string
+          description: The learning module rule selector
+          enum:
+          - AcdSkills
+          - AgentName
+          - Division
+          - Group
+          - Location
+          - Queue
+          - Role
+          - Team
+          - User
+        value:
+          type: array
+          description: The value of rules
+          items:
+            type: string
+        order:
+          type: integer
+          format: int32
+          description: The order of rules in learning module rule
+    LearningAssessment:
+      type: object
+      properties:
+        assessmentId:
+          type: string
+          description: The Id of the assessment
+          readOnly: true
+        contextId:
+          type: string
+          description: The context Id of the related assessment form
+          readOnly: true
+        assessmentFormId:
+          type: string
+          description: The Id of the related assessment form
+          readOnly: true
+        status:
+          type: string
+          description: Status of the assessment
+          readOnly: true
+          enum:
+          - Pending
+          - InProgress
+          - Finished
+        answers:
+          description: Answers for the assessment
+          $ref: '#/components/schemas/AssessmentScoringSet'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date the assessment was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date the assessment was last updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateSubmitted:
+          type: string
+          format: date-time
+          description: 'Date the assessment was submitted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+    UsersRulesRuleReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LearningScheduleSlotsQueryRequest:
+      type: object
+      required:
+      - interval
+      - lengthInMinutes
+      - userIds
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Range of time to get slots for scheduling learning activities. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The duration of Learning Assignment to schedule in 15 minutes granularity
+        userIds:
+          type: array
+          description: The user IDs for which to fetch schedules. Must be only 1.
+          items:
+            type: string
+        interruptibleAssignmentId:
+          type: string
+          description: Assignment ID to exclude from consideration when determining blocked slots
+    LearningModule:
+      type: object
+      required:
+      - completionTimeInDays
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of learning module
+        excludedFromCatalog:
+          type: boolean
+          description: If true, learning module is excluded when retrieving modules for manual assignment
+        createdBy:
+          description: The user who created learning module
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The date/time learning module was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        modifiedBy:
+          description: The user who modified learning module
+          readOnly: true
+          $ref: '#/components/schemas/UserReference'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'The date/time learning module was modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        version:
+          type: integer
+          format: int32
+          description: The version of published learning module
+          readOnly: true
+        externalId:
+          type: string
+          description: The external ID of the learning module
+          readOnly: true
+        source:
+          type: string
+          description: The source of the learning module
+          readOnly: true
+          enum:
+          - UserCreated
+          - GenesysBeyond
+        rule:
+          description: The rule for learning module; read-only, and only populated when requested via expand param.
+          readOnly: true
+          $ref: '#/components/schemas/LearningModuleRule'
+        enforceContentOrder:
+          type: boolean
+          description: If true, learning module content should be viewed one by one in order
+        reviewAssessmentResults:
+          description: Allows to view Assessment results in detail
+          $ref: '#/components/schemas/ReviewAssessmentResults'
+        autoAssign:
+          description: The auto assignment settings for this module
+          $ref: '#/components/schemas/LearningModuleAutoAssignResponse'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+        isArchived:
+          type: boolean
+          description: If true, learning module is archived
+          readOnly: true
+        isPublished:
+          type: boolean
+          description: If true, learning module is published
+          readOnly: true
+        description:
+          type: string
+          position: 1
+          description: The description of learning module
+        completionTimeInDays:
+          type: integer
+          format: int32
+          position: 2
+          description: The completion time of learning module in days
+        type:
+          type: string
+          position: 3
+          description: The type for the learning module
+          enum:
+          - Informational
+          - AssessedContent
+          - Assessment
+          - External
+          - Native
+        informSteps:
+          type: array
+          position: 5
+          description: The list of inform steps in a learning module
+          items:
+            $ref: '#/components/schemas/LearningModuleInformStep'
+        assessmentForm:
+          position: 6
+          description: The assessment form for learning module
+          $ref: '#/components/schemas/AssessmentForm'
+        summaryData:
+          position: 7
+          description: The learning module summary data
+          $ref: '#/components/schemas/LearningModuleSummary'
+        reassignSummaryData:
+          position: 8
+          description: The learning module reassign summary data
+          $ref: '#/components/schemas/LearningModuleReassignSummary'
+        coverArt:
+          position: 9
+          description: The cover art for the learning module
+          $ref: '#/components/schemas/LearningModuleCoverArtResponse'
+        lengthInMinutes:
+          type: integer
+          format: int32
+          position: 10
+          description: The recommended time in minutes to complete the module
+        archivalMode:
+          type: string
+          position: 11
+          description: The mode of archival for learning module
+          enum:
+          - Graceful
+          - Immediate
+      description: Learning module response
+    LearningAssignmentExternalUpdate:
       type: object
       properties:
         state:
@@ -6114,46 +6599,468 @@ components:
         percentageScore:
           type: number
           format: float
-          description: The user's percentage score for this assignment
-          readOnly: true
-        assessmentPercentageScore:
-          type: number
-          format: float
-          description: The user's percentage score for this assignment's assessment
-          readOnly: true
+          description: The score
         isPassed:
           type: boolean
-          description: True if the assessment was passed
-          readOnly: true
-        assessmentCompletionPercentage:
+          description: Was the assignment marked as passed
+    LearningCoverArtThumbnail:
+      type: object
+      properties:
+        resolution:
+          type: string
+          position: 1
+          description: Resolution of thumbnail
+        url:
+          type: string
+          position: 2
+          description: The URL for the thumbnail
+    LearningScheduleSlotsJobRequest:
+      type: object
+      required:
+      - activityCodeId
+      - intervals
+      - lengthInMinutes
+      - slotsType
+      - userIds
+      properties:
+        userIds:
+          type: array
+          description: The user IDs to fetch the slots for.
+          items:
+            type: string
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The length in minutes of the slots, in 15 minutes granularity.
+        activityCodeId:
+          type: string
+          description: The Activity Code Id of the slots.
+        intervals:
+          type: array
+          description: 'The intervals to fetch the slots for. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+          items:
+            type: string
+            format: interval
+            description: 'Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        slotsType:
+          type: string
+          description: The type of slots to fetch in the job.
+          enum:
+          - BestTime
+    LearningShareableContentObject:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: The ID of the SCO from the course manifest.
+        lessonStatus:
+          type: string
+          description: The status of the SCO. Maps to the SCORM 1.2 cmi.core.lesson_status property.
+          enum:
+          - Passed
+          - Completed
+          - Failed
+          - Incomplete
+          - Browsed
+          - NotAttempted
+        exit:
+          type: string
+          description: Indicates how or why the learner left the SCO. Maps to the SCORM 1.2 cmi.core.exit property.
+          enum:
+          - Timeout
+          - Suspend
+          - Logout
+          - Empty
+        location:
+          type: string
+          description: The learner’s current location in the SCO. Maps to the SCORM 1.2 cmi.core.lesson_location property.
+        scoreRaw:
           type: number
           format: float
-          description: The assessment completion percentage of assignment
+          description: The score of the most recent attempt on the SCO. Maps to the SCORM 1.2 cmi.core.score.raw property.
+        scoreMax:
+          type: number
+          format: float
+          description: The maximum score that could be achieved on the SCO. Maps to the SCORM 1.2 cmi.core.score.max property.
+        scoreMin:
+          type: number
+          format: float
+          description: The minimum score that could be achieved on the SCO. Maps to the SCORM 1.2 cmi.core.score.min property.
+        suspendData:
+          type: string
+          description: The unique information generated by the SCO from previous uses. Maps to the SCORM 1.2 cmi.suspend_data property.
+        credit:
+          type: string
+          description: Whether completing this course counts towards the overall assignment. Maps to the SCORM 1.2 cmi.core.credit property.
           readOnly: true
+          enum:
+          - Credit
+          - NoCredit
+        entry:
+          type: string
+          description: Whether the learner has previously accessed this SCO. Maps to the SCORM 1.2 cmi.core.entry property.
+          readOnly: true
+          enum:
+          - AbInitio
+          - Resume
+          - Empty
+        mode:
+          type: string
+          description: Identifies the mode in which the SCO should be presented to the learner. Maps to the SCORM 1.2 cmi.core.lesson_mode property.
+          readOnly: true
+          enum:
+          - Browse
+          - Normal
+          - Review
+        totalTime:
+          type: string
+          description: The total amount of time the learner has spent in the SCO expressed as an ISO 8601 Duration, for example PT2H10M3.5S. Maps to the SCORM 1.2 cmi.core.total_time property.
+          readOnly: true
+        sessionTime:
+          type: string
+          description: The amount of time spent in the SCO in this session expressed as an ISO-8601 Duration, for example PT2H10M3.5S. Maps to the SCORM 1.2 cmi.core.session_time property.
+        href:
+          type: string
+          description: The href from the course manifest for this SCO.
+          readOnly: true
+        parameters:
+          type: string
+          description: The parameters from the course manifest for this SCO.
+          readOnly: true
+        launchData:
+          type: string
+          description: The launch data from the course manifest for this SCO.
+          readOnly: true
+      description: Learning assignment SCO (Shareable Content Object)
+    LearningSlotFullDayTimeOffMarker:
+      type: object
+      properties:
+        businessUnitDate:
+          type: string
+          format: date
+          description: 'The date of the time off marker, interpreted in the business unit''s time zone. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        lengthMinutes:
+          type: integer
+          format: int32
+          description: The length of the time off marker in minutes
+        description:
+          type: string
+          description: The description of the time off marker
+        activityCodeId:
+          type: string
+          description: The ID of the activity code associated with the time off marker
+        paid:
+          type: boolean
+          description: Whether the time off marker is paid
+        timeOffRequestId:
+          type: string
+          description: The ID of the time off request
+    LearningModulePreviewUpdateRequest:
+      type: object
+      properties:
+        state:
+          type: string
+          description: The assignment State
+          enum:
+          - Assigned
+          - InProgress
+          - Completed
+          - Deleted
+          - NotCompleted
+          - InvalidSchedule
+        currentStep:
+          description: The assignment current step
+          $ref: '#/components/schemas/LearningModulePreviewUpdateRequestCurrentStep'
+        steps:
+          type: array
+          description: The assignment Steps
+          items:
+            $ref: '#/components/schemas/LearningModulePreviewUpdateStep'
+        assessment:
+          description: The assessment for learning module
+          $ref: '#/components/schemas/LearningAssessment'
+        assessmentForm:
+          description: The assessment form for learning module
+          $ref: '#/components/schemas/AssessmentForm'
+      description: Learning module preview update request
+    LearningModuleJobRequest:
+      type: object
+      required:
+      - action
+      properties:
+        action:
+          type: string
+          description: The type for the learning module job
+          enum:
+          - Reassign
+          - GracefulArchive
+          - ImmediateArchive
+          - Unarchive
+          - Assign
+      description: Learning module job request
+    LearningAssignmentBulkAddResponse:
+      type: object
+      properties:
+        entities:
+          type: array
+          description: The learning assignments that were assigned correctly
+          items:
+            $ref: '#/components/schemas/LearningAssignment'
+        disallowedEntities:
+          type: array
+          description: The items that were not allowed to be assigned
+          items:
+            $ref: '#/components/schemas/DisallowedEntityLearningAssignmentItem'
+    LearningModuleCoverArtResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+        url:
+          type: string
+          position: 1
+          description: The URL for the cover art
+        thumbnails:
+          type: array
+          position: 2
+          description: Thumbnails for the cover art
+          items:
+            $ref: '#/components/schemas/LearningCoverArtThumbnail'
+      description: Learning module cover art response
+    LearningModuleAutoAssignRequest:
+      type: object
+      required:
+      - enabled
+      - ruleId
+      properties:
+        ruleId:
+          type: string
+          description: The id of the rule
+        enabled:
+          type: boolean
+          description: Whether the rule is enabled for the module
+      description: Auto assign request
+    LearningAssignmentAggregateQueryRequestFilter:
+      type: object
+      required:
+      - clauses
+      - type
+      properties:
+        type:
+          type: string
+          description: The logic used to combine the clauses
+          enum:
+          - And
+          - Or
+        clauses:
+          type: array
+          description: The list of clauses used to filter the data. Note that clauses must filter by attendeeId and a maximum of 100 user IDs are allowed
+          items:
+            $ref: '#/components/schemas/LearningAssignmentAggregateQueryRequestClause'
+    LearningScheduleSlotsJobSlot:
+      type: object
+      properties:
+        dateStart:
+          type: string
+          format: date-time
+          description: 'Start date and time of the slot. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        schedule:
+          description: The schedule information of the slot
+          $ref: '#/components/schemas/LearningScheduleSlotsJobSchedule'
+    LearningModuleInformStepRequest:
+      type: object
+      required:
+      - order
+      - type
+      - value
+      properties:
+        type:
+          type: string
+          position: 1
+          description: The learning module inform step type
+          enum:
+          - Url
+          - Content
+          - GenesysBuiltInCourse
+          - RichText
+          - Scorm
+        name:
+          type: string
+          position: 2
+          description: The name of the inform step or content
+        value:
+          type: string
+          position: 3
+          description: The value for inform step
+        sharingUri:
+          type: string
+          position: 4
+          description: The sharing uri for Content type inform step
+        contentType:
+          type: string
+          position: 5
+          description: The document type for Content type Inform step
+        order:
+          type: integer
+          format: int32
+          position: 6
+          description: The order of inform step in a learning module
+        displayName:
+          type: string
+          position: 7
+          description: The display name for the inform step
+        description:
+          type: string
+          position: 8
+          description: The description for the inform step
+      description: Learning module inform steps request
+    LearningModulePublishRequest:
+      type: object
+      properties:
+        termsAndConditionsAccepted:
+          type: boolean
+          description: Whether the terms and conditions were accepted
+      description: Learning module publish request
+    LearningModuleAutoAssignResponse:
+      type: object
+      required:
+      - enabled
+      - rule
+      properties:
+        rule:
+          description: The rule reference
+          $ref: '#/components/schemas/UsersRulesRuleReference'
+        enabled:
+          type: boolean
+          description: Whether the rule is enabled for the module
+      description: Auto assign response
+    LearningAssignmentStepSignedCookie:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The base URL for the signed cookie
+          readOnly: true
+        cookieValues:
+          type: object
+          description: The cookie values required to access content from the base URL
+          readOnly: true
+          additionalProperties:
+            type: string
+    UserReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LearningAssignmentStep:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the learning assignment step
+          readOnly: true
+        moduleStep:
+          description: The module step data for this step
+          readOnly: true
+          $ref: '#/components/schemas/LearningModuleInformStep'
+        structure:
+          type: array
+          description: The structure for any SCO associated with this step
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LearningAssignmentStepScoStructure'
+        successStatus:
+          type: string
+          description: The success status of this step
+          readOnly: true
+          enum:
+          - Passed
+          - Failed
+          - Unknown
+        completionStatus:
+          type: string
+          description: The completion status of the assignment step
+          readOnly: true
+          enum:
+          - Completed
+          - Incomplete
+          - NotAttempted
+          - Unknown
         completionPercentage:
           type: number
           format: float
-          description: The overall completion percentage of assignment
+          description: The completion percentage for this step
+        percentageScore:
+          type: number
+          format: float
+          description: The percentage score for this step
           readOnly: true
-        steps:
+        shareableContentObject:
+          description: The SCO (Shareable Content Object) data
+          $ref: '#/components/schemas/LearningShareableContentObject'
+        signedCookie:
+          description: The signed cookie information needed to access the content of this step (if required)
+          readOnly: true
+          $ref: '#/components/schemas/LearningAssignmentStepSignedCookie'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Learning assignment step
+    AssistanceCondition:
+      type: object
+      properties:
+        operator:
+          type: string
+          description: The operator for the assistance condition. The operator defines whether the listed topicIds should EXIST or NOTEXIST for the condition to be evaluated as true.
+          enum:
+          - EXISTS
+          - NOTEXISTS
+        topicIds:
           type: array
-          description: List of assignment steps
-          readOnly: true
+          description: List of topicIds within the assistance condition which would be combined together using logical OR operator. Eg ( topicId_1 || topicId_2 ) .
           items:
-            $ref: '#/components/schemas/LearningModulePreviewGetResponseStep'
-      description: Learning module preview get response assignment
-    LearningModulePreviewUpdateScoStructure:
+            type: string
+    DisallowedEntityLearningAssignmentReference:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: The error code associated with this disallowed entity
+        entity:
+          description: The entity that was disallowed
+          $ref: '#/components/schemas/LearningAssignmentReference'
+    LearningAssignmentStepScoStructure:
       type: object
       properties:
         id:
           type: string
           description: The id of this SCO in the course manifest
+          readOnly: true
         name:
           type: string
           description: The name of this SCO in the course manifest
+          readOnly: true
         successStatus:
           type: string
           description: The success status of this SCO
+          readOnly: true
           enum:
           - Passed
           - Failed
@@ -6161,42 +7068,45 @@ components:
         completionStatus:
           type: string
           description: The completion status of this SCO
+          readOnly: true
           enum:
           - Completed
           - Incomplete
           - NotAttempted
           - Unknown
-        percentageScore:
-          type: number
-          format: float
-          description: Percentage Score
         children:
           type: array
           description: Child items belonging to this SCO in the course manifest
+          readOnly: true
           items:
-            $ref: '#/components/schemas/LearningModulePreviewUpdateScoStructure'
-      description: Learning module preview update SCO structure
-    LearningModuleJobResponse:
+            $ref: '#/components/schemas/LearningAssignmentStepScoStructure'
+    LearningAssignmentCreate:
       type: object
+      required:
+      - moduleId
+      - userId
       properties:
-        id:
+        addToSchedule:
+          type: boolean
+          description: If True, adds the assignment to their schedule
+        moduleId:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        status:
+          position: 1
+          description: The Learning module Id associated with this assignment
+        userId:
           type: string
-          description: The status of learning module job
-          enum:
-          - Accepted
-          - Running
-          - Completed
-          - Failed
-        selfUri:
+          position: 2
+          description: The User for whom the assignment is assigned
+        recommendedCompletionDate:
           type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Learning module job response
+          format: date-time
+          position: 3
+          description: 'The recommended completion date of assignment. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        lengthInMinutes:
+          type: integer
+          format: int32
+          position: 4
+          description: The length in minutes of assignment
     ErrorBody:
       type: object
       properties:
@@ -6229,54 +7139,305 @@ components:
             $ref: '#/components/schemas/ErrorBody'
         limit:
           $ref: '#/components/schemas/Limit'
-    LearningAssignmentItem:
-      type: object
-      required:
-      - moduleId
-      - userId
-      properties:
-        moduleId:
-          type: string
-          position: 1
-          description: The Learning Module ID associated with this assignment
-        userId:
-          type: string
-          position: 2
-          description: The User ID associated with this assignment
-    AssignedLearningModuleDomainEntityListing:
+    LearningAssignmentReference:
       type: object
       properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssignedLearningModule'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
+        id:
           type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
+          description: The globally unique identifier for the object.
+          readOnly: true
         selfUri:
           type: string
           format: uri
-        pageCount:
+          description: The URI for this object
+          readOnly: true
+    LearningAssignmentEntity:
+      type: object
+      properties:
+        assignmentId:
+          type: string
+    LearningModuleInformStep:
+      type: object
+      required:
+      - order
+      - type
+      - value
+      properties:
+        type:
+          type: string
+          position: 1
+          description: The learning module inform step type
+          enum:
+          - Url
+          - Content
+          - GenesysBuiltInCourse
+          - RichText
+          - Scorm
+        name:
+          type: string
+          position: 2
+          description: The name of the inform step or content
+        value:
+          type: string
+          position: 3
+          description: The value for inform step
+        sharingUri:
+          type: string
+          position: 4
+          description: The sharing uri for Content type inform step
+        contentType:
+          type: string
+          position: 5
+          description: The document type for Content type Inform step
+        order:
           type: integer
           format: int32
+          position: 6
+          description: The order of inform step in a learning module
+        displayName:
+          type: string
+          position: 7
+          description: The display name for the inform step
+        description:
+          type: string
+          position: 8
+          description: The description for the inform step
+    LearningAssessmentScoringRequest:
+      type: object
+      required:
+      - answers
+      - assessmentForm
+      properties:
+        assessmentForm:
+          position: 1
+          description: The assessment form to score against
+          $ref: '#/components/schemas/AssessmentForm'
+        answers:
+          position: 2
+          description: The answers to score
+          $ref: '#/components/schemas/AssessmentScoringSet'
+    LearningModulePreviewGetResponse:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of learning module
+        description:
+          type: string
+          description: The description of learning module
+        coverArt:
+          description: The cover art for the learning module
+          $ref: '#/components/schemas/LearningModuleCoverArtResponse'
+        enforceContentOrder:
+          type: boolean
+          description: If true, learning module content should be viewed one by one in order
+        reviewAssessmentResults:
+          description: Allows to view Assessment results in detail
+          $ref: '#/components/schemas/ReviewAssessmentResults'
+        assessmentForm:
+          description: The assessment form for learning module
+          $ref: '#/components/schemas/AssessmentForm'
+        assignment:
+          description: the assignment preview
+          $ref: '#/components/schemas/LearningModulePreviewGetResponseAssignment'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Learning module preview get response
+    AnswerOption:
+      type: object
+      properties:
+        id:
+          type: string
+        contextId:
+          type: string
+          description: An identifier for this answer that stays the same across versions of the form.
+          readOnly: true
+        builtInType:
+          type: string
+          description: 'The built-in type of this answer option. Only used for built-in answer options such as selection states for Multiple Select answer options. Possible values include: Selected, Unselected'
+          enum:
+          - Selected
+          - Unselected
+        text:
+          type: string
+        value:
+          type: integer
+          format: int32
+        assistanceConditions:
+          type: array
+          description: List of assistance conditions which are combined together with a logical AND operator. Eg ( assistanceCondtion1 && assistanceCondition2 ) wherein assistanceCondition could be ( EXISTS topic1 || topic2 || ... ) or (NOTEXISTS topic3 || topic4 || ...).
+          items:
+            $ref: '#/components/schemas/AssistanceCondition'
+    LearningModulePublishResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        version:
+          type: integer
+          format: int32
+          description: The version of published learning module
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Learning module publish response
+    AssessmentForm:
+      type: object
+      required:
+      - passPercent
+      - questionGroups
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Last modified date of the assessment form. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        contextId:
+          type: string
+          description: The unique Id for all versions of this assessment form
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+        published:
+          type: boolean
+          position: 2
+          description: If true, assessment form is published
+          readOnly: true
+        passPercent:
+          type: integer
+          format: int32
+          position: 3
+          description: The pass percent for the assessment form
+        questionGroups:
+          type: array
+          position: 4
+          description: A list of question groups
+          items:
+            $ref: '#/components/schemas/AssessmentFormQuestionGroup'
+    LearningAssignmentAggregateQueryResponseStats:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: The count for this metric
+        min:
+          type: number
+          description: The minimum value in this metric
+        max:
+          type: number
+          description: The maximum value in this metric
+        sum:
+          type: number
+          description: The total of the values for this metric
+    AssessmentQuestionGroupScore:
+      type: object
+      required:
+      - questionGroupId
+      properties:
+        questionGroupId:
+          type: string
+          description: The ID of the question group
+        totalScore:
+          type: number
+          format: float
+          description: The total score for the questions
+          readOnly: true
+        maxTotalScore:
+          type: number
+          format: float
+          description: The maximum total score for the questions
+          readOnly: true
+        markedNA:
+          type: boolean
+          description: True if this question group is marked NA
+        systemMarkedNA:
+          type: boolean
+          description: If markedNA is true, systemMarkedNA indicates whether it was marked by a user or by the system due to visibility conditions. Always false if markedNA is false.
+        totalCriticalScore:
+          type: number
+          format: float
+          description: The total score for the critical questions
+          readOnly: true
+        maxTotalCriticalScore:
+          type: number
+          format: float
+          description: The maximum total score for the critical questions
+          readOnly: true
+        totalNonCriticalScore:
+          type: number
+          format: float
+          description: The total score for the non-critical questions
+          readOnly: true
+        maxTotalNonCriticalScore:
+          type: number
+          format: float
+          description: The maximum total score for the non-critical questions
+          readOnly: true
+        totalScoreUnweighted:
+          type: number
+          format: float
+          description: The unweighted total score for this question group
+          readOnly: true
+        maxTotalScoreUnweighted:
+          type: number
+          format: float
+          description: The maximum unweighted total score for this question group
+          readOnly: true
+        totalCriticalScoreUnweighted:
+          type: number
+          format: float
+          description: The unweighted total score for the critical questions
+          readOnly: true
+        maxTotalCriticalScoreUnweighted:
+          type: number
+          format: float
+          description: The maximum unweighted total score for the critical questions
+          readOnly: true
+        totalNonCriticalScoreUnweighted:
+          type: number
+          format: float
+          description: The total unweighted score for the non-critical questions
+          readOnly: true
+        maxTotalNonCriticalScoreUnweighted:
+          type: number
+          format: float
+          description: The maximum unweighted total score for the non-critical questions
+          readOnly: true
+        questionScores:
+          type: array
+          description: The individual question scores
+          items:
+            $ref: '#/components/schemas/AssessmentQuestionScore'
+    DisallowedEntityLearningAssignmentItem:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: The error code associated with this disallowed entity
+        entity:
+          description: The entity that was disallowed
+          $ref: '#/components/schemas/LearningAssignmentItem'
     LearningAssignmentAggregateParam:
       type: object
       required:
@@ -6435,1041 +7596,6 @@ components:
           position: 8
           description: The length in minutes of the assignment
       description: Learning module assignment with user information
-    LearningScheduleSlotsJobRequest:
-      type: object
-      required:
-      - activityCodeId
-      - intervals
-      - lengthInMinutes
-      - slotsType
-      - userIds
-      properties:
-        userIds:
-          type: array
-          description: The user IDs to fetch the slots for.
-          items:
-            type: string
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The length in minutes of the slots, in 15 minutes granularity.
-        activityCodeId:
-          type: string
-          description: The Activity Code Id of the slots.
-        intervals:
-          type: array
-          description: 'The intervals to fetch the slots for. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-          items:
-            type: string
-            format: interval
-            description: 'Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        slotsType:
-          type: string
-          description: The type of slots to fetch in the job.
-          enum:
-          - BestTime
-    LearningAssignmentUserQuery:
-      type: object
-      required:
-      - rule
-      properties:
-        rule:
-          description: Learning module rule object
-          $ref: '#/components/schemas/LearningModuleRule'
-        searchTerm:
-          type: string
-          description: The user name to be searched for
-      description: Learning module users query request model
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    LearningModuleRuleParts:
-      type: object
-      required:
-      - operation
-      - order
-      - selector
-      - value
-      properties:
-        operation:
-          type: string
-          description: The learning module rule operation
-          enum:
-          - Include
-          - Exclude
-        selector:
-          type: string
-          description: The learning module rule selector
-          enum:
-          - AcdSkills
-          - AgentName
-          - Division
-          - Group
-          - Location
-          - Queue
-          - Role
-          - Team
-          - User
-        value:
-          type: array
-          description: The value of rules
-          items:
-            type: string
-        order:
-          type: integer
-          format: int32
-          description: The order of rules in learning module rule
-    LearningSlotScheduleActivity:
-      type: object
-      properties:
-        dateStart:
-          type: string
-          format: date-time
-          description: 'The start date/time of this activity. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        lengthMinutes:
-          type: integer
-          format: int32
-          description: The length of this activity in minutes
-        description:
-          type: string
-          description: The description of this activity
-        activityCodeId:
-          type: string
-          description: The ID of the activity code associated with this activity
-        paid:
-          type: boolean
-          description: Whether this activity is paid
-        timeOffRequestId:
-          type: string
-          description: The ID of the time off request associated with this activity, if applicable
-        externalActivityId:
-          type: string
-          description: The ID of the external activity associated with this activity, if applicable
-        externalActivityType:
-          type: string
-          description: The type of the external activity associated with this activity, if applicable
-          enum:
-          - ActivityPlan
-          - Coaching
-          - Learning
-          - Opportunity
-    LearningModulePublishResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        version:
-          type: integer
-          format: int32
-          description: The version of published learning module
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Learning module publish response
-    UserReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LearningAssignmentExternalUpdate:
-      type: object
-      properties:
-        state:
-          type: string
-          description: The Learning Assignment state
-          enum:
-          - Assigned
-          - InProgress
-          - Completed
-          - Deleted
-          - NotCompleted
-          - InvalidSchedule
-        percentageScore:
-          type: number
-          format: float
-          description: The score
-        isPassed:
-          type: boolean
-          description: Was the assignment marked as passed
-    LearningAssignmentAggregateQueryRequestPredicate:
-      type: object
-      required:
-      - dimension
-      - value
-      properties:
-        dimension:
-          type: string
-          description: Each predicates specifies a dimension.
-          enum:
-          - attendeeId
-          - type
-          - moduleId
-          - isPassed
-        value:
-          type: string
-          description: 'Corresponding value for dimensions in predicates. If the dimension is type, Valid Values: Informational (deprecated), AssessedContent (deprecated), Assessment (deprecated), External, Native'
-    LearningAssignmentCreate:
-      type: object
-      required:
-      - moduleId
-      - userId
-      properties:
-        addToSchedule:
-          type: boolean
-          description: If True, adds the assignment to their schedule
-        moduleId:
-          type: string
-          position: 1
-          description: The Learning module Id associated with this assignment
-        userId:
-          type: string
-          position: 2
-          description: The User for whom the assignment is assigned
-        recommendedCompletionDate:
-          type: string
-          format: date-time
-          position: 3
-          description: 'The recommended completion date of assignment. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        lengthInMinutes:
-          type: integer
-          format: int32
-          position: 4
-          description: The length in minutes of assignment
-    LearningModulePreviewGetScoStructure:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The id of this SCO in the course manifest
-          readOnly: true
-        name:
-          type: string
-          description: The name of this SCO in the course manifest
-          readOnly: true
-        successStatus:
-          type: string
-          description: The success status of this SCO
-          readOnly: true
-          enum:
-          - Passed
-          - Failed
-          - Unknown
-        completionStatus:
-          type: string
-          description: The completion status of this SCO
-          readOnly: true
-          enum:
-          - Completed
-          - Incomplete
-          - NotAttempted
-          - Unknown
-        percentageScore:
-          type: number
-          format: float
-          description: Percentage Score
-          readOnly: true
-        shareableContentObject:
-          description: The SCO (Shareable Content Object) data
-          $ref: '#/components/schemas/LearningShareableContentObject'
-        children:
-          type: array
-          description: Child items belonging to this SCO in the course manifest
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LearningModulePreviewGetScoStructure'
-      description: Learning module preview get SCO structure
-    LearningModulePreviewUpdateRequestCurrentStep:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The id of this step
-        completionPercentage:
-          type: number
-          format: float
-          description: The completion percentage for this step
-        shareableContentObject:
-          description: The SCO (Shareable Content Object) data
-          $ref: '#/components/schemas/LearningShareableContentObject'
-      description: Learning module preview update request current step
-    DisallowedEntityLearningAssignmentItem:
-      type: object
-      properties:
-        errorCode:
-          type: string
-          description: The error code associated with this disallowed entity
-        entity:
-          description: The entity that was disallowed
-          $ref: '#/components/schemas/LearningAssignmentItem'
-    LearningScheduleSlotsJobResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        userIds:
-          type: array
-          description: The user IDs to fetch the slots for.
-          items:
-            type: string
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The length in minutes of the slots.
-        businessUnitId:
-          type: string
-          description: The Business Unit Id of the users.
-        activityCodeId:
-          type: string
-          description: The Activity Code Id of the slots.
-        slotsType:
-          type: string
-          description: The type of slots fetched in the job.
-          enum:
-          - BestTime
-        results:
-          type: array
-          description: The results of the job.
-          items:
-            $ref: '#/components/schemas/LearningScheduleSlotsJobResult'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LearningAssignmentAggregateQueryRequestFilter:
-      type: object
-      required:
-      - clauses
-      - type
-      properties:
-        type:
-          type: string
-          description: The logic used to combine the clauses
-          enum:
-          - And
-          - Or
-        clauses:
-          type: array
-          description: The list of clauses used to filter the data. Note that clauses must filter by attendeeId and a maximum of 100 user IDs are allowed
-          items:
-            $ref: '#/components/schemas/LearningAssignmentAggregateQueryRequestClause'
-    LearningAssignmentAggregateResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          description: The results of the query
-          items:
-            $ref: '#/components/schemas/LearningAssignmentAggregateQueryResponseGroupedData'
-    LearningAssignmentUpdate:
-      type: object
-      properties:
-        state:
-          type: string
-          description: The Learning Assignment state
-          enum:
-          - Assigned
-          - InProgress
-          - Completed
-          - Deleted
-          - NotCompleted
-          - InvalidSchedule
-        assessment:
-          description: An updated Assessment
-          $ref: '#/components/schemas/LearningAssessment'
-    LearningAssignmentBulkRemoveResponse:
-      type: object
-      properties:
-        entities:
-          type: array
-          description: The learning assignments that were removed successfully
-          items:
-            $ref: '#/components/schemas/LearningAssignmentEntity'
-        disallowedEntities:
-          type: array
-          description: The learning assignments that were not removed due to missing permissions
-          items:
-            $ref: '#/components/schemas/DisallowedEntityLearningAssignmentReference'
-    LearningModulePreviewUpdateResponseCurrentStep:
-      type: object
-      properties:
-        shareableContentObject:
-          description: The SCO (Shareable Content Object) data
-          $ref: '#/components/schemas/LearningShareableContentObject'
-      description: Learning module preview update response current step
-    LearningAssessment:
-      type: object
-      properties:
-        assessmentId:
-          type: string
-          description: The Id of the assessment
-          readOnly: true
-        contextId:
-          type: string
-          description: The context Id of the related assessment form
-          readOnly: true
-        assessmentFormId:
-          type: string
-          description: The Id of the related assessment form
-          readOnly: true
-        status:
-          type: string
-          description: Status of the assessment
-          readOnly: true
-          enum:
-          - Pending
-          - InProgress
-          - Finished
-        answers:
-          description: Answers for the assessment
-          $ref: '#/components/schemas/AssessmentScoringSet'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date the assessment was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date the assessment was last updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateSubmitted:
-          type: string
-          format: date-time
-          description: 'Date the assessment was submitted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-    LearningAssignmentUserListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/LearningAssignmentUser'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-          description: The number of users matching search term
-        unfilteredTotal:
-          type: integer
-          format: int32
-          description: The total number of users
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-      description: List of users matching the learning module rule
-    LearningAssignmentStepScoStructure:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The id of this SCO in the course manifest
-          readOnly: true
-        name:
-          type: string
-          description: The name of this SCO in the course manifest
-          readOnly: true
-        successStatus:
-          type: string
-          description: The success status of this SCO
-          readOnly: true
-          enum:
-          - Passed
-          - Failed
-          - Unknown
-        completionStatus:
-          type: string
-          description: The completion status of this SCO
-          readOnly: true
-          enum:
-          - Completed
-          - Incomplete
-          - NotAttempted
-          - Unknown
-        children:
-          type: array
-          description: Child items belonging to this SCO in the course manifest
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LearningAssignmentStepScoStructure'
-    LearningScheduleSlotsQueryRequest:
-      type: object
-      required:
-      - interval
-      - lengthInMinutes
-      - userIds
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Range of time to get slots for scheduling learning activities. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The duration of Learning Assignment to schedule in 15 minutes granularity
-        userIds:
-          type: array
-          description: The user IDs for which to fetch schedules. Must be only 1.
-          items:
-            type: string
-        interruptibleAssignmentId:
-          type: string
-          description: Assignment ID to exclude from consideration when determining blocked slots
-    LearningAssignmentAggregateQueryResponseData:
-      type: object
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Specifies the range of due dates to be used for filtering. A maximum of 1 year can be specified in the range. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        metrics:
-          type: array
-          description: The list of aggregated metrics
-          items:
-            $ref: '#/components/schemas/LearningAssignmentAggregateQueryResponseMetric'
-    DisallowedEntityLearningAssignmentReference:
-      type: object
-      properties:
-        errorCode:
-          type: string
-          description: The error code associated with this disallowed entity
-        entity:
-          description: The entity that was disallowed
-          $ref: '#/components/schemas/LearningAssignmentReference'
-    LearningModulePreviewUpdateResponseAssignment:
-      type: object
-      properties:
-        state:
-          type: string
-          description: The Learning Assignment state
-          enum:
-          - Assigned
-          - InProgress
-          - Completed
-          - Deleted
-          - NotCompleted
-          - InvalidSchedule
-        percentageScore:
-          type: number
-          format: float
-          description: The user's percentage score for this assignment
-          readOnly: true
-        completionPercentage:
-          type: number
-          format: float
-          description: The overall completion percentage of assignment
-          readOnly: true
-        assessmentPercentageScore:
-          type: number
-          format: float
-          description: The user's percentage score for this assignment's assessment
-          readOnly: true
-        assessmentCompletionPercentage:
-          type: number
-          format: float
-          description: The assessment completion percentage of assignment
-          readOnly: true
-        isPassed:
-          type: boolean
-          description: True if the assessment was passed
-          readOnly: true
-        currentStep:
-          description: The next assignment step
-          readOnly: true
-          $ref: '#/components/schemas/LearningModulePreviewUpdateResponseCurrentStep'
-        steps:
-          type: array
-          description: List of assignment steps
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LearningModulePreviewUpdateStep'
-      description: Learning module preview update response assignment
-    UsersRulesRuleReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LearningCoverArtThumbnail:
-      type: object
-      properties:
-        resolution:
-          type: string
-          position: 1
-          description: Resolution of thumbnail
-        url:
-          type: string
-          position: 2
-          description: The URL for the thumbnail
-    LearningScormUploadRequest:
-      type: object
-      required:
-      - contentMd5
-      properties:
-        contentMd5:
-          type: string
-          description: The MD5 content of the SCORM package
-      description: Learning SCORM upload request
-    AssessmentFormQuestion:
-      type: object
-      required:
-      - text
-      properties:
-        id:
-          type: string
-        contextId:
-          type: string
-          description: An identifier for this question that stays the same across versions of the form.
-          readOnly: true
-        type:
-          type: string
-          enum:
-          - multipleChoiceQuestion
-          - freeTextQuestion
-          - npsQuestion
-          - readOnlyTextBlockQuestion
-        text:
-          type: string
-          description: The question text
-        helpText:
-          type: string
-        naEnabled:
-          type: boolean
-        commentsRequired:
-          type: boolean
-        visibilityCondition:
-          $ref: '#/components/schemas/VisibilityCondition'
-        answerOptions:
-          type: array
-          description: Options from which to choose an answer for this question. Only used by Multiple Choice type questions.
-          items:
-            $ref: '#/components/schemas/AnswerOption'
-        maxResponseCharacters:
-          type: integer
-          format: int32
-          description: How many characters are allowed in the text response to this question. Used by Free Text question types.
-        isKill:
-          type: boolean
-          description: Does an incorrect answer to this question mark the form as having a failed kill question. Only used by Multiple Choice type questions.
-        isCritical:
-          type: boolean
-          description: Does this question contribute to the critical score. Only used by Multiple Choice type questions.
-    LearningAssignmentReschedule:
-      type: object
-      required:
-      - dateRecommendedForCompletion
-      properties:
-        dateRecommendedForCompletion:
-          type: string
-          format: date-time
-          description: 'The recommended completion date of the assignment. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The length in minutes of the assignment
-        addToSchedule:
-          type: boolean
-          description: If True, adds the assignment to their schedule
-    LearningModulePreviewUpdateStep:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The id of the step
-        successStatus:
-          type: string
-          description: The success status of the step
-          enum:
-          - Passed
-          - Failed
-          - Unknown
-        completionStatus:
-          type: string
-          description: The completion status of the step
-          enum:
-          - Completed
-          - Incomplete
-          - NotAttempted
-          - Unknown
-        completionPercentage:
-          type: number
-          format: float
-          description: The completion percentage of the step
-        percentageScore:
-          type: number
-          format: float
-          description: Percentage Score
-        structure:
-          type: array
-          description: The structure for any SCO associated with this step
-          items:
-            $ref: '#/components/schemas/LearningModulePreviewUpdateScoStructure'
-      description: Learning module preview update assignment step
-    LearningScheduleSlotsQueryResponse:
-      type: object
-      properties:
-        suggestedSlots:
-          type: array
-          description: List of slots where Learning activity can be scheduled
-          items:
-            $ref: '#/components/schemas/LearningSlot'
-        wfmScheduleActivities:
-          type: array
-          description: Detailed data for WFM scheduled activities
-          items:
-            $ref: '#/components/schemas/LearningSlotWfmScheduleActivity'
-    LearningModuleAutoAssignResponse:
-      type: object
-      required:
-      - enabled
-      - rule
-      properties:
-        rule:
-          description: The rule reference
-          $ref: '#/components/schemas/UsersRulesRuleReference'
-        enabled:
-          type: boolean
-          description: Whether the rule is enabled for the module
-      description: Auto assign response
-    AssessmentQuestionGroupScore:
-      type: object
-      required:
-      - questionGroupId
-      properties:
-        questionGroupId:
-          type: string
-          description: The ID of the question group
-        totalScore:
-          type: number
-          format: float
-          description: The total score for the questions
-          readOnly: true
-        maxTotalScore:
-          type: number
-          format: float
-          description: The maximum total score for the questions
-          readOnly: true
-        markedNA:
-          type: boolean
-          description: True if this question group is marked NA
-        systemMarkedNA:
-          type: boolean
-          description: If markedNA is true, systemMarkedNA indicates whether it was marked by a user or by the system due to visibility conditions. Always false if markedNA is false.
-        totalCriticalScore:
-          type: number
-          format: float
-          description: The total score for the critical questions
-          readOnly: true
-        maxTotalCriticalScore:
-          type: number
-          format: float
-          description: The maximum total score for the critical questions
-          readOnly: true
-        totalNonCriticalScore:
-          type: number
-          format: float
-          description: The total score for the non-critical questions
-          readOnly: true
-        maxTotalNonCriticalScore:
-          type: number
-          format: float
-          description: The maximum total score for the non-critical questions
-          readOnly: true
-        totalScoreUnweighted:
-          type: number
-          format: float
-          description: The unweighted total score for this question group
-          readOnly: true
-        maxTotalScoreUnweighted:
-          type: number
-          format: float
-          description: The maximum unweighted total score for this question group
-          readOnly: true
-        totalCriticalScoreUnweighted:
-          type: number
-          format: float
-          description: The unweighted total score for the critical questions
-          readOnly: true
-        maxTotalCriticalScoreUnweighted:
-          type: number
-          format: float
-          description: The maximum unweighted total score for the critical questions
-          readOnly: true
-        totalNonCriticalScoreUnweighted:
-          type: number
-          format: float
-          description: The total unweighted score for the non-critical questions
-          readOnly: true
-        maxTotalNonCriticalScoreUnweighted:
-          type: number
-          format: float
-          description: The maximum unweighted total score for the non-critical questions
-          readOnly: true
-        questionScores:
-          type: array
-          description: The individual question scores
-          items:
-            $ref: '#/components/schemas/AssessmentQuestionScore'
-    LearningModuleAutoAssignRequest:
-      type: object
-      required:
-      - enabled
-      - ruleId
-      properties:
-        ruleId:
-          type: string
-          description: The id of the rule
-        enabled:
-          type: boolean
-          description: Whether the rule is enabled for the module
-      description: Auto assign request
-    AssessmentQuestionScore:
-      type: object
-      required:
-      - questionId
-      properties:
-        failedKillQuestion:
-          type: boolean
-          description: True if this was a failed Kill question
-          readOnly: true
-        comments:
-          type: string
-          description: Comments provided for the answer
-        questionId:
-          type: string
-          description: The ID of the question
-        answerId:
-          type: string
-          description: The ID of the selected answer
-        score:
-          type: integer
-          format: int32
-          description: The score received for this question
-          readOnly: true
-        markedNA:
-          type: boolean
-          description: True if this question was marked as NA
-        systemMarkedNA:
-          type: boolean
-          description: If markedNA is true, systemMarkedNA indicates whether it was marked by a user or by the system due to visibility conditions. Always false if markedNA is false.
-        freeTextAnswer:
-          type: string
-          description: Answer for free text answer type
-    LearningModuleCoverArtResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-        url:
-          type: string
-          position: 1
-          description: The URL for the cover art
-        thumbnails:
-          type: array
-          position: 2
-          description: Thumbnails for the cover art
-          items:
-            $ref: '#/components/schemas/LearningCoverArtThumbnail'
-      description: Learning module cover art response
-    LearningModulePreviewGetResponse:
-      type: object
-      required:
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of learning module
-        description:
-          type: string
-          description: The description of learning module
-        coverArt:
-          description: The cover art for the learning module
-          $ref: '#/components/schemas/LearningModuleCoverArtResponse'
-        enforceContentOrder:
-          type: boolean
-          description: If true, learning module content should be viewed one by one in order
-        reviewAssessmentResults:
-          description: Allows to view Assessment results in detail
-          $ref: '#/components/schemas/ReviewAssessmentResults'
-        assessmentForm:
-          description: The assessment form for learning module
-          $ref: '#/components/schemas/AssessmentForm'
-        assignment:
-          description: the assignment preview
-          $ref: '#/components/schemas/LearningModulePreviewGetResponseAssignment'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Learning module preview get response
-    LearningSlotWfmScheduleActivity:
-      type: object
-      properties:
-        user:
-          description: User that the schedule is for
-          $ref: '#/components/schemas/UserReference'
-        activities:
-          type: array
-          description: List of user's scheduled activities
-          items:
-            $ref: '#/components/schemas/LearningSlotScheduleActivity'
-        fullDayTimeOffMarkers:
-          type: array
-          description: List of user's days off
-          items:
-            $ref: '#/components/schemas/LearningSlotFullDayTimeOffMarker'
-    LearningModulePublishRequest:
-      type: object
-      properties:
-        termsAndConditionsAccepted:
-          type: boolean
-          description: Whether the terms and conditions were accepted
-      description: Learning module publish request
-    LearningScheduleSlotsJobSlot:
-      type: object
-      properties:
-        dateStart:
-          type: string
-          format: date-time
-          description: 'Start date and time of the slot. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        schedule:
-          description: The schedule information of the slot
-          $ref: '#/components/schemas/LearningScheduleSlotsJobSchedule'
-    AnswerOption:
-      type: object
-      properties:
-        id:
-          type: string
-        contextId:
-          type: string
-          description: An identifier for this answer that stays the same across versions of the form.
-          readOnly: true
-        builtInType:
-          type: string
-          description: 'The built-in type of this answer option. Only used for built-in answer options such as selection states for Multiple Select answer options. Possible values include: Selected, Unselected'
-          enum:
-          - Selected
-          - Unselected
-        text:
-          type: string
-        value:
-          type: integer
-          format: int32
-        assistanceConditions:
-          type: array
-          description: List of assistance conditions which are combined together with a logical AND operator. Eg ( assistanceCondtion1 && assistanceCondition2 ) wherein assistanceCondition could be ( EXISTS topic1 || topic2 || ... ) or (NOTEXISTS topic3 || topic4 || ...).
-          items:
-            $ref: '#/components/schemas/AssistanceCondition'
-    LearningAssignmentReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    AssessmentForm:
-      type: object
-      required:
-      - passPercent
-      - questionGroups
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Last modified date of the assessment form. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        contextId:
-          type: string
-          description: The unique Id for all versions of this assessment form
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-        published:
-          type: boolean
-          position: 2
-          description: If true, assessment form is published
-          readOnly: true
-        passPercent:
-          type: integer
-          format: int32
-          position: 3
-          description: The pass percent for the assessment form
-        questionGroups:
-          type: array
-          position: 4
-          description: A list of question groups
-          items:
-            $ref: '#/components/schemas/AssessmentFormQuestionGroup'
     LearningModuleSummary:
       type: object
       properties:
@@ -7490,223 +7616,106 @@ components:
           format: float
           description: The sum of assignment scores for a learning module
       description: Learning module summary data
-    LearningAssignmentStep:
+    LearningModuleJobResponse:
       type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the learning assignment step
-          readOnly: true
-        moduleStep:
-          description: The module step data for this step
-          readOnly: true
-          $ref: '#/components/schemas/LearningModuleInformStep'
-        structure:
-          type: array
-          description: The structure for any SCO associated with this step
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LearningAssignmentStepScoStructure'
-        successStatus:
-          type: string
-          description: The success status of this step
-          readOnly: true
-          enum:
-          - Passed
-          - Failed
-          - Unknown
-        completionStatus:
-          type: string
-          description: The completion status of the assignment step
-          readOnly: true
-          enum:
-          - Completed
-          - Incomplete
-          - NotAttempted
-          - Unknown
-        completionPercentage:
-          type: number
-          format: float
-          description: The completion percentage for this step
-        percentageScore:
-          type: number
-          format: float
-          description: The percentage score for this step
-          readOnly: true
-        shareableContentObject:
-          description: The SCO (Shareable Content Object) data
-          $ref: '#/components/schemas/LearningShareableContentObject'
-        signedCookie:
-          description: The signed cookie information needed to access the content of this step (if required)
-          readOnly: true
-          $ref: '#/components/schemas/LearningAssignmentStepSignedCookie'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Learning assignment step
-    LearningModule:
-      type: object
-      required:
-      - completionTimeInDays
-      - name
       properties:
         id:
           type: string
           description: The globally unique identifier for the object.
           readOnly: true
-        name:
+        status:
           type: string
-          description: The name of learning module
-        excludedFromCatalog:
-          type: boolean
-          description: If true, learning module is excluded when retrieving modules for manual assignment
-        createdBy:
-          description: The user who created learning module
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The date/time learning module was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        modifiedBy:
-          description: The user who modified learning module
-          readOnly: true
-          $ref: '#/components/schemas/UserReference'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'The date/time learning module was modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        version:
-          type: integer
-          format: int32
-          description: The version of published learning module
-          readOnly: true
-        externalId:
-          type: string
-          description: The external ID of the learning module
-          readOnly: true
-        source:
-          type: string
-          description: The source of the learning module
-          readOnly: true
+          description: The status of learning module job
           enum:
-          - UserCreated
-          - GenesysBeyond
-        rule:
-          description: The rule for learning module; read-only, and only populated when requested via expand param.
-          readOnly: true
-          $ref: '#/components/schemas/LearningModuleRule'
-        enforceContentOrder:
-          type: boolean
-          description: If true, learning module content should be viewed one by one in order
-        reviewAssessmentResults:
-          description: Allows to view Assessment results in detail
-          $ref: '#/components/schemas/ReviewAssessmentResults'
-        autoAssign:
-          description: The auto assignment settings for this module
-          $ref: '#/components/schemas/LearningModuleAutoAssignResponse'
+          - Accepted
+          - Running
+          - Completed
+          - Failed
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
-        isArchived:
-          type: boolean
-          description: If true, learning module is archived
-          readOnly: true
-        isPublished:
-          type: boolean
-          description: If true, learning module is published
-          readOnly: true
-        description:
-          type: string
-          position: 1
-          description: The description of learning module
-        completionTimeInDays:
-          type: integer
-          format: int32
-          position: 2
-          description: The completion time of learning module in days
-        type:
-          type: string
-          position: 3
-          description: The type for the learning module
-          enum:
-          - Informational
-          - AssessedContent
-          - Assessment
-          - External
-          - Native
-        informSteps:
-          type: array
-          position: 5
-          description: The list of inform steps in a learning module
-          items:
-            $ref: '#/components/schemas/LearningModuleInformStep'
-        assessmentForm:
-          position: 6
-          description: The assessment form for learning module
-          $ref: '#/components/schemas/AssessmentForm'
-        summaryData:
-          position: 7
-          description: The learning module summary data
-          $ref: '#/components/schemas/LearningModuleSummary'
-        reassignSummaryData:
-          position: 8
-          description: The learning module reassign summary data
-          $ref: '#/components/schemas/LearningModuleReassignSummary'
-        coverArt:
-          position: 9
-          description: The cover art for the learning module
-          $ref: '#/components/schemas/LearningModuleCoverArtResponse'
-        lengthInMinutes:
-          type: integer
-          format: int32
-          position: 10
-          description: The recommended time in minutes to complete the module
-        archivalMode:
-          type: string
-          position: 11
-          description: The mode of archival for learning module
-          enum:
-          - Graceful
-          - Immediate
-      description: Learning module response
-    LearningSlot:
+      description: Learning module job response
+    LearningModulePreviewGetResponseAssignment:
       type: object
       properties:
-        dateStart:
+        state:
           type: string
-          format: date-time
-          description: 'Start date and time of scheduled Learning activity slot. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: Length of Learning activity slot in minutes
-        staffingDifference:
+          description: The Learning Assignment state
+          enum:
+          - Assigned
+          - InProgress
+          - Completed
+          - Deleted
+          - NotCompleted
+          - InvalidSchedule
+        percentageScore:
           type: number
-          format: double
-          description: Difference between scheduled and forecast headcount for this slot after scheduling the Learning activity
-        differenceRating:
-          type: string
-          description: Rating based on the staffing difference for scheduled slot
-          enum:
-          - Poor
-          - Neutral
-          - Good
-    ReviewAssessmentResults:
+          format: float
+          description: The user's percentage score for this assignment
+          readOnly: true
+        assessmentPercentageScore:
+          type: number
+          format: float
+          description: The user's percentage score for this assignment's assessment
+          readOnly: true
+        isPassed:
+          type: boolean
+          description: True if the assessment was passed
+          readOnly: true
+        assessmentCompletionPercentage:
+          type: number
+          format: float
+          description: The assessment completion percentage of assignment
+          readOnly: true
+        completionPercentage:
+          type: number
+          format: float
+          description: The overall completion percentage of assignment
+          readOnly: true
+        steps:
+          type: array
+          description: List of assignment steps
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LearningModulePreviewGetResponseStep'
+      description: Learning module preview get response assignment
+    LearningAssignmentAggregateQueryResponseData:
       type: object
       properties:
-        byAssignees:
-          type: boolean
-          description: If true, learning assignment results can be seen in detail by assignees
-        byViewers:
-          type: boolean
-          description: If true, learning assignment results can be seen in detail by people who are eligible to view
+        interval:
+          type: string
+          format: interval
+          description: 'Specifies the range of due dates to be used for filtering. A maximum of 1 year can be specified in the range. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        metrics:
+          type: array
+          description: The list of aggregated metrics
+          items:
+            $ref: '#/components/schemas/LearningAssignmentAggregateQueryResponseMetric'
+    LearningScheduleSlotsQueryResponse:
+      type: object
+      properties:
+        suggestedSlots:
+          type: array
+          description: List of slots where Learning activity can be scheduled
+          items:
+            $ref: '#/components/schemas/LearningSlot'
+        wfmScheduleActivities:
+          type: array
+          description: Detailed data for WFM scheduled activities
+          items:
+            $ref: '#/components/schemas/LearningSlotWfmScheduleActivity'
+    LearningModulePreviewUpdateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Learning Module id
+        assignment:
+          description: The Assignment Preview
+          $ref: '#/components/schemas/LearningModulePreviewUpdateResponseAssignment'
+      description: Learning module preview update response
     LearningScormResponse:
       type: object
       properties:
@@ -7777,92 +7786,6 @@ components:
           type: integer
           format: int32
       description: Learning module list
-    LearningModulePreviewUpdateResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The Learning Module id
-        assignment:
-          description: The Assignment Preview
-          $ref: '#/components/schemas/LearningModulePreviewUpdateResponseAssignment'
-      description: Learning module preview update response
-    LearningAssignmentAggregateQueryRequestClause:
-      type: object
-      required:
-      - predicates
-      - type
-      properties:
-        type:
-          type: string
-          description: The logic used to combine the predicates
-          enum:
-          - And
-          - Or
-        predicates:
-          type: array
-          description: The list of predicates used to filter the data
-          items:
-            $ref: '#/components/schemas/LearningAssignmentAggregateQueryRequestPredicate'
-    LearningModuleInformStep:
-      type: object
-      required:
-      - order
-      - type
-      - value
-      properties:
-        type:
-          type: string
-          position: 1
-          description: The learning module inform step type
-          enum:
-          - Url
-          - Content
-          - GenesysBuiltInCourse
-          - RichText
-          - Scorm
-        name:
-          type: string
-          position: 2
-          description: The name of the inform step or content
-        value:
-          type: string
-          position: 3
-          description: The value for inform step
-        sharingUri:
-          type: string
-          position: 4
-          description: The sharing uri for Content type inform step
-        contentType:
-          type: string
-          position: 5
-          description: The document type for Content type Inform step
-        order:
-          type: integer
-          format: int32
-          position: 6
-          description: The order of inform step in a learning module
-        displayName:
-          type: string
-          position: 7
-          description: The display name for the inform step
-        description:
-          type: string
-          position: 8
-          description: The description for the inform step
-    LearningAssignmentAggregateQueryResponseGroupedData:
-      type: object
-      properties:
-        group:
-          type: object
-          description: The group values for this data
-          additionalProperties:
-            type: string
-        data:
-          type: array
-          description: The metrics in this group
-          items:
-            $ref: '#/components/schemas/LearningAssignmentAggregateQueryResponseData'
     AssessmentFormQuestionGroup:
       type: object
       required:
@@ -7906,37 +7829,141 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    LearningModuleReassignSummary:
+    LearningModuleCoverArtRequest:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: The key identifier for the cover art
+    LearningSlotWfmScheduleActivity:
       type: object
       properties:
-        totalReassigned:
+        user:
+          description: User that the schedule is for
+          $ref: '#/components/schemas/UserReference'
+        activities:
+          type: array
+          description: List of user's scheduled activities
+          items:
+            $ref: '#/components/schemas/LearningSlotScheduleActivity'
+        fullDayTimeOffMarkers:
+          type: array
+          description: List of user's days off
+          items:
+            $ref: '#/components/schemas/LearningSlotFullDayTimeOffMarker'
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
           type: integer
-          format: int32
-          description: The total number of users for whom assignment is reassigned
-        completedCount:
-          type: integer
-          format: int32
-          description: The total number of users who have the assignment in Completed state
-        inProgressCount:
-          type: integer
-          format: int32
-          description: The total number of users who have the assignment in InProgress state
-        assignedCount:
-          type: integer
-          format: int32
-          description: The total number of users who have the assignment in Assigned state
-        notCompletedCount:
-          type: integer
-          format: int32
-          description: The total number of users who have their assignment overdue
-      description: Learning module reassign summary data
-    LearningAssignmentsDomainEntity:
+          format: int64
+    LearningAssignmentUserListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/LearningAssignment'
+            $ref: '#/components/schemas/LearningAssignmentUser'
         pageSize:
           type: integer
           format: int32
@@ -7946,6 +7973,11 @@ components:
         total:
           type: integer
           format: int64
+          description: The number of users matching search term
+        unfilteredTotal:
+          type: integer
+          format: int32
+          description: The total number of users
         firstUri:
           type: string
           format: uri
@@ -7964,29 +7996,295 @@ components:
         pageCount:
           type: integer
           format: int32
-    LearningModuleRule:
+      description: List of users matching the learning module rule
+    LearningScormUploadRequest:
       type: object
       required:
-      - isActive
-      - parts
+      - contentMd5
+      properties:
+        contentMd5:
+          type: string
+          description: The MD5 content of the SCORM package
+      description: Learning SCORM upload request
+    LearningAssignmentAggregateQueryRequestClause:
+      type: object
+      required:
+      - predicates
+      - type
+      properties:
+        type:
+          type: string
+          description: The logic used to combine the predicates
+          enum:
+          - And
+          - Or
+        predicates:
+          type: array
+          description: The list of predicates used to filter the data
+          items:
+            $ref: '#/components/schemas/LearningAssignmentAggregateQueryRequestPredicate'
+    LearningModuleRequest:
+      type: object
+      required:
+      - completionTimeInDays
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of learning module
+        description:
+          type: string
+          description: The description of learning module
+        completionTimeInDays:
+          type: integer
+          format: int32
+          description: The completion time of learning module in days
+        informSteps:
+          type: array
+          description: The list of inform steps in a learning module
+          items:
+            $ref: '#/components/schemas/LearningModuleInformStepRequest'
+        type:
+          type: string
+          description: The type for the learning module. Informational, AssessedContent and Assessment are deprecated
+          enum:
+          - Informational
+          - AssessedContent
+          - Assessment
+          - External
+          - Native
+        assessmentForm:
+          description: The assessment form for learning module
+          $ref: '#/components/schemas/AssessmentForm'
+        coverArt:
+          description: The cover art for the learning module
+          $ref: '#/components/schemas/LearningModuleCoverArtRequest'
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The recommended time in minutes to complete the module
+        excludedFromCatalog:
+          type: boolean
+          description: If true, learning module is excluded when retrieving modules for manual assignment
+        externalId:
+          type: string
+          description: 'The external ID of the learning module. Maximum length: 50 characters.'
+          minLength: 0
+          maxLength: 50
+        enforceContentOrder:
+          type: boolean
+          description: If true, learning module content should be viewed one by one in order
+        reviewAssessmentResults:
+          description: Allows to view Assessment results in detail
+          $ref: '#/components/schemas/ReviewAssessmentResults'
+        autoAssign:
+          description: The configuration for linking a module to a rule
+          $ref: '#/components/schemas/LearningModuleAutoAssignRequest'
+      description: Learning module request
+    AssessmentScoringSet:
+      type: object
+      required:
+      - questionGroupScores
+      properties:
+        totalScore:
+          type: number
+          format: float
+          description: The total score of the answers
+          readOnly: true
+        totalCriticalScore:
+          type: number
+          format: float
+          description: The total score for the critical questions
+          readOnly: true
+        totalNonCriticalScore:
+          type: number
+          format: float
+          description: The total score for the non-critical questions
+          readOnly: true
+        questionGroupScores:
+          type: array
+          description: The individual scores for each question group
+          items:
+            $ref: '#/components/schemas/AssessmentQuestionGroupScore'
+        failureReasons:
+          type: array
+          description: If the assessment was not passed, the reasons for failure.
+          readOnly: true
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - Score
+            - CriticalScore
+            - KillQuestion
+        comments:
+          type: string
+          description: Comments provided for these answers.
+        agentComments:
+          type: string
+          description: Comments provided by agent.
+        isPassed:
+          type: boolean
+          description: True if the assessment was passed
+          readOnly: true
+    LearningModulePreviewUpdateScoStructure:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of this SCO in the course manifest
+        name:
+          type: string
+          description: The name of this SCO in the course manifest
+        successStatus:
+          type: string
+          description: The success status of this SCO
+          enum:
+          - Passed
+          - Failed
+          - Unknown
+        completionStatus:
+          type: string
+          description: The completion status of this SCO
+          enum:
+          - Completed
+          - Incomplete
+          - NotAttempted
+          - Unknown
+        percentageScore:
+          type: number
+          format: float
+          description: Percentage Score
+        children:
+          type: array
+          description: Child items belonging to this SCO in the course manifest
+          items:
+            $ref: '#/components/schemas/LearningModulePreviewUpdateScoStructure'
+      description: Learning module preview update SCO structure
+    ReviewAssessmentResults:
+      type: object
+      properties:
+        byAssignees:
+          type: boolean
+          description: If true, learning assignment results can be seen in detail by assignees
+        byViewers:
+          type: boolean
+          description: If true, learning assignment results can be seen in detail by people who are eligible to view
+    LearningSlot:
+      type: object
+      properties:
+        dateStart:
+          type: string
+          format: date-time
+          description: 'Start date and time of scheduled Learning activity slot. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: Length of Learning activity slot in minutes
+        staffingDifference:
+          type: number
+          format: double
+          description: Difference between scheduled and forecast headcount for this slot after scheduling the Learning activity
+        differenceRating:
+          type: string
+          description: Rating based on the staffing difference for scheduled slot
+          enum:
+          - Poor
+          - Neutral
+          - Good
+    LearningScheduleSlotsJobResponse:
+      type: object
       properties:
         id:
           type: string
           description: The globally unique identifier for the object.
           readOnly: true
-        isActive:
-          type: boolean
-          description: If true, rule is active
-        parts:
+        userIds:
           type: array
-          description: The parts of a learning module rule
+          description: The user IDs to fetch the slots for.
           items:
-            $ref: '#/components/schemas/LearningModuleRuleParts'
+            type: string
+        lengthInMinutes:
+          type: integer
+          format: int32
+          description: The length in minutes of the slots.
+        businessUnitId:
+          type: string
+          description: The Business Unit Id of the users.
+        activityCodeId:
+          type: string
+          description: The Activity Code Id of the slots.
+        slotsType:
+          type: string
+          description: The type of slots fetched in the job.
+          enum:
+          - BestTime
+        results:
+          type: array
+          description: The results of the job.
+          items:
+            $ref: '#/components/schemas/LearningScheduleSlotsJobResult'
         selfUri:
           type: string
           format: uri
           description: The URI for this object
           readOnly: true
+    LearningAssignmentBulkRemoveResponse:
+      type: object
+      properties:
+        entities:
+          type: array
+          description: The learning assignments that were removed successfully
+          items:
+            $ref: '#/components/schemas/LearningAssignmentEntity'
+        disallowedEntities:
+          type: array
+          description: The learning assignments that were not removed due to missing permissions
+          items:
+            $ref: '#/components/schemas/DisallowedEntityLearningAssignmentReference'
+    LearningModulePreviewGetScoStructure:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of this SCO in the course manifest
+          readOnly: true
+        name:
+          type: string
+          description: The name of this SCO in the course manifest
+          readOnly: true
+        successStatus:
+          type: string
+          description: The success status of this SCO
+          readOnly: true
+          enum:
+          - Passed
+          - Failed
+          - Unknown
+        completionStatus:
+          type: string
+          description: The completion status of this SCO
+          readOnly: true
+          enum:
+          - Completed
+          - Incomplete
+          - NotAttempted
+          - Unknown
+        percentageScore:
+          type: number
+          format: float
+          description: Percentage Score
+          readOnly: true
+        shareableContentObject:
+          description: The SCO (Shareable Content Object) data
+          $ref: '#/components/schemas/LearningShareableContentObject'
+        children:
+          type: array
+          description: Child items belonging to this SCO in the course manifest
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LearningModulePreviewGetScoStructure'
+      description: Learning module preview get SCO structure
     AssignedLearningModule:
       type: object
       required:
@@ -8122,12 +8420,119 @@ components:
           - Graceful
           - Immediate
       description: Learning module response
-    LearningModulePreviewUpdateRequest:
+    AssignedLearningModuleDomainEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignedLearningModule'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    AssessmentFormQuestion:
+      type: object
+      required:
+      - text
+      properties:
+        id:
+          type: string
+        contextId:
+          type: string
+          description: An identifier for this question that stays the same across versions of the form.
+          readOnly: true
+        type:
+          type: string
+          enum:
+          - multipleChoiceQuestion
+          - freeTextQuestion
+          - npsQuestion
+          - readOnlyTextBlockQuestion
+        text:
+          type: string
+          description: The question text
+        helpText:
+          type: string
+        naEnabled:
+          type: boolean
+        commentsRequired:
+          type: boolean
+        visibilityCondition:
+          $ref: '#/components/schemas/VisibilityCondition'
+        answerOptions:
+          type: array
+          description: Options from which to choose an answer for this question. Only used by Multiple Choice type questions.
+          items:
+            $ref: '#/components/schemas/AnswerOption'
+        maxResponseCharacters:
+          type: integer
+          format: int32
+          description: How many characters are allowed in the text response to this question. Used by Free Text question types.
+        isKill:
+          type: boolean
+          description: Does an incorrect answer to this question mark the form as having a failed kill question. Only used by Multiple Choice type questions.
+        isCritical:
+          type: boolean
+          description: Does this question contribute to the critical score. Only used by Multiple Choice type questions.
+    LearningScormUploadResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        status:
+          type: string
+          description: The status of the SCORM package
+          enum:
+          - UploadPending
+          - Unpacking
+          - Error
+          - Ready
+        uploadUrl:
+          type: string
+          description: The pre-signed URL. Use it with headers below to upload file to S3
+        headers:
+          type: object
+          description: The additional headers that need to be included in the upload request
+          additionalProperties:
+            type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Learning SCORM upload response
+    LearningAssignmentUpdate:
       type: object
       properties:
         state:
           type: string
-          description: The assignment State
+          description: The Learning Assignment state
           enum:
           - Assigned
           - InProgress
@@ -8135,125 +8540,9 @@ components:
           - Deleted
           - NotCompleted
           - InvalidSchedule
-        currentStep:
-          description: The assignment current step
-          $ref: '#/components/schemas/LearningModulePreviewUpdateRequestCurrentStep'
-        steps:
-          type: array
-          description: The assignment Steps
-          items:
-            $ref: '#/components/schemas/LearningModulePreviewUpdateStep'
         assessment:
-          description: The assessment for learning module
+          description: An updated Assessment
           $ref: '#/components/schemas/LearningAssessment'
-        assessmentForm:
-          description: The assessment form for learning module
-          $ref: '#/components/schemas/AssessmentForm'
-      description: Learning module preview update request
-    Limit:
-      type: object
-      properties:
-        key:
-          type: string
-        namespace:
-          type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
     LearningModulePreviewGetResponseStep:
       type: object
       properties:
@@ -8302,474 +8591,185 @@ components:
           readOnly: true
           $ref: '#/components/schemas/LearningAssignmentStepSignedCookie'
       description: Learning module preview get response assignment step
-    LearningScheduleSlotsJobSchedule:
+    LearningSlotScheduleActivity:
       type: object
       properties:
-        id:
+        dateStart:
           type: string
-        selfUri:
-          type: string
-          format: uri
-        weekDate:
-          type: string
-          format: date
-          description: 'The start week date for this schedule. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        weekCount:
+          format: date-time
+          description: 'The start date/time of this activity. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        lengthMinutes:
           type: integer
           format: int32
-          description: The number of weeks in this schedule
-    LearningScheduleSlotsJobResult:
-      type: object
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'The interval of the job. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        status:
-          type: string
-          description: The status of the job
-          enum:
-          - InProgress
-          - Complete
-          - Error
-        slot:
-          description: The slot found from the job
-          $ref: '#/components/schemas/LearningScheduleSlotsJobSlot'
-    LearningModuleJobRequest:
-      type: object
-      required:
-      - action
-      properties:
-        action:
-          type: string
-          description: The type for the learning module job
-          enum:
-          - Reassign
-          - GracefulArchive
-          - ImmediateArchive
-          - Unarchive
-          - Assign
-      description: Learning module job request
-    LearningModuleInformStepRequest:
-      type: object
-      required:
-      - order
-      - type
-      - value
-      properties:
-        type:
-          type: string
-          position: 1
-          description: The learning module inform step type
-          enum:
-          - Url
-          - Content
-          - GenesysBuiltInCourse
-          - RichText
-          - Scorm
-        name:
-          type: string
-          position: 2
-          description: The name of the inform step or content
-        value:
-          type: string
-          position: 3
-          description: The value for inform step
-        sharingUri:
-          type: string
-          position: 4
-          description: The sharing uri for Content type inform step
-        contentType:
-          type: string
-          position: 5
-          description: The document type for Content type Inform step
-        order:
-          type: integer
-          format: int32
-          position: 6
-          description: The order of inform step in a learning module
-        displayName:
-          type: string
-          position: 7
-          description: The display name for the inform step
+          description: The length of this activity in minutes
         description:
           type: string
-          position: 8
-          description: The description for the inform step
-      description: Learning module inform steps request
-    AssessmentScoringSet:
+          description: The description of this activity
+        activityCodeId:
+          type: string
+          description: The ID of the activity code associated with this activity
+        paid:
+          type: boolean
+          description: Whether this activity is paid
+        timeOffRequestId:
+          type: string
+          description: The ID of the time off request associated with this activity, if applicable
+        externalActivityId:
+          type: string
+          description: The ID of the external activity associated with this activity, if applicable
+        externalActivityType:
+          type: string
+          description: The type of the external activity associated with this activity, if applicable
+          enum:
+          - ActivityPlan
+          - Coaching
+          - Learning
+          - Opportunity
+    AssessmentQuestionScore:
       type: object
       required:
-      - questionGroupScores
+      - questionId
       properties:
-        totalScore:
-          type: number
-          format: float
-          description: The total score of the answers
+        failedKillQuestion:
+          type: boolean
+          description: True if this was a failed Kill question
           readOnly: true
-        totalCriticalScore:
-          type: number
-          format: float
-          description: The total score for the critical questions
-          readOnly: true
-        totalNonCriticalScore:
-          type: number
-          format: float
-          description: The total score for the non-critical questions
-          readOnly: true
-        questionGroupScores:
-          type: array
-          description: The individual scores for each question group
-          items:
-            $ref: '#/components/schemas/AssessmentQuestionGroupScore'
-        failureReasons:
-          type: array
-          description: If the assessment was not passed, the reasons for failure.
-          readOnly: true
-          uniqueItems: true
-          items:
-            type: string
-            enum:
-            - Score
-            - CriticalScore
-            - KillQuestion
         comments:
           type: string
-          description: Comments provided for these answers.
-        agentComments:
+          description: Comments provided for the answer
+        questionId:
           type: string
-          description: Comments provided by agent.
+          description: The ID of the question
+        answerId:
+          type: string
+          description: The ID of the selected answer
+        score:
+          type: integer
+          format: int32
+          description: The score received for this question
+          readOnly: true
+        markedNA:
+          type: boolean
+          description: True if this question was marked as NA
+        systemMarkedNA:
+          type: boolean
+          description: If markedNA is true, systemMarkedNA indicates whether it was marked by a user or by the system due to visibility conditions. Always false if markedNA is false.
+        freeTextAnswer:
+          type: string
+          description: Answer for free text answer type
+    LearningModulePreviewUpdateResponseAssignment:
+      type: object
+      properties:
+        state:
+          type: string
+          description: The Learning Assignment state
+          enum:
+          - Assigned
+          - InProgress
+          - Completed
+          - Deleted
+          - NotCompleted
+          - InvalidSchedule
+        percentageScore:
+          type: number
+          format: float
+          description: The user's percentage score for this assignment
+          readOnly: true
+        completionPercentage:
+          type: number
+          format: float
+          description: The overall completion percentage of assignment
+          readOnly: true
+        assessmentPercentageScore:
+          type: number
+          format: float
+          description: The user's percentage score for this assignment's assessment
+          readOnly: true
+        assessmentCompletionPercentage:
+          type: number
+          format: float
+          description: The assessment completion percentage of assignment
+          readOnly: true
         isPassed:
           type: boolean
           description: True if the assessment was passed
           readOnly: true
-    LearningModuleRequest:
+        currentStep:
+          description: The next assignment step
+          readOnly: true
+          $ref: '#/components/schemas/LearningModulePreviewUpdateResponseCurrentStep'
+        steps:
+          type: array
+          description: List of assignment steps
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LearningModulePreviewUpdateStep'
+      description: Learning module preview update response assignment
+    LearningModuleRule:
       type: object
       required:
-      - completionTimeInDays
-      - name
+      - isActive
+      - parts
       properties:
-        name:
+        id:
           type: string
-          description: The name of learning module
-        description:
-          type: string
-          description: The description of learning module
-        completionTimeInDays:
-          type: integer
-          format: int32
-          description: The completion time of learning module in days
-        informSteps:
+          description: The globally unique identifier for the object.
+          readOnly: true
+        isActive:
+          type: boolean
+          description: If true, rule is active
+        parts:
           type: array
-          description: The list of inform steps in a learning module
+          description: The parts of a learning module rule
           items:
-            $ref: '#/components/schemas/LearningModuleInformStepRequest'
-        type:
+            $ref: '#/components/schemas/LearningModuleRuleParts'
+        selfUri:
           type: string
-          description: The type for the learning module. Informational, AssessedContent and Assessment are deprecated
-          enum:
-          - Informational
-          - AssessedContent
-          - Assessment
-          - External
-          - Native
-        assessmentForm:
-          description: The assessment form for learning module
-          $ref: '#/components/schemas/AssessmentForm'
-        coverArt:
-          description: The cover art for the learning module
-          $ref: '#/components/schemas/LearningModuleCoverArtRequest'
-        lengthInMinutes:
-          type: integer
-          format: int32
-          description: The recommended time in minutes to complete the module
-        excludedFromCatalog:
-          type: boolean
-          description: If true, learning module is excluded when retrieving modules for manual assignment
-        externalId:
-          type: string
-          description: 'The external ID of the learning module. Maximum length: 50 characters.'
-          minLength: 0
-          maxLength: 50
-        enforceContentOrder:
-          type: boolean
-          description: If true, learning module content should be viewed one by one in order
-        reviewAssessmentResults:
-          description: Allows to view Assessment results in detail
-          $ref: '#/components/schemas/ReviewAssessmentResults'
-        autoAssign:
-          description: The configuration for linking a module to a rule
-          $ref: '#/components/schemas/LearningModuleAutoAssignRequest'
-      description: Learning module request
-    LearningAssignmentBulkAddResponse:
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LearningAssignmentsDomainEntity:
       type: object
       properties:
         entities:
           type: array
-          description: The learning assignments that were assigned correctly
           items:
             $ref: '#/components/schemas/LearningAssignment'
-        disallowedEntities:
-          type: array
-          description: The items that were not allowed to be assigned
-          items:
-            $ref: '#/components/schemas/DisallowedEntityLearningAssignmentItem'
-    LearningAssessmentScoringRequest:
-      type: object
-      required:
-      - answers
-      - assessmentForm
-      properties:
-        assessmentForm:
-          position: 1
-          description: The assessment form to score against
-          $ref: '#/components/schemas/AssessmentForm'
-        answers:
-          position: 2
-          description: The answers to score
-          $ref: '#/components/schemas/AssessmentScoringSet'
-    LearningAssignmentStepSignedCookie:
-      type: object
-      properties:
-        url:
-          type: string
-          description: The base URL for the signed cookie
-          readOnly: true
-        cookieValues:
-          type: object
-          description: The cookie values required to access content from the base URL
-          readOnly: true
-          additionalProperties:
-            type: string
-    LearningShareableContentObject:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The ID of the SCO from the course manifest.
-        lessonStatus:
-          type: string
-          description: The status of the SCO. Maps to the SCORM 1.2 cmi.core.lesson_status property.
-          enum:
-          - Passed
-          - Completed
-          - Failed
-          - Incomplete
-          - Browsed
-          - NotAttempted
-        exit:
-          type: string
-          description: Indicates how or why the learner left the SCO. Maps to the SCORM 1.2 cmi.core.exit property.
-          enum:
-          - Timeout
-          - Suspend
-          - Logout
-          - Empty
-        location:
-          type: string
-          description: The learner’s current location in the SCO. Maps to the SCORM 1.2 cmi.core.lesson_location property.
-        scoreRaw:
-          type: number
-          format: float
-          description: The score of the most recent attempt on the SCO. Maps to the SCORM 1.2 cmi.core.score.raw property.
-        scoreMax:
-          type: number
-          format: float
-          description: The maximum score that could be achieved on the SCO. Maps to the SCORM 1.2 cmi.core.score.max property.
-        scoreMin:
-          type: number
-          format: float
-          description: The minimum score that could be achieved on the SCO. Maps to the SCORM 1.2 cmi.core.score.min property.
-        suspendData:
-          type: string
-          description: The unique information generated by the SCO from previous uses. Maps to the SCORM 1.2 cmi.suspend_data property.
-        credit:
-          type: string
-          description: Whether completing this course counts towards the overall assignment. Maps to the SCORM 1.2 cmi.core.credit property.
-          readOnly: true
-          enum:
-          - Credit
-          - NoCredit
-        entry:
-          type: string
-          description: Whether the learner has previously accessed this SCO. Maps to the SCORM 1.2 cmi.core.entry property.
-          readOnly: true
-          enum:
-          - AbInitio
-          - Resume
-          - Empty
-        mode:
-          type: string
-          description: Identifies the mode in which the SCO should be presented to the learner. Maps to the SCORM 1.2 cmi.core.lesson_mode property.
-          readOnly: true
-          enum:
-          - Browse
-          - Normal
-          - Review
-        totalTime:
-          type: string
-          description: The total amount of time the learner has spent in the SCO expressed as an ISO 8601 Duration, for example PT2H10M3.5S. Maps to the SCORM 1.2 cmi.core.total_time property.
-          readOnly: true
-        sessionTime:
-          type: string
-          description: The amount of time spent in the SCO in this session expressed as an ISO-8601 Duration, for example PT2H10M3.5S. Maps to the SCORM 1.2 cmi.core.session_time property.
-        href:
-          type: string
-          description: The href from the course manifest for this SCO.
-          readOnly: true
-        parameters:
-          type: string
-          description: The parameters from the course manifest for this SCO.
-          readOnly: true
-        launchData:
-          type: string
-          description: The launch data from the course manifest for this SCO.
-          readOnly: true
-      description: Learning assignment SCO (Shareable Content Object)
-    AssistanceCondition:
-      type: object
-      properties:
-        operator:
-          type: string
-          description: The operator for the assistance condition. The operator defines whether the listed topicIds should EXIST or NOTEXIST for the condition to be evaluated as true.
-          enum:
-          - EXISTS
-          - NOTEXISTS
-        topicIds:
-          type: array
-          description: List of topicIds within the assistance condition which would be combined together using logical OR operator. Eg ( topicId_1 || topicId_2 ) .
-          items:
-            type: string
-    LearningSlotFullDayTimeOffMarker:
-      type: object
-      properties:
-        businessUnitDate:
-          type: string
-          format: date
-          description: 'The date of the time off marker, interpreted in the business unit''s time zone. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        lengthMinutes:
+        pageSize:
           type: integer
           format: int32
-          description: The length of the time off marker in minutes
-        description:
-          type: string
-          description: The description of the time off marker
-        activityCodeId:
-          type: string
-          description: The ID of the activity code associated with the time off marker
-        paid:
-          type: boolean
-          description: Whether the time off marker is paid
-        timeOffRequestId:
-          type: string
-          description: The ID of the time off request
-    LearningAssignmentAggregateQueryResponseStats:
-      type: object
-      properties:
-        count:
+        pageNumber:
           type: integer
           format: int32
-          description: The count for this metric
-        min:
-          type: number
-          description: The minimum value in this metric
-        max:
-          type: number
-          description: The maximum value in this metric
-        sum:
-          type: number
-          description: The total of the values for this metric
-    LearningScormUploadResponse:
-      type: object
-      properties:
-        id:
+        total:
+          type: integer
+          format: int64
+        firstUri:
           type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        status:
+          format: uri
+        nextUri:
           type: string
-          description: The status of the SCORM package
-          enum:
-          - UploadPending
-          - Unpacking
-          - Error
-          - Ready
-        uploadUrl:
+          format: uri
+        previousUri:
           type: string
-          description: The pre-signed URL. Use it with headers below to upload file to S3
-        headers:
-          type: object
-          description: The additional headers that need to be included in the upload request
-          additionalProperties:
-            type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
         selfUri:
           type: string
           format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Learning SCORM upload response
-    LearningAssignmentAggregateQueryResponseMetric:
+        pageCount:
+          type: integer
+          format: int32
+    LearningAssignmentAggregateResponse:
       type: object
       properties:
-        metric:
-          type: string
-          description: The metric this applies to
-          enum:
-          - nActivities
-          - nPlannedActivities
-          - nInProgressActivities
-          - nCompleteActivities
-          - nOverdueActivities
-          - nInvalidScheduleActivities
-          - nPassedActivities
-          - nFailedActivities
-          - oActivityScore
-          - nNotCompletedActivities
-        stats:
-          description: The aggregated values for this metric
-          $ref: '#/components/schemas/LearningAssignmentAggregateQueryResponseStats'
-    LearningAssignmentEntity:
-      type: object
-      properties:
-        assignmentId:
-          type: string
-    LearningModuleCoverArtRequest:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: The key identifier for the cover art
-    LearningAssignmentUser:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    VisibilityCondition:
-      type: object
-      properties:
-        combiningOperation:
-          type: string
-          enum:
-          - AND
-          - OR
-        predicates:
+        results:
           type: array
-          description: 'A list of strings, each representing the location in the form of the Answer Option to depend on. In the format of "/form/questionGroup/{questionGroupIndex}/question/{questionIndex}/answer/{answerIndex}" or, to assume the current question group, "../question/{questionIndex}/answer/{answerIndex}". Note: Indexes are zero-based'
+          description: The results of the query
           items:
-            type: object
+            $ref: '#/components/schemas/LearningAssignmentAggregateQueryResponseGroupedData'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

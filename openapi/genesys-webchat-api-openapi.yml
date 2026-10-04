@@ -2785,6 +2785,280 @@ paths:
       x-purecloud-method-name: getWebchatGuestConversationMessages
 components:
   schemas:
+    JourneyCustomer:
+      type: object
+      required:
+      - id
+      - idType
+      properties:
+        id:
+          type: string
+          description: An ID of a customer within the Journey System at a point-in-time.  Note that a customer entity can have multiple customerIds based on the stitching process.  Depending on the context within the PureCloud conversation, this may or may not be mutable.
+        idType:
+          type: string
+          description: The type of the customerId within the Journey System (e.g. cookie).
+    JourneyActionMap:
+      type: object
+      required:
+      - id
+      - version
+      properties:
+        id:
+          type: string
+          description: The ID of the actionMap in the Journey System which triggered this action
+        version:
+          type: integer
+          format: int32
+          description: The version number of the actionMap in the Journey System at the time this action was triggered
+    WebChatGuestMediaRequest:
+      type: object
+      required:
+      - state
+      - types
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        types:
+          type: array
+          description: The types of media being requested.
+          items:
+            type: string
+            enum:
+            - COBROWSE
+            - SCREENSHARE
+        state:
+          type: string
+          description: The state of the media request, one of PENDING|ACCEPTED|DECLINED|TIMEDOUT|CANCELLED|ERRORED.
+          enum:
+          - PENDING
+          - ACCEPTED
+          - DECLINED
+          - TIMEDOUT
+          - CANCELLED
+          - ERRORED
+        communicationId:
+          type: string
+          description: The ID of the new media communication, if applicable.
+        securityKey:
+          type: string
+          description: The security information related to a media request.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+      description: Object representing the guest model of a media request of a chat conversation.
+    WebChatDeploymentEntityListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebChatDeployment'
+        selfUri:
+          type: string
+          format: uri
+    WebChatConversation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        member:
+          description: Chat Member
+          $ref: '#/components/schemas/WebChatMemberInfo'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WebChatMessage:
+      type: object
+      required:
+      - body
+      - bodyType
+      - conversation
+      - sender
+      - timestamp
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        conversation:
+          description: The identifier of the conversation
+          $ref: '#/components/schemas/WebChatConversation'
+        sender:
+          description: The member who sent the message
+          $ref: '#/components/schemas/WebChatMemberInfo'
+        body:
+          type: string
+          description: The message body.
+        bodyType:
+          type: string
+          description: The purpose of the message within the conversation, such as a standard text entry versus a greeting.
+          enum:
+          - standard
+          - notice
+          - member-join
+          - member-leave
+          - media-request
+        timestamp:
+          type: string
+          format: date-time
+          description: The timestamp of the message, in ISO-8601 format
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    JourneyAction:
+      type: object
+      required:
+      - actionMap
+      - id
+      properties:
+        id:
+          type: string
+          description: The ID of an action from the Journey System (an action is spawned from an actionMap)
+        actionMap:
+          description: Details about the action map from the Journey System which triggered this action
+          $ref: '#/components/schemas/JourneyActionMap'
+    JourneyCustomerSession:
+      type: object
+      required:
+      - id
+      - type
+      properties:
+        id:
+          type: string
+          description: An ID of a Customer/User's session within the Journey System at a point-in-time
+        type:
+          type: string
+          description: The type of the Customer/User's session within the Journey System (e.g. web, app)
+    WebChatTyping:
+      type: object
+      required:
+      - conversation
+      - id
+      - sender
+      - timestamp
+      properties:
+        id:
+          type: string
+          description: The event identifier of this typing indicator event (useful to guard against event re-delivery
+        conversation:
+          description: The identifier of the conversation
+          $ref: '#/components/schemas/WebChatConversation'
+        sender:
+          description: The member who sent the message
+          $ref: '#/components/schemas/WebChatMemberInfo'
+        timestamp:
+          type: string
+          format: date-time
+          description: The timestamp of the message, in ISO-8601 format
+    GuestMemberInfo:
+      type: object
+      required:
+      - displayName
+      properties:
+        displayName:
+          type: string
+          description: The display name to use for the guest member in the conversation.
+        firstName:
+          type: string
+          description: The first name to use for the guest member in the conversation.
+        lastName:
+          type: string
+          description: The last name to use for the guest member in the conversation.
+        email:
+          type: string
+          description: The email address to use for the guest member in the conversation.
+        phoneNumber:
+          type: string
+          description: The phone number to use for the guest member in the conversation.
+        avatarImageUrl:
+          type: string
+          format: uri
+          description: The URL to the avatar image to use for the guest member in the conversation, if any.
+        customFields:
+          type: object
+          description: Any custom fields of information, in key-value format, to attach to the guest member in the conversation.
+          additionalProperties:
+            type: string
+    WebChatMessageEntityList:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebChatMessage'
+        previousPage:
+          type: string
+        next:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    JourneyContext:
+      type: object
+      required:
+      - customer
+      properties:
+        customer:
+          description: A subset of the Journey System's customer data at a point-in-time (for external linkage and internal usage/context)
+          $ref: '#/components/schemas/JourneyCustomer'
+        customerSession:
+          description: A subset of the Journey System's tracked customer session data at a point-in-time (for external linkage and internal usage/context)
+          $ref: '#/components/schemas/JourneyCustomerSession'
+        triggeringAction:
+          description: A subset of the Journey System's action data relevant to a part of a conversation (for external linkage and internal usage/context)
+          $ref: '#/components/schemas/JourneyAction'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    WebChatConfig:
+      type: object
+      properties:
+        webChatSkin:
+          type: string
+          description: css class to be applied to the web chat widget.
+          enum:
+          - basic
+          - modern-caret-skin
     Limit:
       type: object
       properties:
@@ -2889,6 +3163,201 @@ components:
         value:
           type: integer
           format: int64
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    WebChatGuestMediaRequestEntityList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebChatGuestMediaRequest'
+    WebChatDeployment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+        authenticationRequired:
+          type: boolean
+        authenticationUrl:
+          type: string
+          description: URL for third party service authenticating web chat clients. See https://github.com/MyPureCloud/authenticated-web-chat-server-examples
+        disabled:
+          type: boolean
+        webChatConfig:
+          $ref: '#/components/schemas/WebChatConfig'
+        allowedDomains:
+          type: array
+          items:
+            type: string
+        flow:
+          description: The URI of the Inbound Chat Flow to run when new chats are initiated under this Deployment.
+          $ref: '#/components/schemas/DomainEntityRef'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    WebChatSettings:
+      type: object
+      properties:
+        requireDeployment:
+          type: boolean
+    WebChatRoutingTarget:
+      type: object
+      required:
+      - targetAddress
+      - targetType
+      properties:
+        targetType:
+          type: string
+          description: The target type of the routing target, such as 'QUEUE'.
+          enum:
+          - QUEUE
+        targetAddress:
+          type: string
+          description: The target of the route, in the format appropriate given the 'targetType'.
+        skills:
+          type: array
+          description: The list of skill names to use for routing.
+          items:
+            type: string
+        language:
+          type: string
+          description: The language name to use for routing.
+        priority:
+          type: integer
+          format: int64
+          description: The priority to assign to the conversation for routing.
+    CreateWebChatConversationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Chat Conversation identifier
+        jwt:
+          type: string
+          description: The JWT that you can use to identify subsequent calls on this conversation
+        eventStreamUri:
+          type: string
+          format: uri
+          description: The URI which provides the conversation event stream.
+        member:
+          description: Chat Member
+          $ref: '#/components/schemas/WebChatMemberInfo'
+    CreateWebChatMessageRequest:
+      type: object
+      required:
+      - body
+      properties:
+        body:
+          type: string
+          description: The message body. Note that message bodies are limited to 4,000 characters.
+        bodyType:
+          type: string
+          description: The purpose of the message within the conversation, such as a standard text entry versus a greeting.
+          enum:
+          - standard
+          - notice
+          - member-join
+          - member-leave
+          - media-request
+    WebChatMemberInfoEntityList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebChatMemberInfo'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    CreateWebChatConversationRequest:
+      type: object
+      required:
+      - deploymentId
+      - memberInfo
+      - organizationId
+      - routingTarget
+      properties:
+        organizationId:
+          type: string
+          description: The organization identifier.
+        deploymentId:
+          type: string
+          description: The web chat Deployment ID which contains the appropriate settings for this chat conversation.
+        routingTarget:
+          description: The routing information to use for the new chat conversation.
+          $ref: '#/components/schemas/WebChatRoutingTarget'
+        memberInfo:
+          description: The guest member info to use for the new chat conversation.
+          $ref: '#/components/schemas/GuestMemberInfo'
+        memberAuthToken:
+          type: string
+          description: If the guest member is an authenticated member (ie, not anonymous) his JWT is provided here. The token will have been previously generated with the "POST /api/v2/signeddata" resource.
+        journeyContext:
+          description: A subset of the Journey System's data relevant to this conversation/session request (for external linkage and internal usage/context).
+          $ref: '#/components/schemas/JourneyContext'
     WebChatMemberInfo:
       type: object
       required:
@@ -2947,475 +3416,6 @@ components:
           - CONNECTED
           - DISCONNECTED
           - ALERTING
-    JourneyAction:
-      type: object
-      required:
-      - actionMap
-      - id
-      properties:
-        id:
-          type: string
-          description: The ID of an action from the Journey System (an action is spawned from an actionMap)
-        actionMap:
-          description: Details about the action map from the Journey System which triggered this action
-          $ref: '#/components/schemas/JourneyActionMap'
-    WebChatGuestMediaRequestEntityList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebChatGuestMediaRequest'
-    WebChatMemberInfoEntityList:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebChatMemberInfo'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    JourneyCustomer:
-      type: object
-      required:
-      - id
-      - idType
-      properties:
-        id:
-          type: string
-          description: An ID of a customer within the Journey System at a point-in-time.  Note that a customer entity can have multiple customerIds based on the stitching process.  Depending on the context within the PureCloud conversation, this may or may not be mutable.
-        idType:
-          type: string
-          description: The type of the customerId within the Journey System (e.g. cookie).
-    GuestMemberInfo:
-      type: object
-      required:
-      - displayName
-      properties:
-        displayName:
-          type: string
-          description: The display name to use for the guest member in the conversation.
-        firstName:
-          type: string
-          description: The first name to use for the guest member in the conversation.
-        lastName:
-          type: string
-          description: The last name to use for the guest member in the conversation.
-        email:
-          type: string
-          description: The email address to use for the guest member in the conversation.
-        phoneNumber:
-          type: string
-          description: The phone number to use for the guest member in the conversation.
-        avatarImageUrl:
-          type: string
-          format: uri
-          description: The URL to the avatar image to use for the guest member in the conversation, if any.
-        customFields:
-          type: object
-          description: Any custom fields of information, in key-value format, to attach to the guest member in the conversation.
-          additionalProperties:
-            type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    WebChatConfig:
-      type: object
-      properties:
-        webChatSkin:
-          type: string
-          description: css class to be applied to the web chat widget.
-          enum:
-          - basic
-          - modern-caret-skin
-    WebChatRoutingTarget:
-      type: object
-      required:
-      - targetAddress
-      - targetType
-      properties:
-        targetType:
-          type: string
-          description: The target type of the routing target, such as 'QUEUE'.
-          enum:
-          - QUEUE
-        targetAddress:
-          type: string
-          description: The target of the route, in the format appropriate given the 'targetType'.
-        skills:
-          type: array
-          description: The list of skill names to use for routing.
-          items:
-            type: string
-        language:
-          type: string
-          description: The language name to use for routing.
-        priority:
-          type: integer
-          format: int64
-          description: The priority to assign to the conversation for routing.
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    WebChatMessageEntityList:
-      type: object
-      properties:
-        pageSize:
-          type: integer
-          format: int32
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebChatMessage'
-        previousPage:
-          type: string
-        next:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    CreateWebChatConversationResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Chat Conversation identifier
-        jwt:
-          type: string
-          description: The JWT that you can use to identify subsequent calls on this conversation
-        eventStreamUri:
-          type: string
-          format: uri
-          description: The URI which provides the conversation event stream.
-        member:
-          description: Chat Member
-          $ref: '#/components/schemas/WebChatMemberInfo'
-    WebChatDeployment:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        description:
-          type: string
-        authenticationRequired:
-          type: boolean
-        authenticationUrl:
-          type: string
-          description: URL for third party service authenticating web chat clients. See https://github.com/MyPureCloud/authenticated-web-chat-server-examples
-        disabled:
-          type: boolean
-        webChatConfig:
-          $ref: '#/components/schemas/WebChatConfig'
-        allowedDomains:
-          type: array
-          items:
-            type: string
-        flow:
-          description: The URI of the Inbound Chat Flow to run when new chats are initiated under this Deployment.
-          $ref: '#/components/schemas/DomainEntityRef'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    WebChatMessage:
-      type: object
-      required:
-      - body
-      - bodyType
-      - conversation
-      - sender
-      - timestamp
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        conversation:
-          description: The identifier of the conversation
-          $ref: '#/components/schemas/WebChatConversation'
-        sender:
-          description: The member who sent the message
-          $ref: '#/components/schemas/WebChatMemberInfo'
-        body:
-          type: string
-          description: The message body.
-        bodyType:
-          type: string
-          description: The purpose of the message within the conversation, such as a standard text entry versus a greeting.
-          enum:
-          - standard
-          - notice
-          - member-join
-          - member-leave
-          - media-request
-        timestamp:
-          type: string
-          format: date-time
-          description: The timestamp of the message, in ISO-8601 format
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CreateWebChatConversationRequest:
-      type: object
-      required:
-      - deploymentId
-      - memberInfo
-      - organizationId
-      - routingTarget
-      properties:
-        organizationId:
-          type: string
-          description: The organization identifier.
-        deploymentId:
-          type: string
-          description: The web chat Deployment ID which contains the appropriate settings for this chat conversation.
-        routingTarget:
-          description: The routing information to use for the new chat conversation.
-          $ref: '#/components/schemas/WebChatRoutingTarget'
-        memberInfo:
-          description: The guest member info to use for the new chat conversation.
-          $ref: '#/components/schemas/GuestMemberInfo'
-        memberAuthToken:
-          type: string
-          description: If the guest member is an authenticated member (ie, not anonymous) his JWT is provided here. The token will have been previously generated with the "POST /api/v2/signeddata" resource.
-        journeyContext:
-          description: A subset of the Journey System's data relevant to this conversation/session request (for external linkage and internal usage/context).
-          $ref: '#/components/schemas/JourneyContext'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    JourneyContext:
-      type: object
-      required:
-      - customer
-      properties:
-        customer:
-          description: A subset of the Journey System's customer data at a point-in-time (for external linkage and internal usage/context)
-          $ref: '#/components/schemas/JourneyCustomer'
-        customerSession:
-          description: A subset of the Journey System's tracked customer session data at a point-in-time (for external linkage and internal usage/context)
-          $ref: '#/components/schemas/JourneyCustomerSession'
-        triggeringAction:
-          description: A subset of the Journey System's action data relevant to a part of a conversation (for external linkage and internal usage/context)
-          $ref: '#/components/schemas/JourneyAction'
-    JourneyCustomerSession:
-      type: object
-      required:
-      - id
-      - type
-      properties:
-        id:
-          type: string
-          description: An ID of a Customer/User's session within the Journey System at a point-in-time
-        type:
-          type: string
-          description: The type of the Customer/User's session within the Journey System (e.g. web, app)
-    WebChatSettings:
-      type: object
-      properties:
-        requireDeployment:
-          type: boolean
-    CreateWebChatMessageRequest:
-      type: object
-      required:
-      - body
-      properties:
-        body:
-          type: string
-          description: The message body. Note that message bodies are limited to 4,000 characters.
-        bodyType:
-          type: string
-          description: The purpose of the message within the conversation, such as a standard text entry versus a greeting.
-          enum:
-          - standard
-          - notice
-          - member-join
-          - member-leave
-          - media-request
-    WebChatConversation:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        member:
-          description: Chat Member
-          $ref: '#/components/schemas/WebChatMemberInfo'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    JourneyActionMap:
-      type: object
-      required:
-      - id
-      - version
-      properties:
-        id:
-          type: string
-          description: The ID of the actionMap in the Journey System which triggered this action
-        version:
-          type: integer
-          format: int32
-          description: The version number of the actionMap in the Journey System at the time this action was triggered
-    WebChatTyping:
-      type: object
-      required:
-      - conversation
-      - id
-      - sender
-      - timestamp
-      properties:
-        id:
-          type: string
-          description: The event identifier of this typing indicator event (useful to guard against event re-delivery
-        conversation:
-          description: The identifier of the conversation
-          $ref: '#/components/schemas/WebChatConversation'
-        sender:
-          description: The member who sent the message
-          $ref: '#/components/schemas/WebChatMemberInfo'
-        timestamp:
-          type: string
-          format: date-time
-          description: The timestamp of the message, in ISO-8601 format
-    WebChatDeploymentEntityListing:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebChatDeployment'
-        selfUri:
-          type: string
-          format: uri
-    WebChatGuestMediaRequest:
-      type: object
-      required:
-      - state
-      - types
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        types:
-          type: array
-          description: The types of media being requested.
-          items:
-            type: string
-            enum:
-            - COBROWSE
-            - SCREENSHARE
-        state:
-          type: string
-          description: The state of the media request, one of PENDING|ACCEPTED|DECLINED|TIMEDOUT|CANCELLED|ERRORED.
-          enum:
-          - PENDING
-          - ACCEPTED
-          - DECLINED
-          - TIMEDOUT
-          - CANCELLED
-          - ERRORED
-        communicationId:
-          type: string
-          description: The ID of the new media communication, if applicable.
-        securityKey:
-          type: string
-          description: The security information related to a media request.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-      description: Object representing the guest model of a media request of a chat conversation.
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

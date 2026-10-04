@@ -1074,6 +1074,408 @@ paths:
       x-purecloud-method-name: getAuditsQueryRealtimeServicemapping
 components:
   schemas:
+    EntityChange:
+      type: object
+      properties:
+        entityId:
+          type: string
+          description: Id of the entity that was changed
+        entityName:
+          type: string
+          description: Name of the entity that was changed
+        entityType:
+          type: string
+          description: Type of the entity that was changed
+        oldValues:
+          type: array
+          description: Previous values for the entity.
+          items:
+            type: string
+        newValues:
+          type: array
+          description: New values for the entity.
+          items:
+            type: string
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    AuditQueryServiceMapping:
+      type: object
+      properties:
+        services:
+          type: array
+          description: List of Services
+          items:
+            $ref: '#/components/schemas/AuditQueryService'
+    AuditRealtimeRelatedResultsResponse:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLogMessage'
+    MessageInfo:
+      type: object
+      properties:
+        localizableMessageCode:
+          type: string
+          description: Key that can be used to localize the message.
+        message:
+          type: string
+          description: Description of the message.
+        messageWithParams:
+          type: string
+          description: Message with template fields for variable replacement.
+        messageParams:
+          type: object
+          description: Map with fields for variable replacement.
+          additionalProperties:
+            type: string
+    AuditQueryExecutionLargeResultsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the audit query execution request.
+        pageSize:
+          type: integer
+          format: int32
+          description: Number of results in a page.
+        cursor:
+          type: string
+          description: Optional cursor to indicate where to resume the results.
+        downloadUrl:
+          type: string
+          description: The presigned url which can be used to download the results.
+    AuditQueryFilter:
+      type: object
+      required:
+      - property
+      - value
+      properties:
+        property:
+          type: string
+          description: Name of the property to filter.
+          enum:
+          - UserId
+          - TrusteeOrganizationId
+          - ClientId
+          - Action
+          - EntityType
+          - EntityId
+        value:
+          type: string
+          description: Value of the property to filter.
+    AuditQueryRequest:
+      type: object
+      required:
+      - interval
+      properties:
+        interval:
+          type: string
+          description: 'Date and time range of data to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ssZ/YYYY-MM-DDThh:mm:ssZ'
+        serviceName:
+          type: string
+          description: Name of the service to query audits for.
+        filters:
+          type: array
+          description: Additional filters for the query.
+          items:
+            $ref: '#/components/schemas/AuditQueryFilter'
+        sort:
+          type: array
+          description: Sort parameter for the query.
+          items:
+            $ref: '#/components/schemas/AuditQuerySort'
+    AuditLogMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the audit message.
+        userHomeOrgId:
+          type: string
+          description: Home Organization Id associated with this audit message.
+        user:
+          description: User associated with this audit message.
+          $ref: '#/components/schemas/DomainEntityRef'
+        client:
+          description: Client associated with this audit message.
+          $ref: '#/components/schemas/AddressableEntityRef'
+        remoteIp:
+          type: array
+          description: List of IP addresses of systems that originated or handled the request.
+          items:
+            type: string
+        serviceName:
+          type: string
+          description: Name of the service that logged this audit message.
+        level:
+          type: string
+          description: Level of this audit message, USER or SYSTEM.
+          enum:
+          - USER
+          - SYSTEM
+          - GENESYS_INTERNAL
+        eventDate:
+          type: string
+          format: date-time
+          description: 'Date and time of when the audit message was logged. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        message:
+          description: Message describing the event being audited.
+          $ref: '#/components/schemas/MessageInfo'
+        action:
+          type: string
+          description: Action that took place.
+        entity:
+          description: Entity that was impacted.
+          $ref: '#/components/schemas/DomainEntityRef'
+        entityType:
+          type: string
+          description: Type of the entity that was impacted.
+        status:
+          type: string
+          description: Status of the event being audited
+          enum:
+          - SUCCESS
+          - FAILURE
+          - WARNING
+        application:
+          type: string
+          description: Name of the application used to perform the audit's action
+        initiatingAction:
+          description: Id and action of the audit initiating the transaction
+          $ref: '#/components/schemas/InitiatingAction'
+        transactionInitiator:
+          type: boolean
+          description: Whether the current audit is the initiator of the transaction
+        propertyChanges:
+          type: array
+          description: List of properties that were changed and changes made to those properties.
+          items:
+            $ref: '#/components/schemas/PropertyChange'
+        context:
+          type: object
+          description: Additional context for this message.
+          additionalProperties:
+            type: string
+        entityChanges:
+          type: array
+          description: List of entities that were changed and changes made to those entities.
+          items:
+            $ref: '#/components/schemas/EntityChange'
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    AuditQueryService:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the Service
+        entities:
+          type: array
+          description: List of Entities
+          items:
+            $ref: '#/components/schemas/AuditQueryEntity'
+    InitiatingAction:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: Id of the audit initiating the transaction
+        actionContext:
+          type: string
+          description: Action of the audit initiating the transaction
+    AuditRealtimeQueryResultsResponse:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLogMessage'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        pageCount:
+          type: integer
+          format: int32
+    AuditQueryExecutionStatusResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the audit query execution request.
+        state:
+          type: string
+          description: Status of the audit query execution request.
+          enum:
+          - Queued
+          - Running
+          - Succeeded
+          - Failed
+          - Cancelled
+        startDate:
+          type: string
+          format: date-time
+          description: 'Start date and time of the audit query execution. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        interval:
+          type: string
+          format: interval
+          description: 'Interval for the audit query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        serviceName:
+          type: string
+          description: Service name for the audit query.
+        filters:
+          type: array
+          description: Filters for the audit query.
+          items:
+            $ref: '#/components/schemas/AuditQueryFilter'
+        sort:
+          type: array
+          description: Sort parameter for the audit query.
+          items:
+            $ref: '#/components/schemas/AuditQuerySort'
+    AuditRealtimeQueryRequest:
+      type: object
+      required:
+      - interval
+      properties:
+        interval:
+          type: string
+          description: 'Date and time range of data to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ssZ/YYYY-MM-DDThh:mm:ssZ'
+        serviceName:
+          type: string
+          description: Name of the service to query audits for.
+        filters:
+          type: array
+          description: Additional filters for the query.
+          items:
+            $ref: '#/components/schemas/AuditQueryFilter'
+        sort:
+          type: array
+          description: Sort parameter for the query.
+          items:
+            $ref: '#/components/schemas/AuditQuerySort'
+        pageNumber:
+          type: integer
+          format: int32
+          description: Page number
+        pageSize:
+          type: integer
+          format: int32
+          description: Page size
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    AuditQueryExecutionResultsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the audit query execution request.
+        pageSize:
+          type: integer
+          format: int32
+          description: Number of results in a page.
+        cursor:
+          type: string
+          description: Optional cursor to indicate where to resume the results.
+        entities:
+          type: array
+          description: List of audit messages.
+          items:
+            $ref: '#/components/schemas/AuditLogMessage'
+    AuditRealtimeRelatedRequest:
+      type: object
+      required:
+      - auditId
+      properties:
+        auditId:
+          type: string
+          description: The id of the audit of which related audits will be retrieved.
+        trustorOrgId:
+          type: string
+          description: The id of the trustor org to which the audit belongs. Used when searching for audits performed by a trustee user within a trustor org.
+        sort:
+          type: array
+          description: Sort parameter for the query.
+          items:
+            $ref: '#/components/schemas/AuditQuerySort'
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    PropertyChange:
+      type: object
+      properties:
+        property:
+          type: string
+          description: The property that was changed
+        oldValues:
+          type: array
+          description: Previous values for the property.
+          items:
+            type: string
+        newValues:
+          type: array
+          description: New values for the property.
+          items:
+            type: string
     Limit:
       type: object
       properties:
@@ -1178,149 +1580,17 @@ components:
         value:
           type: integer
           format: int64
-    AuditQueryExecutionResultsResponse:
+    AuditQueryEntity:
       type: object
       properties:
-        id:
-          type: string
-          description: Id of the audit query execution request.
-        pageSize:
-          type: integer
-          format: int32
-          description: Number of results in a page.
-        cursor:
-          type: string
-          description: Optional cursor to indicate where to resume the results.
-        entities:
-          type: array
-          description: List of audit messages.
-          items:
-            $ref: '#/components/schemas/AuditLogMessage'
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    AuditQueryServiceMapping:
-      type: object
-      properties:
-        services:
-          type: array
-          description: List of Services
-          items:
-            $ref: '#/components/schemas/AuditQueryService'
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
         name:
           type: string
-        selfUri:
-          type: string
-          format: uri
-    AuditQueryFilter:
-      type: object
-      required:
-      - property
-      - value
-      properties:
-        property:
-          type: string
-          description: Name of the property to filter.
-          enum:
-          - UserId
-          - TrusteeOrganizationId
-          - ClientId
-          - Action
-          - EntityType
-          - EntityId
-        value:
-          type: string
-          description: Value of the property to filter.
-    AuditQueryExecutionStatusResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Id of the audit query execution request.
-        state:
-          type: string
-          description: Status of the audit query execution request.
-          enum:
-          - Queued
-          - Running
-          - Succeeded
-          - Failed
-          - Cancelled
-        startDate:
-          type: string
-          format: date-time
-          description: 'Start date and time of the audit query execution. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        interval:
-          type: string
-          format: interval
-          description: 'Interval for the audit query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        serviceName:
-          type: string
-          description: Service name for the audit query.
-        filters:
+          description: Name of the Entity
+        actions:
           type: array
-          description: Filters for the audit query.
+          description: List of Actions
           items:
-            $ref: '#/components/schemas/AuditQueryFilter'
-        sort:
-          type: array
-          description: Sort parameter for the audit query.
-          items:
-            $ref: '#/components/schemas/AuditQuerySort'
-    InitiatingAction:
-      type: object
-      properties:
-        transactionId:
-          type: string
-          description: Id of the audit initiating the transaction
-        actionContext:
-          type: string
-          description: Action of the audit initiating the transaction
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
+            type: string
     AuditQuerySort:
       type: object
       required:
@@ -1338,276 +1608,6 @@ components:
           enum:
           - ascending
           - descending
-    AuditRealtimeQueryRequest:
-      type: object
-      required:
-      - interval
-      properties:
-        interval:
-          type: string
-          description: 'Date and time range of data to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ssZ/YYYY-MM-DDThh:mm:ssZ'
-        serviceName:
-          type: string
-          description: Name of the service to query audits for.
-        filters:
-          type: array
-          description: Additional filters for the query.
-          items:
-            $ref: '#/components/schemas/AuditQueryFilter'
-        sort:
-          type: array
-          description: Sort parameter for the query.
-          items:
-            $ref: '#/components/schemas/AuditQuerySort'
-        pageNumber:
-          type: integer
-          format: int32
-          description: Page number
-        pageSize:
-          type: integer
-          format: int32
-          description: Page size
-    AuditRealtimeQueryResultsResponse:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuditLogMessage'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        pageCount:
-          type: integer
-          format: int32
-    AuditRealtimeRelatedRequest:
-      type: object
-      required:
-      - auditId
-      properties:
-        auditId:
-          type: string
-          description: The id of the audit of which related audits will be retrieved.
-        trustorOrgId:
-          type: string
-          description: The id of the trustor org to which the audit belongs. Used when searching for audits performed by a trustee user within a trustor org.
-        sort:
-          type: array
-          description: Sort parameter for the query.
-          items:
-            $ref: '#/components/schemas/AuditQuerySort'
-    MessageInfo:
-      type: object
-      properties:
-        localizableMessageCode:
-          type: string
-          description: Key that can be used to localize the message.
-        message:
-          type: string
-          description: Description of the message.
-        messageWithParams:
-          type: string
-          description: Message with template fields for variable replacement.
-        messageParams:
-          type: object
-          description: Map with fields for variable replacement.
-          additionalProperties:
-            type: string
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    PropertyChange:
-      type: object
-      properties:
-        property:
-          type: string
-          description: The property that was changed
-        oldValues:
-          type: array
-          description: Previous values for the property.
-          items:
-            type: string
-        newValues:
-          type: array
-          description: New values for the property.
-          items:
-            type: string
-    EntityChange:
-      type: object
-      properties:
-        entityId:
-          type: string
-          description: Id of the entity that was changed
-        entityName:
-          type: string
-          description: Name of the entity that was changed
-        entityType:
-          type: string
-          description: Type of the entity that was changed
-        oldValues:
-          type: array
-          description: Previous values for the entity.
-          items:
-            type: string
-        newValues:
-          type: array
-          description: New values for the entity.
-          items:
-            type: string
-    AuditLogMessage:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Id of the audit message.
-        userHomeOrgId:
-          type: string
-          description: Home Organization Id associated with this audit message.
-        user:
-          description: User associated with this audit message.
-          $ref: '#/components/schemas/DomainEntityRef'
-        client:
-          description: Client associated with this audit message.
-          $ref: '#/components/schemas/AddressableEntityRef'
-        remoteIp:
-          type: array
-          description: List of IP addresses of systems that originated or handled the request.
-          items:
-            type: string
-        serviceName:
-          type: string
-          description: Name of the service that logged this audit message.
-        level:
-          type: string
-          description: Level of this audit message, USER or SYSTEM.
-          enum:
-          - USER
-          - SYSTEM
-          - GENESYS_INTERNAL
-        eventDate:
-          type: string
-          format: date-time
-          description: 'Date and time of when the audit message was logged. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        message:
-          description: Message describing the event being audited.
-          $ref: '#/components/schemas/MessageInfo'
-        action:
-          type: string
-          description: Action that took place.
-        entity:
-          description: Entity that was impacted.
-          $ref: '#/components/schemas/DomainEntityRef'
-        entityType:
-          type: string
-          description: Type of the entity that was impacted.
-        status:
-          type: string
-          description: Status of the event being audited
-          enum:
-          - SUCCESS
-          - FAILURE
-          - WARNING
-        application:
-          type: string
-          description: Name of the application used to perform the audit's action
-        initiatingAction:
-          description: Id and action of the audit initiating the transaction
-          $ref: '#/components/schemas/InitiatingAction'
-        transactionInitiator:
-          type: boolean
-          description: Whether the current audit is the initiator of the transaction
-        propertyChanges:
-          type: array
-          description: List of properties that were changed and changes made to those properties.
-          items:
-            $ref: '#/components/schemas/PropertyChange'
-        context:
-          type: object
-          description: Additional context for this message.
-          additionalProperties:
-            type: string
-        entityChanges:
-          type: array
-          description: List of entities that were changed and changes made to those entities.
-          items:
-            $ref: '#/components/schemas/EntityChange'
-    AuditRealtimeRelatedResultsResponse:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuditLogMessage'
-    AuditQueryRequest:
-      type: object
-      required:
-      - interval
-      properties:
-        interval:
-          type: string
-          description: 'Date and time range of data to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ssZ/YYYY-MM-DDThh:mm:ssZ'
-        serviceName:
-          type: string
-          description: Name of the service to query audits for.
-        filters:
-          type: array
-          description: Additional filters for the query.
-          items:
-            $ref: '#/components/schemas/AuditQueryFilter'
-        sort:
-          type: array
-          description: Sort parameter for the query.
-          items:
-            $ref: '#/components/schemas/AuditQuerySort'
-    AuditQueryExecutionLargeResultsResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Id of the audit query execution request.
-        pageSize:
-          type: integer
-          format: int32
-          description: Number of results in a page.
-        cursor:
-          type: string
-          description: Optional cursor to indicate where to resume the results.
-        downloadUrl:
-          type: string
-          description: The presigned url which can be used to download the results.
-    AuditQueryService:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the Service
-        entities:
-          type: array
-          description: List of Entities
-          items:
-            $ref: '#/components/schemas/AuditQueryEntity'
-    AuditQueryEntity:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the Entity
-        actions:
-          type: array
-          description: List of Actions
-          items:
-            type: string
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

@@ -1884,6 +1884,142 @@ paths:
         required: true
 components:
   schemas:
+    TypingSetting:
+      type: object
+      properties:
+        'on':
+          description: Should typing indication Events be sent
+          $ref: '#/components/schemas/SettingDirection'
+    MediaTypes:
+      type: object
+      properties:
+        allow:
+          description: Specify allowed media types for inbound and outbound messages. If this field is empty, all inbound and outbound media will be blocked.
+          $ref: '#/components/schemas/MediaTypeAccess'
+      description: Media types
+    ContentSetting:
+      type: object
+      properties:
+        story:
+          description: Settings relating to facebook and instagram stories feature
+          $ref: '#/components/schemas/StorySetting'
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    SettingDirection:
+      type: object
+      properties:
+        inbound:
+          type: string
+          description: Status for the Inbound Direction
+          enum:
+          - Enabled
+          - Disabled
+        outbound:
+          type: string
+          description: Status for the Outbound Direction
+          enum:
+          - Enabled
+          - Disabled
+    EventSetting:
+      type: object
+      properties:
+        typing:
+          description: Settings regarding typing events
+          $ref: '#/components/schemas/TypingSetting'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    StorySetting:
+      type: object
+      properties:
+        mention:
+          description: Setting relating to Story Mentions
+          $ref: '#/components/schemas/InboundOnlySetting'
+        reply:
+          description: Setting relating to Story Replies
+          $ref: '#/components/schemas/InboundOnlySetting'
+    SupportedContentListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupportedContent'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -1988,18 +2124,6 @@ components:
         value:
           type: integer
           format: int64
-    EventSetting:
-      type: object
-      properties:
-        typing:
-          description: Settings regarding typing events
-          $ref: '#/components/schemas/TypingSetting'
-    TypingSetting:
-      type: object
-      properties:
-        'on':
-          description: Should typing indication Events be sent
-          $ref: '#/components/schemas/SettingDirection'
     MediaTypeAccess:
       type: object
       properties:
@@ -2014,21 +2138,13 @@ components:
           items:
             $ref: '#/components/schemas/MediaType'
       description: Media type access definitions
-    SettingDirection:
+    MediaType:
       type: object
       properties:
-        inbound:
+        type:
           type: string
-          description: Status for the Inbound Direction
-          enum:
-          - Enabled
-          - Disabled
-        outbound:
-          type: string
-          description: Status for the Outbound Direction
-          enum:
-          - Enabled
-          - Disabled
+          description: The media type string as defined by RFC 2046. You can define specific types such as 'image/jpeg', 'video/mpeg', or specify wild cards for a range of types, 'image/*', or all types '*/*'. See https://www.iana.org/assignments/media-types/media-types.xhtml for a list of registered media types.
+      description: Media type definition
     InboundOnlySetting:
       type: object
       properties:
@@ -2083,45 +2199,13 @@ components:
           description: The URI for this object
           readOnly: true
       description: Messaging setting for messaging platform integrations
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    SupportedContentListing:
+    MessagingConfigListing:
       type: object
       properties:
         entities:
           type: array
           items:
-            $ref: '#/components/schemas/SupportedContent'
+            $ref: '#/components/schemas/MessagingSetting'
         pageSize:
           type: integer
           format: int32
@@ -2149,16 +2233,6 @@ components:
         pageCount:
           type: integer
           format: int32
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
     MessagingSettingRequest:
       type: object
       required:
@@ -2183,14 +2257,6 @@ components:
           description: The URI for this object
           readOnly: true
       description: Messaging setting for messaging platform integrations
-    MessagingSettingDefaultRequest:
-      type: object
-      required:
-      - settingId
-      properties:
-        settingId:
-          type: string
-          description: Messaging Setting ID to be used as the default for this Organization.
     SupportedContent:
       type: object
       required:
@@ -2236,80 +2302,14 @@ components:
           description: The URI for this object
           readOnly: true
       description: Supported content profile for inbound and outbound messages
-    MessagingConfigListing:
+    MessagingSettingDefaultRequest:
       type: object
+      required:
+      - settingId
       properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessagingSetting'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
+        settingId:
           type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    MediaTypes:
-      type: object
-      properties:
-        allow:
-          description: Specify allowed media types for inbound and outbound messages. If this field is empty, all inbound and outbound media will be blocked.
-          $ref: '#/components/schemas/MediaTypeAccess'
-      description: Media types
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    StorySetting:
-      type: object
-      properties:
-        mention:
-          description: Setting relating to Story Mentions
-          $ref: '#/components/schemas/InboundOnlySetting'
-        reply:
-          description: Setting relating to Story Replies
-          $ref: '#/components/schemas/InboundOnlySetting'
-    ContentSetting:
-      type: object
-      properties:
-        story:
-          description: Settings relating to facebook and instagram stories feature
-          $ref: '#/components/schemas/StorySetting'
-    MediaType:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The media type string as defined by RFC 2046. You can define specific types such as 'image/jpeg', 'video/mpeg', or specify wild cards for a range of types, 'image/*', or all types '*/*'. See https://www.iana.org/assignments/media-types/media-types.xhtml for a list of registered media types.
-      description: Media type definition
+          description: Messaging Setting ID to be used as the default for this Organization.
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

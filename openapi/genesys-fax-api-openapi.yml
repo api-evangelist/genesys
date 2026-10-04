@@ -1121,6 +1121,106 @@ paths:
       x-purecloud-method-name: getFaxSummary
 components:
   schemas:
+    FaxDocumentEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/FaxDocument'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    FaxDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        contentUri:
+          type: string
+          format: uri
+        workspace:
+          $ref: '#/components/schemas/DomainEntityRef'
+        createdBy:
+          $ref: '#/components/schemas/DomainEntityRef'
+        sharingUri:
+          type: string
+          format: uri
+        contentType:
+          type: string
+        contentLength:
+          type: integer
+          format: int64
+        filename:
+          type: string
+        read:
+          type: boolean
+        pageCount:
+          type: integer
+          format: int64
+        callerAddress:
+          type: string
+        receiverAddress:
+          type: string
+        thumbnails:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentThumbnail'
+        downloadSharingUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     DomainEntityRef:
       type: object
       properties:
@@ -1131,6 +1231,63 @@ components:
         selfUri:
           type: string
           format: uri
+    DocumentThumbnail:
+      type: object
+      properties:
+        resolution:
+          type: string
+        imageUri:
+          type: string
+        height:
+          type: integer
+          format: int32
+        width:
+          type: integer
+          format: int32
+    FaxSummary:
+      type: object
+      properties:
+        readCount:
+          type: integer
+          format: int32
+        unreadCount:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     FaxConfig:
       type: object
       required:
@@ -1268,163 +1425,6 @@ components:
         resultUri:
           type: string
         selfUri:
-          type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    FaxSummary:
-      type: object
-      properties:
-        readCount:
-          type: integer
-          format: int32
-        unreadCount:
-          type: integer
-          format: int32
-        totalCount:
-          type: integer
-          format: int32
-    FaxDocumentEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/FaxDocument'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    DocumentThumbnail:
-      type: object
-      properties:
-        resolution:
-          type: string
-        imageUri:
-          type: string
-        height:
-          type: integer
-          format: int32
-        width:
-          type: integer
-          format: int32
-    FaxDocument:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        contentUri:
-          type: string
-          format: uri
-        workspace:
-          $ref: '#/components/schemas/DomainEntityRef'
-        createdBy:
-          $ref: '#/components/schemas/DomainEntityRef'
-        sharingUri:
-          type: string
-          format: uri
-        contentType:
-          type: string
-        contentLength:
-          type: integer
-          format: int64
-        filename:
-          type: string
-        read:
-          type: boolean
-        pageCount:
-          type: integer
-          format: int64
-        callerAddress:
-          type: string
-        receiverAddress:
-          type: string
-        thumbnails:
-          type: array
-          items:
-            $ref: '#/components/schemas/DocumentThumbnail'
-        downloadSharingUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
           type: string
   securitySchemes:
     PureCloud_OAuth:

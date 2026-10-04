@@ -600,26 +600,17 @@ paths:
               $ref: '#/components/schemas/EventAggregatesQueryRequest'
 components:
   schemas:
-    EventQueryResponse:
+    Detail:
       type: object
       properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/OperationalEvent'
-        nextUri:
+        errorCode:
           type: string
-        selfUri:
+        fieldName:
           type: string
-        previousUri:
+        entityId:
           type: string
-    EventDefinitionListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventDefinition'
+        entityName:
+          type: string
     Limit:
       type: object
       properties:
@@ -724,16 +715,59 @@ components:
         value:
           type: integer
           format: int64
-    EventDefinitionAggregates:
+    EventQueryRequest:
+      type: object
+      required:
+      - interval
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Date and time range to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        eventDefinitionIds:
+          type: array
+          description: Filter events by a list of event definition ids
+          items:
+            type: string
+        searchTerm:
+          type: string
+          description: Only return events that contain the search term
+        sortOrder:
+          type: string
+          description: Order of results. Default order is DESC.
+          enum:
+          - ASC
+          - DESC
+    AddressableEntityRef:
       type: object
       properties:
-        eventDefinition:
-          description: Event definition.
-          $ref: '#/components/schemas/AddressableEntityRef'
-        eventCount:
-          type: integer
-          format: int32
-          description: How many events have occurred.
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    EventAggregatesQueryRequest:
+      type: object
+      required:
+      - interval
+      properties:
+        interval:
+          type: string
+          format: interval
+          description: 'Date and time range to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+    EventQueryResponse:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperationalEvent'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
     OperationalEvent:
       type: object
       properties:
@@ -777,50 +811,6 @@ components:
         externalContactId:
           type: string
           description: The external contact ID associated with the event
-    EventAggregatesResponse:
-      type: object
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Interval for returned aggregates. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        eventDefinitionAggregates:
-          type: array
-          description: Aggregates by event definition
-          items:
-            $ref: '#/components/schemas/EventDefinitionAggregates'
-    EventQueryRequest:
-      type: object
-      required:
-      - interval
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Date and time range to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
-        eventDefinitionIds:
-          type: array
-          description: Filter events by a list of event definition ids
-          items:
-            type: string
-        searchTerm:
-          type: string
-          description: Only return events that contain the search term
-        sortOrder:
-          type: string
-          description: Order of results. Default order is DESC.
-          enum:
-          - ASC
-          - DESC
-    EventAggregatesQueryRequest:
-      type: object
-      required:
-      - interval
-      properties:
-        interval:
-          type: string
-          format: interval
-          description: 'Date and time range to query. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
     ErrorBody:
       type: object
       properties:
@@ -868,25 +858,35 @@ components:
           type: string
           description: description
           readOnly: true
-    AddressableEntityRef:
+    EventDefinitionAggregates:
       type: object
       properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    Detail:
+        eventDefinition:
+          description: Event definition.
+          $ref: '#/components/schemas/AddressableEntityRef'
+        eventCount:
+          type: integer
+          format: int32
+          description: How many events have occurred.
+    EventDefinitionListing:
       type: object
       properties:
-        errorCode:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventDefinition'
+    EventAggregatesResponse:
+      type: object
+      properties:
+        interval:
           type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
+          format: interval
+          description: 'Interval for returned aggregates. Intervals are represented as an ISO-8601 string. For example: YYYY-MM-DDThh:mm:ss/YYYY-MM-DDThh:mm:ss'
+        eventDefinitionAggregates:
+          type: array
+          description: Aggregates by event definition
+          items:
+            $ref: '#/components/schemas/EventDefinitionAggregates'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

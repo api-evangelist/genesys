@@ -1642,6 +1642,17 @@ paths:
       x-purecloud-method-name: postUserScreenmonitorsSessions
 components:
   schemas:
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     Limit:
       type: object
       properties:
@@ -1746,87 +1757,6 @@ components:
         value:
           type: integer
           format: int64
-    StartScreenMonitorResponseBody:
-      type: object
-      properties:
-        screenMonitoringId:
-          type: string
-    ScreenMonitoringUserDetails:
-      type: object
-      required:
-      - targetUser
-      properties:
-        count:
-          type: integer
-          format: int32
-        targetUser:
-          description: The user being monitored
-          $ref: '#/components/schemas/AddressableEntityRef'
-    ScreenMonitoringUserDetailsEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScreenMonitoringUserDetails'
-    ScreenMonitoringSessionEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScreenMonitoringSession'
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    ScreenMonitorSettings:
-      type: object
-      properties:
-        enableAgentNotifications:
-          type: boolean
-        maxSimultaneousScreenMonitoringSessions:
-          type: integer
-          format: int32
     ScreenMonitoringDetails:
       type: object
       required:
@@ -1836,14 +1766,13 @@ components:
           type: integer
           format: int32
           description: The total count of screen monitoring sessions in the organization
-    AddressableEntityRef:
+    ScreenMonitoringUserDetailsEntityListing:
       type: object
       properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreenMonitoringUserDetails'
     ScreenMonitoringSession:
       type: object
       required:
@@ -1882,6 +1811,77 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    StartScreenMonitorResponseBody:
+      type: object
+      properties:
+        screenMonitoringId:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    ScreenMonitoringUserDetails:
+      type: object
+      required:
+      - targetUser
+      properties:
+        count:
+          type: integer
+          format: int32
+        targetUser:
+          description: The user being monitored
+          $ref: '#/components/schemas/AddressableEntityRef'
+    ScreenMonitoringSessionEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreenMonitoringSession'
+    ScreenMonitorSettings:
+      type: object
+      properties:
+        enableAgentNotifications:
+          type: boolean
+        maxSimultaneousScreenMonitoringSessions:
+          type: integer
+          format: int32
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

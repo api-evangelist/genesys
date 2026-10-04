@@ -2416,6 +2416,316 @@ paths:
       x-purecloud-method-name: getIntentsSourceintents
 components:
   schemas:
+    BulkResults:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of source intent
+        success:
+          type: boolean
+          description: Result of operation
+    AddressableEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    CustomerIntentAssignmentResponse:
+      type: object
+      properties:
+        customerIntent:
+          description: Customer intent assigned
+          readOnly: true
+          $ref: '#/components/schemas/DomainEntityRef'
+        category:
+          description: Category of the customer intent
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateMostRecentlyAssigned:
+          type: string
+          format: date-time
+          description: 'Date of the most recent assignment. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+    CustomerSourceIntent:
+      type: object
+      properties:
+        sourceIntent:
+          description: Source intent data
+          $ref: '#/components/schemas/SourceIntent'
+        customerIntent:
+          description: Customer intent source intent is assigned to
+          $ref: '#/components/schemas/DomainEntityRef'
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    CustomerIntentListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerIntentResponse'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    SourceIntent:
+      type: object
+      properties:
+        sourceIntentId:
+          type: string
+          description: Id of the source intent
+        sourceIntentName:
+          type: string
+          description: Name of the source intent
+        sourceType:
+          type: string
+          example: Bot, Digitalbot, Copilot, Segment, Topic
+          description: Source type
+          enum:
+          - Bot
+          - Copilot
+          - Digitalbot
+          - Segment
+          - Topic
+          - Unknown
+        sourceId:
+          type: string
+          description: Id of the source
+        sourceName:
+          type: string
+          example: Banking Botflow
+          description: Name of the source
+    CustomerSourceIntentListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerSourceIntent'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    CustomerIntentAssignmentListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerIntentAssignmentResponse'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    CustomerIntentPatch:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+          description: Description of the customer intent
+        expiryTime:
+          type: integer
+          format: int32
+          description: Expiry time in hours of the customer intent
+        categoryId:
+          type: string
+          description: CategoryId of the customer intent
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    IntentsCategoryPatch:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+          description: Description of the category
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    BulkRemoveSourceIntentsRequest:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          description: List of ids to delete
+          items:
+            type: string
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    CustomerIntentResponse:
+      type: object
+      required:
+      - description
+      - expiryTime
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: Name of the customer intent
+        description:
+          type: string
+          description: Description of the customer intent
+        expiryTime:
+          type: integer
+          format: int32
+          description: Expiry time in hours of the customer intent
+        category:
+          description: Category of the customer intent
+          readOnly: true
+          $ref: '#/components/schemas/AddressableEntityRef'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Creation date of the customer intent. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     Limit:
       type: object
       properties:
@@ -2520,6 +2830,82 @@ components:
         value:
           type: integer
           format: int64
+    CustomerIntentAssignmentRequest:
+      type: object
+      properties:
+        sourceId:
+          type: string
+          description: Id of the source of assignment
+        sessionId:
+          type: string
+          description: Id of session assignment occurred in
+        conversationId:
+          type: string
+          description: Id of conversation assignment occurred in
+        sourceType:
+          type: string
+          description: Type of source of assignment
+          enum:
+          - Bot
+          - Case
+          - Copilot
+          - Digitalbot
+          - Segment
+          - Topic
+          - Unknown
+    BulkSourceIntentsResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          description: Results of operation
+          items:
+            $ref: '#/components/schemas/BulkResults'
+        errorCount:
+          type: integer
+          format: int32
+          description: Count of errors
+        errorResultIds:
+          type: array
+          description: List of ids failed to be added or removed
+          items:
+            type: string
+    BulkAddSourceIntentsRequest:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          description: List of items to add
+          items:
+            $ref: '#/components/schemas/SourceIntent'
+    IntentsCategory:
+      type: object
+      required:
+      - description
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: Name of the category
+        description:
+          type: string
+          description: Description of the category
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Creation date of the category. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
     CustomerIntent:
       type: object
       required:
@@ -2550,100 +2936,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    SourceIntent:
-      type: object
-      properties:
-        sourceIntentId:
-          type: string
-          description: Id of the source intent
-        sourceIntentName:
-          type: string
-          description: Name of the source intent
-        sourceType:
-          type: string
-          example: Bot, Digitalbot, Copilot, Segment, Topic
-          description: Source type
-          enum:
-          - Bot
-          - Copilot
-          - Digitalbot
-          - Segment
-          - Topic
-          - Unknown
-        sourceId:
-          type: string
-          description: Id of the source
-        sourceName:
-          type: string
-          example: Banking Botflow
-          description: Name of the source
-    CustomerIntentResponse:
-      type: object
-      required:
-      - description
-      - expiryTime
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: Name of the customer intent
-        description:
-          type: string
-          description: Description of the customer intent
-        expiryTime:
-          type: integer
-          format: int32
-          description: Expiry time in hours of the customer intent
-        category:
-          description: Category of the customer intent
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Creation date of the customer intent. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
     IntentsCategoryListing:
       type: object
       properties:
@@ -2678,298 +2970,6 @@ components:
         pageCount:
           type: integer
           format: int32
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    BulkResults:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Id of source intent
-        success:
-          type: boolean
-          description: Result of operation
-    CustomerIntentAssignmentListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerIntentAssignmentResponse'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    CustomerSourceIntent:
-      type: object
-      properties:
-        sourceIntent:
-          description: Source intent data
-          $ref: '#/components/schemas/SourceIntent'
-        customerIntent:
-          description: Customer intent source intent is assigned to
-          $ref: '#/components/schemas/DomainEntityRef'
-    CustomerIntentAssignmentResponse:
-      type: object
-      properties:
-        customerIntent:
-          description: Customer intent assigned
-          readOnly: true
-          $ref: '#/components/schemas/DomainEntityRef'
-        category:
-          description: Category of the customer intent
-          readOnly: true
-          $ref: '#/components/schemas/AddressableEntityRef'
-        dateMostRecentlyAssigned:
-          type: string
-          format: date-time
-          description: 'Date of the most recent assignment. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-    CustomerIntentAssignmentRequest:
-      type: object
-      properties:
-        sourceId:
-          type: string
-          description: Id of the source of assignment
-        sessionId:
-          type: string
-          description: Id of session assignment occurred in
-        conversationId:
-          type: string
-          description: Id of conversation assignment occurred in
-        sourceType:
-          type: string
-          description: Type of source of assignment
-          enum:
-          - Bot
-          - Case
-          - Copilot
-          - Digitalbot
-          - Segment
-          - Topic
-          - Unknown
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    BulkRemoveSourceIntentsRequest:
-      type: object
-      required:
-      - items
-      properties:
-        items:
-          type: array
-          description: List of ids to delete
-          items:
-            type: string
-    AddressableEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    BulkSourceIntentsResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          description: Results of operation
-          items:
-            $ref: '#/components/schemas/BulkResults'
-        errorCount:
-          type: integer
-          format: int32
-          description: Count of errors
-        errorResultIds:
-          type: array
-          description: List of ids failed to be added or removed
-          items:
-            type: string
-    IntentsCategoryPatch:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        description:
-          type: string
-          description: Description of the category
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CustomerIntentListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerIntentResponse'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    CustomerIntentPatch:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        description:
-          type: string
-          description: Description of the customer intent
-        expiryTime:
-          type: integer
-          format: int32
-          description: Expiry time in hours of the customer intent
-        categoryId:
-          type: string
-          description: CategoryId of the customer intent
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    CustomerSourceIntentListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerSourceIntent'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    IntentsCategory:
-      type: object
-      required:
-      - description
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: Name of the category
-        description:
-          type: string
-          description: Description of the category
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Creation date of the category. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    BulkAddSourceIntentsRequest:
-      type: object
-      required:
-      - items
-      properties:
-        items:
-          type: array
-          description: List of items to add
-          items:
-            $ref: '#/components/schemas/SourceIntent'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

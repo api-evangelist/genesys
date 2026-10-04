@@ -630,6 +630,17 @@ paths:
       x-purecloud-method-name: getGdprSubjects
 components:
   schemas:
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     DomainEntityRef:
       type: object
       properties:
@@ -640,6 +651,141 @@ components:
         selfUri:
           type: string
           format: uri
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    GDPRSubject:
+      type: object
+      properties:
+        name:
+          type: string
+        userId:
+          type: string
+        externalContactId:
+          type: string
+        dialerContactId:
+          $ref: '#/components/schemas/DialerContactId'
+        journeyCustomer:
+          $ref: '#/components/schemas/GDPRJourneyCustomer'
+        socialHandle:
+          $ref: '#/components/schemas/SocialHandle'
+        externalId:
+          type: string
+        addresses:
+          type: array
+          items:
+            type: string
+        phoneNumbers:
+          type: array
+          items:
+            type: string
+        emailAddresses:
+          type: array
+          items:
+            type: string
+    SocialHandle:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Social Handle Type
+          enum:
+          - TWITTER
+          - INSTAGRAM
+          - FACEBOOK
+          - APPLE_MESSAGES
+        value:
+          type: string
+    DialerContactId:
+      type: object
+      properties:
+        id:
+          type: string
+        contactListId:
+          type: string
+    ReplacementTerm:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Replacement term type
+          enum:
+          - NAME
+          - ADDRESS
+          - PHONE
+          - EMAIL
+          - TWITTER
+          - INSTAGRAM
+          - FACEBOOK
+          - APPLE_MESSAGES
+          - EXTERNAL_ID
+        existingValue:
+          type: string
+        updatedValue:
+          type: string
+    GDPRSubjectEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/GDPRSubject'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
     Limit:
       type: object
       properties:
@@ -744,94 +890,15 @@ components:
         value:
           type: integer
           format: int64
-    GDPRSubjectEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/GDPRSubject'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    GDPRRequestEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/GDPRRequest'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    SocialHandle:
+    GDPRJourneyCustomer:
       type: object
       properties:
         type:
           type: string
-          description: Social Handle Type
-          enum:
-          - TWITTER
-          - INSTAGRAM
-          - FACEBOOK
-          - APPLE_MESSAGES
-        value:
-          type: string
-    DialerContactId:
-      type: object
-      properties:
+          description: The type of the customerId within the Journey System (e.g. cookie). Required if `id` is defined.
         id:
           type: string
-        contactListId:
-          type: string
+          description: An ID of a customer within the Journey System at a point-in-time. Required if `type` is defined.
     GDPRRequest:
       type: object
       required:
@@ -900,107 +967,40 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    ErrorBody:
+    GDPRRequestEntityListing:
       type: object
       properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/GDPRRequest'
+        pageSize:
           type: integer
           format: int32
-        entityId:
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
           type: string
-        entityName:
+          format: uri
+        nextUri:
           type: string
-        messageWithParams:
+          format: uri
+        previousUri:
           type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
+          format: uri
+        lastUri:
           type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    ReplacementTerm:
-      type: object
-      properties:
-        type:
+          format: uri
+        selfUri:
           type: string
-          description: Replacement term type
-          enum:
-          - NAME
-          - ADDRESS
-          - PHONE
-          - EMAIL
-          - TWITTER
-          - INSTAGRAM
-          - FACEBOOK
-          - APPLE_MESSAGES
-          - EXTERNAL_ID
-        existingValue:
-          type: string
-        updatedValue:
-          type: string
-    GDPRJourneyCustomer:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of the customerId within the Journey System (e.g. cookie). Required if `id` is defined.
-        id:
-          type: string
-          description: An ID of a customer within the Journey System at a point-in-time. Required if `type` is defined.
-    GDPRSubject:
-      type: object
-      properties:
-        name:
-          type: string
-        userId:
-          type: string
-        externalContactId:
-          type: string
-        dialerContactId:
-          $ref: '#/components/schemas/DialerContactId'
-        journeyCustomer:
-          $ref: '#/components/schemas/GDPRJourneyCustomer'
-        socialHandle:
-          $ref: '#/components/schemas/SocialHandle'
-        externalId:
-          type: string
-        addresses:
-          type: array
-          items:
-            type: string
-        phoneNumbers:
-          type: array
-          items:
-            type: string
-        emailAddresses:
-          type: array
-          items:
-            type: string
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

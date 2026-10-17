@@ -6220,67 +6220,228 @@ paths:
         required: true
 components:
   schemas:
-    Utterance:
-      type: object
-      properties:
-        utteranceText:
-          type: string
-          example: I want to pay bill.
-          description: Utterance text
-    DraftIntents:
+    NamedEntityTypeDefinition:
       type: object
       required:
-      - id
+      - mechanism
       - name
-      - utterances
       properties:
-        id:
-          type: string
-          description: Id for an intent.
         name:
           type: string
-          description: Name/Label for an intent.
-        utterances:
+          description: The name of the entity type.
+        description:
+          type: string
+          description: Description of the of the named entity type.
+        mechanism:
+          description: The mechanism enabling detection of the named entity type.
+          $ref: '#/components/schemas/NamedEntityTypeMechanism'
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    NluDomainVersionTrainingResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A message indicating result of the action.
+          readOnly: true
+        version:
+          $ref: '#/components/schemas/NluDomainVersion'
+    MinerListing:
+      type: object
+      properties:
+        entities:
           type: array
-          description: The utterances that are extracted for an Intent.
           items:
-            type: string
+            $ref: '#/components/schemas/Miner'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    NluFeedbackListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/NluFeedbackResponse'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
         selfUri:
           type: string
           format: uri
-          description: The URI for this object
-          readOnly: true
-    NluUtterance:
+        pageCount:
+          type: integer
+          format: int32
+    MinerExecuteRequest:
       type: object
-      required:
-      - segments
       properties:
-        id:
+        dateStart:
           type: string
-          description: ID of the utterance.
-          readOnly: true
-        source:
+          format: date
+          example: '2020-04-01'
+          description: 'Start date for the date range to mine. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        dateEnd:
           type: string
-          description: The source of the utterance.
+          format: date
+          example: '2020-04-01'
+          description: 'End date for the date range to mine. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
+        uploadKey:
+          type: string
+          example: intent-miner/raw-utterances/imports/org_id/request_id.mine_id.json
+          description: Location of input conversations.
+        mediaType:
+          type: string
+          description: Media type for filtering conversations.
           enum:
-          - Generated
-          - User
-        segments:
+          - Chat
+          - Call
+          - Message
+          - Email
+        participantType:
+          type: string
+          description: Type of the participant, either agent, customer or both.
+          enum:
+          - Customer
+          - Agent
+          - Both
+        queueIds:
           type: array
-          description: The list of segments that that constitute this utterance for the given intent.
+          example: '[ "7fe8a4ce-7435-4c78-a83f-47c3943e53eb", "18c744bf-34d5-452a-b6d6-9af95628aa50"]'
+          description: List of queue IDs for filtering conversations.
           items:
-            $ref: '#/components/schemas/NluUtteranceSegment'
-    NluDetectionRequest:
+            type: string
+    NluDetectionContext:
       type: object
-      required:
-      - input
       properties:
-        input:
-          description: The input subject to NLU detection.
-          $ref: '#/components/schemas/NluDetectionInput'
-        context:
-          description: The context for the input to NLU detection.
-          $ref: '#/components/schemas/NluDetectionContext'
+        intent:
+          description: Restrict detection to this intent.
+          $ref: '#/components/schemas/ContextIntent'
+        entity:
+          description: Use this entity to restrict detection.
+          $ref: '#/components/schemas/ContextEntity'
     NluFeedbackRequest:
       type: object
       required:
@@ -6302,41 +6463,48 @@ components:
         language:
           type: string
           description: The language of the version to which feedback is linked, e.g. en-us, de-de
-    NluDetectionResponse:
+    DetectedIntent:
       type: object
       properties:
-        version:
-          description: The NLU domain version which performed the detection.
+        name:
+          type: string
+          description: The name of the detected intent.
           readOnly: true
-          $ref: '#/components/schemas/NluDomainVersion'
-        output:
-          $ref: '#/components/schemas/NluDetectionOutput'
-        input:
-          $ref: '#/components/schemas/NluDetectionInput'
-    NluDetectionContext:
-      type: object
-      properties:
-        intent:
-          description: Restrict detection to this intent.
-          $ref: '#/components/schemas/ContextIntent'
-        entity:
-          description: Use this entity to restrict detection.
-          $ref: '#/components/schemas/ContextEntity'
-    NluDetectionOutput:
-      type: object
-      properties:
-        intents:
+        probability:
+          type: number
+          format: double
+          description: The probability of the detected intent.
+          readOnly: true
+        entities:
           type: array
-          description: The detected intents.
+          description: The collection of named entities detected.
           readOnly: true
           items:
-            $ref: '#/components/schemas/DetectedIntent'
-        dialogActs:
-          type: array
-          description: The detected dialog acts.
+            $ref: '#/components/schemas/DetectedNamedEntity'
+    ContextEntity:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the entity.
+    DetectedNamedEntityValue:
+      type: object
+      properties:
+        raw:
+          type: string
+          description: The raw value of the detected named entity.
           readOnly: true
-          items:
-            $ref: '#/components/schemas/DetectedDialogAct'
+        resolved:
+          type: string
+          description: The resolved value of the detected named entity.
+          readOnly: true
+        unit:
+          type: string
+          description: The unit of the detected amount of money entity, e.g. EUR, USD.
+          readOnly: true
+          allowEmptyValue: true
     Miner:
       type: object
       required:
@@ -6516,59 +6684,163 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    DetectedIntent:
+    NluConfusionMatrixColumn:
       type: object
+      required:
+      - name
+      - value
       properties:
         name:
           type: string
-          description: The name of the detected intent.
-          readOnly: true
-        probability:
+          description: The name of the intent for the column.
+        value:
           type: number
-          format: double
-          description: The probability of the detected intent.
-          readOnly: true
-        entities:
+          format: float
+          description: The confusion value between the intents
+    NluDetectionOutput:
+      type: object
+      properties:
+        intents:
           type: array
-          description: The collection of named entities detected.
+          description: The detected intents.
           readOnly: true
           items:
-            $ref: '#/components/schemas/DetectedNamedEntity'
-    NluDomainVersionTrainingResponse:
+            $ref: '#/components/schemas/DetectedIntent'
+        dialogActs:
+          type: array
+          description: The detected dialog acts.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/DetectedDialogAct'
+    NluDomainVersionListing:
       type: object
       properties:
-        message:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/NluDomainVersion'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
           type: string
-          description: A message indicating result of the action.
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    AdditionalLanguagesSynonyms:
+      type: object
+      properties:
+        synonyms:
+          type: array
+          description: Synonyms for additional language
           readOnly: true
-        version:
-          $ref: '#/components/schemas/NluDomainVersion'
-    IgnorePhrase:
+          items:
+            type: string
+    DraftIntents:
       type: object
       required:
-      - participant
-      - text
+      - id
+      - name
+      - utterances
       properties:
-        text:
+        id:
           type: string
-          example: want to pay bill
-          description: Text of the phrase to be ignored
-        participant:
+          description: Id for an intent.
+        name:
           type: string
-          example: Customer
-          description: Type of participant
-          enum:
-          - Customer
-          - Agent
-          - Both
-        mediaType:
+          description: Name/Label for an intent.
+        utterances:
+          type: array
+          description: The utterances that are extracted for an Intent.
+          items:
+            type: string
+        selfUri:
           type: string
-          description: Media Type for the entity (Optional)
-          enum:
-          - Chat
-          - Call
-          - Message
-          - Email
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    MinerIntent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          example: pay bill.
+          description: Intent name.
+        miner:
+          description: The miner to which the intent belongs.
+          $ref: '#/components/schemas/Miner'
+        utterances:
+          type: array
+          description: The utterances that are extracted for an Intent.
+          items:
+            $ref: '#/components/schemas/Utterance'
+        analyticVolumePercent:
+          type: number
+          format: double
+          example: 21.5
+          description: Percentage of conversations belonging to the intent.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    NluDomainVersionReference:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        domain:
+          description: The NLU domain of the version.
+          readOnly: true
+          $ref: '#/components/schemas/NluDomain'
+        intents:
+          type: array
+          description: The intents defined for this NLU domain version.
+          items:
+            $ref: '#/components/schemas/IntentReference'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    MinerTopicsListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/MinerTopic'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
     MinerErrorInfo:
       type: object
       properties:
@@ -6584,83 +6856,6 @@ components:
           description: Map of variables and params for the error message.
           additionalProperties:
             type: object
-    TopicPhrase:
-      type: object
-      properties:
-        id:
-          type: string
-        text:
-          type: string
-        utteranceCount:
-          type: integer
-          format: int32
-    NluFeedbackResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        text:
-          type: string
-          description: The feedback text.
-        intents:
-          type: array
-          description: Detected intent of the utterance
-          items:
-            $ref: '#/components/schemas/IntentFeedback'
-        version:
-          description: The domain version of the feedback.
-          readOnly: true
-          $ref: '#/components/schemas/NluDomainVersion'
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The date when the feedback was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        language:
-          type: string
-          description: The language of the version to which feedback is linked, e.g. en-us, de-de
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    AdditionalLanguagesIntent:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of the intent for respective additional language
-          readOnly: true
-        utterances:
-          type: array
-          description: Utterances list for additional language
-          items:
-            $ref: '#/components/schemas/NluUtterance'
-    DraftListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Draft'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    NluQualityReportSummary:
-      type: object
-      required:
-      - metrics
-      properties:
-        metrics:
-          type: array
-          description: The list of metrics in the summary
-          items:
-            $ref: '#/components/schemas/NluQualityReportSummaryMetric'
     NluDomain:
       type: object
       required:
@@ -6702,6 +6897,20 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
+    NluConfusionMatrixRow:
+      type: object
+      required:
+      - columns
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the intent for the row.
+        columns:
+          type: array
+          description: The columns of confusion matrix for the intent
+          items:
+            $ref: '#/components/schemas/NluConfusionMatrixColumn'
     MinerTopicPhrase:
       type: object
       properties:
@@ -6729,268 +6938,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    NluDetectionInput:
-      type: object
-      required:
-      - text
-      properties:
-        text:
-          type: string
-          description: The text to perform NLU detection on.
-        language:
-          type: string
-          description: Language of the version for multilingual detection, e.g. `en-us`, `de-de`
-    NluConfusionMatrixRow:
-      type: object
-      required:
-      - columns
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the intent for the row.
-        columns:
-          type: array
-          description: The columns of confusion matrix for the intent
-          items:
-            $ref: '#/components/schemas/NluConfusionMatrixColumn'
-    SupportedLanguagesInfoDefinition:
-      type: object
-      properties:
-        language:
-          type: string
-          description: The given supported Language
-        intentClassification:
-          type: boolean
-          description: The boolean status of if intent classification is supported in this language
-        status:
-          type: string
-          description: The language release status
-          enum:
-          - EARLY_PREVIEW
-          - PREVIEW
-          - GA
-        supportedEntityTypes:
-          type: array
-          description: The supported entity types for this language
-          items:
-            type: string
-        supportedEntityTypeConfiguration:
-          description: The configuration for the supported entity types
-          $ref: '#/components/schemas/SupportedEntityTypeStatus'
-    MinerExecuteRequest:
-      type: object
-      properties:
-        dateStart:
-          type: string
-          format: date
-          example: '2020-04-01'
-          description: 'Start date for the date range to mine. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        dateEnd:
-          type: string
-          format: date
-          example: '2020-04-01'
-          description: 'End date for the date range to mine. Dates are represented as an ISO-8601 string. For example: yyyy-MM-dd'
-        uploadKey:
-          type: string
-          example: intent-miner/raw-utterances/imports/org_id/request_id.mine_id.json
-          description: Location of input conversations.
-        mediaType:
-          type: string
-          description: Media type for filtering conversations.
-          enum:
-          - Chat
-          - Call
-          - Message
-          - Email
-        participantType:
-          type: string
-          description: Type of the participant, either agent, customer or both.
-          enum:
-          - Customer
-          - Agent
-          - Both
-        queueIds:
-          type: array
-          example: '[ "7fe8a4ce-7435-4c78-a83f-47c3943e53eb", "18c744bf-34d5-452a-b6d6-9af95628aa50"]'
-          description: List of queue IDs for filtering conversations.
-          items:
-            type: string
-    SupportedEntityTypeStatus:
-      type: object
-      properties:
-        listSlotType:
-          type: string
-          description: The configuration status of restricted lists
-          enum:
-          - All
-          - Restricted
-          - Unrestricted
-    MinerTopicsListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/MinerTopic'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    NamedEntityTypeDefinition:
-      type: object
-      required:
-      - mechanism
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the entity type.
-        description:
-          type: string
-          description: Description of the of the named entity type.
-        mechanism:
-          description: The mechanism enabling detection of the named entity type.
-          $ref: '#/components/schemas/NamedEntityTypeMechanism'
-    IgnorePhrasesResponse:
-      type: object
-      required:
-      - addedPhrases
-      - totalPhrases
-      - updatedPhrases
-      properties:
-        totalPhrases:
-          type: integer
-          format: int32
-          description: Total number of phrases in current org
-        addedPhrases:
-          type: integer
-          format: int32
-          description: Number of phrases added in current request
-        updatedPhrases:
-          type: integer
-          format: int32
-          description: Number of phrases updated in current request
-    NluDomainVersionQualityReport:
-      type: object
-      required:
-      - confusionMatrix
-      - summary
-      - version
-      properties:
-        version:
-          description: The domain and version details of the quality report
-          $ref: '#/components/schemas/NluDomainVersion'
-        confusionMatrix:
-          type: array
-          description: The confusion matrix for the Domain Version
-          items:
-            $ref: '#/components/schemas/NluConfusionMatrixRow'
-        summary:
-          description: The quality report summary for the Domain Version
-          $ref: '#/components/schemas/NluQualityReportSummary'
-    DraftRequest:
-      type: object
-      properties:
-        intents:
-          type: array
-          description: Draft intent object.
-          items:
-            $ref: '#/components/schemas/DraftIntents'
-        topics:
-          type: array
-          description: Draft topic object.
-          items:
-            $ref: '#/components/schemas/DraftTopicRequest'
-    NluQualityReportSummaryMetric:
-      type: object
-      required:
-      - name
-      - value
-      properties:
-        name:
-          type: string
-          description: The name of the metric. e.g. recall, f1_score
-        value:
-          type: number
-          format: float
-          description: The value of the metric
-    NluOrganization:
-      type: object
-      properties:
-        limits:
-          type: object
-          description: The NLU limits defined for this Organization
-          additionalProperties:
-            type: integer
-            format: int32
-        supportedLanguagesInfo:
-          type: array
-          description: The list of Supported features for each languages for this Organization
-          items:
-            $ref: '#/components/schemas/SupportedLanguagesInfoDefinition'
-    NluFeedbackListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/NluFeedbackResponse'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    IntentFeedback:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the detected intent.
-          readOnly: true
-        probability:
-          type: number
-          format: double
-          description: The probability of the detected intent.
-          readOnly: true
-        entities:
-          type: array
-          description: The collection of named entities detected.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/DetectedNamedEntity'
-        assessment:
-          type: string
-          description: The assessment on the detection for feedback text.
-          enum:
-          - Incorrect
-          - Correct
-          - Unknown
-          - Disabled
     DraftTopics:
       type: object
       required:
@@ -7037,43 +6984,369 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    IntentDefinition:
+    NluDomainListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/NluDomain'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    NluDetectionResponse:
+      type: object
+      properties:
+        version:
+          description: The NLU domain version which performed the detection.
+          readOnly: true
+          $ref: '#/components/schemas/NluDomainVersion'
+        output:
+          $ref: '#/components/schemas/NluDetectionOutput'
+        input:
+          $ref: '#/components/schemas/NluDetectionInput'
+    NamedEntityDefinition:
       type: object
       required:
       - name
-      - utterances
+      - type
+      properties:
+        name:
+          type: string
+          description: The name of the entity.
+        type:
+          type: string
+          description: The name of the entity type.
+    NluUtteranceSegment:
+      type: object
+      required:
+      - text
+      properties:
+        text:
+          type: string
+          description: The text of the segment.
+        entity:
+          description: The entity annotation of the segment.
+          $ref: '#/components/schemas/NamedEntityAnnotation'
+    NamedEntityTypeMechanism:
+      type: object
+      required:
+      - items
+      - type
+      properties:
+        items:
+          type: array
+          description: The items that define the named entity type.
+          items:
+            $ref: '#/components/schemas/NamedEntityTypeItem'
+        restricted:
+          type: boolean
+          description: 'Whether the named entity type is restricted to the items provided. Default: false'
+        type:
+          type: string
+          description: The type of the mechanism.
+          enum:
+          - AI
+          - DynamicDateTime
+          - DynamicList
+          - List
+          - Regex
+          - Unknown
+        subType:
+          type: string
+          description: Subtype of detection mechanism
+          enum:
+          - Alphanumeric
+          - NumberSequence
+          - FreeForm
+        maxLength:
+          type: integer
+          format: int32
+          description: The maximum length of the entity resolved value
+        minLength:
+          type: integer
+          format: int32
+          description: The minimum length of the entity resolved value
+        allowSpecialChars:
+          type: boolean
+          description: Flag whether to allow for special characters during AI slot capture
+        examples:
+          type: array
+          description: Examples for entity detection
+          items:
+            $ref: '#/components/schemas/NamedEntityTypeMechanismExample'
+    IgnoreTopicsRequest:
+      type: object
+      required:
+      - topics
+      properties:
+        topics:
+          type: array
+          description: List of topics to be ignored
+          items:
+            $ref: '#/components/schemas/IgnoreTopic'
+    NluFeedbackResponse:
+      type: object
       properties:
         id:
           type: string
-          description: ID of the intent.
+          description: The globally unique identifier for the object.
           readOnly: true
+        text:
+          type: string
+          description: The feedback text.
+        intents:
+          type: array
+          description: Detected intent of the utterance
+          items:
+            $ref: '#/components/schemas/IntentFeedback'
+        version:
+          description: The domain version of the feedback.
+          readOnly: true
+          $ref: '#/components/schemas/NluDomainVersion'
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The date when the feedback was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        language:
+          type: string
+          description: The language of the version to which feedback is linked, e.g. en-us, de-de
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ContextIntent:
+      type: object
+      required:
+      - name
+      properties:
         name:
           type: string
           description: The name of the intent.
-        description:
+    NamedEntityTypeMechanismExample:
+      type: object
+      required:
+      - resolvedValue
+      - text
+      properties:
+        text:
           type: string
-          description: The description of the intent.
-        entityTypeBindings:
+          description: Example input text
+        resolvedValue:
+          type: string
+          description: Resolved entity value
+    NluDetectionInput:
+      type: object
+      required:
+      - text
+      properties:
+        text:
+          type: string
+          description: The text to perform NLU detection on.
+        language:
+          type: string
+          description: Language of the version for multilingual detection, e.g. `en-us`, `de-de`
+    MinedIntentsListing:
+      type: object
+      properties:
+        entities:
           type: array
-          description: The bindings for the named entity types used in this intent.This field is mutually exclusive with entityNameReferences and entities
           items:
-            $ref: '#/components/schemas/NamedEntityTypeBinding'
-        entityNameReferences:
+            $ref: '#/components/schemas/MinerIntent'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    RemoveEntitiesRequest:
+      type: object
+      required:
+      - entities
+      properties:
+        entities:
           type: array
-          description: The references for the named entity used in this intent.This field is mutually exclusive with entityTypeBindings
+          description: List of entities to be removed
+          items:
+            $ref: '#/components/schemas/RemoveEntity'
+    NamedEntityAnnotation:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the annotated named entity.
+    DetectedNamedEntity:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the detected named entity.
+          readOnly: true
+        entityType:
+          type: string
+          description: The type of the detected named entity.
+          readOnly: true
+        probability:
+          type: number
+          format: double
+          description: The probability of the detected named entity.
+          readOnly: true
+        value:
+          description: The value of the detected named entity.
+          readOnly: true
+          $ref: '#/components/schemas/DetectedNamedEntityValue'
+    IgnoreTopicsResponse:
+      type: object
+      required:
+      - addedTopics
+      - totalTopics
+      - updatedTopics
+      properties:
+        totalTopics:
+          type: integer
+          format: int32
+          description: Total number of topics in current org
+        addedTopics:
+          type: integer
+          format: int32
+          description: Number of topics added in current request
+        updatedTopics:
+          type: integer
+          format: int32
+          description: Number of topics updated in current request
+    IntentFeedback:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the detected intent.
+          readOnly: true
+        probability:
+          type: number
+          format: double
+          description: The probability of the detected intent.
+          readOnly: true
+        entities:
+          type: array
+          description: The collection of named entities detected.
           readOnly: true
           items:
-            type: string
-        utterances:
+            $ref: '#/components/schemas/DetectedNamedEntity'
+        assessment:
+          type: string
+          description: The assessment on the detection for feedback text.
+          enum:
+          - Incorrect
+          - Correct
+          - Unknown
+          - Disabled
+    NamedEntityTypeItem:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          type: string
+          description: A value for an named entity type definition.
+        synonyms:
           type: array
-          description: The utterances that act as training phrases for the intent.
+          description: Synonyms for the given named entity value.
           items:
-            $ref: '#/components/schemas/NluUtterance'
+            type: string
         additionalLanguages:
           type: object
-          description: Additional languages for intents
+          description: Additional Language Synonyms for the given named entity value.
           additionalProperties:
-            $ref: '#/components/schemas/AdditionalLanguagesIntent'
+            $ref: '#/components/schemas/AdditionalLanguagesSynonyms'
+    IgnoredMinedEntity:
+      type: object
+      required:
+      - dateCreated
+      - dateModified
+      - id
+      - participant
+      - text
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Unique identifier for the ignored entity
+        text:
+          type: string
+          example: want to pay bill
+          description: Text of the ignored entity
+        participant:
+          type: string
+          example: Customer
+          description: Type of participant
+          enum:
+          - Customer
+          - Agent
+          - Both
+        dateCreated:
+          type: string
+          format: date-time
+          example: '2020-04-29T17:12:06.613'
+          description: 'Date when the ignored entity was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          example: '2020-04-29T17:12:06.613'
+          description: 'Date when the ignored entity was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        mediaType:
+          type: string
+          description: Media Type for the entity (Optional)
+          enum:
+          - Chat
+          - Call
+          - Message
+          - Email
+    NluDomainVersionQualityReport:
+      type: object
+      required:
+      - confusionMatrix
+      - summary
+      - version
+      properties:
+        version:
+          description: The domain and version details of the quality report
+          $ref: '#/components/schemas/NluDomainVersion'
+        confusionMatrix:
+          type: array
+          description: The confusion matrix for the Domain Version
+          items:
+            $ref: '#/components/schemas/NluConfusionMatrixRow'
+        summary:
+          description: The quality report summary for the Domain Version
+          $ref: '#/components/schemas/NluQualityReportSummary'
     NamedEntityTypeBinding:
       type: object
       required:
@@ -7086,6 +7359,240 @@ components:
         entityName:
           type: string
           description: The name that this named entity type is bound to.
+    IgnorePhrase:
+      type: object
+      required:
+      - participant
+      - text
+      properties:
+        text:
+          type: string
+          example: want to pay bill
+          description: Text of the phrase to be ignored
+        participant:
+          type: string
+          example: Customer
+          description: Type of participant
+          enum:
+          - Customer
+          - Agent
+          - Both
+        mediaType:
+          type: string
+          description: Media Type for the entity (Optional)
+          enum:
+          - Chat
+          - Call
+          - Message
+          - Email
+    NluQualityReportSummaryMetric:
+      type: object
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          description: The name of the metric. e.g. recall, f1_score
+        value:
+          type: number
+          format: float
+          description: The value of the metric
+    Draft:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: Draft name
+        miner:
+          description: Miner to which the draft belongs.
+          readOnly: true
+          $ref: '#/components/schemas/Miner'
+        intents:
+          type: array
+          description: Draft intent object.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/DraftIntents'
+        topics:
+          type: array
+          description: Draft topic object.
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/DraftTopics'
+        dateCreated:
+          type: string
+          format: date-time
+          example: '2020-05-20T23:56:07.268'
+          description: 'Date when the draft was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        dateModified:
+          type: string
+          format: date-time
+          example: '2020-05-20T23:56:07.268'
+          description: 'Date when the draft was updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+          readOnly: true
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    IgnoredMinedPhraseListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/IgnoredMinedEntity'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    IgnoreTopic:
+      type: object
+      required:
+      - participant
+      - text
+      properties:
+        text:
+          type: string
+          example: pay bill
+          description: Text of the topic to be ignored
+        participant:
+          type: string
+          example: Customer
+          description: Type of participant
+          enum:
+          - Customer
+          - Agent
+          - Both
+        mediaType:
+          type: string
+          description: Media Type for the entity (Optional)
+          enum:
+          - Chat
+          - Call
+          - Message
+          - Email
+    IntentReference:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: string
+          description: ID of the intent.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the intent.
+    SupportedLanguagesInfoDefinition:
+      type: object
+      properties:
+        language:
+          type: string
+          description: The given supported Language
+        intentClassification:
+          type: boolean
+          description: The boolean status of if intent classification is supported in this language
+        status:
+          type: string
+          description: The language release status
+          enum:
+          - EARLY_PREVIEW
+          - PREVIEW
+          - GA
+        supportedEntityTypes:
+          type: array
+          description: The supported entity types for this language
+          items:
+            type: string
+        supportedEntityTypeConfiguration:
+          description: The configuration for the supported entity types
+          $ref: '#/components/schemas/SupportedEntityTypeStatus'
+    MinerTopic:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: Topic name.
+        miner:
+          description: The miner to which the topic belongs.
+          readOnly: true
+          $ref: '#/components/schemas/Miner'
+        conversationCount:
+          type: integer
+          format: int32
+          description: Number of conversations where a topic has occurred.
+          readOnly: true
+        conversationPercent:
+          type: number
+          format: float
+          description: Percentage of conversations where a topic has occurred.
+          readOnly: true
+        utteranceCount:
+          type: integer
+          format: int32
+          description: Number of unique utterances where a topic has occurred.
+          readOnly: true
+        phraseCount:
+          type: integer
+          format: int32
+          description: Number of unique phrases (sub-utterances) where a topic has occurred.
+          readOnly: true
+        phrases:
+          type: array
+          description: Phrases associated with a topic.
+          items:
+            $ref: '#/components/schemas/TopicPhrase'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TopicPhrase:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        utteranceCount:
+          type: integer
+          format: int32
     Detail:
       type: object
       properties:
@@ -7097,6 +7604,72 @@ components:
           type: string
         entityName:
           type: string
+    DraftListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Draft'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
+    Utterance:
+      type: object
+      properties:
+        utteranceText:
+          type: string
+          example: I want to pay bill.
+          description: Utterance text
+    DraftRequest:
+      type: object
+      properties:
+        intents:
+          type: array
+          description: Draft intent object.
+          items:
+            $ref: '#/components/schemas/DraftIntents'
+        topics:
+          type: array
+          description: Draft topic object.
+          items:
+            $ref: '#/components/schemas/DraftTopicRequest'
+    SupportedEntityTypeStatus:
+      type: object
+      properties:
+        listSlotType:
+          type: string
+          description: The configuration status of restricted lists
+          enum:
+          - All
+          - Restricted
+          - Unrestricted
+    NluDetectionRequest:
+      type: object
+      required:
+      - input
+      properties:
+        input:
+          description: The input subject to NLU detection.
+          $ref: '#/components/schemas/NluDetectionInput'
+        context:
+          description: The context for the input to NLU detection.
+          $ref: '#/components/schemas/NluDetectionContext'
+    AdditionalLanguagesIntent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the intent for respective additional language
+          readOnly: true
+        utterances:
+          type: array
+          description: Utterances list for additional language
+          items:
+            $ref: '#/components/schemas/NluUtterance'
     DraftTopicRequest:
       type: object
       required:
@@ -7120,33 +7693,26 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    ContextEntity:
+    NluUtterance:
       type: object
       required:
-      - name
+      - segments
       properties:
-        name:
+        id:
           type: string
-          description: The name of the entity.
-    IgnoreTopicsResponse:
-      type: object
-      required:
-      - addedTopics
-      - totalTopics
-      - updatedTopics
-      properties:
-        totalTopics:
-          type: integer
-          format: int32
-          description: Total number of topics in current org
-        addedTopics:
-          type: integer
-          format: int32
-          description: Number of topics added in current request
-        updatedTopics:
-          type: integer
-          format: int32
-          description: Number of topics updated in current request
+          description: ID of the utterance.
+          readOnly: true
+        source:
+          type: string
+          description: The source of the utterance.
+          enum:
+          - Generated
+          - User
+        segments:
+          type: array
+          description: The list of segments that that constitute this utterance for the given intent.
+          items:
+            $ref: '#/components/schemas/NluUtteranceSegment'
     IgnorePhrasesRequest:
       type: object
       required:
@@ -7157,15 +7723,6 @@ components:
           description: List of phrases to be ignored
           items:
             $ref: '#/components/schemas/IgnorePhrase'
-    AdditionalLanguagesSynonyms:
-      type: object
-      properties:
-        synonyms:
-          type: array
-          description: Synonyms for additional language
-          readOnly: true
-          items:
-            type: string
     DetectedDialogAct:
       type: object
       properties:
@@ -7178,17 +7735,25 @@ components:
           format: double
           description: The probability of the detected dialog act.
           readOnly: true
-    NluUtteranceSegment:
+    RemoveEntity:
       type: object
       required:
-      - text
+      - id
       properties:
-        text:
+        id:
           type: string
-          description: The text of the segment.
-        entity:
-          description: The entity annotation of the segment.
-          $ref: '#/components/schemas/NamedEntityAnnotation'
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Unique identifier of the entity to be removed
+    NluQualityReportSummary:
+      type: object
+      required:
+      - metrics
+      properties:
+        metrics:
+          type: array
+          description: The list of metrics in the summary
+          items:
+            $ref: '#/components/schemas/NluQualityReportSummaryMetric'
     NluDomainVersion:
       type: object
       required:
@@ -7277,188 +7842,6 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Draft:
-      type: object
-      required:
-      - name
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: Draft name
-        miner:
-          description: Miner to which the draft belongs.
-          readOnly: true
-          $ref: '#/components/schemas/Miner'
-        intents:
-          type: array
-          description: Draft intent object.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/DraftIntents'
-        topics:
-          type: array
-          description: Draft topic object.
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/DraftTopics'
-        dateCreated:
-          type: string
-          format: date-time
-          example: '2020-05-20T23:56:07.268'
-          description: 'Date when the draft was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        dateModified:
-          type: string
-          format: date-time
-          example: '2020-05-20T23:56:07.268'
-          description: 'Date when the draft was updated. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-          readOnly: true
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    NluDomainListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/NluDomain'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    NamedEntityTypeMechanism:
-      type: object
-      required:
-      - items
-      - type
-      properties:
-        items:
-          type: array
-          description: The items that define the named entity type.
-          items:
-            $ref: '#/components/schemas/NamedEntityTypeItem'
-        restricted:
-          type: boolean
-          description: 'Whether the named entity type is restricted to the items provided. Default: false'
-        type:
-          type: string
-          description: The type of the mechanism.
-          enum:
-          - AI
-          - DynamicDateTime
-          - DynamicList
-          - List
-          - Regex
-          - Unknown
-        subType:
-          type: string
-          description: Subtype of detection mechanism
-          enum:
-          - Alphanumeric
-          - NumberSequence
-          - FreeForm
-        maxLength:
-          type: integer
-          format: int32
-          description: The maximum length of the entity resolved value
-        minLength:
-          type: integer
-          format: int32
-          description: The minimum length of the entity resolved value
-        allowSpecialChars:
-          type: boolean
-          description: Flag whether to allow for special characters during AI slot capture
-        examples:
-          type: array
-          description: Examples for entity detection
-          items:
-            $ref: '#/components/schemas/NamedEntityTypeMechanismExample'
-    MinedIntentsListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/MinerIntent'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    IgnoredMinedEntity:
-      type: object
-      required:
-      - dateCreated
-      - dateModified
-      - id
-      - participant
-      - text
-      properties:
-        id:
-          type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
-          description: Unique identifier for the ignored entity
-        text:
-          type: string
-          example: want to pay bill
-          description: Text of the ignored entity
-        participant:
-          type: string
-          example: Customer
-          description: Type of participant
-          enum:
-          - Customer
-          - Agent
-          - Both
-        dateCreated:
-          type: string
-          format: date-time
-          example: '2020-04-29T17:12:06.613'
-          description: 'Date when the ignored entity was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          example: '2020-04-29T17:12:06.613'
-          description: 'Date when the ignored entity was last modified. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        mediaType:
-          type: string
-          description: Media Type for the entity (Optional)
-          enum:
-          - Chat
-          - Call
-          - Message
-          - Email
     ErrorBody:
       type: object
       properties:
@@ -7491,10 +7874,25 @@ components:
             $ref: '#/components/schemas/ErrorBody'
         limit:
           $ref: '#/components/schemas/Limit'
-    IntentReference:
+    NluOrganization:
+      type: object
+      properties:
+        limits:
+          type: object
+          description: The NLU limits defined for this Organization
+          additionalProperties:
+            type: integer
+            format: int32
+        supportedLanguagesInfo:
+          type: array
+          description: The list of Supported features for each languages for this Organization
+          items:
+            $ref: '#/components/schemas/SupportedLanguagesInfoDefinition'
+    IntentDefinition:
       type: object
       required:
       - name
+      - utterances
       properties:
         id:
           type: string
@@ -7503,337 +7901,30 @@ components:
         name:
           type: string
           description: The name of the intent.
-    Limit:
-      type: object
-      properties:
-        key:
+        description:
           type: string
-        namespace:
-          type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
-    NluConfusionMatrixColumn:
-      type: object
-      required:
-      - name
-      - value
-      properties:
-        name:
-          type: string
-          description: The name of the intent for the column.
-        value:
-          type: number
-          format: float
-          description: The confusion value between the intents
-    NluDomainVersionListing:
-      type: object
-      properties:
-        entities:
+          description: The description of the intent.
+        entityTypeBindings:
           type: array
+          description: The bindings for the named entity types used in this intent.This field is mutually exclusive with entityNameReferences and entities
           items:
-            $ref: '#/components/schemas/NluDomainVersion'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    ContextIntent:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the intent.
-    RemoveEntitiesRequest:
-      type: object
-      required:
-      - entities
-      properties:
-        entities:
+            $ref: '#/components/schemas/NamedEntityTypeBinding'
+        entityNameReferences:
           type: array
-          description: List of entities to be removed
+          description: The references for the named entity used in this intent.This field is mutually exclusive with entityTypeBindings
+          readOnly: true
           items:
-            $ref: '#/components/schemas/RemoveEntity'
-    MinerListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Miner'
-        nextUri:
-          type: string
-        selfUri:
-          type: string
-        previousUri:
-          type: string
-    NamedEntityAnnotation:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the annotated named entity.
-    MinerTopic:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: Topic name.
-        miner:
-          description: The miner to which the topic belongs.
-          readOnly: true
-          $ref: '#/components/schemas/Miner'
-        conversationCount:
-          type: integer
-          format: int32
-          description: Number of conversations where a topic has occurred.
-          readOnly: true
-        conversationPercent:
-          type: number
-          format: float
-          description: Percentage of conversations where a topic has occurred.
-          readOnly: true
-        utteranceCount:
-          type: integer
-          format: int32
-          description: Number of unique utterances where a topic has occurred.
-          readOnly: true
-        phraseCount:
-          type: integer
-          format: int32
-          description: Number of unique phrases (sub-utterances) where a topic has occurred.
-          readOnly: true
-        phrases:
-          type: array
-          description: Phrases associated with a topic.
-          items:
-            $ref: '#/components/schemas/TopicPhrase'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    IgnoreTopic:
-      type: object
-      required:
-      - participant
-      - text
-      properties:
-        text:
-          type: string
-          example: pay bill
-          description: Text of the topic to be ignored
-        participant:
-          type: string
-          example: Customer
-          description: Type of participant
-          enum:
-          - Customer
-          - Agent
-          - Both
-        mediaType:
-          type: string
-          description: Media Type for the entity (Optional)
-          enum:
-          - Chat
-          - Call
-          - Message
-          - Email
-    RemoveEntity:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
-          description: Unique identifier of the entity to be removed
-    NamedEntityDefinition:
-      type: object
-      required:
-      - name
-      - type
-      properties:
-        name:
-          type: string
-          description: The name of the entity.
-        type:
-          type: string
-          description: The name of the entity type.
-    MinerIntent:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          example: pay bill.
-          description: Intent name.
-        miner:
-          description: The miner to which the intent belongs.
-          $ref: '#/components/schemas/Miner'
+            type: string
         utterances:
           type: array
-          description: The utterances that are extracted for an Intent.
+          description: The utterances that act as training phrases for the intent.
           items:
-            $ref: '#/components/schemas/Utterance'
-        analyticVolumePercent:
-          type: number
-          format: double
-          example: 21.5
-          description: Percentage of conversations belonging to the intent.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    NluDomainVersionReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        domain:
-          description: The NLU domain of the version.
-          readOnly: true
-          $ref: '#/components/schemas/NluDomain'
-        intents:
-          type: array
-          description: The intents defined for this NLU domain version.
-          items:
-            $ref: '#/components/schemas/IntentReference'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
+            $ref: '#/components/schemas/NluUtterance'
+        additionalLanguages:
+          type: object
+          description: Additional languages for intents
+          additionalProperties:
+            $ref: '#/components/schemas/AdditionalLanguagesIntent'
     IgnoredMinedTopicListing:
       type: object
       properties:
@@ -7868,116 +7959,25 @@ components:
         pageCount:
           type: integer
           format: int32
-    NamedEntityTypeMechanismExample:
+    IgnorePhrasesResponse:
       type: object
       required:
-      - resolvedValue
-      - text
+      - addedPhrases
+      - totalPhrases
+      - updatedPhrases
       properties:
-        text:
-          type: string
-          description: Example input text
-        resolvedValue:
-          type: string
-          description: Resolved entity value
-    NamedEntityTypeItem:
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          type: string
-          description: A value for an named entity type definition.
-        synonyms:
-          type: array
-          description: Synonyms for the given named entity value.
-          items:
-            type: string
-        additionalLanguages:
-          type: object
-          description: Additional Language Synonyms for the given named entity value.
-          additionalProperties:
-            $ref: '#/components/schemas/AdditionalLanguagesSynonyms'
-    DetectedNamedEntity:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the detected named entity.
-          readOnly: true
-        entityType:
-          type: string
-          description: The type of the detected named entity.
-          readOnly: true
-        probability:
-          type: number
-          format: double
-          description: The probability of the detected named entity.
-          readOnly: true
-        value:
-          description: The value of the detected named entity.
-          readOnly: true
-          $ref: '#/components/schemas/DetectedNamedEntityValue'
-    IgnoredMinedPhraseListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/IgnoredMinedEntity'
-        pageSize:
+        totalPhrases:
           type: integer
           format: int32
-        pageNumber:
+          description: Total number of phrases in current org
+        addedPhrases:
           type: integer
           format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
+          description: Number of phrases added in current request
+        updatedPhrases:
           type: integer
           format: int32
-    IgnoreTopicsRequest:
-      type: object
-      required:
-      - topics
-      properties:
-        topics:
-          type: array
-          description: List of topics to be ignored
-          items:
-            $ref: '#/components/schemas/IgnoreTopic'
-    DetectedNamedEntityValue:
-      type: object
-      properties:
-        raw:
-          type: string
-          description: The raw value of the detected named entity.
-          readOnly: true
-        resolved:
-          type: string
-          description: The resolved value of the detected named entity.
-          readOnly: true
-        unit:
-          type: string
-          description: The unit of the detected amount of money entity, e.g. EUR, USD.
-          readOnly: true
-          allowEmptyValue: true
+          description: Number of phrases updated in current request
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

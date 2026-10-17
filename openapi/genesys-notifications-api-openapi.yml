@@ -1163,100 +1163,6 @@ paths:
       x-purecloud-method-name: deleteNotificationsChannelSubscriptions
 components:
   schemas:
-    PermissionDetails:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of permission requirement
-          enum:
-          - requiresCurrentUser
-          - requiresPermissions
-          - requiresDivisionPermissions
-          - requiresAnyDivisionPermissions
-          - requiresUserBeConversationParticipant
-        permissions:
-          type: array
-          description: List of required permissions
-          items:
-            type: string
-        allowsCurrentUser:
-          type: boolean
-          description: Whether the current user can subscribe, when division permissions are otherwise required
-        enforced:
-          type: boolean
-          description: Whether or not this permission requirement is enforced
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    ChannelTopic:
-      type: object
-      properties:
-        id:
-          type: string
-        state:
-          type: string
-          enum:
-          - Permitted
-          - Rejected
-        rejectionReason:
-          type: string
-        missingPermissions:
-          type: array
-          items:
-            type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    ChannelTopicEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChannelTopic'
     Channel:
       type: object
       properties:
@@ -1269,20 +1175,67 @@ components:
           type: string
           format: date-time
           description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    AvailableTopicEntityListing:
+    AvailableTopic:
       type: object
       properties:
-        entities:
+        description:
+          type: string
+        id:
+          type: string
+        permissionDetails:
+          type: array
+          description: Full detailed permissions required to subscribe to the topic
+          items:
+            $ref: '#/components/schemas/PermissionDetails'
+        requiresPermissions:
+          type: array
+          description: Permissions required to subscribe to the topic
+          items:
+            type: string
+        requiresDivisionPermissions:
+          type: boolean
+          description: True if the subscribing user must belong to the same division as the topic object ID
+        requiresAnyValidator:
+          type: boolean
+          description: If multiple permissions are required for this topic, such as both requiresCurrentUser and requiresDivisionPermissions, then true here indicates that meeting any one condition will satisfy the requirements; false indicates all conditions must be met.
+        enforced:
+          type: boolean
+          description: Whether or not the permissions on this topic are enforced
+        visibility:
+          type: string
+          description: Visibility of this topic (Public or Preview)
+          enum:
+          - Public
+          - Preview
+        schema:
+          type: object
+          additionalProperties:
+            type: object
+        requiresCurrentUser:
+          type: boolean
+          description: True if the topic user ID is required to match the subscribing user ID
+        requiresCurrentUserOrPermission:
+          type: boolean
+          description: True if permissions are only required when the topic user ID does not match the subscribing user ID
+        transports:
+          type: array
+          description: Transports that support events for the topic
+          items:
+            type: string
+            enum:
+            - All
+            - Websocket
+            - EventBridge
+            - ProcessAutomation
+        publicApiTemplateUriPaths:
           type: array
           items:
-            $ref: '#/components/schemas/AvailableTopic'
-    ChannelEntityListing:
-      type: object
-      properties:
-        entities:
+            type: string
+        topicParameters:
           type: array
+          description: Parameters in the topic name that can be substituted, in the order they appear in the topic name
           items:
-            $ref: '#/components/schemas/Channel'
+            type: string
     Limit:
       type: object
       properties:
@@ -1387,67 +1340,114 @@ components:
         value:
           type: integer
           format: int64
-    AvailableTopic:
+    PermissionDetails:
       type: object
       properties:
-        description:
+        type:
           type: string
-        id:
-          type: string
-        permissionDetails:
+          description: The type of permission requirement
+          enum:
+          - requiresCurrentUser
+          - requiresPermissions
+          - requiresDivisionPermissions
+          - requiresAnyDivisionPermissions
+          - requiresUserBeConversationParticipant
+        permissions:
           type: array
-          description: Full detailed permissions required to subscribe to the topic
-          items:
-            $ref: '#/components/schemas/PermissionDetails'
-        requiresPermissions:
-          type: array
-          description: Permissions required to subscribe to the topic
+          description: List of required permissions
           items:
             type: string
-        requiresDivisionPermissions:
+        allowsCurrentUser:
           type: boolean
-          description: True if the subscribing user must belong to the same division as the topic object ID
-        requiresAnyValidator:
-          type: boolean
-          description: If multiple permissions are required for this topic, such as both requiresCurrentUser and requiresDivisionPermissions, then true here indicates that meeting any one condition will satisfy the requirements; false indicates all conditions must be met.
+          description: Whether the current user can subscribe, when division permissions are otherwise required
         enforced:
           type: boolean
-          description: Whether or not the permissions on this topic are enforced
-        visibility:
+          description: Whether or not this permission requirement is enforced
+    AvailableTopicEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailableTopic'
+    ChannelTopic:
+      type: object
+      properties:
+        id:
           type: string
-          description: Visibility of this topic (Public or Preview)
+        state:
+          type: string
           enum:
-          - Public
-          - Preview
-        schema:
+          - Permitted
+          - Rejected
+        rejectionReason:
+          type: string
+        missingPermissions:
+          type: array
+          items:
+            type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ChannelEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
           type: object
           additionalProperties:
-            type: object
-        requiresCurrentUser:
-          type: boolean
-          description: True if the topic user ID is required to match the subscribing user ID
-        requiresCurrentUserOrPermission:
-          type: boolean
-          description: True if permissions are only required when the topic user ID does not match the subscribing user ID
-        transports:
-          type: array
-          description: Transports that support events for the topic
-          items:
             type: string
-            enum:
-            - All
-            - Websocket
-            - EventBridge
-            - ProcessAutomation
-        publicApiTemplateUriPaths:
+        contextId:
+          type: string
+        details:
           type: array
           items:
-            type: string
-        topicParameters:
+            $ref: '#/components/schemas/Detail'
+        errors:
           type: array
-          description: Parameters in the topic name that can be substituted, in the order they appear in the topic name
           items:
-            type: string
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    ChannelTopicEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelTopic'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

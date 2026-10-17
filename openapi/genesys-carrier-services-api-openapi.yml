@@ -296,102 +296,12 @@ paths:
               $ref: '#/components/schemas/EmergencyLocation'
 components:
   schemas:
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
     ErrorInfo:
       type: object
       properties:
         message:
           type: string
         code:
-          type: string
-    EmergencyLocation:
-      type: object
-      required:
-      - address
-      - did
-      - source
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        address:
-          description: Emergency address
-          $ref: '#/components/schemas/LocationAddress'
-        did:
-          type: string
-          description: Phone number in E164 format
-        source:
-          type: string
-          description: source
-          enum:
-          - Admin
-          - User
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    LocationAddress:
-      type: object
-      properties:
-        city:
-          type: string
-        country:
-          type: string
-        countryName:
-          type: string
-        state:
-          type: string
-        street1:
-          type: string
-        street2:
-          type: string
-        zipcode:
           type: string
     Limit:
       type: object
@@ -497,6 +407,96 @@ components:
         value:
           type: integer
           format: int64
+    EmergencyLocation:
+      type: object
+      required:
+      - address
+      - did
+      - source
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        address:
+          description: Emergency address
+          $ref: '#/components/schemas/LocationAddress'
+        did:
+          type: string
+          description: Phone number in E164 format
+        source:
+          type: string
+          description: source
+          enum:
+          - Admin
+          - User
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    LocationAddress:
+      type: object
+      properties:
+        city:
+          type: string
+        country:
+          type: string
+        countryName:
+          type: string
+        state:
+          type: string
+        street1:
+          type: string
+        street2:
+          type: string
+        zipcode:
+          type: string
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

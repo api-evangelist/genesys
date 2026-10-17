@@ -564,117 +564,6 @@ paths:
       x-purecloud-method-name: getTimezones
 components:
   schemas:
-    IpAddressRange:
-      type: object
-      properties:
-        cidr:
-          type: string
-        service:
-          type: string
-          enum:
-          - api
-          - data-actions
-          - smtp
-          - imap
-          - graphapi
-          - audiohook
-          - open-messaging
-          - tts-connector
-          - audio-connector
-          - byot-stt
-          - bot-connector
-          - byo-smpp
-          - encryption
-        region:
-          type: string
-        direction:
-          type: string
-          description: The direction of traffic for the IP range from the perspective of Genesys Cloud (e.g. inbound to Genesys; outbound from Genesys)
-          enum:
-          - inbound
-          - outbound
-          - both
-    RegionTimeZone:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        offset:
-          type: integer
-          format: int64
-        canonicalId:
-          type: string
-          description: Canonical identifier for this time zone, if applicable
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    Certificate:
-      type: object
-      required:
-      - certificate
-      properties:
-        certificate:
-          type: string
-          description: The certificate to parse.
-      description: Represents a certificate to parse.
-    ServerDate:
-      type: object
-      properties:
-        currentDate:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-    TimeZoneEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/RegionTimeZone'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
     CertificateDetails:
       type: object
       properties:
@@ -700,47 +589,15 @@ components:
         signatureValid:
           type: boolean
       description: Represents the details of a parsed certificate.
-    ErrorBody:
+    Certificate:
       type: object
+      required:
+      - certificate
       properties:
-        message:
+        certificate:
           type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    ParsedCertificate:
-      type: object
-      properties:
-        certificateDetails:
-          type: array
-          description: The details of the certificates that were parsed correctly.
-          items:
-            $ref: '#/components/schemas/CertificateDetails'
-      description: Represents the parsed certificate information.
+          description: The certificate to parse.
+      description: Represents a certificate to parse.
     Limit:
       type: object
       properties:
@@ -852,6 +709,149 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IpAddressRange'
+    IpAddressRange:
+      type: object
+      properties:
+        cidr:
+          type: string
+        service:
+          type: string
+          enum:
+          - api
+          - data-actions
+          - smtp
+          - imap
+          - graphapi
+          - audiohook
+          - open-messaging
+          - tts-connector
+          - audio-connector
+          - byot-stt
+          - bot-connector
+          - byo-smpp
+          - encryption
+        region:
+          type: string
+        direction:
+          type: string
+          description: The direction of traffic for the IP range from the perspective of Genesys Cloud (e.g. inbound to Genesys; outbound from Genesys)
+          enum:
+          - inbound
+          - outbound
+          - both
+    ParsedCertificate:
+      type: object
+      properties:
+        certificateDetails:
+          type: array
+          description: The details of the certificates that were parsed correctly.
+          items:
+            $ref: '#/components/schemas/CertificateDetails'
+      description: Represents the parsed certificate information.
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    ServerDate:
+      type: object
+      properties:
+        currentDate:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    RegionTimeZone:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        offset:
+          type: integer
+          format: int64
+        canonicalId:
+          type: string
+          description: Canonical identifier for this time zone, if applicable
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    TimeZoneEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionTimeZone'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

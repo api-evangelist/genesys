@@ -2722,19 +2722,140 @@ paths:
       x-purecloud-method-name: getOrganizationsLimitsNamespaceDefaults
 components:
   schemas:
-    LimitChangeRequestsEntityListing:
+    LimitDocumentation:
       type: object
       properties:
-        entities:
+        url:
+          type: string
+        namespaces:
           type: array
           items:
-            $ref: '#/components/schemas/LimitChangeRequestDetails'
-        nextUri:
+            $ref: '#/components/schemas/NamespaceDocs'
+    FreeTrialLimit:
+      type: object
+      properties:
+        key:
           type: string
-        selfUri:
+        defaultValue:
+          type: integer
+          format: int64
+        description:
           type: string
-        previousUri:
+        resource:
           type: string
+    Limit:
+      type: object
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    OrgWhitelistSettings:
+      type: object
+      properties:
+        enableWhitelist:
+          type: boolean
+        domainWhitelist:
+          type: array
+          items:
+            type: string
     LimitChangeRequestDetails:
       type: object
       required:
@@ -2918,39 +3039,8 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    EmbeddedIntegration:
+    PagedNamespaceListing:
       type: object
-      properties:
-        enableWhitelist:
-          type: boolean
-        domainWhitelist:
-          type: array
-          items:
-            type: string
-    Section:
-      type: object
-      properties:
-        fieldList:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldList'
-        instructionText:
-          type: string
-        key:
-          type: string
-        state:
-          type: string
-    NamespaceDocs:
-      type: object
-      properties:
-        name:
-          type: string
-        friendlyName:
-          type: string
-        limits:
-          type: array
-          items:
-            $ref: '#/components/schemas/LimitDocs'
     OrgAuthSettings:
       type: object
       properties:
@@ -3010,86 +3100,40 @@ components:
           type: boolean
         custserv:
           type: boolean
-    LimitDocumentation:
+    LimitsEntityListing:
       type: object
       properties:
-        url:
-          type: string
-        namespaces:
+        entities:
           type: array
           items:
-            $ref: '#/components/schemas/NamespaceDocs'
-    FreeTrialLimit:
+            $ref: '#/components/schemas/Limit'
+    PasswordRequirements:
       type: object
       properties:
-        key:
-          type: string
-        defaultValue:
+        minimumLength:
           type: integer
-          format: int64
-        description:
-          type: string
-        resource:
-          type: string
-    FieldList:
-      type: object
-      properties:
-        customLabels:
-          type: boolean
-        instructionText:
-          type: string
-        key:
-          type: string
-        labelKeys:
-          type: array
-          items:
-            type: string
-        params:
-          type: object
-          additionalProperties:
-            type: object
-        repeatable:
-          type: boolean
-        state:
-          type: string
-        type:
-          type: string
-        required:
-          type: boolean
-        gdpr:
-          type: boolean
-    FeatureState:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-    FreeTrialLimitDocs:
-      type: object
-      properties:
-        namespaces:
-          type: array
-          items:
-            $ref: '#/components/schemas/FreeTrialNamespace'
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    OrgWhitelistSettings:
-      type: object
-      properties:
-        enableWhitelist:
-          type: boolean
-        domainWhitelist:
-          type: array
-          items:
-            type: string
+          format: int32
+        minimumDigits:
+          type: integer
+          format: int32
+        minimumLetters:
+          type: integer
+          format: int32
+        minimumUpper:
+          type: integer
+          format: int32
+        minimumLower:
+          type: integer
+          format: int32
+        minimumSpecials:
+          type: integer
+          format: int32
+        minimumAgeSeconds:
+          type: integer
+          format: int32
+        expirationDays:
+          type: integer
+          format: int32
     StatusChange:
       type: object
       properties:
@@ -3246,6 +3290,19 @@ components:
           - PlatformMisuse
           - PlatformStability
           - OtherReason
+    LimitChangeRequestsEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LimitChangeRequestDetails'
+        nextUri:
+          type: string
+        selfUri:
+          type: string
+        previousUri:
+          type: string
     ApprovalNamespace:
       type: object
       properties:
@@ -3373,83 +3430,6 @@ components:
           - Primary
           - Secondary
           - System
-    PagedNamespaceListing:
-      type: object
-    PasswordRequirements:
-      type: object
-      properties:
-        minimumLength:
-          type: integer
-          format: int32
-        minimumDigits:
-          type: integer
-          format: int32
-        minimumLetters:
-          type: integer
-          format: int32
-        minimumUpper:
-          type: integer
-          format: int32
-        minimumLower:
-          type: integer
-          format: int32
-        minimumSpecials:
-          type: integer
-          format: int32
-        minimumAgeSeconds:
-          type: integer
-          format: int32
-        expirationDays:
-          type: integer
-          format: int32
-    LimitDocs:
-      type: object
-      properties:
-        key:
-          type: string
-        defaultValue:
-          type: integer
-          format: int64
-        description:
-          type: string
-        resource:
-          type: string
-        configurable:
-          type: boolean
-        trackable:
-          type: boolean
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
     Organization:
       type: object
       required:
@@ -3517,110 +3497,51 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    Limit:
+    Section:
       type: object
       properties:
+        fieldList:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldList'
+        instructionText:
+          type: string
         key:
           type: string
-        namespace:
+        state:
           type: string
-          enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
-          - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
-          type: integer
-          format: int64
+    FeatureState:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    EmbeddedIntegration:
+      type: object
+      properties:
+        enableWhitelist:
+          type: boolean
+        domainWhitelist:
+          type: array
+          items:
+            type: string
+    NamespaceDocs:
+      type: object
+      properties:
+        name:
+          type: string
+        friendlyName:
+          type: string
+        limits:
+          type: array
+          items:
+            $ref: '#/components/schemas/LimitDocs'
+    IpAddressAuthentication:
+      type: object
+      properties:
+        networkWhitelist:
+          type: array
+          items:
+            type: string
     FieldConfig:
       type: object
       properties:
@@ -3651,20 +3572,17 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    LimitsEntityListing:
+    Detail:
       type: object
       properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/Limit'
-    IpAddressAuthentication:
-      type: object
-      properties:
-        networkWhitelist:
-          type: array
-          items:
-            type: string
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
     FreeTrialNamespace:
       type: object
       properties:
@@ -3676,6 +3594,88 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FreeTrialLimit'
+    LimitDocs:
+      type: object
+      properties:
+        key:
+          type: string
+        defaultValue:
+          type: integer
+          format: int64
+        description:
+          type: string
+        resource:
+          type: string
+        configurable:
+          type: boolean
+        trackable:
+          type: boolean
+    FieldList:
+      type: object
+      properties:
+        customLabels:
+          type: boolean
+        instructionText:
+          type: string
+        key:
+          type: string
+        labelKeys:
+          type: array
+          items:
+            type: string
+        params:
+          type: object
+          additionalProperties:
+            type: object
+        repeatable:
+          type: boolean
+        state:
+          type: string
+        type:
+          type: string
+        required:
+          type: boolean
+        gdpr:
+          type: boolean
+    FreeTrialLimitDocs:
+      type: object
+      properties:
+        namespaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/FreeTrialNamespace'
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

@@ -733,94 +733,8 @@ paths:
         required: true
 components:
   schemas:
-    Detail:
+    WidgetClientConfigThirdParty:
       type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    WidgetClientConfig:
-      type: object
-      properties:
-        v1:
-          $ref: '#/components/schemas/WidgetClientConfigV1'
-        v2:
-          $ref: '#/components/schemas/WidgetClientConfigV2'
-        v1-http:
-          $ref: '#/components/schemas/WidgetClientConfigV1Http'
-        third-party:
-          $ref: '#/components/schemas/WidgetClientConfigThirdParty'
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    WidgetClientConfigV1:
-      type: object
-      properties:
-        webChatSkin:
-          type: string
-          enum:
-          - basic
-          - modern-caret-skin
-        authenticationUrl:
-          type: string
-          format: uri
-    WidgetClientConfigV2:
-      type: object
-    WidgetClientConfigV1Http:
-      type: object
-      properties:
-        webChatSkin:
-          type: string
-          enum:
-          - basic
-          - modern-caret-skin
-        authenticationUrl:
-          type: string
-          format: uri
     Limit:
       type: object
       properties:
@@ -925,17 +839,26 @@ components:
         value:
           type: integer
           format: int64
-    WidgetDeploymentEntityListing:
+    WidgetClientConfig:
       type: object
       properties:
-        total:
-          type: integer
-          format: int64
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/WidgetDeployment'
-        selfUri:
+        v1:
+          $ref: '#/components/schemas/WidgetClientConfigV1'
+        v2:
+          $ref: '#/components/schemas/WidgetClientConfigV2'
+        v1-http:
+          $ref: '#/components/schemas/WidgetClientConfigV1Http'
+        third-party:
+          $ref: '#/components/schemas/WidgetClientConfigThirdParty'
+    WidgetClientConfigV1Http:
+      type: object
+      properties:
+        webChatSkin:
+          type: string
+          enum:
+          - basic
+          - modern-caret-skin
+        authenticationUrl:
           type: string
           format: uri
     WidgetDeployment:
@@ -980,7 +903,84 @@ components:
           format: uri
           description: The URI for this object
           readOnly: true
-    WidgetClientConfigThirdParty:
+    WidgetClientConfigV1:
+      type: object
+      properties:
+        webChatSkin:
+          type: string
+          enum:
+          - basic
+          - modern-caret-skin
+        authenticationUrl:
+          type: string
+          format: uri
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    WidgetDeploymentEntityListing:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/WidgetDeployment'
+        selfUri:
+          type: string
+          format: uri
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    WidgetClientConfigV2:
       type: object
   securitySchemes:
     PureCloud_OAuth:

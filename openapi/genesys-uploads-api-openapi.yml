@@ -1609,58 +1609,10 @@ paths:
         required: true
 components:
   schemas:
-    UploadUrlRequest:
-      type: object
-      properties:
-        fileName:
-          type: string
-          description: 'Name of the file to upload. It must not start with a dot and not end with a forward slash. Whitespace and the following characters are not allowed: \{^}%`]">[~<#|'
-        contentMd5:
-          type: string
-          description: Content MD5 of the file to upload
-        signedUrlTimeoutSeconds:
-          type: integer
-          format: int32
-          description: The number of seconds the presigned URL is valid for (from 1 to 604800 seconds). If none provided, defaults to 600 seconds
-        contentType:
-          type: string
-          description: The content type of the file to upload. Allows all MIME types
-        serverSideEncryption:
-          type: string
-          enum:
-          - AES256
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    FunctionUploadRequest:
+    GamificationContestPrizeImageUploadUrlRequest:
       type: object
       required:
-      - fileName
-      properties:
-        fileName:
-          type: string
-          description: 'Name of the file to upload.File name can only contain letters, numbers, and the following special characters: + - _ . '' ( )'
-          pattern: ^[a-zA-Z0-9\.\+\-\_\(\)\s]+$
-        signedUrlTimeoutSeconds:
-          type: integer
-          format: int32
-          description: The number of seconds the presigned URL is valid for (from 1 to 604800 seconds). If none provided, defaults to 900 seconds
-          minimum: 1
-          maximum: 604800
-      description: Action function URL upload input.
-    Empty:
-      type: object
-    LearningCoverArtUploadUrlRequest:
-      type: object
-      required:
+      - contentLength
       - contentType
       properties:
         fileName:
@@ -1677,108 +1629,17 @@ components:
           type: string
           description: The content type of the file to upload.
           enum:
-          - image/bmp
-          - image/gif
           - image/jpeg
           - image/jpg
           - image/png
+        contentLength:
+          type: integer
+          format: int64
+          description: The size of the file to upload.
         serverSideEncryption:
           type: string
           enum:
           - AES256
-    GetUploadSourceUrlJobStatusResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Id of the upload from URL job.
-        status:
-          type: string
-          description: Status of the upload job
-          enum:
-          - Created
-          - InProgress
-          - Completed
-          - Failed
-        uploadKey:
-          type: string
-          description: Key that identifies the file in the storage including the file name
-        errorInformation:
-          description: Any error information, or null of the processing is not in failed state.
-          $ref: '#/components/schemas/ErrorBody'
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    CreateUploadSourceUrlJobRequest:
-      type: object
-      required:
-      - uploadUrl
-      properties:
-        uploadUrl:
-          type: string
-          description: The URL of the content to upload.
-    UploadUrlResponse:
-      type: object
-      properties:
-        url:
-          type: string
-          description: Presigned URL to PUT the file to
-          readOnly: true
-        uploadKey:
-          type: string
-          description: Key that identifies the file in the storage including the file name
-          readOnly: true
-        headers:
-          type: object
-          description: Required headers when uploading a file through PUT request to the URL
-          readOnly: true
-          additionalProperties:
-            type: string
-    CreateUploadSourceUrlJobResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Id of the upload from URL job.
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     Limit:
       type: object
       properties:
@@ -1901,10 +1762,25 @@ components:
           format: int32
           description: Upload time to live in seconds.
       description: Action function create upload URL response.
-    GamificationContestPrizeImageUploadUrlRequest:
+    FunctionUploadRequest:
       type: object
       required:
-      - contentLength
+      - fileName
+      properties:
+        fileName:
+          type: string
+          description: 'Name of the file to upload.File name can only contain letters, numbers, and the following special characters: + - _ . '' ( )'
+          pattern: ^[a-zA-Z0-9\.\+\-\_\(\)\s]+$
+        signedUrlTimeoutSeconds:
+          type: integer
+          format: int32
+          description: The number of seconds the presigned URL is valid for (from 1 to 604800 seconds). If none provided, defaults to 900 seconds
+          minimum: 1
+          maximum: 604800
+      description: Action function URL upload input.
+    LearningCoverArtUploadUrlRequest:
+      type: object
+      required:
       - contentType
       properties:
         fileName:
@@ -1921,13 +1797,137 @@ components:
           type: string
           description: The content type of the file to upload.
           enum:
+          - image/bmp
+          - image/gif
           - image/jpeg
           - image/jpg
           - image/png
-        contentLength:
+        serverSideEncryption:
+          type: string
+          enum:
+          - AES256
+    Empty:
+      type: object
+    CreateUploadSourceUrlJobRequest:
+      type: object
+      required:
+      - uploadUrl
+      properties:
+        uploadUrl:
+          type: string
+          description: The URL of the content to upload.
+    GetUploadSourceUrlJobStatusResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the upload from URL job.
+        status:
+          type: string
+          description: Status of the upload job
+          enum:
+          - Created
+          - InProgress
+          - Completed
+          - Failed
+        uploadKey:
+          type: string
+          description: Key that identifies the file in the storage including the file name
+        errorInformation:
+          description: Any error information, or null of the processing is not in failed state.
+          $ref: '#/components/schemas/ErrorBody'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
           type: integer
-          format: int64
-          description: The size of the file to upload.
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    CreateUploadSourceUrlJobResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the upload from URL job.
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    UploadUrlResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Presigned URL to PUT the file to
+          readOnly: true
+        uploadKey:
+          type: string
+          description: Key that identifies the file in the storage including the file name
+          readOnly: true
+        headers:
+          type: object
+          description: Required headers when uploading a file through PUT request to the URL
+          readOnly: true
+          additionalProperties:
+            type: string
+    UploadUrlRequest:
+      type: object
+      properties:
+        fileName:
+          type: string
+          description: 'Name of the file to upload. It must not start with a dot and not end with a forward slash. Whitespace and the following characters are not allowed: \{^}%`]">[~<#|'
+        contentMd5:
+          type: string
+          description: Content MD5 of the file to upload
+        signedUrlTimeoutSeconds:
+          type: integer
+          format: int32
+          description: The number of seconds the presigned URL is valid for (from 1 to 604800 seconds). If none provided, defaults to 600 seconds
+        contentType:
+          type: string
+          description: The content type of the file to upload. Allows all MIME types
         serverSideEncryption:
           type: string
           enum:

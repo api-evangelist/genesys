@@ -1642,16 +1642,17 @@ paths:
       x-purecloud-method-name: postUserScreenmonitorsSessions
 components:
   schemas:
-    Detail:
+    ScreenMonitoringSessionEntityListing:
       type: object
       properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreenMonitoringSession'
+    StartScreenMonitorResponseBody:
+      type: object
+      properties:
+        screenMonitoringId:
           type: string
     Limit:
       type: object
@@ -1757,60 +1758,6 @@ components:
         value:
           type: integer
           format: int64
-    ScreenMonitoringDetails:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
-          format: int32
-          description: The total count of screen monitoring sessions in the organization
-    ScreenMonitoringUserDetailsEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScreenMonitoringUserDetails'
-    ScreenMonitoringSession:
-      type: object
-      required:
-      - dateCreated
-      - monitoringType
-      - screenMonitoringId
-      - sourceUser
-      properties:
-        sourceUser:
-          description: The user who initiated the screen monitoring session
-          $ref: '#/components/schemas/AddressableEntityRef'
-        targetUser:
-          description: The user being monitored (for agent-level monitoring)
-          $ref: '#/components/schemas/AddressableEntityRef'
-        conversation:
-          description: The conversation being monitored (for conversation-level monitoring)
-          $ref: '#/components/schemas/AddressableEntityRef'
-        participantId:
-          type: string
-          description: The ID of the participant being monitored (for conversation-level monitoring)
-        monitoringType:
-          type: string
-          description: The type of screen monitoring session
-          enum:
-          - AgentLevel
-          - ConversationLevel
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'The date and time when the screen monitoring session was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        screenMonitoringId:
-          type: string
-          description: The unique identifier for this screen monitoring session
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
     AddressableEntityRef:
       type: object
       properties:
@@ -1819,10 +1766,31 @@ components:
         selfUri:
           type: string
           format: uri
-    StartScreenMonitorResponseBody:
+    ScreenMonitorSettings:
       type: object
       properties:
-        screenMonitoringId:
+        enableAgentNotifications:
+          type: boolean
+        maxSimultaneousScreenMonitoringSessions:
+          type: integer
+          format: int32
+    ScreenMonitoringUserDetailsEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreenMonitoringUserDetails'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
           type: string
     ErrorBody:
       type: object
@@ -1867,21 +1835,53 @@ components:
         targetUser:
           description: The user being monitored
           $ref: '#/components/schemas/AddressableEntityRef'
-    ScreenMonitoringSessionEntityListing:
+    ScreenMonitoringSession:
       type: object
+      required:
+      - dateCreated
+      - monitoringType
+      - screenMonitoringId
+      - sourceUser
       properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScreenMonitoringSession'
-    ScreenMonitorSettings:
+        sourceUser:
+          description: The user who initiated the screen monitoring session
+          $ref: '#/components/schemas/AddressableEntityRef'
+        targetUser:
+          description: The user being monitored (for agent-level monitoring)
+          $ref: '#/components/schemas/AddressableEntityRef'
+        conversation:
+          description: The conversation being monitored (for conversation-level monitoring)
+          $ref: '#/components/schemas/AddressableEntityRef'
+        participantId:
+          type: string
+          description: The ID of the participant being monitored (for conversation-level monitoring)
+        monitoringType:
+          type: string
+          description: The type of screen monitoring session
+          enum:
+          - AgentLevel
+          - ConversationLevel
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'The date and time when the screen monitoring session was created. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        screenMonitoringId:
+          type: string
+          description: The unique identifier for this screen monitoring session
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    ScreenMonitoringDetails:
       type: object
+      required:
+      - count
       properties:
-        enableAgentNotifications:
-          type: boolean
-        maxSimultaneousScreenMonitoringSessions:
+        count:
           type: integer
           format: int32
+          description: The total count of screen monitoring sessions in the organization
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

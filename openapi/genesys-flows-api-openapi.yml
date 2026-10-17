@@ -1036,128 +1036,61 @@ paths:
         required: true
 components:
   schemas:
-    AnalyticsScoredAgent:
+    ObservationMetricData:
       type: object
       properties:
-        agentScore:
-          type: integer
-          format: int32
-          description: Assigned agent score for this conversation (0 - 100, higher being better)
-        scoredAgentId:
+        metric:
           type: string
-          description: Unique identifier for the agent that was scored for this conversation
-    FlowAggregationView:
+        qualifier:
+          type: string
+        stats:
+          $ref: '#/components/schemas/StatisticalSummary'
+        truncated:
+          type: boolean
+          description: Flag for a truncated list of observations. If truncated, the first half of the list of observations will contain the oldest observations and the second half the newest observations.
+        observations:
+          type: array
+          description: List of observations sorted by timestamp in ascending order. This list may be truncated.
+          items:
+            $ref: '#/components/schemas/ObservationValue'
+    FlowAggregateQueryClause:
       type: object
       required:
-      - function
-      - name
-      - target
-      properties:
-        target:
-          type: string
-          description: Target metric name
-          enum:
-          - nFlow
-          - nFlowMilestone
-          - nFlowOutcome
-          - nFlowOutcomeFailed
-          - oFlowMilestone
-          - tFlow
-          - tFlowDisconnect
-          - tFlowExit
-          - tFlowOutcome
-        name:
-          type: string
-          description: A unique name for this view. Must be distinct from other views and built-in metric names.
-        function:
-          type: string
-          description: Type of view you wish to create
-          enum:
-          - rangeBound
-        range:
-          description: Range of numbers for slicing up data
-          $ref: '#/components/schemas/AggregationRange'
-    FlowObservationQueryFilter:
-      type: object
-      required:
+      - predicates
       - type
       properties:
         type:
           type: string
-          description: Boolean operation to apply to the provided predicates and clauses
+          description: Boolean operation to apply to the provided predicates
           enum:
           - and
           - or
-        clauses:
-          type: array
-          description: Boolean 'and/or' logic with up to two-levels of nesting
-          items:
-            $ref: '#/components/schemas/FlowObservationQueryClause'
         predicates:
           type: array
           description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
           items:
-            $ref: '#/components/schemas/FlowObservationQueryPredicate'
-    FlowObservationQueryPredicate:
+            $ref: '#/components/schemas/FlowAggregateQueryPredicate'
+    FlowActivityMetricValue:
       type: object
       properties:
-        type:
+        metric:
           type: string
-          description: Optional type, can usually be inferred
+          description: Metric
           enum:
-          - dimension
-          - property
-          - metric
-        dimension:
+          - oFlow
+        qualifier:
           type: string
-          description: Left hand side for dimension predicates
-          enum:
-          - flowId
-          - mediaType
-          x-genesys-entity-type:
-            value: DIMENSION_TYPE
-        operator:
-          type: string
-          description: Optional operator, default is matches
-          enum:
-          - matches
-          - exists
-          - notExists
-        value:
-          type: string
-          description: Right hand side for dimension predicates
-          x-genesys-entity-type:
-            value: DIMENSION_SELECTOR
-        range:
-          description: Right hand side for dimension predicates
-          $ref: '#/components/schemas/NumericRange'
-    FlowAggregateDataContainer:
-      type: object
-      properties:
-        group:
-          type: object
-          description: A mapping from dimension to value
-          additionalProperties:
-            type: string
-        data:
+          description: Metric qualifier
+        entityIds:
           type: array
+          description: Entity ids for matching entities if details were requested
+          uniqueItems: true
           items:
-            $ref: '#/components/schemas/StatisticalResponse'
-    NumericRange:
-      type: object
-      properties:
-        gt:
-          type: number
-          description: Greater than
-        gte:
-          type: number
-          description: Greater than or equal to
-        lt:
-          type: number
-          description: Less than
-        lte:
-          type: number
-          description: Less than or equal to
+            type: string
+        count:
+          type: integer
+          format: int32
+          description: Metric count
     FlowAggregateQueryFilter:
       type: object
       required:
@@ -1179,33 +1112,308 @@ components:
           description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
           items:
             $ref: '#/components/schemas/FlowAggregateQueryPredicate'
-    FlowActivityEntityData:
+    Limit:
       type: object
-      required:
-      - activityDate
       properties:
-        activityDate:
+        key:
           type: string
-          format: date-time
-          description: 'The time at which the activity was observed. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        namespace:
+          type: string
+          enum:
+          - web.deployments
+          - web.messaging
+          - agent.assistant
+          - agentic.virtual.agents
+          - analytics.agents
+          - analytics.alerting
+          - analytics.data.extraction
+          - analytics
+          - analytics.realtime
+          - analytics.reporting.settings
+          - anomaly.detection
+          - architect
+          - audiohook
+          - audiohook.monitor
+          - audit
+          - auth.api
+          - authorization
+          - automation.testing
+          - bots
+          - bots.voice
+          - business.rules
+          - callback
+          - case.management
+          - cobrowse
+          - content.management
+          - conversation
+          - copilot
+          - dataactions
+          - datatables
+          - directory
+          - dsar
+          - email
+          - employee.engagement
+          - event.orchestration
+          - external.contacts
+          - external.events.data.ingestion
+          - gamification
+          - gcv
+          - gdpr
+          - groups
+          - guides
+          - historical.adherence
+          - infrastructureascode
+          - integrations
+          - intent.miner
+          - internal.messaging
+          - journey
+          - knowledge
+          - language.understanding
+          - learning
+          - limit.registry
+          - marketplace
+          - mcp.analytics.aggregates
+          - mcp
+          - media.communications
+          - messaging
+          - micro.frontend
+          - multi.org
+          - notifications
+          - onboarding
+          - outbound
+          - platform.api
+          - predictive.routing
+          - presence
+          - quality
+          - recording
+          - response.management
+          - routing
+          - scim
+          - screen.monitoring
+          - search
+          - secondary.automation.testing
+          - skills
+          - social.media
+          - speech.and.text.analytics
+          - speech.integration
+          - supportability
+          - task.management
+          - telephony.configuration
+          - usage
+          - users
+          - users.rules
+          - voice.transcription
+          - webchat
+          - webhooks
+          - workforce.management.adherence
+          - workforce.management.agent.availability
+          - workforce.management.forecast
+          - workforce.management
+          - workforce.management.scheduling.preferences
+          - workforce.management.self.schedule
+          - workforce.management.shift.trading
+          - system
+        value:
+          type: integer
+          format: int64
+    FlowActivityQueryPredicate:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Optional type, can usually be inferred
+          enum:
+          - dimension
+          - property
+          - metric
+        dimension:
+          type: string
+          description: Left hand side for dimension predicates
+          enum:
+          - activeRouting
+          - addressFrom
+          - addressTo
+          - agentScore
+          - ani
+          - conversationId
+          - convertedFrom
+          - convertedTo
+          - direction
+          - dnis
+          - flowId
+          - flowType
+          - mediaType
+          - participantName
+          - queueId
+          - requestedLanguageId
+          - requestedRouting
+          - requestedRoutingSkillId
+          - routingPriority
+          - scoredAgentId
+          - sessionId
+          - teamId
+          - usedRouting
+          - userId
+          x-genesys-entity-type:
+            value: DIMENSION_TYPE
+        operator:
+          type: string
+          description: Optional operator, default is matches
+          enum:
+          - matches
+          - exists
+          - notExists
+        value:
+          type: string
+          description: Right hand side for dimension predicates
+          x-genesys-entity-type:
+            value: DIMENSION_SELECTOR
+    FlowObservationDataContainer:
+      type: object
+      properties:
+        group:
+          type: object
+          description: A mapping from dimension to value
+          additionalProperties:
+            type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationMetricData'
+    FlowAsyncAggregateQueryResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowAggregateDataContainer'
+        cursor:
+          type: string
+          description: Cursor token to retrieve next page
+    AggregateMetricData:
+      type: object
+      properties:
         metric:
           type: string
-          description: Activity metric
-          enum:
-          - oFlow
-        activeRouting:
+        qualifier:
           type: string
-          description: Active routing method
+        stats:
+          $ref: '#/components/schemas/StatisticalSummary'
+    AnalyticsScoredAgent:
+      type: object
+      properties:
+        agentScore:
+          type: integer
+          format: int32
+          description: Assigned agent score for this conversation (0 - 100, higher being better)
+        scoredAgentId:
+          type: string
+          description: Unique identifier for the agent that was scored for this conversation
+    FlowActivityResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          description: Query results
+          items:
+            $ref: '#/components/schemas/FlowActivityData'
+        entityIdDimension:
+          type: string
+          description: Dimension that is used as an entityId
           enum:
-          - Bullseye
-          - Conditional
-          - Direct
-          - Last
-          - Manual
-          - Predictive
-          - Preferred
-          - Standard
-          - Vip
+          - activeRouting
+          - addressFrom
+          - addressTo
+          - agentScore
+          - ani
+          - conversationId
+          - convertedFrom
+          - convertedTo
+          - direction
+          - dnis
+          - flowId
+          - flowType
+          - mediaType
+          - participantName
+          - queueId
+          - requestedLanguageId
+          - requestedRouting
+          - requestedRoutingSkillId
+          - routingPriority
+          - scoredAgentId
+          - sessionId
+          - teamId
+          - usedRouting
+          - userId
+    FlowObservationQuery:
+      type: object
+      required:
+      - filter
+      - metrics
+      properties:
+        filter:
+          description: Filter to return a subset of observations. Expresses boolean logical predicates as well as dimensional filters
+          $ref: '#/components/schemas/FlowObservationQueryFilter'
+        metrics:
+          type: array
+          description: Behaves like a SQL SELECT clause. Only named metrics will be retrieved.
+          items:
+            type: string
+            enum:
+            - oFlow
+        detailMetrics:
+          type: array
+          description: Metrics for which to include additional detailed observations
+          items:
+            type: string
+            enum:
+            - oFlow
+    ObservationValue:
+      type: object
+      required:
+      - observationDate
+      properties:
+        observationDate:
+          type: string
+          format: date-time
+          description: 'The time at which the observation occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        conversationId:
+          type: string
+          description: Unique identifier for the conversation
+        sessionId:
+          type: string
+          description: The unique identifier of this session
+        requestedRoutingSkillIds:
+          type: array
+          description: Unique identifier for a skill requested for an interaction
+          uniqueItems: true
+          items:
+            type: string
+        requestedLanguageId:
+          type: string
+          description: Unique identifier for the language requested for an interaction
+        routingPriority:
+          type: integer
+          format: int64
+          description: Routing priority for the current interaction
+        participantName:
+          type: string
+          description: A human readable name identifying the participant
+        userId:
+          type: string
+          description: Unique identifier for the user
+        direction:
+          type: string
+          description: The direction of the communication
+          enum:
+          - inbound
+          - outbound
+        convertedFrom:
+          type: string
+          description: Session media type that was converted from in case of a media type conversion
+        convertedTo:
+          type: string
+          description: Session media type that was converted to in case of a media type conversion
         addressFrom:
           type: string
           description: The address that initiated an action
@@ -1215,83 +1423,16 @@ components:
         ani:
           type: string
           description: Automatic Number Identification (caller's number)
-        conversationId:
-          type: string
-          description: Unique identifier for the conversation
-        convertedFrom:
-          type: string
-          description: Session media type that was converted from in case of a media type conversion
-        convertedTo:
-          type: string
-          description: Session media type that was converted to in case of a media type conversion
-        direction:
-          type: string
-          description: The direction of the communication
-          enum:
-          - inbound
-          - outbound
         dnis:
           type: string
           description: Dialed number identification service (number dialed by the calling party)
-        flowId:
+        teamId:
           type: string
-          description: The unique identifier of this flow
-        flowType:
-          type: string
-          description: The type of this flow
-          enum:
-          - BOT
-          - COMMONMODULE
-          - DIGITALBOT
-          - EMAILSEND
-          - INBOUNDCALL
-          - INBOUNDCHAT
-          - INBOUNDEMAIL
-          - INBOUNDSHORTMESSAGE
-          - INQUEUECALL
-          - INQUEUEEMAIL
-          - INQUEUESHORTMESSAGE
-          - OUTBOUNDCALL
-          - SECURECALL
-          - SPEECH
-          - SURVEYINVITE
-          - VOICE
-          - VOICEMAIL
-          - VOICESURVEY
-          - WORKFLOW
-          - WORKITEM
-        mediaType:
-          type: string
-          description: The session media type
-          enum:
-          - callback
-          - chat
-          - cobrowse
-          - email
-          - internalmessage
-          - message
-          - screenmonitoring
-          - screenshare
-          - unknown
-          - video
-          - voice
-        participantName:
-          type: string
-          description: A human readable name identifying the participant
-        queueId:
-          type: string
-          description: Queue identifier
-        requestedLanguageId:
-          type: string
-          description: Unique identifier for the language requested for an interaction
-        requestedRoutingSkillIds:
-          type: array
-          description: Unique identifier(s) for skill(s) requested for an interaction
-          items:
-            type: string
+          description: The team id the user is a member of
         requestedRoutings:
           type: array
-          description: Routing type(s) for requested/attempted routing methods.
+          description: All routing types for requested/attempted routing methods
+          uniqueItems: true
           items:
             type: string
             enum:
@@ -1304,16 +1445,6 @@ components:
             - Preferred
             - Standard
             - Vip
-        routingPriority:
-          type: integer
-          format: int64
-          description: Routing priority for the current interaction
-        sessionId:
-          type: string
-          description: The unique identifier of this session
-        teamId:
-          type: string
-          description: The team ID the user is a member of
         usedRouting:
           type: string
           description: Complete routing method
@@ -1327,15 +1458,11 @@ components:
           - Preferred
           - Standard
           - Vip
-        userId:
-          type: string
-          description: Unique identifier for the user
         scoredAgents:
           type: array
-          description: Scored agents
           items:
-            $ref: '#/components/schemas/FlowActivityScoredAgent'
-    FlowAggregateQueryClause:
+            $ref: '#/components/schemas/AnalyticsScoredAgent'
+    FlowObservationQueryClause:
       type: object
       required:
       - predicates
@@ -1351,35 +1478,7 @@ components:
           type: array
           description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
           items:
-            $ref: '#/components/schemas/FlowAggregateQueryPredicate'
-    AsyncQueryStatus:
-      type: object
-      properties:
-        state:
-          type: string
-          description: The current state of the asynchronous query
-          enum:
-          - QUEUED
-          - PENDING
-          - FAILED
-          - CANCELLED
-          - FULFILLED
-          - EXPIRED
-        errorMessage:
-          type: string
-          description: The error associated with the current query, if the state is FAILED
-        expirationDate:
-          type: string
-          format: date-time
-          description: 'The time at which results for this query will expire. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        submissionDate:
-          type: string
-          format: date-time
-          description: 'The time at which the query was submitted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        completionDate:
-          type: string
-          format: date-time
-          description: 'The time at which the query completed. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+            $ref: '#/components/schemas/FlowObservationQueryPredicate'
     FlowAggregationQuery:
       type: object
       required:
@@ -1535,6 +1634,310 @@ components:
           description: Dimension to use as the alternative timestamp for data in the aggregate.  Choosing "eventTime" uses the actual time of the data event.
           enum:
           - eventTime
+    AggregationRange:
+      type: object
+      properties:
+        gte:
+          type: number
+          description: Greater than or equal to
+        lt:
+          type: number
+          description: Less than
+    FlowAggregateQueryResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowAggregateDataContainer'
+    StatisticalSummary:
+      type: object
+      properties:
+        max:
+          type: number
+        min:
+          type: number
+        count:
+          type: integer
+          format: int64
+        countNegative:
+          type: integer
+          format: int64
+        countPositive:
+          type: integer
+          format: int64
+        sum:
+          type: number
+        current:
+          type: number
+        ratio:
+          type: number
+        numerator:
+          type: number
+        denominator:
+          type: number
+        target:
+          type: number
+        p95:
+          type: integer
+          format: int64
+        p99:
+          type: integer
+          format: int64
+        calculatedMetricValue:
+          type: integer
+          format: int64
+    FlowAggregationView:
+      type: object
+      required:
+      - function
+      - name
+      - target
+      properties:
+        target:
+          type: string
+          description: Target metric name
+          enum:
+          - nFlow
+          - nFlowMilestone
+          - nFlowOutcome
+          - nFlowOutcomeFailed
+          - oFlowMilestone
+          - tFlow
+          - tFlowDisconnect
+          - tFlowExit
+          - tFlowOutcome
+        name:
+          type: string
+          description: A unique name for this view. Must be distinct from other views and built-in metric names.
+        function:
+          type: string
+          description: Type of view you wish to create
+          enum:
+          - rangeBound
+        range:
+          description: Range of numbers for slicing up data
+          $ref: '#/components/schemas/AggregationRange'
+    FlowObservationQueryPredicate:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Optional type, can usually be inferred
+          enum:
+          - dimension
+          - property
+          - metric
+        dimension:
+          type: string
+          description: Left hand side for dimension predicates
+          enum:
+          - flowId
+          - mediaType
+          x-genesys-entity-type:
+            value: DIMENSION_TYPE
+        operator:
+          type: string
+          description: Optional operator, default is matches
+          enum:
+          - matches
+          - exists
+          - notExists
+        value:
+          type: string
+          description: Right hand side for dimension predicates
+          x-genesys-entity-type:
+            value: DIMENSION_SELECTOR
+        range:
+          description: Right hand side for dimension predicates
+          $ref: '#/components/schemas/NumericRange'
+    FlowAggregateQueryPredicate:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Optional type, can usually be inferred
+          enum:
+          - dimension
+          - property
+          - metric
+        dimension:
+          type: string
+          description: Left hand side for dimension predicates
+          enum:
+          - activeRouting
+          - activeSkillId
+          - addressFrom
+          - addressTo
+          - agentAssistantId
+          - agentBullseyeRing
+          - agentOwned
+          - agentRank
+          - agentScore
+          - ani
+          - assignerId
+          - authenticated
+          - canonicalExternalContactId
+          - conversationId
+          - conversationInitiator
+          - convertedFrom
+          - convertedTo
+          - customerParticipation
+          - deliveryStatus
+          - destinationAddress
+          - direction
+          - disconnectType
+          - divisionId
+          - dnis
+          - edgeId
+          - eligibleAgentCount
+          - endingLanguage
+          - entryReason
+          - entryType
+          - errorCode
+          - exitReason
+          - extendedDeliveryStatus
+          - externalContactId
+          - externalMediaCount
+          - externalOrganizationId
+          - externalTag
+          - firstQueue
+          - flaggedReason
+          - flowId
+          - flowInType
+          - flowMilestoneId
+          - flowName
+          - flowOutType
+          - flowOutcome
+          - flowOutcomeId
+          - flowOutcomeValue
+          - flowSubType
+          - flowType
+          - flowVersion
+          - groupId
+          - interactionType
+          - journeyActionId
+          - journeyActionMapId
+          - journeyActionMapVersion
+          - journeyCustomerId
+          - journeyCustomerIdType
+          - journeyCustomerSessionId
+          - journeyCustomerSessionIdType
+          - knowledgeBaseId
+          - mediaCount
+          - mediaType
+          - messageType
+          - originatingDirection
+          - outboundCampaignId
+          - outboundContactId
+          - outboundContactListId
+          - participantName
+          - peerId
+          - proposedAgentId
+          - provider
+          - purpose
+          - queueId
+          - recognitionFailureReason
+          - remote
+          - removedSkillId
+          - requestedLanguageId
+          - requestedRouting
+          - requestedRoutingSkillId
+          - roomId
+          - routingPriority
+          - routingRing
+          - routingRule
+          - routingRuleType
+          - scoredAgentId
+          - selectedAgentId
+          - selectedAgentRank
+          - selfServed
+          - sessionDnis
+          - sessionId
+          - skillExpressionId
+          - startingLanguage
+          - stationId
+          - teamId
+          - transferTargetAddress
+          - transferTargetName
+          - transferType
+          - usedRouting
+          - userId
+          - videoPresent
+          - waitingInteractionCount
+          - wrapUpCode
+          x-genesys-entity-type:
+            value: DIMENSION_TYPE
+        operator:
+          type: string
+          description: Optional operator, default is matches
+          enum:
+          - matches
+          - exists
+          - notExists
+        value:
+          type: string
+          description: Right hand side for dimension predicates
+          x-genesys-entity-type:
+            value: DIMENSION_SELECTOR
+        range:
+          description: Right hand side for dimension predicates
+          $ref: '#/components/schemas/NumericRange'
+    AsyncQueryResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: Unique identifier for the async query execution. Can be used to check the status of the query and retrieve results.
+    FlowActivityData:
+      type: object
+      properties:
+        group:
+          type: object
+          description: A mapping from grouping dimension to value
+          additionalProperties:
+            type: string
+        data:
+          type: array
+          description: Data for metrics
+          items:
+            $ref: '#/components/schemas/FlowActivityMetricValue'
+        truncated:
+          type: boolean
+          description: Flag for a truncated list of entities. If truncated, the first half of the list of entities will contain the oldest entities and the second half the newest entities.
+        entities:
+          type: array
+          description: Details for active entities
+          items:
+            $ref: '#/components/schemas/FlowActivityEntityData'
+    FlowObservationQueryResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowObservationDataContainer'
+    FlowActivityQueryFilter:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: Boolean operation to apply to the provided predicates and clauses
+          enum:
+          - and
+          - or
+        clauses:
+          type: array
+          description: Boolean 'and/or' logic with up to two-levels of nesting
+          items:
+            $ref: '#/components/schemas/FlowActivityQueryClause'
+        predicates:
+          type: array
+          description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
+          items:
+            $ref: '#/components/schemas/FlowActivityQueryPredicate'
     FlowAsyncAggregationQuery:
       type: object
       required:
@@ -1692,369 +2095,46 @@ components:
           type: integer
           format: int32
           description: The number of results per page
-    ObservationValue:
-      type: object
-      required:
-      - observationDate
-      properties:
-        observationDate:
-          type: string
-          format: date-time
-          description: 'The time at which the observation occurred. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        conversationId:
-          type: string
-          description: Unique identifier for the conversation
-        sessionId:
-          type: string
-          description: The unique identifier of this session
-        requestedRoutingSkillIds:
-          type: array
-          description: Unique identifier for a skill requested for an interaction
-          uniqueItems: true
-          items:
-            type: string
-        requestedLanguageId:
-          type: string
-          description: Unique identifier for the language requested for an interaction
-        routingPriority:
-          type: integer
-          format: int64
-          description: Routing priority for the current interaction
-        participantName:
-          type: string
-          description: A human readable name identifying the participant
-        userId:
-          type: string
-          description: Unique identifier for the user
-        direction:
-          type: string
-          description: The direction of the communication
-          enum:
-          - inbound
-          - outbound
-        convertedFrom:
-          type: string
-          description: Session media type that was converted from in case of a media type conversion
-        convertedTo:
-          type: string
-          description: Session media type that was converted to in case of a media type conversion
-        addressFrom:
-          type: string
-          description: The address that initiated an action
-        addressTo:
-          type: string
-          description: The address receiving an action
-        ani:
-          type: string
-          description: Automatic Number Identification (caller's number)
-        dnis:
-          type: string
-          description: Dialed number identification service (number dialed by the calling party)
-        teamId:
-          type: string
-          description: The team id the user is a member of
-        requestedRoutings:
-          type: array
-          description: All routing types for requested/attempted routing methods
-          uniqueItems: true
-          items:
-            type: string
-            enum:
-            - Bullseye
-            - Conditional
-            - Direct
-            - Last
-            - Manual
-            - Predictive
-            - Preferred
-            - Standard
-            - Vip
-        usedRouting:
-          type: string
-          description: Complete routing method
-          enum:
-          - Bullseye
-          - Conditional
-          - Direct
-          - Last
-          - Manual
-          - Predictive
-          - Preferred
-          - Standard
-          - Vip
-        scoredAgents:
-          type: array
-          items:
-            $ref: '#/components/schemas/AnalyticsScoredAgent'
-    FlowAggregateQueryPredicate:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Optional type, can usually be inferred
-          enum:
-          - dimension
-          - property
-          - metric
-        dimension:
-          type: string
-          description: Left hand side for dimension predicates
-          enum:
-          - activeRouting
-          - activeSkillId
-          - addressFrom
-          - addressTo
-          - agentAssistantId
-          - agentBullseyeRing
-          - agentOwned
-          - agentRank
-          - agentScore
-          - ani
-          - assignerId
-          - authenticated
-          - canonicalExternalContactId
-          - conversationId
-          - conversationInitiator
-          - convertedFrom
-          - convertedTo
-          - customerParticipation
-          - deliveryStatus
-          - destinationAddress
-          - direction
-          - disconnectType
-          - divisionId
-          - dnis
-          - edgeId
-          - eligibleAgentCount
-          - endingLanguage
-          - entryReason
-          - entryType
-          - errorCode
-          - exitReason
-          - extendedDeliveryStatus
-          - externalContactId
-          - externalMediaCount
-          - externalOrganizationId
-          - externalTag
-          - firstQueue
-          - flaggedReason
-          - flowId
-          - flowInType
-          - flowMilestoneId
-          - flowName
-          - flowOutType
-          - flowOutcome
-          - flowOutcomeId
-          - flowOutcomeValue
-          - flowSubType
-          - flowType
-          - flowVersion
-          - groupId
-          - interactionType
-          - journeyActionId
-          - journeyActionMapId
-          - journeyActionMapVersion
-          - journeyCustomerId
-          - journeyCustomerIdType
-          - journeyCustomerSessionId
-          - journeyCustomerSessionIdType
-          - knowledgeBaseId
-          - mediaCount
-          - mediaType
-          - messageType
-          - originatingDirection
-          - outboundCampaignId
-          - outboundContactId
-          - outboundContactListId
-          - participantName
-          - peerId
-          - proposedAgentId
-          - provider
-          - purpose
-          - queueId
-          - recognitionFailureReason
-          - remote
-          - removedSkillId
-          - requestedLanguageId
-          - requestedRouting
-          - requestedRoutingSkillId
-          - roomId
-          - routingPriority
-          - routingRing
-          - routingRule
-          - routingRuleType
-          - scoredAgentId
-          - selectedAgentId
-          - selectedAgentRank
-          - selfServed
-          - sessionDnis
-          - sessionId
-          - skillExpressionId
-          - startingLanguage
-          - stationId
-          - teamId
-          - transferTargetAddress
-          - transferTargetName
-          - transferType
-          - usedRouting
-          - userId
-          - videoPresent
-          - waitingInteractionCount
-          - wrapUpCode
-          x-genesys-entity-type:
-            value: DIMENSION_TYPE
-        operator:
-          type: string
-          description: Optional operator, default is matches
-          enum:
-          - matches
-          - exists
-          - notExists
-        value:
-          type: string
-          description: Right hand side for dimension predicates
-          x-genesys-entity-type:
-            value: DIMENSION_SELECTOR
-        range:
-          description: Right hand side for dimension predicates
-          $ref: '#/components/schemas/NumericRange'
-    ObservationMetricData:
-      type: object
-      properties:
-        metric:
-          type: string
-        qualifier:
-          type: string
-        stats:
-          $ref: '#/components/schemas/StatisticalSummary'
-        truncated:
-          type: boolean
-          description: Flag for a truncated list of observations. If truncated, the first half of the list of observations will contain the oldest observations and the second half the newest observations.
-        observations:
-          type: array
-          description: List of observations sorted by timestamp in ascending order. This list may be truncated.
-          items:
-            $ref: '#/components/schemas/ObservationValue'
-    FlowActivityScoredAgent:
-      type: object
-      properties:
-        agentScore:
-          type: integer
-          format: int32
-          description: Assigned agent score for this conversation (0 - 100, higher being better)
-        scoredAgentId:
-          type: string
-          description: Unique identifier for the agent that was scored for this conversation
-    FlowAsyncAggregateQueryResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowAggregateDataContainer'
-        cursor:
-          type: string
-          description: Cursor token to retrieve next page
-    FlowObservationQueryResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowObservationDataContainer'
-    StatisticalResponse:
-      type: object
-      properties:
-        interval:
-          type: string
-        metrics:
-          type: array
-          items:
-            $ref: '#/components/schemas/AggregateMetricData'
-        views:
-          type: array
-          items:
-            $ref: '#/components/schemas/AggregateViewData'
-    FlowActivityQueryMetric:
-      type: object
-      required:
-      - metric
-      properties:
-        metric:
-          type: string
-          description: The requested metric
-          enum:
-          - oFlow
-        details:
-          type: boolean
-          description: Flag for including observation details for this metric in the response
-    FlowObservationQuery:
-      type: object
-      required:
-      - filter
-      - metrics
-      properties:
-        filter:
-          description: Filter to return a subset of observations. Expresses boolean logical predicates as well as dimensional filters
-          $ref: '#/components/schemas/FlowObservationQueryFilter'
-        metrics:
-          type: array
-          description: Behaves like a SQL SELECT clause. Only named metrics will be retrieved.
-          items:
-            type: string
-            enum:
-            - oFlow
-        detailMetrics:
-          type: array
-          description: Metrics for which to include additional detailed observations
-          items:
-            type: string
-            enum:
-            - oFlow
-    FlowActivityData:
+    FlowAggregateDataContainer:
       type: object
       properties:
         group:
           type: object
-          description: A mapping from grouping dimension to value
+          description: A mapping from dimension to value
           additionalProperties:
             type: string
         data:
           type: array
-          description: Data for metrics
           items:
-            $ref: '#/components/schemas/FlowActivityMetricValue'
-        truncated:
-          type: boolean
-          description: Flag for a truncated list of entities. If truncated, the first half of the list of entities will contain the oldest entities and the second half the newest entities.
-        entities:
-          type: array
-          description: Details for active entities
-          items:
-            $ref: '#/components/schemas/FlowActivityEntityData'
-    AsyncQueryResponse:
+            $ref: '#/components/schemas/StatisticalResponse'
+    AsyncQueryStatus:
       type: object
       properties:
-        jobId:
+        state:
           type: string
-          description: Unique identifier for the async query execution. Can be used to check the status of the query and retrieve results.
-    FlowActivityQueryClause:
-      type: object
-      required:
-      - predicates
-      - type
-      properties:
-        type:
-          type: string
-          description: Boolean operation to apply to the provided predicates
+          description: The current state of the asynchronous query
           enum:
-          - and
-          - or
-        predicates:
-          type: array
-          description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
-          items:
-            $ref: '#/components/schemas/FlowActivityQueryPredicate'
+          - QUEUED
+          - PENDING
+          - FAILED
+          - CANCELLED
+          - FULFILLED
+          - EXPIRED
+        errorMessage:
+          type: string
+          description: The error associated with the current query, if the state is FAILED
+        expirationDate:
+          type: string
+          format: date-time
+          description: 'The time at which results for this query will expire. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        submissionDate:
+          type: string
+          format: date-time
+          description: 'The time at which the query was submitted. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        completionDate:
+          type: string
+          format: date-time
+          description: 'The time at which the query completed. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
     Detail:
       type: object
       properties:
@@ -2066,22 +2146,21 @@ components:
           type: string
         entityName:
           type: string
-    AggregateViewData:
+    NumericRange:
       type: object
       properties:
-        name:
-          type: string
-        stats:
-          $ref: '#/components/schemas/StatisticalSummary'
-    AggregateMetricData:
-      type: object
-      properties:
-        metric:
-          type: string
-        qualifier:
-          type: string
-        stats:
-          $ref: '#/components/schemas/StatisticalSummary'
+        gt:
+          type: number
+          description: Greater than
+        gte:
+          type: number
+          description: Greater than or equal to
+        lt:
+          type: number
+          description: Less than
+        lte:
+          type: number
+          description: Less than or equal to
     FlowActivityQuery:
       type: object
       required:
@@ -2134,110 +2213,233 @@ components:
           - asc
           - desc
           - unordered
-    Limit:
+    FlowActivityEntityData:
       type: object
+      required:
+      - activityDate
       properties:
-        key:
+        activityDate:
           type: string
-        namespace:
+          format: date-time
+          description: 'The time at which the activity was observed. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        metric:
           type: string
+          description: Activity metric
           enum:
-          - web.deployments
-          - web.messaging
-          - agent.assistant
-          - agentic.virtual.agents
-          - analytics.agents
-          - analytics.alerting
-          - analytics.data.extraction
-          - analytics
-          - analytics.realtime
-          - analytics.reporting.settings
-          - anomaly.detection
-          - architect
-          - audiohook
-          - audiohook.monitor
-          - audit
-          - auth.api
-          - authorization
-          - automation.testing
-          - bots
-          - bots.voice
-          - business.rules
-          - callback
-          - case.management
-          - cobrowse
-          - content.management
-          - conversation
-          - copilot
-          - dataactions
-          - datatables
-          - directory
-          - dsar
-          - email
-          - employee.engagement
-          - event.orchestration
-          - external.contacts
-          - external.events.data.ingestion
-          - gamification
-          - gcv
-          - gdpr
-          - groups
-          - guides
-          - historical.adherence
-          - infrastructureascode
-          - integrations
-          - intent.miner
-          - internal.messaging
-          - journey
-          - knowledge
-          - language.understanding
-          - learning
-          - limit.registry
-          - marketplace
-          - mcp.analytics.aggregates
-          - mcp
-          - media.communications
-          - messaging
-          - micro.frontend
-          - multi.org
-          - notifications
-          - onboarding
+          - oFlow
+        activeRouting:
+          type: string
+          description: Active routing method
+          enum:
+          - Bullseye
+          - Conditional
+          - Direct
+          - Last
+          - Manual
+          - Predictive
+          - Preferred
+          - Standard
+          - Vip
+        addressFrom:
+          type: string
+          description: The address that initiated an action
+        addressTo:
+          type: string
+          description: The address receiving an action
+        ani:
+          type: string
+          description: Automatic Number Identification (caller's number)
+        conversationId:
+          type: string
+          description: Unique identifier for the conversation
+        convertedFrom:
+          type: string
+          description: Session media type that was converted from in case of a media type conversion
+        convertedTo:
+          type: string
+          description: Session media type that was converted to in case of a media type conversion
+        direction:
+          type: string
+          description: The direction of the communication
+          enum:
+          - inbound
           - outbound
-          - platform.api
-          - predictive.routing
-          - presence
-          - quality
-          - recording
-          - response.management
-          - routing
-          - scim
-          - screen.monitoring
-          - search
-          - secondary.automation.testing
-          - skills
-          - social.media
-          - speech.and.text.analytics
-          - speech.integration
-          - supportability
-          - task.management
-          - telephony.configuration
-          - usage
-          - users
-          - users.rules
-          - voice.transcription
-          - webchat
-          - webhooks
-          - workforce.management.adherence
-          - workforce.management.agent.availability
-          - workforce.management.forecast
-          - workforce.management
-          - workforce.management.scheduling.preferences
-          - workforce.management.self.schedule
-          - workforce.management.shift.trading
-          - system
-        value:
+        dnis:
+          type: string
+          description: Dialed number identification service (number dialed by the calling party)
+        flowId:
+          type: string
+          description: The unique identifier of this flow
+        flowType:
+          type: string
+          description: The type of this flow
+          enum:
+          - BOT
+          - COMMONMODULE
+          - DIGITALBOT
+          - EMAILSEND
+          - INBOUNDCALL
+          - INBOUNDCHAT
+          - INBOUNDEMAIL
+          - INBOUNDSHORTMESSAGE
+          - INQUEUECALL
+          - INQUEUEEMAIL
+          - INQUEUESHORTMESSAGE
+          - OUTBOUNDCALL
+          - SECURECALL
+          - SPEECH
+          - SURVEYINVITE
+          - VOICE
+          - VOICEMAIL
+          - VOICESURVEY
+          - WORKFLOW
+          - WORKITEM
+        mediaType:
+          type: string
+          description: The session media type
+          enum:
+          - callback
+          - chat
+          - cobrowse
+          - email
+          - internalmessage
+          - message
+          - screenmonitoring
+          - screenshare
+          - unknown
+          - video
+          - voice
+        participantName:
+          type: string
+          description: A human readable name identifying the participant
+        queueId:
+          type: string
+          description: Queue identifier
+        requestedLanguageId:
+          type: string
+          description: Unique identifier for the language requested for an interaction
+        requestedRoutingSkillIds:
+          type: array
+          description: Unique identifier(s) for skill(s) requested for an interaction
+          items:
+            type: string
+        requestedRoutings:
+          type: array
+          description: Routing type(s) for requested/attempted routing methods.
+          items:
+            type: string
+            enum:
+            - Bullseye
+            - Conditional
+            - Direct
+            - Last
+            - Manual
+            - Predictive
+            - Preferred
+            - Standard
+            - Vip
+        routingPriority:
           type: integer
           format: int64
+          description: Routing priority for the current interaction
+        sessionId:
+          type: string
+          description: The unique identifier of this session
+        teamId:
+          type: string
+          description: The team ID the user is a member of
+        usedRouting:
+          type: string
+          description: Complete routing method
+          enum:
+          - Bullseye
+          - Conditional
+          - Direct
+          - Last
+          - Manual
+          - Predictive
+          - Preferred
+          - Standard
+          - Vip
+        userId:
+          type: string
+          description: Unique identifier for the user
+        scoredAgents:
+          type: array
+          description: Scored agents
+          items:
+            $ref: '#/components/schemas/FlowActivityScoredAgent'
+    StatisticalResponse:
+      type: object
+      properties:
+        interval:
+          type: string
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/AggregateMetricData'
+        views:
+          type: array
+          items:
+            $ref: '#/components/schemas/AggregateViewData'
+    FlowObservationQueryFilter:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: Boolean operation to apply to the provided predicates and clauses
+          enum:
+          - and
+          - or
+        clauses:
+          type: array
+          description: Boolean 'and/or' logic with up to two-levels of nesting
+          items:
+            $ref: '#/components/schemas/FlowObservationQueryClause'
+        predicates:
+          type: array
+          description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
+          items:
+            $ref: '#/components/schemas/FlowObservationQueryPredicate'
+    AggregateViewData:
+      type: object
+      properties:
+        name:
+          type: string
+        stats:
+          $ref: '#/components/schemas/StatisticalSummary'
+    FlowActivityQueryMetric:
+      type: object
+      required:
+      - metric
+      properties:
+        metric:
+          type: string
+          description: The requested metric
+          enum:
+          - oFlow
+        details:
+          type: boolean
+          description: Flag for including observation details for this metric in the response
+    FlowActivityQueryClause:
+      type: object
+      required:
+      - predicates
+      - type
+      properties:
+        type:
+          type: string
+          description: Boolean operation to apply to the provided predicates
+          enum:
+          - and
+          - or
+        predicates:
+          type: array
+          description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
+          items:
+            $ref: '#/components/schemas/FlowActivityQueryPredicate'
     ErrorBody:
       type: object
       properties:
@@ -2270,218 +2472,16 @@ components:
             $ref: '#/components/schemas/ErrorBody'
         limit:
           $ref: '#/components/schemas/Limit'
-    FlowAggregateQueryResponse:
+    FlowActivityScoredAgent:
       type: object
       properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowAggregateDataContainer'
-    FlowActivityQueryPredicate:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Optional type, can usually be inferred
-          enum:
-          - dimension
-          - property
-          - metric
-        dimension:
-          type: string
-          description: Left hand side for dimension predicates
-          enum:
-          - activeRouting
-          - addressFrom
-          - addressTo
-          - agentScore
-          - ani
-          - conversationId
-          - convertedFrom
-          - convertedTo
-          - direction
-          - dnis
-          - flowId
-          - flowType
-          - mediaType
-          - participantName
-          - queueId
-          - requestedLanguageId
-          - requestedRouting
-          - requestedRoutingSkillId
-          - routingPriority
-          - scoredAgentId
-          - sessionId
-          - teamId
-          - usedRouting
-          - userId
-          x-genesys-entity-type:
-            value: DIMENSION_TYPE
-        operator:
-          type: string
-          description: Optional operator, default is matches
-          enum:
-          - matches
-          - exists
-          - notExists
-        value:
-          type: string
-          description: Right hand side for dimension predicates
-          x-genesys-entity-type:
-            value: DIMENSION_SELECTOR
-    StatisticalSummary:
-      type: object
-      properties:
-        max:
-          type: number
-        min:
-          type: number
-        count:
-          type: integer
-          format: int64
-        countNegative:
-          type: integer
-          format: int64
-        countPositive:
-          type: integer
-          format: int64
-        sum:
-          type: number
-        current:
-          type: number
-        ratio:
-          type: number
-        numerator:
-          type: number
-        denominator:
-          type: number
-        target:
-          type: number
-        p95:
-          type: integer
-          format: int64
-        p99:
-          type: integer
-          format: int64
-        calculatedMetricValue:
-          type: integer
-          format: int64
-    AggregationRange:
-      type: object
-      properties:
-        gte:
-          type: number
-          description: Greater than or equal to
-        lt:
-          type: number
-          description: Less than
-    FlowObservationQueryClause:
-      type: object
-      required:
-      - predicates
-      - type
-      properties:
-        type:
-          type: string
-          description: Boolean operation to apply to the provided predicates
-          enum:
-          - and
-          - or
-        predicates:
-          type: array
-          description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
-          items:
-            $ref: '#/components/schemas/FlowObservationQueryPredicate'
-    FlowObservationDataContainer:
-      type: object
-      properties:
-        group:
-          type: object
-          description: A mapping from dimension to value
-          additionalProperties:
-            type: string
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObservationMetricData'
-    FlowActivityMetricValue:
-      type: object
-      properties:
-        metric:
-          type: string
-          description: Metric
-          enum:
-          - oFlow
-        qualifier:
-          type: string
-          description: Metric qualifier
-        entityIds:
-          type: array
-          description: Entity ids for matching entities if details were requested
-          uniqueItems: true
-          items:
-            type: string
-        count:
+        agentScore:
           type: integer
           format: int32
-          description: Metric count
-    FlowActivityQueryFilter:
-      type: object
-      required:
-      - type
-      properties:
-        type:
+          description: Assigned agent score for this conversation (0 - 100, higher being better)
+        scoredAgentId:
           type: string
-          description: Boolean operation to apply to the provided predicates and clauses
-          enum:
-          - and
-          - or
-        clauses:
-          type: array
-          description: Boolean 'and/or' logic with up to two-levels of nesting
-          items:
-            $ref: '#/components/schemas/FlowActivityQueryClause'
-        predicates:
-          type: array
-          description: 'Like a three-word sentence: (attribute-name) (operator) (target-value).'
-          items:
-            $ref: '#/components/schemas/FlowActivityQueryPredicate'
-    FlowActivityResponse:
-      type: object
-      properties:
-        results:
-          type: array
-          description: Query results
-          items:
-            $ref: '#/components/schemas/FlowActivityData'
-        entityIdDimension:
-          type: string
-          description: Dimension that is used as an entityId
-          enum:
-          - activeRouting
-          - addressFrom
-          - addressTo
-          - agentScore
-          - ani
-          - conversationId
-          - convertedFrom
-          - convertedTo
-          - direction
-          - dnis
-          - flowId
-          - flowType
-          - mediaType
-          - participantName
-          - queueId
-          - requestedLanguageId
-          - requestedRouting
-          - requestedRoutingSkillId
-          - routingPriority
-          - scoredAgentId
-          - sessionId
-          - teamId
-          - usedRouting
-          - userId
+          description: Unique identifier for the agent that was scored for this conversation
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

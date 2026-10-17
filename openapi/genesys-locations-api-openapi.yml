@@ -1202,51 +1202,6 @@ paths:
         required: true
 components:
   schemas:
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    LocationEntityListing:
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/LocationDefinition'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
     LocationSearchCriteria:
       type: object
       required:
@@ -1311,70 +1266,6 @@ components:
             - addressFields.zipcode
             - addressVerified
             - emergencyNumber
-    LocationImage:
-      type: object
-      properties:
-        resolution:
-          type: string
-          description: 'Height and/or width of image. ex: 640x480 or x128'
-        imageUri:
-          type: string
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    LocationAddressVerificationDetails:
-      type: object
-      properties:
-        status:
-          type: string
-          description: Status of address verification process
-          enum:
-          - Pending
-          - InProgress
-          - Retry
-          - Complete
-          - Failed
-        dateFinished:
-          type: string
-          format: date-time
-          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateStarted:
-          type: string
-          format: date-time
-          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        service:
-          type: string
-          example: smartystreets-us
-          description: Third party service used for address verification
     LocationsSearchResponse:
       type: object
       required:
@@ -1420,6 +1311,32 @@ components:
           description: Search results
           items:
             $ref: '#/components/schemas/LocationDefinition'
+    SearchSort:
+      type: object
+      properties:
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
+    LocationEmergencyNumber:
+      type: object
+      properties:
+        e164:
+          type: string
+        number:
+          type: string
+        type:
+          type: string
+          description: The type of emergency number.
+          enum:
+          - default
+          - elin
     AddressableEntityRef:
       type: object
       properties:
@@ -1428,161 +1345,6 @@ components:
         selfUri:
           type: string
           format: uri
-    LocationUpdateDefinition:
-      type: object
-      required:
-      - name
-      - version
-      properties:
-        name:
-          type: string
-          description: The name of the Location. Required for creates, not required for updates
-        version:
-          type: integer
-          format: int32
-          description: Current version of the location
-        state:
-          type: string
-          description: Current activity status of the location.
-          enum:
-          - active
-          - deleted
-        path:
-          type: array
-          description: A list of ancestor ids
-          items:
-            type: string
-        notes:
-          type: string
-          description: Notes for the location
-        contactUser:
-          type: string
-          description: The user id of the location contact
-        emergencyNumber:
-          description: Emergency number for the location
-          $ref: '#/components/schemas/LocationEmergencyNumber'
-        address:
-          description: Address of the location
-          $ref: '#/components/schemas/LocationAddress'
-    LocationDefinition:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        contactUser:
-          description: Site contact for the location entity
-          $ref: '#/components/schemas/AddressableEntityRef'
-        emergencyNumber:
-          description: Emergency number for the location entity
-          $ref: '#/components/schemas/LocationEmergencyNumber'
-        address:
-          $ref: '#/components/schemas/LocationAddress'
-        state:
-          type: string
-          description: Current state of the location entity
-          enum:
-          - active
-          - deleted
-        notes:
-          type: string
-          description: Notes for the location entity
-        version:
-          type: integer
-          format: int32
-          description: Current version of the location entity, value to be supplied should be retrieved by a GET or on create/update response
-        path:
-          type: array
-          description: A list of ancestor IDs in order
-          readOnly: true
-          items:
-            type: string
-        profileImage:
-          type: array
-          description: Profile image of the location entity, retrieved with ?expand=images query parameter
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LocationImage'
-        floorplanImage:
-          type: array
-          description: Floorplan images of the location entity, retrieved with ?expand=images query parameter
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/LocationImage'
-        addressVerificationDetails:
-          description: Address verification information, retrieve dwith the ?expand=addressVerificationDetails query parameter
-          readOnly: true
-          $ref: '#/components/schemas/LocationAddressVerificationDetails'
-        addressVerified:
-          type: boolean
-          description: Boolean field which states if the address has been verified as an actual address
-          readOnly: true
-        addressStored:
-          type: boolean
-          description: Boolean field which states if the address has been stored for E911
-          readOnly: true
-        images:
-          type: string
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    LocationAddress:
-      type: object
-      properties:
-        city:
-          type: string
-        country:
-          type: string
-        countryName:
-          type: string
-        state:
-          type: string
-        street1:
-          type: string
-        street2:
-          type: string
-        zipcode:
-          type: string
-    LocationCreateDefinition:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the Location. Required for creates, not required for updates
-        version:
-          type: integer
-          format: int32
-          description: Current version of the location
-        state:
-          type: string
-          description: Current activity status of the location.
-          enum:
-          - active
-          - deleted
-        path:
-          type: array
-          description: A list of ancestor ids
-          items:
-            type: string
-        notes:
-          type: string
-          description: Notes for the location
-        contactUser:
-          type: string
-          description: The user id of the location contact
-        emergencyNumber:
-          description: Emergency number for the location
-          $ref: '#/components/schemas/LocationEmergencyNumber'
-        address:
-          description: Address of the location
-          $ref: '#/components/schemas/LocationAddress'
     Limit:
       type: object
       properties:
@@ -1687,32 +1449,6 @@ components:
         value:
           type: integer
           format: int64
-    LocationEmergencyNumber:
-      type: object
-      properties:
-        e164:
-          type: string
-        number:
-          type: string
-        type:
-          type: string
-          description: The type of emergency number.
-          enum:
-          - default
-          - elin
-    SearchSort:
-      type: object
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
     LocationSearchRequest:
       type: object
       properties:
@@ -1748,6 +1484,270 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LocationSearchCriteria'
+    LocationUpdateDefinition:
+      type: object
+      required:
+      - name
+      - version
+      properties:
+        name:
+          type: string
+          description: The name of the Location. Required for creates, not required for updates
+        version:
+          type: integer
+          format: int32
+          description: Current version of the location
+        state:
+          type: string
+          description: Current activity status of the location.
+          enum:
+          - active
+          - deleted
+        path:
+          type: array
+          description: A list of ancestor ids
+          items:
+            type: string
+        notes:
+          type: string
+          description: Notes for the location
+        contactUser:
+          type: string
+          description: The user id of the location contact
+        emergencyNumber:
+          description: Emergency number for the location
+          $ref: '#/components/schemas/LocationEmergencyNumber'
+        address:
+          description: Address of the location
+          $ref: '#/components/schemas/LocationAddress'
+    LocationAddress:
+      type: object
+      properties:
+        city:
+          type: string
+        country:
+          type: string
+        countryName:
+          type: string
+        state:
+          type: string
+        street1:
+          type: string
+        street2:
+          type: string
+        zipcode:
+          type: string
+    LocationAddressVerificationDetails:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of address verification process
+          enum:
+          - Pending
+          - InProgress
+          - Retry
+          - Complete
+          - Failed
+        dateFinished:
+          type: string
+          format: date-time
+          description: 'Finished time of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateStarted:
+          type: string
+          format: date-time
+          description: 'Time started of address verification process. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        service:
+          type: string
+          example: smartystreets-us
+          description: Third party service used for address verification
+    LocationCreateDefinition:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the Location. Required for creates, not required for updates
+        version:
+          type: integer
+          format: int32
+          description: Current version of the location
+        state:
+          type: string
+          description: Current activity status of the location.
+          enum:
+          - active
+          - deleted
+        path:
+          type: array
+          description: A list of ancestor ids
+          items:
+            type: string
+        notes:
+          type: string
+          description: Notes for the location
+        contactUser:
+          type: string
+          description: The user id of the location contact
+        emergencyNumber:
+          description: Emergency number for the location
+          $ref: '#/components/schemas/LocationEmergencyNumber'
+        address:
+          description: Address of the location
+          $ref: '#/components/schemas/LocationAddress'
+    LocationEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationDefinition'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    LocationImage:
+      type: object
+      properties:
+        resolution:
+          type: string
+          description: 'Height and/or width of image. ex: 640x480 or x128'
+        imageUri:
+          type: string
+    LocationDefinition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        contactUser:
+          description: Site contact for the location entity
+          $ref: '#/components/schemas/AddressableEntityRef'
+        emergencyNumber:
+          description: Emergency number for the location entity
+          $ref: '#/components/schemas/LocationEmergencyNumber'
+        address:
+          $ref: '#/components/schemas/LocationAddress'
+        state:
+          type: string
+          description: Current state of the location entity
+          enum:
+          - active
+          - deleted
+        notes:
+          type: string
+          description: Notes for the location entity
+        version:
+          type: integer
+          format: int32
+          description: Current version of the location entity, value to be supplied should be retrieved by a GET or on create/update response
+        path:
+          type: array
+          description: A list of ancestor IDs in order
+          readOnly: true
+          items:
+            type: string
+        profileImage:
+          type: array
+          description: Profile image of the location entity, retrieved with ?expand=images query parameter
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LocationImage'
+        floorplanImage:
+          type: array
+          description: Floorplan images of the location entity, retrieved with ?expand=images query parameter
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/LocationImage'
+        addressVerificationDetails:
+          description: Address verification information, retrieve dwith the ?expand=addressVerificationDetails query parameter
+          readOnly: true
+          $ref: '#/components/schemas/LocationAddressVerificationDetails'
+        addressVerified:
+          type: boolean
+          description: Boolean field which states if the address has been verified as an actual address
+          readOnly: true
+        addressStored:
+          type: boolean
+          description: Boolean field which states if the address has been stored for E911
+          readOnly: true
+        images:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

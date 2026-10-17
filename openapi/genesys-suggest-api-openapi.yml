@@ -718,162 +718,6 @@ paths:
         required: true
 components:
   schemas:
-    SuggestSearchCriteria:
-      type: object
-      properties:
-        endValue:
-          type: string
-          description: The end value of the range. This field is used for range search types.
-        values:
-          type: array
-          description: A list of values for the search to match against
-          items:
-            type: string
-        startValue:
-          type: string
-          description: The start value of the range. This field is used for range search types.
-        value:
-          type: string
-          description: A value for the search to match against
-        operator:
-          type: string
-          description: How to apply this search criteria against other criteria
-          enum:
-          - AND
-          - OR
-          - NOT
-        group:
-          type: array
-          description: Groups multiple conditions
-          items:
-            $ref: '#/components/schemas/SuggestSearchCriteria'
-        dateFormat:
-          type: string
-          description: Set date format for criteria values when using date range search type.  Supports Java date format syntax, example yyyy-MM-dd'T'HH:mm:ss.SSSX.
-        fields:
-          type: array
-          description: Field names to search against
-          items:
-            type: string
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    ArrayNode:
-      type: object
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    SuggestSearchRequest:
-      type: object
-      required:
-      - query
-      - types
-      properties:
-        expand:
-          type: array
-          description: Provides more details about a specified resource
-          items:
-            type: string
-        types:
-          type: array
-          description: Resource domain type to search
-          items:
-            type: string
-        query:
-          type: array
-          description: Suggest query
-          items:
-            $ref: '#/components/schemas/SuggestSearchCriteria'
-    SearchRequest:
-      type: object
-      required:
-      - types
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-        pageSize:
-          type: integer
-          format: int32
-          description: The number of results per page
-        pageNumber:
-          type: integer
-          format: int32
-          description: The page of resources you want to retrieve
-        sort:
-          type: array
-          description: Multi-value sort order, list of multiple sort values
-          items:
-            $ref: '#/components/schemas/SearchSort'
-        returnFields:
-          type: array
-          description: A List of strings.  Possible values are any field in the resource you are searching on.  The other option is to use ALL_FIELDS, when this is provided all fields in the resource will be returned in the search results.
-          items:
-            type: string
-        expand:
-          type: array
-          description: Provides more details about a specified resource
-          items:
-            type: string
-        types:
-          type: array
-          description: Resource domain type to search
-          items:
-            type: string
-        query:
-          type: array
-          description: The search criteria
-          items:
-            $ref: '#/components/schemas/SearchCriteria'
-        aggregations:
-          type: array
-          description: Aggregation criteria
-          items:
-            $ref: '#/components/schemas/SearchAggregation'
     SearchAggregation:
       type: object
       properties:
@@ -911,6 +755,19 @@ components:
             - VALUE_ASC
             - COUNT_DESC
             - COUNT_ASC
+    SearchSort:
+      type: object
+      properties:
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
     Limit:
       type: object
       properties:
@@ -1015,6 +872,207 @@ components:
         value:
           type: integer
           format: int64
+    ArrayNode:
+      type: object
+    JsonNodeSearchResponse:
+      type: object
+      required:
+      - pageCount
+      - pageNumber
+      - pageSize
+      - results
+      - total
+      - types
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The total number of results found
+        pageCount:
+          type: integer
+          format: int32
+          description: The total number of pages
+        pageSize:
+          type: integer
+          format: int32
+          description: The current page size
+        pageNumber:
+          type: integer
+          format: int32
+          description: The current page number
+        previousPage:
+          type: string
+          description: Q64 value for the previous page of results
+        currentPage:
+          type: string
+          description: Q64 value for the current page of results
+        nextPage:
+          type: string
+          description: Q64 value for the next page of results
+        types:
+          type: array
+          description: Resource types the search was performed against
+          items:
+            type: string
+        results:
+          description: Search results
+          $ref: '#/components/schemas/ArrayNode'
+        aggregations:
+          $ref: '#/components/schemas/ArrayNode'
+    SuggestSearchRequest:
+      type: object
+      required:
+      - query
+      - types
+      properties:
+        expand:
+          type: array
+          description: Provides more details about a specified resource
+          items:
+            type: string
+        types:
+          type: array
+          description: Resource domain type to search
+          items:
+            type: string
+        query:
+          type: array
+          description: Suggest query
+          items:
+            $ref: '#/components/schemas/SuggestSearchCriteria'
+    SuggestSearchCriteria:
+      type: object
+      properties:
+        endValue:
+          type: string
+          description: The end value of the range. This field is used for range search types.
+        values:
+          type: array
+          description: A list of values for the search to match against
+          items:
+            type: string
+        startValue:
+          type: string
+          description: The start value of the range. This field is used for range search types.
+        value:
+          type: string
+          description: A value for the search to match against
+        operator:
+          type: string
+          description: How to apply this search criteria against other criteria
+          enum:
+          - AND
+          - OR
+          - NOT
+        group:
+          type: array
+          description: Groups multiple conditions
+          items:
+            $ref: '#/components/schemas/SuggestSearchCriteria'
+        dateFormat:
+          type: string
+          description: Set date format for criteria values when using date range search type.  Supports Java date format syntax, example yyyy-MM-dd'T'HH:mm:ss.SSSX.
+        fields:
+          type: array
+          description: Field names to search against
+          items:
+            type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    SearchRequest:
+      type: object
+      required:
+      - types
+      properties:
+        sortOrder:
+          type: string
+          description: The sort order for results
+          enum:
+          - ASC
+          - DESC
+          - SCORE
+        sortBy:
+          type: string
+          description: The field in the resource that you want to sort the results by
+        pageSize:
+          type: integer
+          format: int32
+          description: The number of results per page
+        pageNumber:
+          type: integer
+          format: int32
+          description: The page of resources you want to retrieve
+        sort:
+          type: array
+          description: Multi-value sort order, list of multiple sort values
+          items:
+            $ref: '#/components/schemas/SearchSort'
+        returnFields:
+          type: array
+          description: A List of strings.  Possible values are any field in the resource you are searching on.  The other option is to use ALL_FIELDS, when this is provided all fields in the resource will be returned in the search results.
+          items:
+            type: string
+        expand:
+          type: array
+          description: Provides more details about a specified resource
+          items:
+            type: string
+        types:
+          type: array
+          description: Resource domain type to search
+          items:
+            type: string
+        query:
+          type: array
+          description: The search criteria
+          items:
+            $ref: '#/components/schemas/SearchCriteria'
+        aggregations:
+          type: array
+          description: Aggregation criteria
+          items:
+            $ref: '#/components/schemas/SearchAggregation'
     SearchCriteria:
       type: object
       properties:
@@ -1133,64 +1191,6 @@ components:
             - created
             - fromUserJid
             - targetJids
-    SearchSort:
-      type: object
-      properties:
-        sortOrder:
-          type: string
-          description: The sort order for results
-          enum:
-          - ASC
-          - DESC
-          - SCORE
-        sortBy:
-          type: string
-          description: The field in the resource that you want to sort the results by
-    JsonNodeSearchResponse:
-      type: object
-      required:
-      - pageCount
-      - pageNumber
-      - pageSize
-      - results
-      - total
-      - types
-      properties:
-        total:
-          type: integer
-          format: int64
-          description: The total number of results found
-        pageCount:
-          type: integer
-          format: int32
-          description: The total number of pages
-        pageSize:
-          type: integer
-          format: int32
-          description: The current page size
-        pageNumber:
-          type: integer
-          format: int32
-          description: The current page number
-        previousPage:
-          type: string
-          description: Q64 value for the previous page of results
-        currentPage:
-          type: string
-          description: Q64 value for the current page of results
-        nextPage:
-          type: string
-          description: Q64 value for the next page of results
-        types:
-          type: array
-          description: Resource types the search was performed against
-          items:
-            type: string
-        results:
-          description: Search results
-          $ref: '#/components/schemas/ArrayNode'
-        aggregations:
-          $ref: '#/components/schemas/ArrayNode'
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

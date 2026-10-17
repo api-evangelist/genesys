@@ -323,46 +323,6 @@ paths:
       x-purecloud-method-name: getBillingTrusteebillingoverviewTrustorOrgId
 components:
   schemas:
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    NamedEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-          description: The name of the object.
-          readOnly: true
-    BillingUsage:
-      type: object
-      required:
-      - name
-      - resources
-      - totalUsage
-      properties:
-        name:
-          type: string
-          description: Identifies the billable usage.
-        totalUsage:
-          type: string
-          description: The total amount of usage, expressed as a decimal number in string format.
-        resources:
-          type: array
-          description: The resources for which usage was observed (e.g. license users, devices).
-          items:
-            $ref: '#/components/schemas/BillingUsageResource'
     TrusteeBillingOverview:
       type: object
       required:
@@ -439,121 +399,6 @@ components:
           description: Minimum amount that will be charged for the month
         inRampPeriod:
           type: boolean
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    SubscriptionOverviewUsage:
-      type: object
-      required:
-      - grouping
-      - name
-      - partNumber
-      - prepayQuantity
-      - unitOfMeasureType
-      - usageQuantity
-      properties:
-        name:
-          type: string
-          description: Product charge name
-        partNumber:
-          type: string
-          description: Product part number
-        grouping:
-          type: string
-          description: UI grouping key
-        unitOfMeasureType:
-          type: string
-          description: UI unit of measure
-        usageQuantity:
-          type: string
-          description: Usage count for specified period
-        overagePrice:
-          type: string
-          description: Price for usage / overage charge
-        prepayQuantity:
-          type: string
-          description: Items prepaid for specified period
-        prepayPrice:
-          type: string
-          description: Price for prepay charge
-        usageNotes:
-          type: string
-          description: Notes about the usage/charge item
-        isCancellable:
-          type: boolean
-          description: Indicates whether the item is cancellable
-        bundleQuantity:
-          type: string
-          description: Quantity multiplier for this charge
-        isThirdParty:
-          type: boolean
-          description: A charge from a third party entity
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    BillingUsageReport:
-      type: object
-      required:
-      - endDate
-      - startDate
-      - usages
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        startDate:
-          type: string
-          format: date-time
-          description: 'The period start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        endDate:
-          type: string
-          format: date-time
-          description: 'The period end date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        status:
-          type: string
-          description: Generation status of report
-          enum:
-          - InProgress
-          - Complete
-        usages:
-          type: array
-          description: The usages for the given period.
-          items:
-            $ref: '#/components/schemas/BillingUsage'
         selfUri:
           type: string
           format: uri
@@ -676,6 +521,161 @@ components:
           type: string
           format: date-time
           description: 'The date that the usage was first observed by the billing subsystem. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+    NamedEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+          description: The name of the object.
+          readOnly: true
+    SubscriptionOverviewUsage:
+      type: object
+      required:
+      - grouping
+      - name
+      - partNumber
+      - prepayQuantity
+      - unitOfMeasureType
+      - usageQuantity
+      properties:
+        name:
+          type: string
+          description: Product charge name
+        partNumber:
+          type: string
+          description: Product part number
+        grouping:
+          type: string
+          description: UI grouping key
+        unitOfMeasureType:
+          type: string
+          description: UI unit of measure
+        usageQuantity:
+          type: string
+          description: Usage count for specified period
+        overagePrice:
+          type: string
+          description: Price for usage / overage charge
+        prepayQuantity:
+          type: string
+          description: Items prepaid for specified period
+        prepayPrice:
+          type: string
+          description: Price for prepay charge
+        usageNotes:
+          type: string
+          description: Notes about the usage/charge item
+        isCancellable:
+          type: boolean
+          description: Indicates whether the item is cancellable
+        bundleQuantity:
+          type: string
+          description: Quantity multiplier for this charge
+        isThirdParty:
+          type: boolean
+          description: A charge from a third party entity
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    BillingUsage:
+      type: object
+      required:
+      - name
+      - resources
+      - totalUsage
+      properties:
+        name:
+          type: string
+          description: Identifies the billable usage.
+        totalUsage:
+          type: string
+          description: The total amount of usage, expressed as a decimal number in string format.
+        resources:
+          type: array
+          description: The resources for which usage was observed (e.g. license users, devices).
+          items:
+            $ref: '#/components/schemas/BillingUsageResource'
+    BillingUsageReport:
+      type: object
+      required:
+      - endDate
+      - startDate
+      - usages
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+          description: 'The period start date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        endDate:
+          type: string
+          format: date-time
+          description: 'The period end date. Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        status:
+          type: string
+          description: Generation status of report
+          enum:
+          - InProgress
+          - Complete
+        usages:
+          type: array
+          description: The usages for the given period.
+          items:
+            $ref: '#/components/schemas/BillingUsage'
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

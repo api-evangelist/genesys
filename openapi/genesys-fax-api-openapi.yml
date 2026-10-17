@@ -1121,116 +1121,18 @@ paths:
       x-purecloud-method-name: getFaxSummary
 components:
   schemas:
-    FaxDocumentEntityListing:
+    FaxConfig:
       type: object
+      required:
+      - disableEmailPii
+      - sendEmailNotifications
       properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/FaxDocument'
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int64
-        firstUri:
-          type: string
-          format: uri
-        nextUri:
-          type: string
-          format: uri
-        previousUri:
-          type: string
-          format: uri
-        lastUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-        pageCount:
-          type: integer
-          format: int32
-    Detail:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        fieldName:
-          type: string
-        entityId:
-          type: string
-        entityName:
-          type: string
-    FaxDocument:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The globally unique identifier for the object.
-          readOnly: true
-        name:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        dateModified:
-          type: string
-          format: date-time
-          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
-        contentUri:
-          type: string
-          format: uri
-        workspace:
-          $ref: '#/components/schemas/DomainEntityRef'
-        createdBy:
-          $ref: '#/components/schemas/DomainEntityRef'
-        sharingUri:
-          type: string
-          format: uri
-        contentType:
-          type: string
-        contentLength:
-          type: integer
-          format: int64
-        filename:
-          type: string
-        read:
+        sendEmailNotifications:
           type: boolean
-        pageCount:
-          type: integer
-          format: int64
-        callerAddress:
-          type: string
-        receiverAddress:
-          type: string
-        thumbnails:
-          type: array
-          items:
-            $ref: '#/components/schemas/DocumentThumbnail'
-        downloadSharingUri:
-          type: string
-          format: uri
-        selfUri:
-          type: string
-          format: uri
-          description: The URI for this object
-          readOnly: true
-    DomainEntityRef:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        selfUri:
-          type: string
-          format: uri
+          description: Whether to enable email notifications for this organization
+        disableEmailPii:
+          type: boolean
+          description: Whether to disable PII for email notifications
     DocumentThumbnail:
       type: object
       properties:
@@ -1244,62 +1146,6 @@ components:
         width:
           type: integer
           format: int32
-    FaxSummary:
-      type: object
-      properties:
-        readCount:
-          type: integer
-          format: int32
-        unreadCount:
-          type: integer
-          format: int32
-        totalCount:
-          type: integer
-          format: int32
-    ErrorBody:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: string
-        status:
-          type: integer
-          format: int32
-        entityId:
-          type: string
-        entityName:
-          type: string
-        messageWithParams:
-          type: string
-        messageParams:
-          type: object
-          additionalProperties:
-            type: string
-        contextId:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/Detail'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErrorBody'
-        limit:
-          $ref: '#/components/schemas/Limit'
-    FaxConfig:
-      type: object
-      required:
-      - disableEmailPii
-      - sendEmailNotifications
-      properties:
-        sendEmailNotifications:
-          type: boolean
-          description: Whether to enable email notifications for this organization
-        disableEmailPii:
-          type: boolean
-          description: Whether to disable PII for email notifications
     Limit:
       type: object
       properties:
@@ -1404,6 +1250,93 @@ components:
         value:
           type: integer
           format: int64
+    DomainEntityRef:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        selfUri:
+          type: string
+          format: uri
+    FaxDocumentEntityListing:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/FaxDocument'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        firstUri:
+          type: string
+          format: uri
+        nextUri:
+          type: string
+          format: uri
+        previousUri:
+          type: string
+          format: uri
+        lastUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+        pageCount:
+          type: integer
+          format: int32
+    Detail:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        fieldName:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+    ErrorBody:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        status:
+          type: integer
+          format: int32
+        entityId:
+          type: string
+        entityName:
+          type: string
+        messageWithParams:
+          type: string
+        messageParams:
+          type: object
+          additionalProperties:
+            type: string
+        contextId:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Detail'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorBody'
+        limit:
+          $ref: '#/components/schemas/Limit'
     DownloadResponse:
       type: object
       properties:
@@ -1426,6 +1359,73 @@ components:
           type: string
         selfUri:
           type: string
+    FaxDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The globally unique identifier for the object.
+          readOnly: true
+        name:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        dateModified:
+          type: string
+          format: date-time
+          description: 'Date time is represented as an ISO-8601 string. For example: yyyy-MM-ddTHH:mm:ss[.mmm]Z'
+        contentUri:
+          type: string
+          format: uri
+        workspace:
+          $ref: '#/components/schemas/DomainEntityRef'
+        createdBy:
+          $ref: '#/components/schemas/DomainEntityRef'
+        sharingUri:
+          type: string
+          format: uri
+        contentType:
+          type: string
+        contentLength:
+          type: integer
+          format: int64
+        filename:
+          type: string
+        read:
+          type: boolean
+        pageCount:
+          type: integer
+          format: int64
+        callerAddress:
+          type: string
+        receiverAddress:
+          type: string
+        thumbnails:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentThumbnail'
+        downloadSharingUri:
+          type: string
+          format: uri
+        selfUri:
+          type: string
+          format: uri
+          description: The URI for this object
+          readOnly: true
+    FaxSummary:
+      type: object
+      properties:
+        readCount:
+          type: integer
+          format: int32
+        unreadCount:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
   securitySchemes:
     PureCloud_OAuth:
       type: oauth2

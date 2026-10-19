@@ -4,7 +4,9 @@ source:
 - https://zapier.com/apps/genesys/integrations
 checked:
 - guidewire/integrations/guidewire-integration-edges.yml
+- https://api.nuget.org/v3
 - https://composio.dev/toolkits/genesys
+- https://crates.io/api/v1
 - https://fivetran.com/docs-sitemap.xml
 - https://fivetran.com/docs/connectors/partner-built-program
 - https://github.com/meltano/hub
@@ -12,7 +14,12 @@ checked:
 - https://hightouch.com/docs/destinations/genesys
 - https://monid.ai/tools/genesys
 - https://n8n.io/integrations/genesys/
+- https://proxy.golang.org
+- https://pypi.org/pypi
 - https://raw.githubusercontent.com/18F/fedramp-data/4b73d9247fd6360759960e4690e3ce4ca858e0fa/data/data.json
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
 - https://www.applytosupply.digitalmarketplace.service.gov.uk/g-cloud-15/suppliers
 - https://zapier.com/api/v4/apps/
 - https://zapier.com/apps/genesys/integrations
@@ -242,4 +249,64 @@ edges:
   detected: '2026-10-18'
   detected_by: mirror-platform-listings.py
   category: Zoom app
+- partner_name: Go module proxy
+  partner: null
+  partner_match: null
+  type: register
+  direction: provider-built
+  category: official SDK (Go)
+  evidence: https://pkg.go.dev/github.com/mypurecloud/platform-client-sdk-go
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: github.com/mypurecloud/platform-client-sdk-go
+      version: v35.0.0+incompatible
+      released: '2021-03-05'
+      released_field: Time
+      lapsed: true
+      page: https://pkg.go.dev/github.com/mypurecloud/platform-client-sdk-go
+      repo_leg: github-org:mypurecloud
+      publisher_leg: org:mypurecloud
+      matched_by: github-org
+    current: false
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/purecloud-platform-client-v2
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: purecloud-platform-client-v2
+      version: 264.0.0
+      released: '2026-10-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/purecloud-platform-client-v2
+      repo_leg: github-org:mypurecloud
+      publisher_leg: email:genesys.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 templates: []

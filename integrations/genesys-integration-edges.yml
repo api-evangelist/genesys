@@ -29,6 +29,8 @@ checked:
 - zendesk/integrations/zendesk-integration-edges.yml
 - zoom/integrations/zoom-integration-edges.yml
 - https://listings.pcisecuritystandards.org/assessors_and_solutions
+- opentofu/integrations/opentofu-integration-edges.yml
+- terraform/integrations/terraform-integration-edges.yml
 summary: null
 marketplace_apps:
 - marketplace: zapier
@@ -49,29 +51,6 @@ marketplace_apps:
   listed: 25
   note: 2598 listings read; only domain-linked builders / vendors are written
 edges:
-- partner_name: Guidewire (own)
-  partner: guidewire
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://marketplace.guidewire.com/product/01tPW000007r1I5YAI/01tPW000007r1I5YAI
-  mirror_of: guidewire/integrations/guidewire-integration-edges.yml
-  apps:
-  - Genesys Embeddable Agent Plugin for ClaimCenter
-  - Genesys Embeddable Agent Plugin for PolicyCenter
-  - Genesys G2 Connect Accelerator for ClaimCenter 10
-  - Genesys G2 Connect Accelerator for PolicyCenter 10
-  listing_count: 4
-  detected: '2026-10-14'
-  detected_by: mirror-platform-listings.py
-  category: Accelerator; Customer Communication; ClaimCenter
-  badges:
-  - Ready for Guidewire
-  - 'Partner tier: Growth'
 - partner_name: Zapier
   partner: zapier
   partner_match: aggregator
@@ -97,23 +76,6 @@ edges:
     builder: unknown (not in the directory record)
   detected_by: sweep-workflow-automation.py
   first_seen: '2026-10-15'
-- partner_name: Zoom (own)
-  partner: zoom
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://marketplace.zoom.us/apps/aTjGNfG4TYa4KSCy1CmGlQ
-  mirror_of: zoom/integrations/zoom-integration-edges.yml
-  apps:
-  - Genesys Cloud Integration
-  listing_count: 1
-  detected: '2026-10-18'
-  detected_by: mirror-platform-listings.py
-  category: Zoom app
 - partner_name: Go module proxy
   partner: null
   partner_match: null
@@ -919,23 +881,6 @@ edges:
     detected: '2026-10-19'
   detected_by: sweep-customer-support.py
   detected: '2026-10-19'
-- partner_name: Zendesk (own)
-  partner: zendesk
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://www.zendesk.com/marketplace/apps/support/78170/genesys-cloud/
-  mirror_of: zendesk/integrations/zendesk-integration-edges.yml
-  apps:
-  - Genesys Cloud
-  listing_count: 1
-  detected: '2026-10-19'
-  detected_by: mirror-platform-listings.py
-  category: Contact Center
 - partner_name: Hightouch
   partner: hightouch
   partner_match: aggregator
@@ -1149,4 +1094,100 @@ edges:
     identity_note: register-name 'genesys' = genesys; wikidata P856 genesys.com agrees or unheld
   detected_by: sweep-compliance-assurance.py
   first_seen: '2026-10-20'
+- partner_name: Guidewire (own)
+  partner: guidewire
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.guidewire.com/product/01tPW000007r1I5YAI/01tPW000007r1I5YAI
+  mirror_of: guidewire/integrations/guidewire-integration-edges.yml
+  apps:
+  - Genesys Embeddable Agent Plugin for ClaimCenter
+  - Genesys Embeddable Agent Plugin for PolicyCenter
+  - Genesys G2 Connect Accelerator for ClaimCenter 10
+  - Genesys G2 Connect Accelerator for PolicyCenter 10
+  listing_count: 4
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Accelerator; Customer Communication; ClaimCenter
+  badges:
+  - Ready for Guidewire
+  - 'Partner tier: Growth'
+- partner_name: Zoom (own)
+  partner: zoom
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.zoom.us/apps/aTjGNfG4TYa4KSCy1CmGlQ
+  mirror_of: zoom/integrations/zoom-integration-edges.yml
+  apps:
+  - Genesys Cloud Integration
+  listing_count: 1
+  detected: '2026-10-18'
+  detected_by: mirror-platform-listings.py
+  category: Zoom app
+- partner_name: Zendesk (own)
+  partner: zendesk
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://www.zendesk.com/marketplace/apps/support/78170/genesys-cloud/
+  mirror_of: zendesk/integrations/zendesk-integration-edges.yml
+  apps:
+  - Genesys Cloud
+  listing_count: 1
+  detected: '2026-10-19'
+  detected_by: mirror-platform-listings.py
+  category: Contact Center
+- partner_name: OpenTofu (opentofu-registry)
+  partner: opentofu
+  partner_match: mirror
+  mirror_match: register
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: opentofu-registry
+  evidence: https://search.opentofu.org/provider/mypurecloud/genesyscloud
+  mirror_of: opentofu/integrations/opentofu-integration-edges.yml
+  apps:
+  - mypurecloud/genesyscloud
+  listing_count: 1
+  detected: '2026-10-21'
+  detected_by: mirror-platform-listings.py
+  category: infrastructure-as-code provider registry listing
+  badges:
+  - Verified publisher (GitHub domain-verified organization)
+- partner_name: Terraform (terraform-registry)
+  partner: terraform
+  partner_match: mirror
+  mirror_match: register
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: terraform-registry
+  evidence: https://registry.terraform.io/providers/MyPureCloud/genesyscloud
+  mirror_of: terraform/integrations/terraform-integration-edges.yml
+  apps:
+  - MyPureCloud/genesyscloud
+  listing_count: 1
+  detected: '2026-10-21'
+  detected_by: mirror-platform-listings.py
+  category: infrastructure-as-code provider registry listing
+  badges:
+  - Verified publisher (Terraform partner tier)
+  - Verified publisher (GitHub domain-verified organization)
 templates: []
